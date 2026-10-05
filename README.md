@@ -1,70 +1,86 @@
-# ZeroMovies
+# 🎬 ZeroMovies
 
-Android phone and Android TV app for TMDB movie and series discovery, with VidStuck, VidSrc.to, VidSrc.sh and SuperEmbed playback. Android version **0.4.5**.
+### Your next great watch.
 
-## Discovery and library
+**Discover movies and TV series, find something unexpected, and keep your favorites close.** ZeroMovies brings TMDB discovery, your personal library, and embedded playback together in a clean interface for **Android, Android TV / Google TV, and Windows**.
 
-- Backdrop carousel with six trending picks, previous/next controls, slide indicators, phone swipes and TV ranked picks. Automatic rotation pauses during focus interaction and while the app is in the background.
-- Continue Watching, Coming Soon with release dates, recommendations, popular titles, series and now-playing rows.
-- Streaming-provider logos and movie/TV discovery filters. Provider availability is region-specific, supplied by JustWatch through TMDB. Browsing a catalog provider does not change the chosen playback source or imply a subscription is included.
-- Title details with softly blurred artwork, synopsis, genres, runtime, country, director/creators, cast, trailers and related recommendations.
-- Watchlist, collections, Plan to Watch and sharing public TMDB title links.
-- Device-local watch history (100 recent entries) and search history (30 queries), with replay, removal and clearing. Queries are recorded on search submission or choosing a result, rather than every partially typed query.
-- Continue Watching uses VidStuck and VidSrc.sh progress events when available. Percentage bars are based on reported timestamps/duration; no invented match scores or playback percentages. Titles without progress events remain marked Started. Episode history preserves the selected season/episode even before a progress event arrives.
-- Local clock, saved night/light mode, and a Watchlist row on Home. The compact theme toggle and red 🎲 Surprise Me control are at the top right. Surprise picks sample TMDB discovery beyond home-page rows. Weather has been removed.
-- Categories in the TV side rail and phone navigation use TMDB movie/series genres with paginated results. Watch Now uses the selected source directly; its adjacent Source control marks VidStuck Recommended.
-- TV navigation has a dimmed, softly blurred artwork backdrop. Title details place Watch Now beside the poster/title and above the synopsis and cast.
-- Live and Manga tabs are removed from mobile/TV navigation; restored sessions return to Home.
+Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surprise Me** dice when you cannot decide. Softly blurred artwork, light and dark themes, and dedicated TV controls make it comfortable on your phone, desktop, or big screen.
 
-## TV playback and performance
+**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroMovies/releases/latest)** · **[📋 v0.4.5 release notes](docs/release-0.4.5.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
 
-The homepage and app navigation use standard D-pad focus. **Mouse mode applies only inside the video player**, with continuous movement, acceleration and frame-synced drawing. Playback defaults to D-pad focus navigation: arrows move focus and OK activates the selected control. Left does not send the player's seek hotkey. In optional mouse mode, arrows move the pointer; Menu toggles mouse/focus mode. The preference is also available in Settings. Back hides visible player controls first and keeps playback open. The second Back returns to browsing without waiting for embedded frames. There is no app toolbar over Android playback. The labelled player Back control returns to the app. Watch now appears above the synopsis and cast.
+## ✨ Features
 
-Recognized player control bars hide after three idle seconds and wake on remote input. Optional audio boost offers Off, 1.5× and 2× with a limiter. Boost requires compatible embedded audio; non-CORS sources retain their original audio path.
+| | What you can do |
+| --- | --- |
+| 🔎 **Discover & search** | Browse trending, popular, now-playing, recommended, and coming-soon titles, or search movies and TV series through TMDB. |
+| 🎲 **Surprise Me** | Discover released movies beyond the homepage rows with the red dice button beside the theme toggle. |
+| 🗂️ **Categories** | Explore movie and TV genres with paginated results. |
+| 🎞️ **Rich title details** | View artwork, ratings, synopsis, cast, genres, trailers, and related recommendations. |
+| ▶️ **Choose your source** | Switch beside Watch Now between **VidStuck · Recommended**, VidSrc.to, VidSrc.sh, and SuperEmbed. |
+| ❤️ **Your library** | Save a watchlist, organize collections and Plan to Watch, and revisit watch and search history. |
+| ⏯️ **Continue Watching** | Return to started titles and resume where supported by the playback provider. |
+| 🌗 **Make it yours** | Saved light/dark mode, a compact theme toggle, and subtle blurred backgrounds. |
+| 🛡️ **Advertisement filtering** | Filter common popups, redirects, and recognized QR advertisement overlays in supported app playback environments. |
+| 📺 **TV remote support** | D-pad navigation and optional player mouse mode; idle controls hide and wake on remote input. |
+| 🖥️ **Windows portable** | Browse and play in one window, use native fullscreen, and return with the player Back button. No installer. |
+| 🔊 **Optional audio boost** | Off, 1.5×, or 2× for compatible embedded audio. |
 
-Artwork downloads use separate workers from catalog/search requests. Only visible artwork starts downloading, images are downsampled and cached, and stale image responses cannot replace a different carousel title. Ad-page inspection is throttled to reduce DOM work.
+## 📸 A look inside
 
-## QR advertisement handling
+Original PNG screenshots are included at their native **2048-pixel width**, without resizing or recompression. Click an image to open it and inspect the full-size original.
 
-The earlier text-only QR filter did not eliminate the ad reported on the user's TV. This version additionally inspects small, temporary in-memory snapshots of the player, decodes the visible QR destination with ZXing, and targets the reported advertising domain and its narrow campaign URL fingerprint. It never visits the QR destination or responds to a verification prompt. Confirmed advertising banners can be removed even when their text/QR is painted into an image or CSS background, including viewport-sized image/canvas artwork without a white DOM wrapper.
+### 🏠 Discover something great
 
-Common ad domains, popups and top-level cross-site redirects remain blocked. Genuine CAPTCHA frames and video containers are protected by the cosmetic filter. Modern Android System WebView document-start support is needed for filtering inside cross-origin player frames; older WebViews receive an update notice and a main-frame fallback.
+Trending picks, quick playback, your watchlist, and provider discovery in one place.
 
-Tests cover decoder images and advertisement/CAPTCHA/video boundaries. Actual elimination of the provider's TV ad still needs device confirmation. Ads burned into the video, different creatives and unsupported WebViews may remain. No verification or DRM bypass is implemented.
+[![ZeroMovies home with trending picks, source selection, and watchlist](docs/zeromovies-home.png)](docs/zeromovies-home.png)
 
-## Website
+### 🍿 Find your next movie
 
-The responsive website is prepared for Netlify. Import this repository with the root `netlify.toml` and set `TMDB_API_KEY` for Netlify Functions. See [website setup](web/README.md). Browser libraries stay local, and embedded VidStuck ads remain controlled by the provider.
+Browse a poster-rich catalog with title ratings and release years.
 
-## Production releases
+[![ZeroMovies movie catalog with posters, ratings, and release years](docs/zeromovies-movies.png)](docs/zeromovies-movies.png)
 
-The **Release ZeroMovies** workflow builds non-debug mobile and TV variants and verifies their APK signatures before publishing. Production signing requires repository Actions secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, and `ANDROID_KEY_ALIAS`. Keep a secure backup of this permanent key; future updates must retain it. No signing key or password belongs in source or public build artifacts.
+### 🗂️ Find your kind of story
 
-Release notes and download instructions are in [v0.4.5 notes](docs/release-0.4.5.md). The release workflow attaches signed APKs, the already-verified Windows portable ZIP, and SHA-256 checksums. It publishes only after all assets upload successfully. Missing signing secrets permit unsigned build validation but block publication.
+Explore genres across movies and TV series.
 
-## API key and builds
+[![ZeroMovies categories for movies and TV series](docs/zeromovies-categories.png)](docs/zeromovies-categories.png)
 
-Create a TMDB **API Key (v3 auth)** at https://www.themoviedb.org/settings/api. Add repository Actions secret **TMDB_API_KEY** to bundle it in APK builds. A nonempty key entered in Settings overrides the bundled key; leaving it blank uses the bundled key. APK client keys can be extracted. No key is committed to repository source.
+## ⬇️ Download & get started
 
-All platforms are branded **ZeroMovies**. The Windows app uses a single window for browsing and playback, with native fullscreen from the embedded player. Windows 10/11 x64 builds are available from the **Build ZeroMovies Windows** workflow. Future Windows artifacts contain a portable ZIP only. See [Windows instructions](windows/README.md). Future Windows builds run manually on explicit request.
+Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroMovies/releases/latest)**.
 
-Run **Build ZeroMovies APKs** manually from GitHub Actions. Download **ZeroMovies-mobile-and-tv-debug**:
+| Platform | v0.4.5 download | Getting started |
+| --- | --- | --- |
+| 📱 Android phone / tablet | `ZeroMovies-0.4.5-Android.apk` | Android 6+. Install the signed mobile APK. |
+| 📺 Android TV / Google TV | `ZeroMovies-0.4.5-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
+| 🖥️ Windows 10 / 11 · x64 | `ZeroMovies-0.4.5-Windows-x64.zip` | Extract the ZIP and launch `ZeroMovies.exe`. |
+| ✅ Integrity checks | `SHA256SUMS.txt` | Compare your downloaded files against the published SHA-256 checksums. |
 
-- `app-mobile-debug.apk`: Android phone/tablet.
-- `app-tv-debug.apk`: Android TV/Google TV.
+Android v0.4.5 uses a permanent production signing key. Moving from an earlier debug build may require uninstalling that build first, which clears its local library and history. Future production releases retain the same signing key.
 
-These are debug APKs. CI debug signing keys can differ; Android may require uninstalling the older debug build, which clears its local library and history.
+## 📺 Playback & your library
 
-## Refresh and progress
+On Android TV, arrows move focus and OK activates controls. Optional **mouse mode** works inside the player; Menu switches mouse/focus mode. Back hides visible controls first, and a second Back returns to browsing. See the [TV controls guide](docs/android-tv-controls.md).
 
-TMDB metadata loads when opened, on refresh and after returning following five minutes. Search, provider discovery, title details and episodes load on demand. New content needs no APK rebuild. TMDB supplies metadata, not video streams; a search result does not guarantee VidStuck availability.
+Your watchlist, collections, history, and preferences are stored locally on the device. Resume positions and progress depend on provider events; titles without progress remain marked Started. Clearing watch history also clears resume positions.
 
-Progress messages use an origin-restricted WebView listener for `https://vidstuck.xyz`. Events must match the current content ID/type and pass timestamp/duration/episode boundary checks. Other player frames do not receive an unrestricted native interface. Resume positions depend on the provider emitting its documented progress events.
+TMDB metadata refreshes as you browse and on refresh, so new catalog entries do not require an app rebuild. Provider availability is region-specific and supplied through JustWatch/TMDB. A catalog listing does not guarantee playback availability or include a streaming subscription. Embedded-player support for progress, subtitles, audio boost, and advertisement filtering varies by provider and device WebView.
 
-History is stored on the device. Clearing watch history also clears resume positions; saved title metadata and watchlists remain.
+## 🛠️ Build & development
 
-## Credits and validation
+- **Android:** run **Build ZeroMovies APKs** manually in GitHub Actions for development APKs. These are debug builds; use Releases for signed production downloads.
+- **Production:** **Release ZeroMovies** runs regressions, unit tests, builds, lint, non-debug checks, and signature verification before publishing signed APKs and checksums. Its v0.4.5 publication reuses the tested Windows portable ZIP.
+- **Windows:** see the [Windows guide](windows/README.md). Windows builds run manually on explicit request.
+- **Website:** the responsive web version is prepared for Netlify. See [website setup](web/README.md).
 
-This product uses the TMDB API but is not endorsed or certified by TMDB. The approved logo and attribution appear in Settings. Metadata and artwork: TMDB and their respective rights holders. Provider availability: JustWatch through TMDB. Video player: VidStuck. Manga: MangaDex. Sports metadata: Streamed. Optional weather: Open-Meteo; city lookup: GeoNames via Open-Meteo. QR decoding: ZXing (Apache 2.0). Android media playback: AndroidX Media3.
+For your own Android builds, add a TMDB v3 API key as the `TMDB_API_KEY` Actions secret. A nonempty key entered in app Settings overrides the bundled key. Client-side API keys can be extracted from APKs.
 
-The APK workflow runs domain/search/progress boundary checks, DOM advertisement/control/audio regressions and JVM discovery-history/QR-decoder tests, then compiles and lints mobile and TV variants. TV navigation, actual provider playback, layout and perceived performance require device testing.
+Production signing uses `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, and `ANDROID_KEY_ALIAS`. Preserve a private backup and reuse the same key for updates. Keep signing keys and passwords out of source and public artifacts.
+
+## 🙌 Credits
+
+Metadata and artwork: **TMDB** and their respective rights holders. This product uses the TMDB API but is not endorsed or certified by TMDB. Provider availability: **JustWatch through TMDB**. Embedded players: **VidStuck, VidSrc.to, VidSrc.sh, and SuperEmbed**. QR decoding: **ZXing** (Apache 2.0). Android media playback: **AndroidX Media3**.
+
+<sub>Made with care by JeremieWTF ✦</sub>
