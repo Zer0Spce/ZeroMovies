@@ -23,6 +23,8 @@ export function parsePublicCatalog(html) {
       const year=/^\d{4}-/.test(date)?Number(date.slice(0,4)):0;
       const poster=typeof value.poster_path==='string' && /^\/[A-Za-z0-9_.-]+$/.test(value.poster_path) ? `https://image.tmdb.org/t/p/w500${value.poster_path}` : '';
       records.set(id,{id,title:title.trim(),type,year,description:value.overview || '',poster,
+        rating:typeof value.vote_average==='number'?value.vote_average:0,
+        backdrop:typeof value.backdrop_path==='string'&&/^\/[A-Za-z0-9_.-]+$/.test(value.backdrop_path)?`https://image.tmdb.org/t/p/w1280${value.backdrop_path}`:'',
         sourceUrl:`https://bingeflix.tv/${type==='movie'?'movie':'tv'}/${value.id}`,
         playbackAvailable:false,...(type==='series'?{episodes:[]}:{streams:[]})});
     }

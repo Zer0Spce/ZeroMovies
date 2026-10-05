@@ -3,6 +3,8 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <application android:label="ZeroStreams" android:icon="@drawable/ic_zero" android:banner="@drawable/tv_banner" android:theme="@style/AppTheme" android:allowBackup="false" android:usesCleartextTraffic="false">
         <activity android:name=".MainActivity" android:exported="true" />
+        <activity android:name=".BrowserPlayerActivity" android:exported="false" android:screenOrientation="landscape" />
+        <activity android:name=".MangaReaderActivity" android:exported="false" />
         <activity android:name=".PlayerActivity" android:exported="false" android:screenOrientation="landscape" />
     </application>
 </manifest>

@@ -3,9 +3,8 @@ package com.zerostreams.app;
 import android.app.*;
 import android.os.*;
 import android.content.*;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.BitmapFactory;
+import android.content.SharedPreferences;
+import android.graphics.*;
 import android.graphics.drawable.GradientDrawable;
 import android.view.*;
 import android.widget.*;
@@ -17,128 +16,84 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class MainActivity extends Activity {
-    static final int BG=Color.rgb(8,13,20), SURFACE=Color.rgb(19,29,42), INK=Color.rgb(238,244,248), MUTED=Color.rgb(152,169,187), ACCENT=Color.rgb(84,229,193);
+    static final int BG=Color.rgb(9,10,16),SURFACE=Color.rgb(22,24,34),INK=Color.rgb(244,245,250),MUTED=Color.rgb(157,162,181),ACCENT=Color.rgb(101,230,204);
+    private static final String FEED="https://raw.githubusercontent.com/Zer0Spce/ZeroMovies/main/public/catalog.json";
+    private static final String SERIES="https://raw.githubusercontent.com/Zer0Spce/ZeroMovies/main/public/series/";
     private final ExecutorService io=Executors.newFixedThreadPool(3);
     private final Handler ui=new Handler(Looper.getMainLooper());
-    private List<Catalog.Item> catalog=new ArrayList<>();
-    private android.content.SharedPreferences prefs;
-    private LinearLayout content;
-    private TextView status;
-    private String category="Discover", query="";
-    private int loadVersion=0, renderVersion=0;
-    private boolean started=false;
-    private long lastRequested=0;
-    private static final String DEFAULT_CATALOG="https://raw.githubusercontent.com/Zer0Spce/ZeroMovies/main/public/catalog.json";
-    private Button selectedTab;
-
-    int dp(float value) { return (int)(getResources().getDisplayMetrics().density*value+.5f); }
-    LinearLayout column() { LinearLayout l=new LinearLayout(this); l.setOrientation(LinearLayout.VERTICAL); return l; }
-    TextView text(String value,int size,int color) {
-        TextView t=new TextView(this); t.setText(value); t.setTextSize(size); t.setTextColor(color); return t;
+    private final android.util.LruCache<String,Bitmap> pictures=new android.util.LruCache<String,Bitmap>(12*1024*1024){@Override protected int sizeOf(String key,Bitmap value){return value.getByteCount();}};
+    private List<Catalog.Item> catalog=new ArrayList<>(),browse=new ArrayList<>();
+    private SharedPreferences prefs;
+    private LinearLayout content;private TextView status;private EditText search;private ScrollView scroll;
+    private String category="Home",query="",collection="",sort="Featured";private int loadVersion,renderVersion,mangaOffset;private long lastRequested;private boolean ready;
+    private final Map<String,Button> navigation=new LinkedHashMap<>();
+    private final Runnable remoteSearch=()->{if(category.equals("Manga"))load();};
+    int dp(float n){return(int)(getResources().getDisplayMetrics().density*n+.5f);}
+    LinearLayout column(){LinearLayout l=new LinearLayout(this);l.setOrientation(LinearLayout.VERTICAL);return l;}
+    TextView text(String value,int size,int color){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(color);return t;}
+    GradientDrawable shape(int color,int border){GradientDrawable d=new GradientDrawable();d.setColor(color);d.setCornerRadius(dp(10));if(border!=0)d.setStroke(dp(2),border);return d;}
+    Button button(String label,Runnable action){Button b=new Button(this);b.setText(label);b.setAllCaps(false);b.setTextColor(INK);b.setTextSize(BuildConfig.TV?15:13);b.setMinWidth(0);b.setMinimumWidth(0);b.setPadding(dp(12),dp(5),dp(12),dp(5));b.setBackground(shape(SURFACE,0));b.setFocusable(true);b.setOnClickListener(v->action.run());b.setOnFocusChangeListener((v,f)->{v.setBackground(shape(f?Color.rgb(34,57,58):SURFACE,f?ACCENT:0));});return b;}
+    void bold(TextView t){t.setTypeface(null,Typeface.BOLD);}
+    void space(LinearLayout parent,int height){parent.addView(new View(this),new LinearLayout.LayoutParams(1,dp(height)));}
+    void message(String value){Toast.makeText(this,value,Toast.LENGTH_LONG).show();}
+    @Override public void onCreate(Bundle state){
+        super.onCreate(state);prefs=getSharedPreferences("zero",MODE_PRIVATE);if(state!=null){category=state.getString("category","Home");query=state.getString("query","");collection=state.getString("collection","");}
+        LinearLayout outer=new LinearLayout(this);outer.setBackgroundColor(BG);
+        if(BuildConfig.TV){LinearLayout rail=column();rail.setPadding(dp(20),dp(32),dp(12),dp(20));rail.setBackgroundColor(Color.rgb(12,14,22));TextView z=text("Z",34,ACCENT);bold(z);rail.addView(z);space(rail,28);for(String tab:new String[]{"Home","Movies","Series","Live","Manga"}){Button b=nav(tab);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(46));p.setMargins(0,0,0,dp(8));rail.addView(b,p);}space(rail,20);rail.addView(button("My library",this::libraryMenu));space(rail,10);rail.addView(button("Settings",this::settings));outer.addView(rail,new LinearLayout.LayoutParams(dp(144),-1));}
+        LinearLayout body=column();outer.addView(body,new LinearLayout.LayoutParams(0,-1,1));
+        LinearLayout header=new LinearLayout(this);header.setGravity(Gravity.CENTER_VERTICAL);header.setPadding(dp(BuildConfig.TV?30:20),dp(14),dp(20),dp(12));TextView logo=text("ZEROSTREAMS",BuildConfig.TV?23:21,INK);bold(logo);logo.setLetterSpacing(.09f);header.addView(logo,new LinearLayout.LayoutParams(0,-2,1));Button library=button("My library",this::libraryMenu);header.addView(library);Button settings=button("Settings",this::settings);LinearLayout.LayoutParams hp=new LinearLayout.LayoutParams(-2,dp(40));hp.setMargins(dp(8),0,0,0);header.addView(settings,hp);body.addView(header);
+        search=new EditText(this);search.setSingleLine(true);search.setTextColor(INK);search.setHintTextColor(MUTED);search.setTextSize(15);search.setHint("Search movies, series or manga");search.setText(query);search.setBackground(shape(SURFACE,0));search.setPadding(dp(16),dp(8),dp(16),dp(8));search.setContentDescription("Search titles");LinearLayout.LayoutParams qp=new LinearLayout.LayoutParams(-1,dp(46));qp.setMargins(dp(BuildConfig.TV?30:20),0,dp(20),dp(6));body.addView(search,qp);
+        status=text("Loading…",12,MUTED);status.setPadding(dp(BuildConfig.TV?30:20),dp(4),dp(20),dp(4));body.addView(status);
+        scroll=new ScrollView(this);scroll.setFillViewport(true);content=column();content.setPadding(dp(BuildConfig.TV?30:20),dp(14),dp(20),dp(28));scroll.addView(content);body.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
+        if(!BuildConfig.TV){LinearLayout bar=new LinearLayout(this);bar.setPadding(dp(8),dp(8),dp(8),dp(8));bar.setBackgroundColor(Color.rgb(14,16,25));for(String tab:new String[]{"Home","Movies","Series","Live","Manga"})bar.addView(nav(tab),new LinearLayout.LayoutParams(0,dp(46),1));body.addView(bar);}
+        outer.setOnApplyWindowInsetsListener((v,insets)->{v.setPadding(insets.getSystemWindowInsetLeft(),insets.getSystemWindowInsetTop(),insets.getSystemWindowInsetRight(),insets.getSystemWindowInsetBottom());return insets;});
+        search.addTextChangedListener(new TextWatcher(){public void beforeTextChanged(CharSequence s,int a,int c,int f){}public void afterTextChanged(Editable e){}public void onTextChanged(CharSequence s,int a,int b,int c){query=s.toString();mangaOffset=0;ui.removeCallbacks(remoteSearch);if(category.equals("Manga"))ui.postDelayed(remoteSearch,700);else render();}});
+        setContentView(outer);ready=true;load();if(BuildConfig.TV)(navigation.containsKey(category)?navigation.get(category):navigation.get("Home")).requestFocus();
     }
-    GradientDrawable shape(int color,int border) {
-        GradientDrawable d=new GradientDrawable(); d.setColor(color); d.setCornerRadius(dp(12)); if(border!=0)d.setStroke(dp(2),border); return d;
-    }
-    Button button(String value,Runnable action) {
-        Button b=new Button(this); b.setText(value); b.setAllCaps(false); b.setTextColor(INK); b.setTextSize(BuildConfig.TV?16:14);
-        b.setPadding(dp(16),dp(8),dp(16),dp(8)); b.setBackground(shape(SURFACE,0)); b.setFocusable(true);
-        b.setOnFocusChangeListener((v,focused)->{v.setBackground(shape(focused?Color.rgb(29,53,62):SURFACE,focused?ACCENT:0));});
-        b.setOnClickListener(v->action.run()); return b;
-    }
-    @Override public void onCreate(Bundle saved) {
-        super.onCreate(saved); prefs=getSharedPreferences("zero",MODE_PRIVATE);
-        if(saved!=null) {category=saved.getString("category","Discover");query=saved.getString("query","");}
-        LinearLayout root=column();root.setBackgroundColor(BG); root.setPadding(dp(BuildConfig.TV?40:20),dp(12),dp(BuildConfig.TV?40:20),0);
-        root.setOnApplyWindowInsetsListener((v,insets)->{v.setPadding(dp(BuildConfig.TV?40:20),Math.max(dp(12),insets.getSystemWindowInsetTop()),dp(BuildConfig.TV?40:20),insets.getSystemWindowInsetBottom());return insets;});
-        TextView logo=text("ZERO / STREAMS",BuildConfig.TV?26:23,ACCENT);logo.setTypeface(null,Typeface.BOLD);root.addView(logo);
-        TextView subtitle=text(BuildConfig.TV?"Your next watch. One remote away.":"Find something worth watching.",14,MUTED);subtitle.setPadding(0,dp(5),0,dp(14));root.addView(subtitle);
-        HorizontalScrollView tabs=new HorizontalScrollView(this);tabs.setHorizontalScrollBarEnabled(false);
-        LinearLayout bar=new LinearLayout(this);
-        for(String label:new String[]{"Discover","Movies","Series","Live","Watchlist","Continue","Settings"}) {
-            Button b=button(label,()->{if(label.equals("Settings")){settings();return;}category=label;render();});
-            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-2,dp(48));p.setMargins(0,0,dp(8),0);bar.addView(b,p);if(label.equals(category))selectedTab=b;
-        }
-        tabs.addView(bar);root.addView(tabs);
-        EditText search=new EditText(this);search.setSingleLine(true);search.setTextColor(INK);search.setHintTextColor(MUTED);search.setHint("Search titles");search.setText(query);search.setTextSize(16);
-        search.setContentDescription("Search catalog titles");search.setPadding(dp(12),dp(10),dp(12),dp(10));search.setBackground(shape(SURFACE,0));
-        LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(-1,dp(52));sp.setMargins(0,dp(12),0,dp(8));root.addView(search,sp);
-        search.addTextChangedListener(new TextWatcher(){public void beforeTextChanged(CharSequence s,int a,int c,int f){}public void onTextChanged(CharSequence s,int a,int b,int c){query=s.toString();render();}public void afterTextChanged(Editable e){}});
-        status=text("Loading…",13,MUTED);root.addView(status);
-        ScrollView scroll=new ScrollView(this);scroll.setFillViewport(true);content=column();content.setPadding(0,dp(18),0,dp(24));scroll.addView(content);root.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
-        setContentView(root);if(BuildConfig.TV&&selectedTab!=null)selectedTab.requestFocus();load();started=true;
-    }
-    @Override protected void onResume(){super.onResume();if(started){render();if(android.os.SystemClock.elapsedRealtime()-lastRequested>300_000)load();}}
-    @Override protected void onSaveInstanceState(Bundle state){super.onSaveInstanceState(state);state.putString("category",category);state.putString("query",query);}
-    void load() {
-        lastRequested=android.os.SystemClock.elapsedRealtime();
-        int token=++loadVersion;status.setText("Loading catalog…");
-        String endpoint=prefs.getString("endpoint",DEFAULT_CATALOG);
-        io.execute(()->{try{List<Catalog.Item> rows=Catalog.load(this,endpoint);ui.post(()->{if(isDestroyed()||token!=loadVersion)return;catalog=rows;status.setText(endpoint.isEmpty()?"DEMO CATALOG · Add your backend in Settings":"Connected · "+rows.size()+" titles");render();});}
-        catch(Exception e){ui.post(()->{if(isDestroyed()||token!=loadVersion)return;status.setText("Could not load catalog. Check Settings or retry.");Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();});}});
+    Button nav(String tab){Button b=button(tab,()->open(tab));navigation.put(tab,b);return b;}
+    void open(String tab){category=tab;collection="";mangaOffset=0;scroll.scrollTo(0,0);if(tab.equals("Live")||tab.equals("Manga"))load();else{++loadVersion;catalog=new ArrayList<>(browse);render();if(browse.isEmpty())load();}}
+    @Override protected void onResume(){super.onResume();if(ready){render();if(SystemClock.elapsedRealtime()-lastRequested>300_000)load();}}
+    @Override protected void onSaveInstanceState(Bundle state){super.onSaveInstanceState(state);state.putString("category",category);state.putString("query",query);state.putString("collection",collection);}
+    void load(){++renderVersion;lastRequested=SystemClock.elapsedRealtime();int token=++loadVersion;String section=category,endpoint=prefs.getString("endpoint",FEED),live=prefs.getString("liveEndpoint",ContentApi.LIVE),q=query;int offset=mangaOffset;status.setText("Updating "+section.toLowerCase(Locale.ROOT)+"…");
+        io.execute(()->{try{List<Catalog.Item> rows=section.equals("Manga")?ContentApi.manga(q,offset):section.equals("Live")?ContentApi.live(live):Catalog.load(this,endpoint);ui.post(()->{if(isDestroyed()||token!=loadVersion)return;catalog=rows;if(!section.equals("Live")&&!section.equals("Manga"))browse=new ArrayList<>(rows);status.setText(section.equals("Manga")?"MangaDex · English chapters":section.equals("Live")?"Today's sports · times and availability from source":endpoint.isEmpty()?"Demo catalog":"Catalog updated · "+rows.size()+" titles");render();});}
+        catch(Exception e){ui.post(()->{if(isDestroyed()||token!=loadVersion)return;catalog=new ArrayList<>();status.setText("Content service unavailable. Retry or check Settings.");render();message(e.getMessage());});}});
     }
     Set<String> favorites(){return new HashSet<>(prefs.getStringSet("favorites",Collections.emptySet()));}
-    boolean matches(Catalog.Item item) {
-        if(!item.title.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)))return false;
-        switch(category){case "Movies":return item.type.equals("movie");case "Series":return item.type.equals("series");case "Live":return item.type.equals("live");case "Watchlist":return favorites().contains(item.id);case "Continue":return prefs.getLong("position:"+item.id,0)>0;default:return true;}
+    Set<String> savedIds(String key){return new HashSet<>(prefs.getStringSet(key,Collections.emptySet()));}
+    boolean matches(Catalog.Item item){if(!query.isEmpty()&&!item.title.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))&&!category.equals("Manga"))return false;
+        switch(category){case"Movies":return item.type.equals("movie");case"Series":return item.type.equals("series");case"Live":return item.type.equals("live");case"Manga":return item.type.equals("manga");case"Watchlist":return favorites().contains(item.id);case"Continue":return prefs.getLong("position:"+item.id,0)>0;case"Collections":return savedIds("collection:"+collection).contains(item.id);default:return true;}}
+    void render(){if(content==null)return;int token=++renderVersion;content.removeAllViews();for(Map.Entry<String,Button> entry:navigation.entrySet()){boolean active=entry.getKey().equals(category);entry.getValue().setTextColor(active?ACCENT:MUTED);}
+        if(category.equals("Collections")&&collection.isEmpty()){collections();return;}
+        List<Catalog.Item> rows=new ArrayList<>();for(Catalog.Item item:catalog)if(matches(item))rows.add(item);
+        if(sort.equals("Newest"))Collections.sort(rows,(a,b)->Integer.compare(b.year,a.year));else if(sort.equals("A–Z"))Collections.sort(rows,(a,b)->a.title.compareToIgnoreCase(b.title));
+        if(rows.isEmpty()){TextView empty=text(category.equals("Watchlist")?"Your watchlist starts here.":category.equals("Continue")?"Pick a title to start watching.":"No titles to show right now.",23,INK);bold(empty);content.addView(empty);space(content,10);content.addView(text("Search another title, refresh the catalog, or return to Home.",15,MUTED));space(content,18);content.addView(button("Refresh",this::load));return;}
+        if(category.equals("Home")&&query.isEmpty()){
+            hero(rows.get(0),token);List<Catalog.Item> resumes=new ArrayList<>(),movies=new ArrayList<>(),shows=new ArrayList<>();for(Catalog.Item item:rows){if(prefs.getLong("position:"+item.id,0)>0)resumes.add(item);if(item.type.equals("movie"))movies.add(item);if(item.type.equals("series"))shows.add(item);}
+            if(!resumes.isEmpty())posterRow("Continue watching",resumes,token);
+            posterRow("Trending now",rows.subList(0,Math.min(rows.size(),15)),token);posterRow("Popular movies",movies,token);posterRow("Series worth watching",shows,token);
+            List<Catalog.Item> newest=new ArrayList<>(movies);Collections.sort(newest,(a,b)->Integer.compare(b.year,a.year));posterRow("Recent releases",newest,token);
+        }else{LinearLayout heading=new LinearLayout(this);heading.setGravity(Gravity.CENTER_VERTICAL);TextView label=text(category.equals("Collections")?collection:category,BuildConfig.TV?29:26,INK);bold(label);heading.addView(label,new LinearLayout.LayoutParams(0,-2,1));heading.addView(button("Sort",()->new AlertDialog.Builder(this).setTitle("Sort titles").setItems(new String[]{"Featured","Newest","A–Z"},(d,n)->{sort=new String[]{"Featured","Newest","A–Z"}[n];render();}).show()));content.addView(heading);space(content,16);grid(rows,token);}
+        if(category.equals("Manga")){LinearLayout paging=new LinearLayout(this);if(mangaOffset>0)paging.addView(button("Previous results",()->{mangaOffset=Math.max(0,mangaOffset-40);load();scroll.scrollTo(0,0);}));if(rows.size()==40)paging.addView(button("More manga",()->{mangaOffset+=40;load();scroll.scrollTo(0,0);}));content.addView(paging);}
     }
-    void render() {
-        if(content==null)return;int token=++renderVersion;content.removeAllViews();
-        TextView heading=text(category,BuildConfig.TV?28:25,INK);heading.setTypeface(null,Typeface.BOLD);heading.setPadding(0,0,0,dp(16));content.addView(heading);
-        List<Catalog.Item> filtered=new ArrayList<>();for(Catalog.Item item:catalog)if(matches(item))filtered.add(item);
-        if(filtered.isEmpty()){content.addView(text(catalog.isEmpty()?"Your catalog will appear here.":"No titles here yet.",17,MUTED));return;}
-        if(category.equals("Discover")&&query.isEmpty()) {
-            Catalog.Item hero=filtered.get(0);LinearLayout h=column();h.setPadding(dp(20),dp(20),dp(20),dp(20));h.setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{Color.rgb(19,54,54),SURFACE}));
-            h.addView(text("FEATURED",12,ACCENT));TextView title=text(hero.title,BuildConfig.TV?36:30,INK);title.setTypeface(null,Typeface.BOLD);h.addView(title);
-            TextView description=text(hero.description,15,MUTED);description.setMaxLines(3);description.setPadding(0,dp(8),0,dp(12));h.addView(description);h.addView(button("View title",()->details(hero)));content.addView(h);
-            TextView browse=text("Browse the catalog",20,INK);browse.setPadding(0,dp(24),0,dp(14));content.addView(browse);
-        }
-        int columns=BuildConfig.TV?4:(getResources().getConfiguration().screenWidthDp>=600?3:2);
-        for(int i=0;i<filtered.size();i+=columns){LinearLayout row=new LinearLayout(this);
-            for(int c=0;c<columns;c++){int index=i+c;LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,-2,1);p.setMargins(0,0,dp(c==columns-1?0:10),dp(12));
-                if(index>=filtered.size()){row.addView(new View(this),p);continue;}
-                Catalog.Item item=filtered.get(index);LinearLayout card=column();card.setPadding(dp(10),dp(10),dp(10),dp(10));card.setBackground(shape(SURFACE,0));card.setFocusable(true);card.setClickable(true);card.setContentDescription(item.title+", "+item.type);card.setOnClickListener(v->details(item));card.setOnFocusChangeListener((v,f)->v.setBackground(shape(SURFACE,f?ACCENT:0)));
-                ImageView poster=new ImageView(this);poster.setScaleType(ImageView.ScaleType.CENTER_CROP);poster.setImageResource(com.zerostreams.app.R.drawable.ic_zero);card.addView(poster,new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?140:175)));
-                if(!item.poster.isEmpty())loadPoster(item.poster,poster,token);
-                TextView title=text(item.title,16,INK);title.setTypeface(null,Typeface.BOLD);title.setMaxLines(2);title.setPadding(0,dp(10),0,dp(5));card.addView(title);
-                card.addView(text(item.type.toUpperCase(Locale.ROOT)+(item.year>0?" · "+item.year:""),12,ACCENT));row.addView(card,p);
-            }content.addView(row);
-        }
-    }
-    void loadPoster(String address,ImageView target,int token) {
-        io.execute(()->{HttpURLConnection connection=null;try{URL url=new URL(address);if(!url.getProtocol().equals("https"))return;connection=(HttpURLConnection)url.openConnection();connection.setConnectTimeout(6000);connection.setReadTimeout(6000);connection.setInstanceFollowRedirects(false);if(connection.getResponseCode()!=200)return;
-            byte[] bytes;try(InputStream in=connection.getInputStream();ByteArrayOutputStream out=new ByteArrayOutputStream()){byte[] b=new byte[4096];int n;while((n=in.read(b))!=-1){if(out.size()+n>3_000_000)return;out.write(b,0,n);}bytes=out.toByteArray();}
-            BitmapFactory.Options options=new BitmapFactory.Options();options.inJustDecodeBounds=true;BitmapFactory.decodeByteArray(bytes,0,bytes.length,options);int sample=1;while(options.outWidth/sample>800||options.outHeight/sample>1000)sample*=2;options.inSampleSize=sample;options.inJustDecodeBounds=false;
-            android.graphics.Bitmap bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.length,options);ui.post(()->{if(!isDestroyed()&&token==renderVersion&&bitmap!=null)target.setImageBitmap(bitmap);});
-        }catch(Exception ignored){}finally{if(connection!=null)connection.disconnect();}});
-    }
-    void details(Catalog.Item item) {
-        LinearLayout panel=column();panel.setPadding(dp(24),dp(16),dp(24),dp(16));
-        panel.addView(text(item.description,16,Color.DKGRAY));
-        if(item.raw.has("playbackAvailable") && !item.raw.optBoolean("playbackAvailable"))panel.addView(text("Catalog listing · Playback source not available yet",14,Color.DKGRAY));
-        Button favorite=button(favorites().contains(item.id)?"Remove from watchlist":"Add to watchlist",()->{Set<String> all=favorites();if(!all.add(item.id))all.remove(item.id);prefs.edit().putStringSet("favorites",all).apply();Toast.makeText(this,all.contains(item.id)?"Added to watchlist":"Removed from watchlist",Toast.LENGTH_SHORT).show();render();});panel.addView(favorite);
-        if(item.type.equals("series")) {
-            JSONArray episodes=item.episodes();if(episodes==null||episodes.length()==0)panel.addView(text("No episodes available.",15,Color.DKGRAY));
-            else for(int i=0;i<episodes.length();i++){JSONObject ep=episodes.optJSONObject(i);if(ep==null)continue;String epId=ep.optString("id");if(epId.isEmpty())continue;
-                panel.addView(button("S"+ep.optInt("season",1)+" E"+ep.optInt("episode",1)+" · "+ep.optString("title","Episode"),()->chooseStreams(item,ep.optJSONArray("streams"),item.id+":"+epId)));}
-        }else panel.addView(button("Choose stream",()->chooseStreams(item,item.streams(),item.id)));
-        ScrollView scroll=new ScrollView(this);scroll.addView(panel);new AlertDialog.Builder(this).setTitle(item.title).setView(scroll).setNegativeButton("Close",null).show();
-    }
-    void chooseStreams(Catalog.Item item,JSONArray streams,String key) {
-        if(streams==null||streams.length()==0){Toast.makeText(this,"No playback source available for this title",Toast.LENGTH_LONG).show();return;}
-        String[] labels=new String[streams.length()];for(int i=0;i<labels.length;i++){JSONObject source=streams.optJSONObject(i);labels[i]=source==null?"Invalid source":source.optString("label","Stream "+(i+1));}
-        new AlertDialog.Builder(this).setTitle("Playback source").setItems(labels,(dialog,index)->{
-            JSONObject source=streams.optJSONObject(index);if(source==null)return;
-            try{URL url=new URL(source.optString("url"));if(!url.getProtocol().equalsIgnoreCase("https"))throw new Exception();}catch(Exception e){Toast.makeText(this,"Playback requires a valid HTTPS stream",Toast.LENGTH_LONG).show();return;}
-            startActivity(new Intent(this,PlayerActivity.class).putExtra("stream",source.toString()).putExtra("title",item.title).putExtra("key",key).putExtra("parent",item.id).putExtra("live",item.type.equals("live")));
-        }).setNegativeButton("Cancel",null).show();
-    }
-    void settings() {
-        LinearLayout panel=column();panel.setPadding(dp(24),dp(12),dp(24),dp(12));
-        panel.addView(text("HTTPS catalog URL (leave empty for demo)",15,Color.DKGRAY));EditText endpoint=new EditText(this);endpoint.setSingleLine(true);endpoint.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_VARIATION_URI);endpoint.setText(prefs.getString("endpoint",DEFAULT_CATALOG));panel.addView(endpoint);
-        new AlertDialog.Builder(this).setTitle("ZeroStreams settings").setView(panel).setPositiveButton("Save & refresh",(d,w)->{
-            String value=endpoint.getText().toString().trim();if(!value.isEmpty())try{URL u=new URL(value);if(!u.getProtocol().equals("https")||u.getHost().isEmpty())throw new Exception();}catch(Exception e){Toast.makeText(this,"Enter a valid HTTPS URL",Toast.LENGTH_LONG).show();return;}
-            prefs.edit().putString("endpoint",value).apply();catalog=new ArrayList<>();render();load();
-        }).setNeutralButton("Refresh",(d,w)->load()).setNegativeButton("Cancel",null).show();
-    }
-    @Override protected void onDestroy(){++loadVersion;++renderVersion;io.shutdownNow();ui.removeCallbacksAndMessages(null);super.onDestroy();}
+    void hero(Catalog.Item item,int token){FrameLayout hero=new FrameLayout(this);hero.setBackground(shape(SURFACE,0));ImageView artwork=new ImageView(this);artwork.setScaleType(ImageView.ScaleType.CENTER_CROP);hero.addView(artwork,new FrameLayout.LayoutParams(-1,-1));String backdrop=item.raw.optString("backdrop",item.poster);if(!backdrop.isEmpty())picture(backdrop,artwork,token);
+        View gradient=new View(this);gradient.setBackground(new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,new int[]{0xF0090A10,0xCC090A10,0x40090A10}));hero.addView(gradient,new FrameLayout.LayoutParams(-1,-1));LinearLayout info=column();info.setPadding(dp(BuildConfig.TV?30:22),dp(24),dp(22),dp(22));info.addView(text("FEATURED THIS WEEK",11,ACCENT));space(info,12);TextView title=text(item.title,BuildConfig.TV?40:29,INK);bold(title);title.setMaxLines(2);info.addView(title);space(info,8);info.addView(text(meta(item),13,INK));space(info,10);TextView synopsis=text(item.description,14,MUTED);synopsis.setMaxLines(3);info.addView(synopsis);space(info,16);LinearLayout actions=new LinearLayout(this);Button play=button("Watch now",()->watch(item));play.setTextColor(BG);play.setBackground(shape(ACCENT,0));actions.addView(play);Button details=button("More info",()->details(item));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-2,dp(44));p.setMargins(dp(10),0,0,0);actions.addView(details,p);info.addView(actions);FrameLayout.LayoutParams ip=new FrameLayout.LayoutParams(BuildConfig.TV?dp(520):-1,-2,Gravity.BOTTOM|Gravity.START);hero.addView(info,ip);content.addView(hero,new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?330:320)));space(content,24);}
+    String meta(Catalog.Item item){return item.type.toUpperCase(Locale.ROOT)+(item.year>0?"  ·  "+item.year:"")+(item.raw.optDouble("rating",0)>0?"  ·  ★ "+String.format(Locale.ROOT,"%.1f",item.raw.optDouble("rating")):"");}
+    void posterRow(String title,List<Catalog.Item> rows,int token){if(rows.isEmpty())return;TextView label=text(title,BuildConfig.TV?22:20,INK);bold(label);content.addView(label);space(content,12);HorizontalScrollView rail=new HorizontalScrollView(this);rail.setHorizontalScrollBarEnabled(false);LinearLayout cards=new LinearLayout(this);for(int i=0;i<Math.min(rows.size(),18);i++){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(BuildConfig.TV?150:132),-2);p.setMargins(0,0,dp(12),0);cards.addView(card(rows.get(i),token),p);}rail.addView(cards);content.addView(rail);space(content,26);}
+    void grid(List<Catalog.Item> rows,int token){int columns=BuildConfig.TV?5:(getResources().getConfiguration().screenWidthDp>=600?4:2);for(int i=0;i<rows.size();i+=columns){LinearLayout line=new LinearLayout(this);for(int c=0;c<columns;c++){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,-2,1);p.setMargins(0,0,dp(c==columns-1?0:12),dp(20));line.addView(i+c<rows.size()?card(rows.get(i+c),token):new View(this),p);}content.addView(line);}}
+    LinearLayout card(Catalog.Item item,int token){LinearLayout card=column();card.setPadding(dp(3),dp(3),dp(3),dp(8));card.setBackground(shape(BG,0));card.setFocusable(true);card.setClickable(true);card.setContentDescription(item.title+", "+item.type);card.setOnClickListener(v->details(item));card.setOnFocusChangeListener((v,f)->{v.setBackground(shape(f?SURFACE:BG,f?ACCENT:0));if(BuildConfig.TV)v.animate().scaleX(f?1.035f:1f).scaleY(f?1.035f:1f).setDuration(140).start();});ImageView poster=new ImageView(this);poster.setScaleType(ImageView.ScaleType.CENTER_CROP);poster.setImageResource(R.drawable.ic_zero);poster.setBackground(shape(SURFACE,0));poster.setClipToOutline(true);card.addView(poster,new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?210:190)));if(!item.poster.isEmpty())picture(item.poster,poster,token);space(card,8);TextView title=text(item.title,14,INK);bold(title);title.setMaxLines(2);card.addView(title);space(card,4);card.addView(text(item.year>0?String.valueOf(item.year):item.type.toUpperCase(Locale.ROOT),12,MUTED));return card;}
+    void picture(String url,ImageView view,int token){Bitmap cached=pictures.get(url);if(cached!=null){view.setImageBitmap(cached);return;}io.execute(()->{if(token!=renderVersion)return;HttpURLConnection c=null;try{URL address=new URL(url);if(!address.getProtocol().equals("https"))return;c=(HttpURLConnection)address.openConnection();c.setConnectTimeout(7000);c.setReadTimeout(8000);c.setInstanceFollowRedirects(false);if(c.getResponseCode()!=200)return;byte[] bytes;try(InputStream in=c.getInputStream();ByteArrayOutputStream out=new ByteArrayOutputStream()){byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){if(out.size()+n>5_000_000)return;out.write(b,0,n);}bytes=out.toByteArray();}BitmapFactory.Options o=new BitmapFactory.Options();o.inJustDecodeBounds=true;BitmapFactory.decodeByteArray(bytes,0,bytes.length,o);int sample=1;while(o.outWidth/sample>1200||o.outHeight/sample>1200)sample*=2;o.inSampleSize=sample;o.inJustDecodeBounds=false;Bitmap bitmap=BitmapFactory.decodeByteArray(bytes,0,bytes.length,o);if(bitmap!=null)pictures.put(url,bitmap);ui.post(()->{if(!isDestroyed()&&token==renderVersion&&bitmap!=null)view.setImageBitmap(bitmap);});}catch(Exception ignored){}finally{if(c!=null)c.disconnect();}});}
+    void details(Catalog.Item item){LinearLayout panel=column();panel.setPadding(dp(22),dp(16),dp(22),dp(20));panel.setBackgroundColor(BG);TextView name=text(item.title,26,INK);bold(name);panel.addView(name);space(panel,8);panel.addView(text(meta(item),13,ACCENT));space(panel,16);panel.addView(text(item.description.isEmpty()?"No synopsis available.":item.description,15,MUTED));space(panel,20);panel.addView(button(item.type.equals("manga")?"Read chapters":item.type.equals("series")?"Browse seasons & episodes":"Watch now",()->watch(item)));space(panel,10);Button favorite=button(favorites().contains(item.id)?"Remove from watchlist":"Add to watchlist",()->toggleFavorite(item));panel.addView(favorite);space(panel,10);panel.addView(button("Add to collection",()->addCollection(item)));ScrollView view=new ScrollView(this);view.addView(panel);new AlertDialog.Builder(this).setView(view).setNegativeButton("Close",null).show();}
+    void toggleFavorite(Catalog.Item item){Set<String> ids=favorites();boolean added=ids.add(item.id);if(!added)ids.remove(item.id);prefs.edit().putStringSet("favorites",ids).putString("saved:"+item.id,item.raw.toString()).apply();message(added?"Added to watchlist":"Removed from watchlist");render();}
+    void watch(Catalog.Item item){if(item.type.equals("manga")){chapters(item,0);return;}if(item.type.equals("series")){seasons(item);return;}if(item.type.equals("live")){status.setText("Finding event streams…");io.execute(()->{try{JSONArray rows=ContentApi.liveStreams(item);ui.post(()->{if(!isDestroyed()){status.setText("Today's sports");chooseStreams(item,rows,item.id);}});}catch(Exception e){ui.post(()->message("Live source is currently unavailable"));}});return;}
+        JSONArray streams=item.streams();if((streams==null||streams.length()==0)&&item.id.matches("tmdb-movie-[0-9]+"))try{streams=ContentApi.movieSources(item.id.substring("tmdb-movie-".length()),"movie",1,1);}catch(Exception ignored){}chooseStreams(item,streams,item.id);}
+    void seasons(Catalog.Item item){JSONArray local=item.episodes();if(local!=null&&local.length()>0){episodeList(item,local);return;}if(!item.id.matches("tmdb-series-[0-9]+")){message("No episodes configured for this series");return;}String id=item.id.substring("tmdb-series-".length());status.setText("Loading seasons…");io.execute(()->{try{JSONObject show=(JSONObject)ContentApi.json(SERIES+id+".json");JSONArray episodes=show.getJSONArray("episodes");ui.post(()->{if(!isDestroyed()){status.setText("Catalog updated");episodeList(item,episodes);}});}catch(Exception e){ui.post(()->{if(!isDestroyed()){status.setText("Catalog updated");message("Episode catalog is not available yet. It is prepared by the catalog updater.");}});}});}
+    void episodeList(Catalog.Item item,JSONArray episodes){TreeSet<Integer> numbers=new TreeSet<>();for(int i=0;i<episodes.length();i++){JSONObject ep=episodes.optJSONObject(i);if(ep!=null)numbers.add(ep.optInt("season",1));}if(numbers.isEmpty()){message("No episodes available");return;}Integer[] seasons=numbers.toArray(new Integer[0]);String[] labels=new String[seasons.length];for(int i=0;i<labels.length;i++)labels[i]=seasons[i]==0?"Specials":"Season "+seasons[i];new AlertDialog.Builder(this).setTitle(item.title).setItems(labels,(d,index)->{List<JSONObject> selected=new ArrayList<>();for(int i=0;i<episodes.length();i++){JSONObject ep=episodes.optJSONObject(i);if(ep!=null&&ep.optInt("season",1)==seasons[index])selected.add(ep);}String[] titles=new String[selected.size()];for(int i=0;i<titles.length;i++)titles[i]="Episode "+selected.get(i).optInt("episode",i+1)+" · "+selected.get(i).optString("title","Episode");new AlertDialog.Builder(this).setTitle(labels[index]).setItems(titles,(dialog,n)->{JSONObject ep=selected.get(n);JSONArray sources=ep.optJSONArray("streams");if((sources==null||sources.length()==0)&&item.id.startsWith("tmdb-series-"))try{sources=ContentApi.movieSources(item.id.substring("tmdb-series-".length()),"tv",ep.optInt("season",1),ep.optInt("episode",1));}catch(Exception ignored){}chooseStreams(item,sources,item.id+":"+ep.optString("id"));}).setNegativeButton("Close",null).show();}).setNegativeButton("Close",null).show();}
+    void chapters(Catalog.Item item,int offset){status.setText("Loading English chapters…");io.execute(()->{try{JSONArray data=ContentApi.chapters(item.raw.getString("mangaId"),offset);List<JSONObject> rows=new ArrayList<>();for(int i=0;i<data.length();i++){JSONObject chapter=data.getJSONObject(i);if(chapter.getJSONObject("attributes").optString("externalUrl").isEmpty())rows.add(chapter);}ui.post(()->{if(isDestroyed())return;status.setText("MangaDex · English chapters");if(rows.isEmpty()){message("No readable English chapters in this page");return;}String[] labels=new String[rows.size()];for(int i=0;i<labels.length;i++){JSONObject a=rows.get(i).optJSONObject("attributes");labels[i]="Chapter "+a.optString("chapter","Special")+" · "+a.optString("title","");}AlertDialog.Builder dialog=new AlertDialog.Builder(this).setTitle(item.title).setItems(labels,(d,n)->startActivity(new Intent(this,MangaReaderActivity.class).putExtra("chapter",rows.get(n).optString("id")).putExtra("parent",item.id))).setNegativeButton("Close",null);if(data.length()==100)dialog.setNeutralButton("Older chapters",(d,n)->chapters(item,offset+100));dialog.show();});}catch(Exception e){ui.post(()->{if(!isDestroyed()){status.setText("MangaDex");message("Chapter service unavailable");}});}});}
+    void chooseStreams(Catalog.Item item,JSONArray sources,String key){if(sources==null||sources.length()==0){message("No playback sources available right now");return;}JSONArray streams=sources;String[] labels=new String[streams.length()];for(int i=0;i<labels.length;i++)labels[i]=streams.optJSONObject(i)==null?"Unavailable":streams.optJSONObject(i).optString("label","Server "+(i+1));new AlertDialog.Builder(this).setTitle("Choose playback server").setItems(labels,(d,n)->{JSONObject source=streams.optJSONObject(n);if(source==null)return;try{URL u=new URL(source.optString("url"));if(!u.getProtocol().equals("https"))throw new Exception();}catch(Exception e){message("Invalid playback source");return;}prefs.edit().putString("saved:"+item.id,item.raw.toString()).apply();if(source.optBoolean("embed")){prefs.edit().putLong("position:"+item.id,1).apply();startActivity(new Intent(this,BrowserPlayerActivity.class).putExtra("url",source.optString("url")).putExtra("title",item.title));}else startActivity(new Intent(this,PlayerActivity.class).putExtra("stream",source.toString()).putExtra("title",item.title).putExtra("key",key).putExtra("parent",item.id).putExtra("live",item.type.equals("live")));}).setNegativeButton("Cancel",null).show();}
+    void libraryMenu(){new AlertDialog.Builder(this).setTitle("Your library").setItems(new String[]{"Watchlist","Continue watching","Collections"},(d,n)->{category=new String[]{"Watchlist","Continue","Collections"}[n];collection="";++loadVersion;catalog=new ArrayList<>(browse);for(Map.Entry<String,?> e:prefs.getAll().entrySet())if(e.getKey().startsWith("saved:")&&e.getValue() instanceof String)try{Catalog.Item item=new Catalog.Item(new JSONObject((String)e.getValue()));boolean exists=false;for(Catalog.Item old:catalog)if(old.id.equals(item.id))exists=true;if(!exists)catalog.add(item);}catch(Exception ignored){}render();}).show();}
+    void collections(){TextView title=text("Collections",28,INK);bold(title);content.addView(title);space(content,16);content.addView(button("Create collection",()->createCollection(null)));space(content,16);for(String name:new TreeSet<>(savedIds("collections"))){content.addView(button(name,()->{collection=name;render();}));space(content,10);}if(savedIds("collections").isEmpty())content.addView(text("Organize your favorite titles into collections.",15,MUTED));}
+    void createCollection(Catalog.Item item){EditText input=new EditText(this);input.setSingleLine(true);input.setHint("Collection name");new AlertDialog.Builder(this).setTitle("Create collection").setView(input).setPositiveButton("Create",(d,n)->{String name=input.getText().toString().trim();if(name.isEmpty()||name.length()>60){message("Use a name between 1 and 60 characters");return;}Set<String> names=savedIds("collections");names.add(name);SharedPreferences.Editor e=prefs.edit().putStringSet("collections",names);if(item!=null){Set<String> ids=savedIds("collection:"+name);ids.add(item.id);e.putStringSet("collection:"+name,ids).putString("saved:"+item.id,item.raw.toString());}e.apply();render();}).setNegativeButton("Cancel",null).show();}
+    void addCollection(Catalog.Item item){String[] names=new TreeSet<>(savedIds("collections")).toArray(new String[0]);new AlertDialog.Builder(this).setTitle("Add to collection").setItems(names,(d,n)->{Set<String> ids=savedIds("collection:"+names[n]);ids.add(item.id);prefs.edit().putStringSet("collection:"+names[n],ids).putString("saved:"+item.id,item.raw.toString()).apply();message("Added to "+names[n]);}).setPositiveButton("New collection",(d,n)->createCollection(item)).setNegativeButton("Cancel",null).show();}
+    void settings(){LinearLayout panel=column();panel.setPadding(dp(20),dp(12),dp(20),dp(12));panel.addView(text("Movie catalog URL",14,INK));EditText endpoint=new EditText(this);endpoint.setSingleLine(true);endpoint.setText(prefs.getString("endpoint",FEED));panel.addView(endpoint);space(panel,12);panel.addView(text("Live sports API base URL",14,INK));EditText live=new EditText(this);live.setSingleLine(true);live.setText(prefs.getString("liveEndpoint",ContentApi.LIVE));panel.addView(live);space(panel,12);panel.addView(text("Blank movie URL uses the demo. External player resume positions depend on the provider.\nZeroStreams · "+BuildConfig.VERSION_NAME,13,MUTED));new AlertDialog.Builder(this).setTitle("Settings").setView(panel).setPositiveButton("Save & refresh",(d,n)->{String a=endpoint.getText().toString().trim(),b=live.getText().toString().trim();try{if(!a.isEmpty()&&!new URL(a).getProtocol().equals("https"))throw new Exception();if(!new URL(b).getProtocol().equals("https"))throw new Exception();}catch(Exception e){message("Use HTTPS URLs");return;}prefs.edit().putString("endpoint",a).putString("liveEndpoint",b.replaceAll("/+$","")).apply();load();}).setNeutralButton("Refresh",(d,n)->load()).setNegativeButton("Close",null).show();}
+    @Override protected void onDestroy(){++loadVersion;++renderVersion;ui.removeCallbacksAndMessages(null);io.shutdownNow();pictures.evictAll();super.onDestroy();}
 }

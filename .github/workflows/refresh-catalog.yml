@@ -11,19 +11,21 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Test importer and backend
-        run: node --test backend/server.test.mjs backend/sync-catalog.test.mjs
+        run: node --test backend/server.test.mjs backend/sync-catalog.test.mjs backend/sync-series.test.mjs
       - name: Retrieve public catalog
         run: node backend/sync-catalog.mjs
+      - name: Update season and episode catalogs
+        run: node backend/sync-series.mjs
       - name: Publish changed catalog
         run: |
-          git add public/catalog.json
+          git add public/catalog.json public/series/
           if git diff --cached --quiet; then
             exit 0
           fi
