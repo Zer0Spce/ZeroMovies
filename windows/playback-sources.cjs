@@ -9,7 +9,7 @@
     const suffix=`${item.type}/${item.id}`+(item.type==='tv'?`/${season}/${episode}`:'');const id=source(provider).id;
     let u;if(id==='superembed'){u=new URL('https://multiembed.mov/');u.searchParams.set('video_id',String(item.id));u.searchParams.set('tmdb','1');if(item.type==='tv'){u.searchParams.set('s',String(season));u.searchParams.set('e',String(episode));}}
     else u=new URL(`https://${id==='vidsrc-to'?'vidsrc.to':id==='vidsrc-sh'?'vidsrc.sh':'vidstuck.xyz'}/embed/${suffix}`);
-    if(id==='vidstuck'){for(const [k,v]of Object.entries({branding:'ZeroMovies',color:'65E6CC',subtitle:'english',overlay:'true'}))u.searchParams.set(k,v);if(item.type==='tv')for(const k of ['nextEpisode','episodeSelector','autoplayNextEpisode'])u.searchParams.set(k,'true');}
+    if(id==='vidstuck'){for(const [k,v]of Object.entries({branding:'ZeroPlay',color:'65E6CC',subtitle:'english',overlay:'true'}))u.searchParams.set(k,v);if(item.type==='tv')for(const k of ['nextEpisode','episodeSelector','autoplayNextEpisode'])u.searchParams.set(k,'true');}
     if(id==='vidsrc-sh'){u.searchParams.set('ds_lang','en');if(item.type==='tv')u.searchParams.set('autonext','1');}
     if(Number.isFinite(position.timestamp)&&position.timestamp>30&&Number(position.percent)<95){if(id==='vidstuck')u.searchParams.set('progress',String(Math.floor(position.timestamp)));if(id==='vidsrc-sh')u.searchParams.set('startAt',String(Math.floor(position.timestamp)));}
     return u.href;

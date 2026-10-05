@@ -14,7 +14,7 @@ const dataRoot=require('./data-directory.cjs').dataDirectory(app.getPath('appDat
 const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',source:'vidstuck'},customKey:''});
 function persist(){const temp=file+'.tmp';fs.writeFileSync(temp,JSON.stringify(state));fs.renameSync(temp,file);}
 function key(){if(state.customKey&&safeStorage.isEncryptionAvailable())try{return safeStorage.decryptString(Buffer.from(state.customKey,'base64'));}catch{}return config.tmdbKey||process.env.TMDB_API_KEY||'';}
-function snapshot(){const {customKey,...publicState}=state;return {...publicState,hasKey:!!key(),version:app.getVersion()==='1.0.0'?'1.0':app.getVersion()};}
+function snapshot(){const {customKey,...publicState}=state;return {...publicState,hasKey:!!key(),version:app.getVersion()};}
 function trusted(event){if(event.sender!==main?.webContents||event.senderFrame?.url!==uiURL)throw Error('Untrusted request');}
 function playerOrigin(url){return sources.trusted(url);}
 async function api(route,params={}){
@@ -44,7 +44,7 @@ async function scanAd(){
 function closePlayer(){
   if(!player)return;const host=playerHost;player=null;toolbar=null;playerHost=null;current=null;liveSelection=null;
   clearInterval(scanTimer);clearInterval(cursorTimer);if(qrWorker)qrWorker.terminate();qrWorker=null;scanning=false;host.close();
-  if(main&&!main.isDestroyed()){main.setTitle('ZeroMovies');main.webContents.focus();refresh();}
+  if(main&&!main.isDestroyed()){main.setTitle('ZeroPlay');main.webContents.focus();refresh();}
 }
 async function openPlayer(value,selected,fixture){
   value=core.cleanItem(value);const saved=state.positions[core.key(value)];let position=selected?core.episode(selected):saved||{};
@@ -59,7 +59,7 @@ async function openPlayer(value,selected,fixture){
   playerHost=new PlayerHost(main,view,toolbar);installPlayerScripts(contents);
   toolbar.webContents.setWindowOpenHandler(()=>({action:'deny'}));toolbar.webContents.on('will-navigate',event=>event.preventDefault());
   await toolbar.webContents.loadFile(path.join(__dirname,'ui/player-tools.html'));toolbar.webContents.send('player-title',value.title);
-  main.setTitle(value.title+' — ZeroMovies');
+  main.setTitle(value.title+' — ZeroPlay');
   qrWorker=new Worker(path.join(__dirname,'qr-worker.cjs'));scanning=false;
   qrWorker.on('message',confirmed=>{scanning=false;if(confirmed&&!contents.isDestroyed())for(const frame of contents.mainFrame.framesInSubtree)frame.executeJavaScript('if(window.__zeroDismissQrAd)window.__zeroDismissQrAd();').catch(()=>{});});
   qrWorker.on('error',()=>{scanning=false;});
@@ -100,7 +100,7 @@ async function openLive(section,index){
   const view=player;playerHost=new PlayerHost(main,view,toolbar);view.setBackgroundColor('#000');toolbar.setBackgroundColor('#101621');
   for(const contents of [view.webContents,toolbar.webContents]){contents.setWindowOpenHandler(()=>({action:'deny'}));contents.on('will-navigate',event=>event.preventDefault());}
   view.webContents.on('render-process-gone',()=>{if(player===view)closePlayer();});
-  await toolbar.webContents.loadFile(path.join(__dirname,'ui/player-tools.html'));toolbar.webContents.send('player-title',channel.name);main.setTitle(channel.name+' — ZeroMovies Live');
+  await toolbar.webContents.loadFile(path.join(__dirname,'ui/player-tools.html'));toolbar.webContents.send('player-title',channel.name);main.setTitle(channel.name+' — ZeroPlay Live');
   try{await view.webContents.loadFile(path.join(__dirname,'ui/live-player.html'));view.webContents.focus();}catch(error){if(player===view)closePlayer();throw error;}
 }
 app.whenReady().then(async()=>{
@@ -151,7 +151,7 @@ app.whenReady().then(async()=>{
     if(event.sender!==player?.webContents||!playerOrigin(event.senderFrame?.url)||!current||Date.now()-lastProgress<2500)return;
     const position=core.progress(sources.normalize(data),current);if(!position)return;lastProgress=Date.now();core.record(state,current,position);persist();
   });
-  main=new BrowserWindow({width:1440,height:920,minWidth:900,minHeight:620,title:'ZeroMovies',backgroundColor:'#090a10',icon:path.join(__dirname,'assets/icon.png'),show:false,autoHideMenuBar:true,webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
+  main=new BrowserWindow({width:1440,height:920,minWidth:900,minHeight:620,title:'ZeroPlay',backgroundColor:'#090a10',icon:path.join(__dirname,'assets/icon.png'),show:false,autoHideMenuBar:true,webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
   main.webContents.setWindowOpenHandler(()=>({action:'deny'}));main.webContents.on('will-navigate',event=>event.preventDefault());main.webContents.on('will-attach-webview',event=>event.preventDefault());
   main.once('ready-to-show',()=>main.show());main.on('closed',closePlayer);await main.loadFile(path.join(__dirname,'ui/index.html'));
   if(smoke){try{await new Promise(r=>setTimeout(r,2500));const result=await main.webContents.executeJavaScript("({bridge:typeof window.zero?.api,brand:document.querySelector('.brand')?.textContent,tabs:Array.from(document.querySelectorAll('[data-nav]')).map(x=>x.dataset.nav)})");if(result.bridge!=='function'||!result.brand.includes('ZERO')||result.tabs.includes('Live')||result.tabs.includes('Manga'))throw Error('Desktop UI smoke failed');fs.mkdirSync('dist',{recursive:true});fs.writeFileSync('dist/desktop-preview.png',(await main.webContents.capturePage()).toPNG());await main.webContents.executeJavaScript("document.querySelector('#query').value='preserved draft'");
@@ -169,6 +169,21 @@ if(await player.webContents.executeJavaScript("document.querySelector('#title').
 if(BrowserWindow.getAllWindows().length!==1)throw Error('Live playback opened another window');
 await player.webContents.executeJavaScript("document.querySelector('#full').click()");for(let i=0;i<30&&!main.isFullScreen();i++)await new Promise(r=>setTimeout(r,100));if(!main.isFullScreen())throw Error('Live fullscreen failed');
 await player.webContents.executeJavaScript("document.querySelector('#back').click()");for(let i=0;i<30&&player;i++)await new Promise(r=>setTimeout(r,100));if(player||main.isFullScreen())throw Error('Live Back did not restore browsing');
+const fixture=await require('./scripts/live-playback-fixture.cjs').createFixture();
+try{
+  playlistStore=playlists.createStore(path.join(dataRoot,'media-smoke-'+Date.now()),async()=>new Response(fixture.body));await playlistStore.get('LiveTV',true);
+  for(let index=0;index<3;index++){
+    await openLive('LiveTV',index);
+    await player.webContents.executeJavaScript("window.__zeroPlaybackError=0;player?.addEventListener('error',e=>window.__zeroPlaybackError=e.detail.code)");
+    let playing=false,last;
+    for(let i=0;i<120;i++){await new Promise(r=>setTimeout(r,200));last=await player.webContents.executeJavaScript("({time:video.currentTime,ready:video.readyState,error:video.error?.code||window.__zeroPlaybackError,status:document.querySelector('#status').textContent})");if(last.time>1.5&&last.ready>=2){playing=true;break;}if(last.error)break;}
+    if(!playing)throw Error('Real media playback failed for fixture '+index+': '+JSON.stringify(last));
+    if(await player.webContents.executeJavaScript("document.querySelector('#status').textContent.includes('unavailable')"))throw Error('Working playback incorrectly reported unavailable');
+    const audio=await player.webContents.executeJavaScript("({tracks:player.getAudioTracks().length,disabled:document.querySelector('#audio').disabled})");if(audio.tracks<1||audio.disabled)throw Error('Audio track selector missing');
+    await player.webContents.executeJavaScript("document.querySelector('#audio').dispatchEvent(new Event('change'))");
+    console.log('Decoded video/audio advanced for fixture',index,'with audio-track selection');closePlayer();
+  }
+}finally{closePlayer();await fixture.close();}
 console.log('Single-window movie/live playback, actual fullscreen, Back and preserved browsing smoke checks passed');app.exit(0);}catch(error){console.error(error);app.exit(1);}}
 });
 app.on('window-all-closed',()=>app.quit());

@@ -31,6 +31,15 @@ async function run() {
   assert.equal(dom.window.document.getElementById('movie').style.display,'');
   assert.equal(dom.window.document.querySelector('.plyr__controls').style.display,'');
   dom.window.close();
+  dom=page('<video id="movie"></video><div id="timed-dark" data-large="1" style="position:fixed;background:#111"><h2><span>Confirm you\'re not a robot</span></h2><canvas width="80" height="80"></canvas><span>21s</span><button aria-label="Close ad">×</button></div>');
+  assert.equal(dom.window.document.getElementById('timed-dark').style.display,'none','Timed dark QR creative with close control is dismissed without waiting for QR decoding');
+  assert.equal(dom.window.document.getElementById('movie').style.display,'');dom.window.close();
+  dom=page('<video></video><div id="shadow-host"></div>',false,1,w=>{w.document.getElementById('shadow-host').attachShadow({mode:'open'}).innerHTML='<div id="shadow-ad" data-large="1" style="position:fixed;background:#111"><h2>Confirm you\'re not a robot</h2><canvas width="80" height="80"></canvas><span>20</span><button>×</button></div>';});
+  assert.equal(dom.window.document.getElementById('shadow-host').shadowRoot.getElementById('shadow-ad').style.display,'none','Timed shadow creative is inspected');dom.window.close();
+  dom=page('<video id="movie"></video><aside id="banner" class="ad-banner"><a href="https://ads.example/">Advertisement</a></aside><div id="slot" data-ad-slot="123"><img width="300" height="60"></div><div id="popup" class="ad-popup"><button>Close</button>Sponsored offer</div><div id="protected" class="ad-container"><video></video></div><div id="frame" class="ad-container"><iframe src="https://vidstuck.xyz/embed/movie/1"></iframe></div>');
+  for(const id of ['banner','slot','popup'])assert.equal(dom.window.document.getElementById(id).style.display,'none',id+' ad is hidden');
+  for(const id of ['movie','protected','frame'])assert.equal(dom.window.document.getElementById(id).style.display,'',id+' playback is preserved');dom.window.close();
+  dom=page('<div class="ad-overlay" id="verification"><input type="checkbox">Verify</div>');assert.equal(dom.window.document.getElementById('verification').style.display,'');dom.window.close();
   let graphs = 0, gainValue;
   const audioSetup = src => w => {
     const video = w.document.querySelector('video');

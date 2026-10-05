@@ -11,7 +11,7 @@ final class PlaybackSources {
         provider=IDS[index(provider)];if(provider.equals("superembed"))return "https://multiembed.mov/?video_id="+id+"&tmdb=1"+(type.equals("tv")?"&s="+season+"&e="+episode:"");
         String host=provider.equals("vidsrc-to")?"vidsrc.to":provider.equals("vidsrc-sh")?"vidsrc.sh":"vidstuck.xyz";
         String value="https://"+host+"/embed/"+type+"/"+id+(type.equals("tv")?"/"+season+"/"+episode:"");
-        if(provider.equals("vidstuck"))return value+"?branding=ZeroMovies&color=65E6CC&subtitle=english&overlay=true"+(type.equals("tv")?"&nextEpisode=true&episodeSelector=true&autoplayNextEpisode=true":"");
+        if(provider.equals("vidstuck"))return value+"?branding=ZeroPlay&color=65E6CC&subtitle=english&overlay=true"+(type.equals("tv")?"&nextEpisode=true&episodeSelector=true&autoplayNextEpisode=true":"");
         if(provider.equals("vidsrc-sh"))return value+"?ds_lang=en"+(type.equals("tv")?"&autonext=1":"");return value;
     }
 }

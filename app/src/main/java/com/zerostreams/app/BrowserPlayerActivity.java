@@ -94,7 +94,7 @@ public class BrowserPlayerActivity extends Activity {
             }else{
                 Toast.makeText(this,"Update Android System WebView for filtering inside player frames.",Toast.LENGTH_LONG).show();
             }
-        }catch(java.io.IOException error){android.util.Log.e("ZeroMovies","Player guard could not load",error);}
+        }catch(java.io.IOException error){android.util.Log.e("ZeroPlay","Player guard could not load",error);}
     }
     @Override public void onBackPressed(){
         if(getIntent().getBooleanExtra("reader",false)||playerGuard==null){if(fullscreen!=null)closeFullscreen();else super.onBackPressed();return;}

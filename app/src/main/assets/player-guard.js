@@ -5,7 +5,7 @@
   const adHost = host => host === 'gurlleviter.cyou' || host.endsWith('.gurlleviter.cyou');
   const heading = value => /^confirm you['’]re not a robot[.!]?$/i.test(value.trim());
   const media = 'video,audio,.jwplayer,.plyr,.vjs-player,[data-player]';
-  const challenge = 'iframe[src*="recaptcha"],iframe[src*="hcaptcha"],iframe[src*="challenges.cloudflare.com"],.g-recaptcha,.h-captcha,input[name="cf-turnstile-response"]';
+  const challenge = 'iframe[src*="recaptcha"],iframe[src*="hcaptcha"],iframe[src*="challenges.cloudflare.com"],.g-recaptcha,.h-captcha,.cf-turnstile,input[name="cf-turnstile-response"],input[type="checkbox"],[role="checkbox"]';
   let shadowRoots=[],shadowChecked=0;
   function all(selector,refresh=false){
     if(refresh||Date.now()-shadowChecked>1500){
@@ -267,16 +267,16 @@
       const r = el.getBoundingClientRect();
       const w = r.width || Number(el.getAttribute('width'));
       const h = r.height || Number(el.getAttribute('height'));
-      return w >= 100 && h >= 100 && w / h > 0.7 && w / h < 1.3;
+      return w >= 48 && h >= 48 && w / h > 0.7 && w / h < 1.3;
     });
   }
   function timer(node) {
     return Array.from(node.querySelectorAll('span,div,p,b')).some(el => {
-      if (el.children.length || !/^\d{1,2}$/.test(el.textContent.trim())) return false;
-      const value = Number(el.textContent.trim());
+      if (el.children.length || !/^(?:skip (?:ad )?in\s*)?\d{1,2}\s*(?:s|seconds?)?$/i.test(el.textContent.trim())) return false;
+      const value = Number(el.textContent.match(/\d+/)[0]);
       const style = getComputedStyle(el);
       return value > 0 && value <= 60 &&
-        (/timer|countdown|dismiss/i.test(el.className + ' ' + el.id) || parseFloat(style.borderRadius) >= 10);
+        (/timer|countdown|dismiss/i.test(el.className + ' ' + el.id) || parseFloat(style.borderRadius) >= 10 || Array.from(node.querySelectorAll('button,[role="button"],a')).some(control=>/^(?:[x×✕✖]|close(?: ad)?|dismiss(?: ad)?)$/i.test((control.getAttribute('aria-label')||control.getAttribute('title')||control.textContent||'').trim())));
     });
   }
   function adContainer(label) {
@@ -286,13 +286,20 @@
       if (!graphic(node) || !timer(node)) continue;
       const r = node.getBoundingClientRect();
       const style = getComputedStyle(node);
-      const large = r.width >= innerWidth * 0.5 && r.height >= innerHeight * 0.5;
-      if (large && (/rgb\(255, 255, 255\)|#fff/i.test(style.backgroundColor))) return node;
+      const large = r.width >= innerWidth * 0.2 && r.height >= innerHeight * 0.2;
+      if (large && (/rgb\(255, 255, 255\)|#fff/i.test(style.backgroundColor)||['fixed','absolute'].includes(style.position)||node.matches('dialog,[role="dialog"]'))) return node;
     }
     return null;
   }
   function scan() {
     if (!document.body || !window.__zeroBlockAds) return;
+    // Explicit ad slots only: never remove containers holding movie media,
+    // genuine verification, or a non-ad frame used by the player.
+    all('.adsbygoogle,.advertisement,.ad-banner,.banner-ad,.ad-container,.ad-overlay,.ad-popup,.popup-ad,[data-ad-slot],[data-ad-client],ins[data-ad-unit],iframe[id^="google_ads_iframe"]',true).forEach(node=>{
+      if(node.matches(media+','+challenge)||node.querySelector(media+','+challenge))return;
+      if(Array.from(node.querySelectorAll('iframe')).some(frame=>{try{return !adHost(new URL(frame.src,location.href).hostname);}catch{return true;}}))return;
+      hide(node);
+    });
     // The exact destination decoded from the reported advertising QR code.
     document.querySelectorAll('iframe[src],a[href]').forEach(el => {
       try {
@@ -302,9 +309,8 @@
         }
       } catch (_) {}
     });
-    if(!/confirm you['’]re not a robot/i.test(document.body.textContent))return;
-    document.querySelectorAll('h1,h2,h3,p,span,div').forEach(label => {
-      if (label.children.length || !heading(label.textContent)) return;
+    all('h1,h2,h3,p,span,div',true).forEach(label => {
+      if (!heading(label.textContent)) return;
       const node = adContainer(label);
       if (!node) return;
       if (node === document.body || node === document.documentElement) {
@@ -331,6 +337,7 @@
     setTimeout(() => { pending = false; scan(); }, 400);
   }).observe(document, {subtree: true, childList: true, characterData: true});
   document.addEventListener('DOMContentLoaded', scan);
+  setInterval(scan,1500); // Includes late creatives inside open shadow roots.
   scan();
 })();
 

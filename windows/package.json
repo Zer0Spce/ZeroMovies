@@ -1,8 +1,8 @@
 {
   "name": "zerostreams-windows",
-  "version": "1.0.0",
-  "description": "ZeroMovies movie and TV discovery for Windows",
-  "author": "ZeroMovies",
+  "version": "1.0.1",
+  "description": "ZeroPlay movie and TV discovery for Windows",
+  "author": "ZeroPlay",
   "private": true,
   "main": "main.cjs",
   "scripts": {
@@ -21,7 +21,7 @@
   },
   "build": {
     "appId": "com.zerostreams.windows",
-    "productName": "ZeroMovies",
+    "productName": "ZeroPlay",
     "directories": {
       "output": "dist"
     },
@@ -35,7 +35,7 @@
       "target": [
         "zip"
       ],
-      "artifactName": "ZeroMovies-1.0-Windows-x64.${ext}",
+      "artifactName": "ZeroPlay-1.0.1-Windows-x64.${ext}",
       "icon": "assets/icon.ico"
     },
     "asar": true

@@ -17,7 +17,7 @@ import androidx.media3.ui.AspectRatioFrameLayout;
 import java.util.*;
 import java.util.concurrent.*;
 
-/** ZeroMovies' native live player. No WebView, embedded provider page or external player. */
+/** ZeroPlay' native live player. No WebView, embedded provider page or external player. */
 @androidx.annotation.OptIn(markerClass=androidx.media3.common.util.UnstableApi.class)
 public class LivePlayerActivity extends Activity {
     private static final int ACCENT=0xFF65E6CC, SURFACE=0xEF161822;
@@ -72,7 +72,7 @@ public class LivePlayerActivity extends Activity {
         releasePlayer();if(!started||channels.isEmpty())return;
         M3uPlaylist.Channel channel=channels.get(index);title.setText(channel.name);status.setText("Connecting…");buffering.setVisibility(View.VISIBLE);
         try {
-            DefaultHttpDataSource.Factory http=new DefaultHttpDataSource.Factory().setUserAgent(channel.headers.containsKey("User-Agent")?channel.headers.get("User-Agent"):"ZeroMovies/"+BuildConfig.VERSION_NAME).setConnectTimeoutMs(12000).setReadTimeoutMs(20000).setAllowCrossProtocolRedirects(true).setDefaultRequestProperties(channel.headers);
+            DefaultHttpDataSource.Factory http=new DefaultHttpDataSource.Factory().setUserAgent(channel.headers.containsKey("User-Agent")?channel.headers.get("User-Agent"):"ZeroPlay/"+BuildConfig.VERSION_NAME).setConnectTimeoutMs(12000).setReadTimeoutMs(20000).setAllowCrossProtocolRedirects(true).setDefaultRequestProperties(channel.headers);
             DefaultMediaSourceFactory sources=new DefaultMediaSourceFactory(http);
             MediaItem.Builder media=new MediaItem.Builder().setUri(channel.url).setMediaMetadata(new MediaMetadata.Builder().setTitle(channel.name).build());
             if(!channel.mime.isEmpty())media.setMimeType(channel.mime);

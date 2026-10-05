@@ -1,6 +1,6 @@
-# ZeroMovies for Windows
+# ZeroPlay for Windows
 
-Portable Electron app. Extract the ZIP and run `ZeroMovies.exe`; no installer is needed.
+Portable Electron app. Extract the ZIP and run `ZeroPlay.exe`; no installer is needed.
 
 ## Version 0.4.5
 

@@ -1,7 +1,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),core=require('../core.cjs');
 const movie={id:299534,type:'movie',title:'Avengers: Endgame',poster:'https://image.tmdb.org/t/p/w500/test.jpg',backdrop:'https://image.tmdb.org/t/p/w1280/test.jpg',date:'2019-04-24',rating:8};
 test('VidStuck movie/TV URLs use TMDB IDs and valid resume positions',()=>{
-  const url=new URL(core.playerUrl(movie,{timestamp:120,percent:10}));assert.equal(url.pathname,'/embed/movie/299534');assert.equal(url.searchParams.get('branding'),'ZeroMovies');assert.equal(url.searchParams.get('progress'),'120');
+  const url=new URL(core.playerUrl(movie,{timestamp:120,percent:10}));assert.equal(url.pathname,'/embed/movie/299534');assert.equal(url.searchParams.get('branding'),'ZeroPlay');assert.equal(url.searchParams.get('progress'),'120');
   const tv=new URL(core.playerUrl({...movie,type:'tv',id:1399},{season:0,episode:2,timestamp:80,percent:97}));assert.equal(tv.pathname,'/embed/tv/1399/0/2');assert.equal(tv.searchParams.has('progress'),false);assert.equal(tv.searchParams.get('episodeSelector'),'true');
 });
 test('QR ad domains are bounded and unknown verification URLs are preserved',()=>{

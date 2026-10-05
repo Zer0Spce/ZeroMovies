@@ -1,12 +1,14 @@
-# 🎬 ZeroMovies
+# 🎬 ZeroPlay
 
-### Your next great watch.
+### Movies. Live TV. One place.
 
-**Discover movies and TV series, find something unexpected, and keep your favorites close.** ZeroMovies brings TMDB discovery, your personal library, and embedded playback together in a clean interface for **Android, Android TV / Google TV, and Windows**.
+**Movies, series, LIVE TV, and PPV/Sports in one app.** ZeroPlay brings TMDB discovery, your personal library, and embedded playback together in a clean interface for **Android, Android TV / Google TV, and Windows**.
 
 Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surprise Me** dice when you cannot decide. Softly blurred artwork, light and dark themes, and dedicated TV controls make it comfortable on your phone, desktop, or big screen.
 
-**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroMovies/releases/latest)** · **[📋 v1.0 release notes](docs/release-1.0.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
+**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroMovies/releases/latest)** · **[📋 v1.0.1 release notes](docs/release-1.0.1.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
+
+Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations, Windows library data, and the permanent signing key.
 
 ## ✨ Features
 
@@ -36,19 +38,19 @@ Original PNG screenshots are included at their native **2048-pixel width**, with
 
 Trending picks, quick playback, your watchlist, and provider discovery in one place.
 
-[![ZeroMovies home with trending picks, source selection, and watchlist](docs/zeromovies-home.png)](docs/zeromovies-home.png)
+[![ZeroPlay home with trending picks, source selection, and watchlist](docs/zeromovies-home.png)](docs/zeromovies-home.png)
 
 ### 🍿 Find your next movie
 
 Browse a poster-rich catalog with title ratings and release years.
 
-[![ZeroMovies movie catalog with posters, ratings, and release years](docs/zeromovies-movies.png)](docs/zeromovies-movies.png)
+[![ZeroPlay movie catalog with posters, ratings, and release years](docs/zeromovies-movies.png)](docs/zeromovies-movies.png)
 
 ### 🗂️ Find your kind of story
 
 Explore genres across movies and TV series.
 
-[![ZeroMovies categories for movies and TV series](docs/zeromovies-categories.png)](docs/zeromovies-categories.png)
+[![ZeroPlay categories for movies and TV series](docs/zeromovies-categories.png)](docs/zeromovies-categories.png)
 
 ## ⬇️ Download & get started
 
@@ -56,9 +58,9 @@ Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroMovies/re
 
 | Platform | v1.0 download | Getting started |
 | --- | --- | --- |
-| 📱 Android phone / tablet | `ZeroMovies-1.0-Android.apk` | Android 6+. Install the signed mobile APK. |
-| 📺 Android TV / Google TV | `ZeroMovies-1.0-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
-| 🖥️ Windows 10 / 11 · x64 | `ZeroMovies-1.0-Windows-x64.zip` | Extract the ZIP and launch `ZeroMovies.exe`. |
+| 📱 Android phone / tablet | `ZeroPlay-1.0.1-Android.apk` | Android 6+. Install the signed mobile APK. |
+| 📺 Android TV / Google TV | `ZeroPlay-1.0.1-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
+| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.0.1-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
 | ✅ Integrity checks | `SHA256SUMS.txt` | Compare your downloaded files against the published SHA-256 checksums. |
 
 Android v0.4.5 uses a permanent production signing key. Moving from an earlier debug build may require uninstalling that build first, which clears its local library and history. Future production releases retain the same signing key.
@@ -73,8 +75,8 @@ TMDB metadata refreshes as you browse and on refresh, so new catalog entries do 
 
 ## 🛠️ Build & development
 
-- **Android:** run **Build ZeroMovies APKs** manually in GitHub Actions for development APKs. The workflow tests both variants and uploads debug APKs plus APKs signed with the permanent Android key. Published production downloads remain in Releases.
-- **Production:** **Release ZeroMovies** runs regressions, unit tests, builds, lint, non-debug checks, and signature verification before publishing signed APKs and checksums. Publishing waits for signed Android APKs and a tested Windows portable ZIP from the same release run.
+- **Android:** run **Build ZeroPlay APKs** manually in GitHub Actions for development APKs. The workflow tests both variants and uploads debug APKs plus APKs signed with the permanent Android key. Published production downloads remain in Releases.
+- **Production:** **Release ZeroPlay** runs regressions, unit tests, builds, lint, non-debug checks, and signature verification before publishing signed APKs and checksums. Publishing waits for signed Android APKs and a tested Windows portable ZIP from the same release run.
 - **Windows:** see the [Windows guide](windows/README.md). Windows builds run manually on explicit request.
 - **Website:** the responsive web version is prepared for Netlify. See [website setup](web/README.md).
 
