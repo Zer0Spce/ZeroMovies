@@ -1,9 +1,6 @@
 name: Build ZeroStreams APKs
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ['app/**', '.github/workflows/build-android.yml']
 permissions:
   contents: read
 jobs:
