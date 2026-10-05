@@ -1,6 +1,6 @@
 # ZeroStreams
 
-Android phone and Android TV app for movie and series discovery using **TMDB**, with **VidStuck** video playback. Version **0.3.0**.
+Android phone and Android TV app for movie and series discovery using **TMDB**, with **VidStuck** video playback. Version **0.3.2**.
 
 ## Features
 
@@ -9,6 +9,8 @@ Android phone and Android TV app for movie and series discovery using **TMDB**, 
 - Movie and series browsing with pagination.
 - TMDB season and episode lists loaded on demand, including specials.
 - VidStuck-only movie/series playback with ZeroStreams loading text, mint accent, English subtitle preference and episode controls.
+- TV D-pad focus navigation without a mouse pointer; playback control bars hide after three idle seconds and wake on remote input.
+- Optional Settings audio boost: Off, 1.5× or 2× for compatible embedded media, with a limiter. Non-CORS sources keep their original audio path.
 - Fullscreen video without the app's top toolbar; Android/remote Back returns to browsing.
 - Softly blurred selected-title artwork, sharp posters and remote focus highlights.
 - Watchlist, collections and local Continue Watching. Embedded progress still records opened titles rather than exact timestamps.
@@ -34,7 +36,9 @@ TMDB supplies metadata, not video streams. A TMDB search result does not guarant
 
 ## External-player limitations
 
-Common ad-domain requests, new windows and top-level cross-site redirects are blocked. Unsolicited native fullscreen requests are rejected unless they closely follow a player touch or remote confirmation. This does not remove every ad or verification overlay inside provider content. Provider verification must be completed normally; cookies are retained, but repeated challenges or WebView incompatibility can remain. No verification or DRM bypass is implemented. Android TV playback, remote navigation and real provider behavior need device testing.
+Common ad-domain requests, new windows and top-level cross-site redirects are blocked. The reported timed QR advertisement is targeted using its decoded destination domain and a narrow creative filter: matching label, large QR graphic, circular countdown, white fullscreen container, and no video or genuine CAPTCHA inside that container. The filter runs inside player frames when Android System WebView supports document-start scripts; older WebViews receive a main-frame fallback and an update notice. Genuine provider verification remains intact. The filter has DOM regression coverage, but elimination of the actual TV ad still requires device confirmation.
+
+TV keeps the HTML player surface instead of entering native video fullscreen, so embedded playback controls can remain accessible. Recognized and detected bottom control bars hide after three idle seconds; remote input wakes the controls through the frame tree. Audio boost only connects compatible streams after the audio context is running, so unsupported sources are not deliberately rerouted into silence. Real provider layouts, remote navigation and audio remain subject to device testing. No native JavaScript bridge or verification/DRM bypass is introduced.
 
 ## Credits
 
@@ -42,4 +46,4 @@ This product uses the TMDB API but is not endorsed or certified by TMDB. The app
 
 ## Verification
 
-The APK workflow checks domain-boundary blocking and normalized title matching, compiles mobile/TV variants and runs Android lint. Live TMDB discovery, show and season endpoints were checked using the user's own credential. No credential appears in repository source. Playback and challenge behavior cannot be verified from this development environment.
+The APK workflow checks domain-boundary blocking, normalized title matching, timed QR ad removal, preservation of CAPTCHA/video content, late ads, remote controls and audio routing, compiles mobile/TV variants and runs Android lint. Live TMDB discovery, show and season endpoints were checked using the user's own credential. No credential appears in repository source. Playback and challenge behavior cannot be verified from this development environment.
