@@ -1,9 +1,6 @@
 name: Build ZeroStreams APKs
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'app/**'
 permissions:
   contents: read
 jobs:
