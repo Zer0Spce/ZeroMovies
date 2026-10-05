@@ -99,3 +99,9 @@ Phone title search supports accent-insensitive, punctuation-insensitive multiwor
 `tests/PlayerRulesTest.java` checks domain boundaries and normalized title matching in the APK workflow. Actual provider playback and remote keyboard behavior still require device testing.
 
 Selected-title details now use a softly blurred movie backdrop with a dark readability gradient, sharp poster, prominent Watch action and remote-focus styling. Software blur is bounded to a 128-pixel thumbnail and works on older supported Android versions. The dialog scales to phone and TV screens. Visual appearance still needs on-device review.
+
+### Version 0.2.2
+
+VidStuck is the recommended first playback server for movies and series, using the TMDB embed URL format confirmed by the user-supplied VidStuck documentation. Existing Vidfast, Vidzee and Vidnest servers remain selectable fallbacks. Explicit native streams in the catalog still take precedence. The movie catalog continues to refresh from the existing backend; ZSFLIX is not used for catalog retrieval. These are external WebView players, not native MP4/HLS sources. Provider availability and ad-free behavior have not been verified: VidStuck blocked requests from the development environment. On-device playback testing is required.
+
+VidStuck options: `branding=ZeroStreams`, `color=65E6CC`, `subtitle=english`, `overlay=true`. TV embeds additionally enable `nextEpisode`, `episodeSelector` and `autoplayNextEpisode`. The provider manages those controls and subtitle availability. Progress messages are not yet imported into native resume tracking; external Continue Watching still records opened titles rather than exact positions. No provider credentials or keys from uploaded pages are used.

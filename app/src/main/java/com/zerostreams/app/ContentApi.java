@@ -46,9 +46,12 @@ final class ContentApi {
     static JSONArray movieSources(String tmdb,String type,int season,int episode) throws JSONException {
         JSONArray result=new JSONArray();if(!tmdb.matches("[0-9]+"))return result;
         String suffix=type.equals("movie")?"movie/"+tmdb:"tv/"+tmdb+"/"+season+"/"+episode;
-        result.put(new JSONObject().put("label","Server 1 · Vidfast").put("url","https://vidfast.pro/"+suffix).put("embed",true));
-        result.put(new JSONObject().put("label","Server 2 · Vidzee").put("url","https://player.vidzee.wtf/embed/"+suffix).put("embed",true));
-        result.put(new JSONObject().put("label","Server 3 · Vidnest").put("url","https://vidnest.fun/"+suffix).put("embed",true));
+        String vidstuck="https://vidstuck.xyz/embed/"+suffix+"?branding=ZeroStreams&color=65E6CC&subtitle=english&overlay=true";
+        if(!type.equals("movie"))vidstuck+="&nextEpisode=true&episodeSelector=true&autoplayNextEpisode=true";
+        result.put(new JSONObject().put("label","VidStuck · Recommended").put("url",vidstuck).put("embed",true));
+        result.put(new JSONObject().put("label","Vidfast · Fallback").put("url","https://vidfast.pro/"+suffix).put("embed",true));
+        result.put(new JSONObject().put("label","Vidzee · Fallback").put("url","https://player.vidzee.wtf/embed/"+suffix).put("embed",true));
+        result.put(new JSONObject().put("label","Vidnest · Fallback").put("url","https://vidnest.fun/"+suffix).put("embed",true));
         return result;
     }
 }
