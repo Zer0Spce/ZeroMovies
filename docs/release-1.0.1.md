@@ -29,4 +29,3 @@ Signed Android APKs update earlier production builds while preserving local data
 
 Stream availability still depends on the provider and device codecs. Automated checks do not guarantee every third-party stream or advertisement behaves identically on every device.
 
-<sub>Made with care by JeremieWTF ✦</sub>
