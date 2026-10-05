@@ -1,6 +1,9 @@
-name: Build ZeroStreams Windows
+name: Build ZeroMovies Windows
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'windows/**'
 permissions:
   contents: read
 jobs:
@@ -38,12 +41,12 @@ jobs:
         run: node scripts/tmdb-check.cjs
       - name: Windows app smoke test
         run: npx electron . --smoke-test
-      - name: Package installer and portable ZIP
+      - name: Package portable ZIP
         run: npm run build
       - uses: actions/upload-artifact@v4
         with:
-          name: ZeroStreams-Windows-x64
+          name: ZeroMovies-Windows-x64
           path: |
-            windows/dist/ZeroStreams-*.zip
+            windows/dist/ZeroMovies-*.zip
             windows/dist/desktop-preview.png
           if-no-files-found: error
