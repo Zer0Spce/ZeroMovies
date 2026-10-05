@@ -115,3 +115,9 @@ VidStuck WebViews now accept third-party cookies and flush cookies after page lo
 ### Version 0.2.4
 
 External video playback now fills the screen without the app's Back, Reload, Open browser, ad-block switch or status toolbar. Android system bars use immersive mode. Use the Android/TV remote Back action to close player fullscreen and return to browsing. Ad blocking is still controlled from Settings; cookie persistence remains enabled. Publisher manga readers retain their toolbar. Device and provider behavior require on-device verification.
+
+### Version 0.2.5
+
+Online movie and TV search uses TMDB `/search/multi`, excludes person/adult results, preserves TMDB IDs, and supports result pages and debounced requests. Add your own TMDB v3 API key in Settings to enable it. A blank key uses catalog search; failed online requests fall back to catalog matches. The key stays in app-private preferences and is sent only to TMDB, never to VidStuck, GitHub or the catalog backend. No third-party website API keys are used. Search results include titles outside the homepage snapshot, but metadata availability does not guarantee VidStuck playback. Missing series snapshots open VidStuck's episode selector at S1E1. Settings includes TMDB's approved logo and attribution. Online search has not been tested against an authenticated live TMDB account because no user-owned credential has been supplied.
+
+TMDB key setup: create your own key at https://www.themoviedb.org/settings/api and enter the **API Key (v3 auth)** in app Settings. Search and metadata are separate from video hosting. Toolbar-free playback from 0.2.4 is retained; the provider's verification cannot simply be hidden to enable playback.

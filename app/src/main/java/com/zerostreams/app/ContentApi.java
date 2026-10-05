@@ -43,6 +43,20 @@ final class ContentApi {
             }catch(Exception ignored){}
         }return result;
     }
+
+    static List<Catalog.Item> searchMovies(String query,String key,int page) throws Exception {
+        JSONObject response=(JSONObject)json("https://api.themoviedb.org/3/search/multi?api_key="+URLEncoder.encode(key,"UTF-8")+"&query="+URLEncoder.encode(query.trim(),"UTF-8")+"&include_adult=false&language=en-US&page="+page);
+        JSONArray data=response.getJSONArray("results");List<Catalog.Item> rows=new ArrayList<>();
+        for(int i=0;i<data.length();i++){
+            JSONObject raw=data.getJSONObject(i);String media=raw.optString("media_type");if(!media.equals("movie")&&!media.equals("tv"))continue;
+            long id=raw.optLong("id");if(id<=0)continue;String type=media.equals("tv")?"series":"movie",name=raw.optString(media.equals("tv")?"name":"title");if(name.isEmpty())continue;
+            String date=raw.optString(media.equals("tv")?"first_air_date":"release_date"),poster=raw.optString("poster_path"),backdrop=raw.optString("backdrop_path");int year=0;try{if(date.length()>=4)year=Integer.parseInt(date.substring(0,4));}catch(NumberFormatException ignored){}
+            JSONObject item=new JSONObject().put("id","tmdb-"+type+"-"+id).put("title",name).put("type",type).put("year",year).put("description",raw.optString("overview")).put("rating",raw.optDouble("vote_average",0))
+                .put("poster",poster.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/w500"+poster:"")
+                .put("backdrop",backdrop.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/w1280"+backdrop:"").put("onlineSearch",true);
+            rows.add(new Catalog.Item(item));
+        }return rows;
+    }
     static JSONArray movieSources(String tmdb,String type,int season,int episode) throws JSONException {
         JSONArray result=new JSONArray();if(!tmdb.matches("[0-9]+"))return result;
         String suffix=type.equals("movie")?"movie/"+tmdb:"tv/"+tmdb+"/"+season+"/"+episode;
