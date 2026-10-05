@@ -38,7 +38,7 @@ The responsive website is prepared for Netlify. Import this repository with the 
 
 Create a TMDB **API Key (v3 auth)** at https://www.themoviedb.org/settings/api. Add repository Actions secret **TMDB_API_KEY** to bundle it in APK builds. A nonempty key entered in Settings overrides the bundled key; leaving it blank uses the bundled key. APK client keys can be extracted. No key is committed to repository source.
 
-Windows 10/11 x64 builds are available from the **Build ZeroStreams Windows** workflow. Future Windows artifacts contain a portable ZIP only. See [Windows instructions](windows/README.md). Future Windows builds run manually on explicit request.
+The Windows app is branded **ZeroMovies** and uses a single window for browsing and playback, with native fullscreen from the embedded player. Windows 10/11 x64 builds are available from the **Build ZeroMovies Windows** workflow. Future Windows artifacts contain a portable ZIP only. See [Windows instructions](windows/README.md). Future Windows builds run manually on explicit request.
 
 Run **Build ZeroStreams APKs** manually from GitHub Actions. Download **ZeroStreams-mobile-and-tv-debug**:
 

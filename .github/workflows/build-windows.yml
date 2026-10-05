@@ -1,9 +1,6 @@
 name: Build ZeroMovies Windows
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'windows/**'
 permissions:
   contents: read
 jobs:
