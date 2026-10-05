@@ -101,6 +101,12 @@ final class ContentApi {
         for(int i=0;i<episodes.length();i++){JSONObject ep=episodes.getJSONObject(i);int number=ep.optInt("episode_number");if(number>0)result.put(new JSONObject().put("id","s"+season+"e"+number).put("season",season).put("episode",number).put("title",ep.optString("name","Episode "+number)));}
         return result;
     }
+    static JSONArray genres(String type,String key) throws Exception {return DiscoveryApi.genres((path,q)->tmdb(path,key,q),type);}
+    static JSONObject genreData(String key,String type,int genre,int page) throws Exception {return DiscoveryApi.genrePage((path,q)->tmdb(path,key,q),type,genre,page);}
+    static Catalog.Item randomMovie(String key,Random random,Set<Long> recent) throws Exception {
+        String today=new java.text.SimpleDateFormat("yyyy-MM-dd",Locale.ROOT).format(new Date());
+        JSONObject raw=DiscoveryApi.randomMovie((path,q)->tmdb(path,key,q),random,today,recent);return tmdbRows(new JSONArray().put(raw),"movie",false).get(0);
+    }
     static JSONArray movieSources(String tmdb,String type,int season,int episode) throws JSONException {
         JSONArray result=new JSONArray();if(!tmdb.matches("[1-9][0-9]*"))return result;
         for(int i=0;i<PlaybackSources.IDS.length;i++)result.put(new JSONObject().put("label",PlaybackSources.NAMES[i]).put("url",PlaybackSources.url(tmdb,type,season,episode,PlaybackSources.IDS[i])).put("embed",true));

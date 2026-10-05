@@ -1,6 +1,6 @@
 # ZeroMovies
 
-Android phone and Android TV app for TMDB movie and series discovery, with VidStuck, VidSrc.to, VidSrc.sh and SuperEmbed playback. Version **0.4.4**.
+Android phone and Android TV app for TMDB movie and series discovery, with VidStuck, VidSrc.to, VidSrc.sh and SuperEmbed playback. Android version **0.4.5**.
 
 ## Discovery and library
 
@@ -11,7 +11,9 @@ Android phone and Android TV app for TMDB movie and series discovery, with VidSt
 - Watchlist, collections, Plan to Watch and sharing public TMDB title links.
 - Device-local watch history (100 recent entries) and search history (30 queries), with replay, removal and clearing. Queries are recorded on search submission or choosing a result, rather than every partially typed query.
 - Continue Watching uses VidStuck and VidSrc.sh progress events when available. Percentage bars are based on reported timestamps/duration; no invented match scores or playback percentages. Titles without progress events remain marked Started. Episode history preserves the selected season/episode even before a progress event arrives.
-- Local clock, Surprise Me, saved night/light mode, and a Watchlist row on Home. Weather has been removed.
+- Local clock, saved night/light mode, and a Watchlist row on Home. The compact theme toggle and red 🎲 Surprise Me control are at the top right. Surprise picks sample TMDB discovery beyond home-page rows. Weather has been removed.
+- Categories in the TV side rail and phone navigation use TMDB movie/series genres with paginated results. Watch Now uses the selected source directly; its adjacent Source control marks VidStuck Recommended.
+- TV navigation has a dimmed, softly blurred artwork backdrop. Title details place Watch Now beside the poster/title and above the synopsis and cast.
 - Live and Manga tabs are removed from mobile/TV navigation; restored sessions return to Home.
 
 ## TV playback and performance

@@ -1,6 +1,8 @@
 name: Build ZeroMovies APKs
 on:
   workflow_dispatch:
+  push:
+    paths: ['app/**']
 permissions:
   contents: read
 jobs:
@@ -46,7 +48,7 @@ jobs:
           else
             echo "No bundled TMDB key; enter your key in app Settings"
           fi
-      - name: Test discovery history and visible QR scanning
+      - name: Test TMDB categories, surprise discovery, history and QR scanning
         run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest
       - name: Compile both APKs
         run: gradle :app:assembleMobileDebug :app:assembleTvDebug
