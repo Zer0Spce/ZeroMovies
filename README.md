@@ -89,3 +89,11 @@ Install both expanded APKs, check D-pad navigation across all screens and embedd
 ## Demo attribution
 
 Big Buck Bunny: © 2008 Blender Foundation / www.bigbuckbunny.org, CC BY 3.0, https://creativecommons.org/licenses/by/3.0/. Project: https://peach.blender.org/about/. Demo URL uses the public Google TV sample bucket. Catalog images and metadata retain their original sources; the app does not host the movie or manga media itself.
+
+### Version 0.2.1
+
+External video players now block requests to a small set of common advertising domains by default. Settings and the player toolbar can disable blocking and reload a server if it fails. Popup windows and cross-site top-level redirects remain blocked. This is domain filtering, not a full EasyList engine: same-domain ads, service-worker traffic and ads encoded into video can remain. Publisher manga readers are excluded. No video CDN hosts are blocked by the built-in rules.
+
+Phone title search supports accent-insensitive, punctuation-insensitive multiword queries and result counts. Android TV adds a Search shortcut that focuses the field and requests the keyboard. Home searches the downloaded movie and series catalog; section searches filter that section. Manga searches use MangaDex. Search does not index every title on the source website.
+
+`tests/PlayerRulesTest.java` checks domain boundaries and normalized title matching in the APK workflow. Actual provider playback and remote keyboard behavior still require device testing.
