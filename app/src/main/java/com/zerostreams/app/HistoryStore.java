@@ -19,7 +19,15 @@ final class HistoryStore {
     }
     synchronized void started(Catalog.Item item,String key){
         try{JSONObject row=new JSONObject().put("key",key).put("parent",item.id).put("item",item.raw).put("at",System.currentTimeMillis()).put("state","Started");
-            row.put("timestamp",prefs.getLong("position:"+key,0)/1000d).put("duration",prefs.getLong("duration:"+key,0)/1000d);
+            long position=prefs.getLong("position:"+key,0),duration=prefs.getLong("duration:"+key,0);
+            if(duration>0&&ProgressRules.percent(position,duration)>=95){position=0;prefs.edit().putLong("position:"+key,0).apply();}
+            row.put("timestamp",position/1000d).put("duration",duration/1000d);
+            java.util.regex.Matcher episode=java.util.regex.Pattern.compile(":s([0-9]+)e([0-9]+)$").matcher(key);
+            if(item.type.equals("series")&&episode.find()){
+                int season=Integer.parseInt(episode.group(1)),number=Integer.parseInt(episode.group(2));row.put("season",season).put("episode",number);
+                SharedPreferences.Editor edit=prefs.edit().putInt("resumeSeason:"+item.id,season).putInt("resumeEpisode:"+item.id,number).putLong("position:"+item.id,Math.max(1,position)).putLong("duration:"+item.id,duration);
+                if(position>0&&duration>0)edit.putInt("percent:"+item.id,ProgressRules.percent(position,duration));else edit.remove("percent:"+item.id);edit.apply();
+            }else if(position==0)prefs.edit().remove("percent:"+item.id).apply();
             saveWatch(row);
         }catch(JSONException ignored){}
     }

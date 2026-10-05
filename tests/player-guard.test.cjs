@@ -21,6 +21,10 @@ async function run() {
   assert.ok(dom.window.document.getElementById('movie'));
   assert.equal(dom.window.document.querySelector('.plyr__controls').style.display, '');
   dom.window.close();
+  dom = page('<video></video><div id="css-ad" data-large="1" style="position:fixed;background:white">Painted QR creative</div>');
+  dom.window.__zeroDismissQrAd();
+  assert.equal(dom.window.document.getElementById('css-ad').style.display,'none');
+  dom.window.close();
   let graphs = 0, gainValue;
   const audioSetup = src => w => {
     const video = w.document.querySelector('video');

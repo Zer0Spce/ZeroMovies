@@ -31,6 +31,15 @@
         if(window.parent!==window&&!candidate.querySelector('iframe,'+media)){window.parent.postMessage({type:'zerostreams-timed-qr-ad'},'*');Array.from(document.body.children).forEach(hide);document.body.style.backgroundColor='transparent';}
       }else hide(candidate);
     });
+    // Some creatives paint the entire banner as CSS background artwork.
+    // Native QR confirmation makes this independent of readable DOM text.
+    document.querySelectorAll('div,section,aside,dialog').forEach(node => {
+      if(node.querySelector(media)||node.querySelector(challenge))return;
+      const r=node.getBoundingClientRect(),style=getComputedStyle(node);
+      if(r.width>=innerWidth*.7&&r.height>=innerHeight*.7&&
+        (style.position==='fixed'||style.position==='absolute')&&
+        /rgb\(255, 255, 255\)|#fff/i.test(style.backgroundColor))hide(node);
+    });
   };
   window.addEventListener('message', event => {
     if(event.source===window.parent&&event.data&&event.data.type==='zerostreams-dismiss-ad-qr')window.__zeroDismissQrAd();

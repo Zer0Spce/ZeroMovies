@@ -41,6 +41,11 @@ public class DiscoveryRegressionTest {
         HistoryStore store=new HistoryStore(new MemoryPrefs());for(int i=0;i<110;i++){Catalog.Item item=new Catalog.Item(new JSONObject().put("id","tmdb-movie-"+i).put("title","Title "+i));store.started(item,item.id);}
         assertEquals(100,store.read("watchHistory").length());assertEquals("tmdb-movie-109",store.read("watchHistory").getJSONObject(0).getString("key"));
     }
+    @Test public void startingAnotherEpisodeUpdatesResumeEvenBeforeProviderProgress() throws Exception {
+        MemoryPrefs prefs=new MemoryPrefs();HistoryStore store=new HistoryStore(prefs);Catalog.Item item=new Catalog.Item(new JSONObject().put("id","tmdb-series-1399").put("title","Series").put("type","series"));
+        prefs.edit().putInt("resumeSeason:"+item.id,1).putInt("resumeEpisode:"+item.id,1).putInt("percent:"+item.id,80).apply();
+        store.started(item,item.id+":s1e2");assertEquals(2,prefs.getInt("resumeEpisode:"+item.id,0));assertFalse(prefs.contains("percent:"+item.id));assertEquals(2,store.read("watchHistory").getJSONObject(0).getInt("episode"));
+    }
     static final class MemoryPrefs implements SharedPreferences {
         final Map<String,Object> values=new HashMap<>();public Map<String,?> getAll(){return new HashMap<>(values);}public boolean contains(String k){return values.containsKey(k);}public String getString(String k,String d){Object v=values.get(k);return v instanceof String?(String)v:d;}
         @SuppressWarnings("unchecked") public Set<String> getStringSet(String k,Set<String> d){Object v=values.get(k);return v instanceof Set?(Set<String>)v:d;}public int getInt(String k,int d){Object v=values.get(k);return v instanceof Integer?(Integer)v:d;}public long getLong(String k,long d){Object v=values.get(k);return v instanceof Long?(Long)v:d;}public float getFloat(String k,float d){Object v=values.get(k);return v instanceof Float?(Float)v:d;}public boolean getBoolean(String k,boolean d){Object v=values.get(k);return v instanceof Boolean?(Boolean)v:d;}
