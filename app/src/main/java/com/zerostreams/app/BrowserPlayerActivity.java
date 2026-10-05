@@ -10,6 +10,7 @@ import android.net.Uri;
 
 public class BrowserPlayerActivity extends Activity {
     private WebView web;
+    private long lastPlayerGesture;
     private volatile boolean blockAds;
     private TextView status;
     private FrameLayout screen;
@@ -25,7 +26,7 @@ public class BrowserPlayerActivity extends Activity {
         if("vidstuck.xyz".equals(Uri.parse(address).getHost())){Button browser=new Button(this);browser.setText("Open browser");browser.setOnClickListener(v->{try{startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW,Uri.parse(address)));}catch(android.content.ActivityNotFoundException e){Toast.makeText(this,"No browser installed",Toast.LENGTH_LONG).show();}});controls.addView(browser);}
         if(!reader){Button ads=new Button(this);ads.setText(blockAds?"Ads blocked":"Blocking off");ads.setOnClickListener(v->{blockAds=!blockAds;getSharedPreferences("zero",MODE_PRIVATE).edit().putBoolean("blockAds",blockAds).apply();ads.setText(blockAds?"Ads blocked":"Blocking off");web.reload();});controls.addView(ads);}
         status=new TextView(this);status.setText(reader?"Loading reader…":"Loading player…");status.setTextColor(Color.WHITE);status.setTextSize(14);controls.addView(status,new LinearLayout.LayoutParams(0,-2,1));if(reader)root.addView(controls);
-        web=new WebView(this);CookieManager cookies=CookieManager.getInstance();cookies.setAcceptCookie(true);cookies.setAcceptThirdPartyCookies(web,"vidstuck.xyz".equals(Uri.parse(address).getHost()));WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setMediaPlaybackRequiresUserGesture(false);settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setSupportMultipleWindows(false);settings.setJavaScriptCanOpenWindowsAutomatically(false);
+        web=new WebView(this);web.setOnTouchListener((v,event)->{if(event.getActionMasked()==android.view.MotionEvent.ACTION_DOWN)lastPlayerGesture=android.os.SystemClock.elapsedRealtime();return false;});CookieManager cookies=CookieManager.getInstance();cookies.setAcceptCookie(true);cookies.setAcceptThirdPartyCookies(web,"vidstuck.xyz".equals(Uri.parse(address).getHost()));WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setMediaPlaybackRequiresUserGesture(false);settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setSupportMultipleWindows(false);settings.setJavaScriptCanOpenWindowsAutomatically(false);
         // No JavaScript/native bridge. Popups and top-level cross-site ad redirects stay closed.
         String host=Uri.parse(address).getHost();web.setWebViewClient(new WebViewClient(){
             @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest request){return !"https".equals(request.getUrl().getScheme()) || (request.isForMainFrame()&&!java.util.Objects.equals(host,request.getUrl().getHost()));}
@@ -35,13 +36,14 @@ public class BrowserPlayerActivity extends Activity {
         });
         web.setWebChromeClient(new WebChromeClient(){
             @Override public boolean onCreateWindow(WebView view,boolean dialog,boolean gesture,android.os.Message message){return false;}
-            @Override public void onShowCustomView(View view,CustomViewCallback callback){if(fullscreen!=null){callback.onCustomViewHidden();return;}fullscreen=view;fullscreenCallback=callback;root.setVisibility(View.GONE);screen.addView(view,new FrameLayout.LayoutParams(-1,-1));}
+            @Override public void onShowCustomView(View view,CustomViewCallback callback){if(android.os.SystemClock.elapsedRealtime()-lastPlayerGesture>1500||fullscreen!=null){callback.onCustomViewHidden();return;}fullscreen=view;fullscreenCallback=callback;root.setVisibility(View.GONE);screen.addView(view,new FrameLayout.LayoutParams(-1,-1));}
             @Override public void onHideCustomView(){closeFullscreen();}
         });root.addView(web,new LinearLayout.LayoutParams(-1,0,1));screen=new FrameLayout(this);screen.setBackgroundColor(Color.BLACK);screen.addView(root,new FrameLayout.LayoutParams(-1,-1));setContentView(screen);if(!reader)hideSystemBars();web.loadUrl(address);web.requestFocus();
     }
     private void hideSystemBars(){getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY|View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);}
     @Override public void onWindowFocusChanged(boolean focused){super.onWindowFocusChanged(focused);if(focused&&!getIntent().getBooleanExtra("reader",false))hideSystemBars();}
     private void closeFullscreen(){if(fullscreen==null)return;screen.removeView(fullscreen);fullscreen=null;screen.getChildAt(0).setVisibility(View.VISIBLE);if(fullscreenCallback!=null){fullscreenCallback.onCustomViewHidden();fullscreenCallback=null;}}
+    @Override public boolean dispatchKeyEvent(android.view.KeyEvent event){if(event.getAction()==android.view.KeyEvent.ACTION_DOWN&&(event.getKeyCode()==android.view.KeyEvent.KEYCODE_DPAD_CENTER||event.getKeyCode()==android.view.KeyEvent.KEYCODE_ENTER))lastPlayerGesture=android.os.SystemClock.elapsedRealtime();return super.dispatchKeyEvent(event);}
     @Override public void onBackPressed(){if(fullscreen!=null)closeFullscreen();else super.onBackPressed();}
     @Override protected void onPause(){if(web!=null){CookieManager.getInstance().flush();web.onPause();}super.onPause();}
     @Override protected void onResume(){super.onResume();if(web!=null)web.onResume();}

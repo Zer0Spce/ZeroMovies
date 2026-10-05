@@ -7,7 +7,7 @@ import java.util.*;
 
 final class ContentApi {
     static final String MANGA="https://api.mangadex.org";
-    static final String LIVE="https://broken-cake-8f46.bingeflex.workers.dev/https://streamed.su";
+    static final String LIVE="https://streamed.pk";
     static Object json(String address) throws Exception {
         URL url=new URL(address);if(!url.getProtocol().equals("https"))throw new IOException("HTTPS required");
         HttpURLConnection c=(HttpURLConnection)url.openConnection();c.setConnectTimeout(12000);c.setReadTimeout(20000);c.setInstanceFollowRedirects(false);c.setRequestProperty("Accept","application/json");
@@ -44,18 +44,42 @@ final class ContentApi {
         }return result;
     }
 
-    static List<Catalog.Item> searchMovies(String query,String key,int page) throws Exception {
-        JSONObject response=(JSONObject)json("https://api.themoviedb.org/3/search/multi?api_key="+URLEncoder.encode(key,"UTF-8")+"&query="+URLEncoder.encode(query.trim(),"UTF-8")+"&include_adult=false&language=en-US&page="+page);
-        JSONArray data=response.getJSONArray("results");List<Catalog.Item> rows=new ArrayList<>();
+
+    static JSONObject tmdb(String path,String key,String extra) throws Exception {
+        if(key.isEmpty())throw new IOException("Add your TMDB API key in Settings");
+        return (JSONObject)json("https://api.themoviedb.org/3"+path+"?api_key="+URLEncoder.encode(key,"UTF-8")+"&language=en-US"+extra);
+    }
+    static List<Catalog.Item> tmdbRows(JSONArray data,String mediaDefault,boolean search) throws JSONException {
+        List<Catalog.Item> rows=new ArrayList<>();
         for(int i=0;i<data.length();i++){
-            JSONObject raw=data.getJSONObject(i);String media=raw.optString("media_type");if(!media.equals("movie")&&!media.equals("tv"))continue;
+            JSONObject raw=data.getJSONObject(i);String media=raw.optString("media_type",mediaDefault);if(!media.equals("movie")&&!media.equals("tv")||raw.optBoolean("adult"))continue;
             long id=raw.optLong("id");if(id<=0)continue;String type=media.equals("tv")?"series":"movie",name=raw.optString(media.equals("tv")?"name":"title");if(name.isEmpty())continue;
             String date=raw.optString(media.equals("tv")?"first_air_date":"release_date"),poster=raw.optString("poster_path"),backdrop=raw.optString("backdrop_path");int year=0;try{if(date.length()>=4)year=Integer.parseInt(date.substring(0,4));}catch(NumberFormatException ignored){}
             JSONObject item=new JSONObject().put("id","tmdb-"+type+"-"+id).put("title",name).put("type",type).put("year",year).put("description",raw.optString("overview")).put("rating",raw.optDouble("vote_average",0))
                 .put("poster",poster.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/w500"+poster:"")
-                .put("backdrop",backdrop.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/w1280"+backdrop:"").put("onlineSearch",true);
+                .put("backdrop",backdrop.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/w1280"+backdrop:"").put("onlineSearch",search);
             rows.add(new Catalog.Item(item));
         }return rows;
+    }
+    static List<Catalog.Item> searchMovies(String query,String key,int page) throws Exception {
+        return tmdbRows(tmdb("/search/multi",key,"&query="+URLEncoder.encode(query.trim(),"UTF-8")+"&include_adult=false&page="+page).getJSONArray("results"),"",true);
+    }
+    static List<Catalog.Item> browseMovies(String key,String section,int page) throws Exception {
+        if(section.equals("Movies"))return tmdbRows(tmdb("/movie/popular",key,"&page="+page).getJSONArray("results"),"movie",false);
+        if(section.equals("Series"))return tmdbRows(tmdb("/tv/popular",key,"&page="+page).getJSONArray("results"),"tv",false);
+        LinkedHashMap<String,Catalog.Item> rows=new LinkedHashMap<>();
+        String[][] endpoints={{"/trending/all/week",""},{"/movie/popular","movie"},{"/tv/popular","tv"},{"/movie/now_playing","movie"}};
+        for(String[] endpoint:endpoints)for(Catalog.Item item:tmdbRows(tmdb(endpoint[0],key,"&page=1").getJSONArray("results"),endpoint[1],false))rows.putIfAbsent(item.id,item);
+        return new ArrayList<>(rows.values());
+    }
+    static JSONArray seasons(String id,String key) throws Exception {
+        if(!id.matches("[0-9]+"))throw new IOException("Invalid series ID");
+        return tmdb("/tv/"+id,key,"").getJSONArray("seasons");
+    }
+    static JSONArray seasonEpisodes(String id,int season,String key) throws Exception {
+        JSONArray episodes=tmdb("/tv/"+id+"/season/"+season,key,"").getJSONArray("episodes"),result=new JSONArray();
+        for(int i=0;i<episodes.length();i++){JSONObject ep=episodes.getJSONObject(i);int number=ep.optInt("episode_number");if(number>0)result.put(new JSONObject().put("id","s"+season+"e"+number).put("season",season).put("episode",number).put("title",ep.optString("name","Episode "+number)));}
+        return result;
     }
     static JSONArray movieSources(String tmdb,String type,int season,int episode) throws JSONException {
         JSONArray result=new JSONArray();if(!tmdb.matches("[0-9]+"))return result;
