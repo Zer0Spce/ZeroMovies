@@ -1,49 +1,56 @@
 # ZeroStreams
 
-Android phone and Android TV app for movie and series discovery using **TMDB**, with **VidStuck** video playback. Version **0.3.2**.
+Android phone and Android TV app for TMDB movie and series discovery, with VidStuck playback. Version **0.4.0**.
 
-## Features
+## Discovery and library
 
-- TMDB trending titles, popular movies, popular series and now-playing discovery.
-- Online movie and TV search with result pages, artwork, synopsis and ratings.
-- Movie and series browsing with pagination.
-- TMDB season and episode lists loaded on demand, including specials.
-- VidStuck-only movie/series playback with ZeroStreams loading text, mint accent, English subtitle preference and episode controls.
-- TV D-pad focus navigation without a mouse pointer; playback control bars hide after three idle seconds and wake on remote input.
-- Optional Settings audio boost: Off, 1.5× or 2× for compatible embedded media, with a limiter. Non-CORS sources keep their original audio path.
-- Fullscreen video without the app's top toolbar; Android/remote Back returns to browsing.
-- Softly blurred selected-title artwork, sharp posters and remote focus highlights.
-- Watchlist, collections and local Continue Watching. Embedded progress still records opened titles rather than exact timestamps.
-- MangaDex English manga readers and publisher readers.
-- Live sports use the official Streamed API directly; event streams remain separate from movie playback.
+- Backdrop carousel with six trending picks, previous/next controls, slide indicators, phone swipes and TV ranked picks. Automatic rotation pauses during focus interaction and while the app is in the background.
+- Continue Watching, Coming Soon with release dates, recommendations, popular titles, series and now-playing rows.
+- Streaming-provider logos and movie/TV discovery filters. Provider availability is region-specific, supplied by JustWatch through TMDB. Browsing a provider does not change the VidStuck playback source or imply a subscription is included.
+- Title details with softly blurred artwork, synopsis, genres, runtime, country, director/creators, cast, trailers and related recommendations.
+- Watchlist, collections, Plan to Watch and sharing public TMDB title links.
+- Device-local watch history (100 recent entries) and search history (30 queries), with replay, removal and clearing. Queries are recorded on search submission or choosing a result, rather than every partially typed query.
+- Continue Watching uses VidStuck progress events when available. Percentage bars are based on reported timestamps/duration; no invented match scores or playback percentages. Titles without progress events remain marked Started. Episode history preserves the selected season/episode even before a progress event arrives.
+- Local clock, Surprise Me and optional weather for a city chosen by the user.
+- MangaDex readers and live sports via the official Streamed API.
+
+## TV playback and performance
+
+The homepage and app navigation use standard D-pad focus. **Mouse mode applies only inside the video player**, with continuous movement, acceleration and frame-synced drawing. Arrow keys move the pointer; OK selects; Menu toggles mouse/focus mode. The preference is also available in Settings. Back returns to browsing. There is no app toolbar over playback.
+
+Recognized player control bars hide after three idle seconds and wake on remote input. Optional audio boost offers Off, 1.5× and 2× with a limiter. Boost requires compatible embedded audio; non-CORS sources retain their original audio path.
+
+Artwork downloads use separate workers from catalog/search requests. Only visible artwork starts downloading, images are downsampled and cached, and stale image responses cannot replace a different carousel title. Ad-page inspection is throttled to reduce DOM work.
+
+## QR advertisement handling
+
+The earlier text-only QR filter did not eliminate the ad reported on the user's TV. This version additionally inspects small, temporary in-memory snapshots of the player, decodes the visible QR destination with ZXing, and targets the reported advertising domain and its narrow campaign URL fingerprint. It never visits the QR destination or responds to a verification prompt. Confirmed advertising banners can be removed even when their text/QR is painted into an image or CSS background.
+
+Common ad domains, popups and top-level cross-site redirects remain blocked. Genuine CAPTCHA frames and video containers are protected by the cosmetic filter. Modern Android System WebView document-start support is needed for filtering inside cross-origin player frames; older WebViews receive an update notice and a main-frame fallback.
+
+Tests cover decoder images and advertisement/CAPTCHA/video boundaries. Actual elimination of the provider's TV ad still needs device confirmation. Ads burned into the video, different creatives and unsupported WebViews may remain. No verification or DRM bypass is implemented.
 
 ## API key and builds
 
-Create your own TMDB **API Key (v3 auth)** at https://www.themoviedb.org/settings/api. Add repository Actions secret **TMDB_API_KEY** to include it in APK builds. A nonempty key entered in app Settings overrides the bundled key; leaving it blank uses the bundled key. If neither is available, Settings explains that a key is required. No third-party credentials are copied into source. A key bundled in an APK can be extracted from that APK.
+Create a TMDB **API Key (v3 auth)** at https://www.themoviedb.org/settings/api. Add repository Actions secret **TMDB_API_KEY** to bundle it in APK builds. A nonempty key entered in Settings overrides the bundled key; leaving it blank uses the bundled key. APK client keys can be extracted. No key is committed to repository source.
 
-Run **Build ZeroStreams APKs** manually from GitHub Actions. It builds and lints both variants and uploads **ZeroStreams-mobile-and-tv-debug**:
+Run **Build ZeroStreams APKs** manually from GitHub Actions. Download **ZeroStreams-mobile-and-tv-debug**:
 
 - `app-mobile-debug.apk`: Android phone/tablet.
 - `app-tv-debug.apk`: Android TV/Google TV.
 
-These are debug APKs, not Play Store releases. Debug signing keys can differ between CI runners; Android may require uninstalling an older debug build, which clears its local data.
+These are debug APKs. CI debug signing keys can differ; Android may require uninstalling the older debug build, which clears its local library and history.
 
-## Refresh behavior
+## Refresh and progress
 
-The app retrieves movie and TV metadata directly from TMDB when opened, on refresh and after returning to the app following five minutes. Search and browse pages request TMDB on demand. Seasons and episodes load when selected. New titles and episodes require no APK rebuild. The previous static catalog, importer backend, episode snapshots and scheduled catalog workflow have been removed. No GitHub catalog feed or website scraper is needed.
+TMDB metadata loads when opened, on refresh and after returning following five minutes. Search, provider discovery, title details and episodes load on demand. New content needs no APK rebuild. TMDB supplies metadata, not video streams; a search result does not guarantee VidStuck availability.
 
-TMDB supplies metadata, not video streams. A TMDB search result does not guarantee VidStuck has a playable source. Manga and live events have their own APIs.
+Progress messages use an origin-restricted WebView listener for `https://vidstuck.xyz`. Events must match the current content ID/type and pass timestamp/duration/episode boundary checks. Other player frames do not receive an unrestricted native interface. Resume positions depend on the provider emitting its documented progress events.
 
-## External-player limitations
+History is stored on the device. Clearing watch history also clears resume positions; saved title metadata and watchlists remain.
 
-Common ad-domain requests, new windows and top-level cross-site redirects are blocked. The reported timed QR advertisement is targeted using its decoded destination domain and a narrow creative filter: matching label, large QR graphic, circular countdown, white fullscreen container, and no video or genuine CAPTCHA inside that container. The filter runs inside player frames when Android System WebView supports document-start scripts; older WebViews receive a main-frame fallback and an update notice. Genuine provider verification remains intact. The filter has DOM regression coverage, but elimination of the actual TV ad still requires device confirmation.
+## Credits and validation
 
-TV keeps the HTML player surface instead of entering native video fullscreen, so embedded playback controls can remain accessible. Recognized and detected bottom control bars hide after three idle seconds; remote input wakes the controls through the frame tree. Audio boost only connects compatible streams after the audio context is running, so unsupported sources are not deliberately rerouted into silence. Real provider layouts, remote navigation and audio remain subject to device testing. No native JavaScript bridge or verification/DRM bypass is introduced.
+This product uses the TMDB API but is not endorsed or certified by TMDB. The approved logo and attribution appear in Settings. Metadata and artwork: TMDB and their respective rights holders. Provider availability: JustWatch through TMDB. Video player: VidStuck. Manga: MangaDex. Sports metadata: Streamed. Optional weather: Open-Meteo; city lookup: GeoNames via Open-Meteo. QR decoding: ZXing (Apache 2.0). Android media playback: AndroidX Media3.
 
-## Credits
-
-This product uses the TMDB API but is not endorsed or certified by TMDB. The approved TMDB logo and attribution appear in Settings. Artwork and metadata belong to their respective rights holders. Manga data: MangaDex. Live event metadata: Streamed. Video player: VidStuck.
-
-## Verification
-
-The APK workflow checks domain-boundary blocking, normalized title matching, timed QR ad removal, preservation of CAPTCHA/video content, late ads, remote controls and audio routing, compiles mobile/TV variants and runs Android lint. Live TMDB discovery, show and season endpoints were checked using the user's own credential. No credential appears in repository source. Playback and challenge behavior cannot be verified from this development environment.
+The APK workflow runs domain/search/progress boundary checks, DOM advertisement/control/audio regressions and JVM discovery-history/QR-decoder tests, then compiles and lints mobile and TV variants. TV navigation, actual provider playback, layout and perceived performance require device testing.
