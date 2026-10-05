@@ -1,0 +1,49 @@
+{
+  "name": "zerostreams-windows",
+  "version": "0.4.1",
+  "description": "ZeroStreams movie and TV discovery for Windows",
+  "author": "ZeroStreams",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "prepare-config": "node scripts/config.cjs",
+    "build": "npm run prepare-config && electron-builder --win --x64"
+  },
+  "dependencies": {
+    "jsqr": "1.4.0"
+  },
+  "devDependencies": {
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.zerostreams.windows",
+    "productName": "ZeroStreams",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "*.cjs",
+      "generated-config.json",
+      "ui/**/*",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "artifactName": "ZeroStreams-${version}-Windows-x64.${ext}",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "asar": true
+  }
+}
