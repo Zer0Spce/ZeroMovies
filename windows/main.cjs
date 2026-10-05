@@ -7,6 +7,7 @@ let main,player,toolbar,playerHost,current,scanTimer,cursorTimer,qrWorker,scanni
 const uiURL=pathToFileURL(path.join(__dirname,'ui/index.html')).href;
 const toolsURL=pathToFileURL(path.join(__dirname,'ui/player-tools.html')).href;
 const smoke=process.argv.includes('--smoke-test');
+const dataRoot=require('./data-directory.cjs').dataDirectory(app.getPath('appData'));fs.mkdirSync(dataRoot,{recursive:true});app.setPath('userData',dataRoot);
 const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1},customKey:''});
 function persist(){const temp=file+'.tmp';fs.writeFileSync(temp,JSON.stringify(state));fs.renameSync(temp,file);}
 function key(){if(state.customKey&&safeStorage.isEncryptionAvailable())try{return safeStorage.decryptString(Buffer.from(state.customKey,'base64'));}catch{}return config.tmdbKey||process.env.TMDB_API_KEY||'';}
