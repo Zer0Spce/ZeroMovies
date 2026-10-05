@@ -1,7 +1,7 @@
 {
   "name": "zerostreams-windows",
-  "version": "1.0.1",
-  "description": "ZeroPlay movie and TV discovery for Windows",
+  "version": "1.5.0",
+  "description": "ZeroPlay movies, series, Live TV and Live Sports with offline downloads",
   "author": "ZeroPlay",
   "private": true,
   "main": "main.cjs",
@@ -37,7 +37,7 @@
       "target": [
         "zip"
       ],
-      "artifactName": "ZeroPlay-1.0.1-Windows-x64.${ext}",
+      "artifactName": "ZeroPlay-1.5-Windows-x64.${ext}",
       "icon": "assets/icon.ico"
     },
     "asar": true

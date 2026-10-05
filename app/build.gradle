@@ -6,6 +6,7 @@ android {
         applicationId 'com.zerostreams.app'
         minSdk 23
         targetSdk 35
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         versionCode 22
         versionName '1.5'
         buildConfigField 'String', 'DEFAULT_TMDB_KEY', groovy.json.JsonOutput.toJson(System.getenv('TMDB_API_KEY') ?: '')
@@ -36,6 +37,9 @@ android {
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
 dependencies {
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:core:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     implementation 'org.jsoup:jsoup:1.18.3'
     implementation 'org.libtorrent4j:libtorrent4j:2.1.0-38'
     implementation 'org.libtorrent4j:libtorrent4j-android-arm:2.1.0-38'

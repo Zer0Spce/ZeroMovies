@@ -92,3 +92,14 @@ Metadata and artwork: **TMDB** and their respective rights holders. This product
 ### 🛡️ Known QR ad bug
 
 If a QR ad appears, press its **X** button or wait for it to close automatically. This is a known bug.
+
+## 🆕 Version 1.5
+
+- 🏟️ **Live Sports** shows categories, posters, event schedules in your local time, and alternate source labels from the PPV API. It refreshes approximately every minute while open; **↻ Refresh sports** requests a fresh catalogue on every press. Its embedded player keeps provider ads and integrations enabled, separately from native M3U playback.
+- ↓ **Downloads** lets you save supported movie/episode media after starting playback, pause/resume, remove, and watch completed downloads offline.
+- 🧲 **Download as torrent** uses a built-in engine, with EXT search and browser/magnet fallback. Android 7+ is required for torrents. Keep the Windows app open during downloads. Peers exchange pieces while downloading; completed downloads stop seeding.
+- 🌸 **Anime** movies and series in Categories.
+- ⚙️ **Homepage panels** in Settings: existing panels start enabled, extra category rows are optional, and defaults can be restored.
+- ⭐ **Live TV favorites**: star a channel, then select the Favorites group.
+
+Direct offline downloads depend on available media sources. Protected sources and ongoing live streams are unsupported. Downloaded torrent files must use codecs supported by your device.
