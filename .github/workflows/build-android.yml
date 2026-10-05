@@ -1,6 +1,8 @@
-name: Build ZeroStreams APKs
+name: Build ZeroMovies APKs
 on:
   workflow_dispatch:
+  push:
+    paths: ['app/**']
 permissions:
   contents: read
 jobs:
@@ -64,11 +66,11 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ZeroStreams-lint-reports
+          name: ZeroMovies-lint-reports
           path: app/build/reports/lint-results-*
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
-          name: ZeroStreams-mobile-and-tv-debug
+          name: ZeroMovies-mobile-and-tv-debug
           path: app/build/outputs/apk/*/debug/*.apk
           if-no-files-found: error

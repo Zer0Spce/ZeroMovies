@@ -28,13 +28,13 @@ public class BrowserPlayerActivity extends Activity {
         LinearLayout root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(Color.BLACK);
         LinearLayout controls=new LinearLayout(this);Button back=new Button(this);back.setText("Back");back.setOnClickListener(v->finish());controls.addView(back);
         Button reload=new Button(this);reload.setText(reader?"Reload reader":"Reload player");reload.setOnClickListener(v->{status.setText(reader?"Loading reader…":"Loading player…");web.reload();});controls.addView(reload);
-        if("vidstuck.xyz".equals(Uri.parse(address).getHost())){Button browser=new Button(this);browser.setText("Open browser");browser.setOnClickListener(v->{try{startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW,Uri.parse(address)));}catch(android.content.ActivityNotFoundException e){Toast.makeText(this,"No browser installed",Toast.LENGTH_LONG).show();}});controls.addView(browser);}
+        if(PlaybackSources.trusted(address)){Button browser=new Button(this);browser.setText("Open browser");browser.setOnClickListener(v->{try{startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW,Uri.parse(address)));}catch(android.content.ActivityNotFoundException e){Toast.makeText(this,"No browser installed",Toast.LENGTH_LONG).show();}});controls.addView(browser);}
         if(!reader){Button ads=new Button(this);ads.setText(blockAds?"Ads blocked":"Blocking off");ads.setOnClickListener(v->{blockAds=!blockAds;getSharedPreferences("zero",MODE_PRIVATE).edit().putBoolean("blockAds",blockAds).apply();ads.setText(blockAds?"Ads blocked":"Blocking off");web.reload();});controls.addView(ads);}
         status=new TextView(this);status.setText(reader?"Loading reader…":"Loading player…");status.setTextColor(Color.WHITE);status.setTextSize(14);controls.addView(status,new LinearLayout.LayoutParams(0,-2,1));if(reader)root.addView(controls);
-        web=new WebView(this);web.setBackgroundColor(Color.BLACK);web.setOnTouchListener((v,event)->{if(event.getActionMasked()==android.view.MotionEvent.ACTION_DOWN){backState.userActivity();lastPlayerGesture=android.os.SystemClock.elapsedRealtime();}return false;});CookieManager cookies=CookieManager.getInstance();cookies.setAcceptCookie(true);cookies.setAcceptThirdPartyCookies(web,"vidstuck.xyz".equals(Uri.parse(address).getHost()));WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setMediaPlaybackRequiresUserGesture(false);settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setSupportMultipleWindows(false);settings.setJavaScriptCanOpenWindowsAutomatically(false);
-        // No JavaScript/native bridge. Popups and top-level cross-site ad redirects stay closed.
-        String host=Uri.parse(address).getHost();if(!reader&&"vidstuck.xyz".equals(host)){blockAds=true;installProgressListener();installPlayerExitListener();installPlayerGuard();adScan=new PlayerAdScan(this,web);}web.setWebViewClient(new WebViewClient(){
-            @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest request){if(tvPlayer&&request.isForMainFrame()&&request.hasGesture()&&"vidstuck.xyz".equals(request.getUrl().getHost())&&!String.valueOf(request.getUrl().getPath()).startsWith("/embed/")){finish();return true;}return (blockAds&&AdBlockRules.blocks(request.getUrl().getHost())) || !"https".equals(request.getUrl().getScheme()) || (request.isForMainFrame()&&!java.util.Objects.equals(host,request.getUrl().getHost()));}
+        web=new WebView(this);web.setBackgroundColor(Color.BLACK);web.setOnTouchListener((v,event)->{if(event.getActionMasked()==android.view.MotionEvent.ACTION_DOWN){backState.userActivity();lastPlayerGesture=android.os.SystemClock.elapsedRealtime();}return false;});CookieManager cookies=CookieManager.getInstance();cookies.setAcceptCookie(true);cookies.setAcceptThirdPartyCookies(web,PlaybackSources.trusted(address));WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setMediaPlaybackRequiresUserGesture(false);settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setSupportMultipleWindows(false);settings.setJavaScriptCanOpenWindowsAutomatically(false);
+        // Origin-scoped playback messages only. Popups and top-level cross-site ad redirects stay closed.
+        String host=Uri.parse(address).getHost();if(!reader&&PlaybackSources.trusted(address)){blockAds=true;installProgressListener();installPlayerExitListener();installPlayerGuard();adScan=new PlayerAdScan(this,web);}web.setWebViewClient(new WebViewClient(){
+            @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest request){if(tvPlayer&&request.isForMainFrame()&&request.hasGesture()&&java.util.Arrays.asList("vidstuck.xyz","vidsrc.to","vidsrc.sh").contains(request.getUrl().getHost())&&!String.valueOf(request.getUrl().getPath()).startsWith("/embed/")){finish();return true;}return (blockAds&&AdBlockRules.blocks(request.getUrl().getHost())) || !"https".equals(request.getUrl().getScheme()) || (request.isForMainFrame()&&!PlaybackSources.trusted(request.getUrl().toString()));}
             @Override public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest request){if(blockAds&&!request.isForMainFrame()&&AdBlockRules.blocks(request.getUrl().getHost()))return new WebResourceResponse("text/plain","UTF-8",new java.io.ByteArrayInputStream(new byte[0]));return null;}
             @Override public void onPageFinished(WebView v,String url){CookieManager.getInstance().flush();if(playerGuard!=null)v.evaluateJavascript(playerGuard,null);status.setText(reader?"Publisher reader · use Back to return":"External player · use Back to return");}
             @Override public void onReceivedError(WebView v,WebResourceRequest request,WebResourceError error){if(request.isForMainFrame()){status.setText("Player unavailable. Reload or try again later.");if(!reader)Toast.makeText(BrowserPlayerActivity.this,"Player unavailable. Press Back and try again.",Toast.LENGTH_LONG).show();}}
@@ -71,16 +71,16 @@ public class BrowserPlayerActivity extends Activity {
     private void wakeControls(){if(web!=null)web.evaluateJavascript("if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();",null);}
     private void installPlayerExitListener(){
         if(!androidx.webkit.WebViewFeature.isFeatureSupported(androidx.webkit.WebViewFeature.WEB_MESSAGE_LISTENER))return;
-        androidx.webkit.WebViewCompat.addWebMessageListener(web,"ZeroPlayer",java.util.Collections.singleton("https://vidstuck.xyz"),(view,message,origin,mainFrame,reply)->{
-            if(mainFrame&&"https".equals(origin.getScheme())&&"vidstuck.xyz".equals(origin.getHost())&&"back".equals(message.getData()))finish();
+        androidx.webkit.WebViewCompat.addWebMessageListener(web,"ZeroPlayer",new java.util.HashSet<>(java.util.Arrays.asList(PlaybackSources.ORIGINS)),(view,message,origin,mainFrame,reply)->{
+            if(mainFrame&&PlaybackSources.trusted(origin.toString())&&"back".equals(message.getData()))finish();
         });
     }
     private void installProgressListener(){
         String parent=getIntent().getStringExtra("parent");if(parent==null||!parent.matches("tmdb-(movie|series)-[0-9]+"))return;
         if(!androidx.webkit.WebViewFeature.isFeatureSupported(androidx.webkit.WebViewFeature.WEB_MESSAGE_LISTENER))return;
         HistoryStore history=new HistoryStore(getSharedPreferences("zero",MODE_PRIVATE));String type=parent.startsWith("tmdb-series-")?"tv":"movie";
-        androidx.webkit.WebViewCompat.addWebMessageListener(web,"ZeroProgress",java.util.Collections.singleton("https://vidstuck.xyz"),(view,message,origin,mainFrame,reply)->{
-            if(!"https".equals(origin.getScheme())||!"vidstuck.xyz".equals(origin.getHost()))return;String data=message.getData();if(data==null||data.length()>4096)return;
+        androidx.webkit.WebViewCompat.addWebMessageListener(web,"ZeroProgress",new java.util.HashSet<>(java.util.Arrays.asList(PlaybackSources.ORIGINS)),(view,message,origin,mainFrame,reply)->{
+            if(!PlaybackSources.trusted(origin.toString()))return;String data=message.getData();if(data==null||data.length()>4096)return;
             long now=android.os.SystemClock.elapsedRealtime();if(now-lastProgressSaved<2500)return;
             try{org.json.JSONObject event=new org.json.JSONObject(data);history.progress(parent,type,event);lastProgressSaved=now;}catch(org.json.JSONException ignored){}
         });
@@ -94,7 +94,7 @@ public class BrowserPlayerActivity extends Activity {
             }else{
                 Toast.makeText(this,"Update Android System WebView for filtering inside player frames.",Toast.LENGTH_LONG).show();
             }
-        }catch(java.io.IOException error){android.util.Log.e("ZeroStreams","Player guard could not load",error);}
+        }catch(java.io.IOException error){android.util.Log.e("ZeroMovies","Player guard could not load",error);}
     }
     @Override public void onBackPressed(){
         if(getIntent().getBooleanExtra("reader",false)||playerGuard==null){if(fullscreen!=null)closeFullscreen();else super.onBackPressed();return;}

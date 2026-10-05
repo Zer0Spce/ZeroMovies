@@ -1,6 +1,6 @@
-# ZeroStreams website
+# ZeroMovies website
 
-Responsive movie/TV website using the same design and catalog features as the Windows app. Includes TMDB discovery, provider browsing, search, details, cast, trailers, related titles, episode selection, watchlists, collections, Plan to Watch and device-local watch/search history. No Live or Manga tabs.
+Responsive movie/TV website using the same design and catalog features as the Windows app. Includes TMDB discovery, provider browsing, search, details, cast, trailers, related titles, episode selection, watchlists, collections, Plan to Watch and device-local watch/search history. No Live or Manga tabs. Includes saved night/light mode, a home Watchlist row, and a playback source picker for VidStuck, VidSrc.to, VidSrc.sh and SuperEmbed.
 
 ## Connect to Netlify
 

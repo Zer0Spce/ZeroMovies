@@ -92,13 +92,6 @@ final class ContentApi {
         return tmdbRows(tmdb("/discover/"+type,key,"&include_adult=false&with_watch_providers="+provider+"&watch_region="+region+"&with_watch_monetization_types=flatrate&sort_by=popularity.desc&page="+page).getJSONArray("results"),type,false);
     }
     static String image(String path,String size){return path.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/"+size+path:"";}
-    static String weather(String city) throws Exception {
-        JSONObject geo=(JSONObject)json("https://geocoding-api.open-meteo.com/v1/search?name="+URLEncoder.encode(city,"UTF-8")+"&count=1&language=en&format=json");
-        JSONArray results=geo.optJSONArray("results");if(results==null||results.length()==0)throw new IOException("City not found");JSONObject place=results.getJSONObject(0);
-        JSONObject result=(JSONObject)json("https://api.open-meteo.com/v1/forecast?latitude="+place.getDouble("latitude")+"&longitude="+place.getDouble("longitude")+"&current=temperature_2m,weather_code&timezone=auto");
-        JSONObject current=result.getJSONObject("current");int code=current.optInt("weather_code");String icon=code==0?"☀":code<=3?"☁":code>=95?"⛈":"☂";
-        return place.optString("name",city)+" · "+icon+" "+Math.round(current.getDouble("temperature_2m"))+"°C";
-    }
     static JSONArray seasons(String id,String key) throws Exception {
         if(!id.matches("[0-9]+"))throw new IOException("Invalid series ID");
         return tmdb("/tv/"+id,key,"").getJSONArray("seasons");
@@ -109,11 +102,8 @@ final class ContentApi {
         return result;
     }
     static JSONArray movieSources(String tmdb,String type,int season,int episode) throws JSONException {
-        JSONArray result=new JSONArray();if(!tmdb.matches("[0-9]+"))return result;
-        String suffix=type.equals("movie")?"movie/"+tmdb:"tv/"+tmdb+"/"+season+"/"+episode;
-        String vidstuck="https://vidstuck.xyz/embed/"+suffix+"?branding=ZeroStreams&color=65E6CC&subtitle=english&overlay=true";
-        if(!type.equals("movie"))vidstuck+="&nextEpisode=true&episodeSelector=true&autoplayNextEpisode=true";
-        result.put(new JSONObject().put("label","VidStuck").put("url",vidstuck).put("embed",true));
+        JSONArray result=new JSONArray();if(!tmdb.matches("[1-9][0-9]*"))return result;
+        for(int i=0;i<PlaybackSources.IDS.length;i++)result.put(new JSONObject().put("label",PlaybackSources.NAMES[i]).put("url",PlaybackSources.url(tmdb,type,season,episode,PlaybackSources.IDS[i])).put("embed",true));
         return result;
     }
 }

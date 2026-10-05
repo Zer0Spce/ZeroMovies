@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const STORAGE='zerostreams-web-v1';
-  const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1},hasKey:true,version:'0.4.1 Web'});
+  const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',source:'vidstuck'},hasKey:true,version:'0.4.4 Web'});
   let saved=defaults(),playing,iframe,idleTimer,lastProgress=0;
   try{const parsed=JSON.parse(localStorage.getItem(STORAGE)||'null');if(parsed&&typeof parsed==='object')saved={...saved,...parsed,settings:{...saved.settings,...parsed.settings}};}catch{}
   for(const name of ['favorites','planned','history','searches'])if(!Array.isArray(saved[name]))saved[name]=[];
@@ -21,8 +21,8 @@
   document.getElementById('player-exit-always').addEventListener('click',activity);
   dialog.addEventListener('pointermove',activity);dialog.addEventListener('pointerdown',activity);dialog.addEventListener('keydown',activity);
   window.addEventListener('message',event=>{
-    if(event.origin!=='https://vidstuck.xyz'||event.source!==iframe?.contentWindow||!playing||Date.now()-lastProgress<2500)return;
-    try{const data=typeof event.data==='string'?JSON.parse(event.data):event.data;if(!data||JSON.stringify(data).length>4096||String(data.id)!==String(playing.id)||data.type!==playing.type)return;
+    if(!window.playbackSources.trusted(event.origin)||event.source!==iframe?.contentWindow||!playing||Date.now()-lastProgress<2500)return;
+    try{const raw=typeof event.data==='string'?JSON.parse(event.data):event.data;const data=window.playbackSources.normalize(raw);if(!data||JSON.stringify(data).length>4096||String(data.id)!==String(playing.id)||data.type!==playing.type)return;
       const timestamp=Number(data.timestamp),duration=Number(data.duration);if(!Number.isFinite(timestamp)||!Number.isFinite(duration)||timestamp<0||duration<=0||duration>604800||timestamp>duration+10)return;
       let ep={};if(playing.type==='tv'){const season=Number(data.season),episode=Number(data.episode);if(!Number.isInteger(season)||season<0||season>1000||!Number.isInteger(episode)||episode<1||episode>10000)return;ep={season,episode};}
       lastProgress=Date.now();record(playing,{...ep,timestamp:Math.min(timestamp,duration),duration,percent:Math.min(100,Math.max(0,timestamp/duration*100))});
@@ -38,7 +38,7 @@
       else if(action==='clear-searches')saved.searches=[];
       else if(action==='remove-history')saved.history=saved.history.filter(x=>x.historyKey!==value);
       else if(action==='clear-history'){saved.history=[];saved.positions={};}
-      else if(action==='settings'){if(!['PH','US','GB','CA','AU','IN','JP'].includes(value?.region))throw Error('Invalid region');saved.settings={region:value.region,gain:1};}
+      else if(action==='settings'){if(!['PH','US','GB','CA','AU','IN','JP'].includes(value?.region))throw Error('Invalid region');if(!['dark','light'].includes(value.theme)||!window.playbackSources.sources.some(s=>s.id===value.source))throw Error('Invalid appearance or playback source');saved.settings={region:value.region,gain:1,theme:value.theme,source:value.source};}
       else if(action==='collection'){const name=String(value?.name||'').trim().slice(0,60);if(!name||['__proto__','constructor','prototype'].includes(name))throw Error('Invalid collection name');const item=clean(value.item),rows=saved.collections[name]||[];if(!Array.isArray(rows))throw Error('Invalid collection');saved.collections[name]=rows.some(x=>key(x)===key(item))?rows.filter(x=>key(x)!==key(item)):[item,...rows].slice(0,300);}
       else throw Error('Unsupported library action');persist();return copy();
     },
@@ -48,10 +48,7 @@
       const previous=saved.positions[key(item)];if(selected&&previous&&selected.season===previous.season&&selected.episode===previous.episode)position=previous;
       if(iframe){iframe.src='about:blank';iframe.remove();}playing=item;lastProgress=0;record(item,position);
       const season=position.season===0?0:Number(position.season)||1,episode=Number(position.episode)||1;
-      const url=new URL('https://vidstuck.xyz/embed/'+item.type+'/'+item.id+(item.type==='tv'?'/'+season+'/'+episode:''));
-      for(const [name,value]of Object.entries({branding:'ZeroStreams',color:'65E6CC',subtitle:'english',overlay:'true'}))url.searchParams.set(name,value);
-      if(item.type==='tv')for(const name of ['nextEpisode','episodeSelector','autoplayNextEpisode'])url.searchParams.set(name,'true');
-      if(Number(position.timestamp)>30&&Number(position.percent)<95)url.searchParams.set('progress',String(Math.floor(position.timestamp)));
+      const url=new URL(window.playbackSources.url(item,position,saved.settings.source));
       iframe=document.createElement('iframe');iframe.src=url.href;iframe.title=item.title+' player';iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.allowFullscreen=true;iframe.referrerPolicy='strict-origin-when-cross-origin';iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation');
       document.getElementById('player-title').textContent=item.title;document.getElementById('player-stage').appendChild(iframe);if(!dialog.open)dialog.showModal();activity();refresh();
     },

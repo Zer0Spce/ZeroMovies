@@ -1,22 +1,22 @@
-# ZeroStreams
+# ZeroMovies
 
-Android phone and Android TV app for TMDB movie and series discovery, with VidStuck playback. Version **0.4.1**.
+Android phone and Android TV app for TMDB movie and series discovery, with VidStuck, VidSrc.to, VidSrc.sh and SuperEmbed playback. Version **0.4.4**.
 
 ## Discovery and library
 
 - Backdrop carousel with six trending picks, previous/next controls, slide indicators, phone swipes and TV ranked picks. Automatic rotation pauses during focus interaction and while the app is in the background.
 - Continue Watching, Coming Soon with release dates, recommendations, popular titles, series and now-playing rows.
-- Streaming-provider logos and movie/TV discovery filters. Provider availability is region-specific, supplied by JustWatch through TMDB. Browsing a provider does not change the VidStuck playback source or imply a subscription is included.
+- Streaming-provider logos and movie/TV discovery filters. Provider availability is region-specific, supplied by JustWatch through TMDB. Browsing a catalog provider does not change the chosen playback source or imply a subscription is included.
 - Title details with softly blurred artwork, synopsis, genres, runtime, country, director/creators, cast, trailers and related recommendations.
 - Watchlist, collections, Plan to Watch and sharing public TMDB title links.
 - Device-local watch history (100 recent entries) and search history (30 queries), with replay, removal and clearing. Queries are recorded on search submission or choosing a result, rather than every partially typed query.
-- Continue Watching uses VidStuck progress events when available. Percentage bars are based on reported timestamps/duration; no invented match scores or playback percentages. Titles without progress events remain marked Started. Episode history preserves the selected season/episode even before a progress event arrives.
-- Local clock, Surprise Me and optional weather for a city chosen by the user.
+- Continue Watching uses VidStuck and VidSrc.sh progress events when available. Percentage bars are based on reported timestamps/duration; no invented match scores or playback percentages. Titles without progress events remain marked Started. Episode history preserves the selected season/episode even before a progress event arrives.
+- Local clock, Surprise Me, saved night/light mode, and a Watchlist row on Home. Weather has been removed.
 - Live and Manga tabs are removed from mobile/TV navigation; restored sessions return to Home.
 
 ## TV playback and performance
 
-The homepage and app navigation use standard D-pad focus. **Mouse mode applies only inside the video player**, with continuous movement, acceleration and frame-synced drawing. Arrow keys move the pointer; OK selects; Menu toggles mouse/focus mode. The preference is also available in Settings. Back hides visible player controls first and keeps playback open. A further Back returns to browsing once embedded controls report hidden; unknown frame states keep the movie open. There is no app toolbar over playback.
+The homepage and app navigation use standard D-pad focus. **Mouse mode applies only inside the video player**, with continuous movement, acceleration and frame-synced drawing. Playback defaults to D-pad focus navigation: arrows move focus and OK activates the selected control. Left does not send the player's seek hotkey. In optional mouse mode, arrows move the pointer; Menu toggles mouse/focus mode. The preference is also available in Settings. Back hides visible player controls first and keeps playback open. The second Back returns to browsing without waiting for embedded frames. There is no app toolbar over Android playback. The labelled player Back control returns to the app. Watch now appears above the synopsis and cast.
 
 Recognized player control bars hide after three idle seconds and wake on remote input. Optional audio boost offers Off, 1.5× and 2× with a limiter. Boost requires compatible embedded audio; non-CORS sources retain their original audio path.
 
@@ -38,9 +38,9 @@ The responsive website is prepared for Netlify. Import this repository with the 
 
 Create a TMDB **API Key (v3 auth)** at https://www.themoviedb.org/settings/api. Add repository Actions secret **TMDB_API_KEY** to bundle it in APK builds. A nonempty key entered in Settings overrides the bundled key; leaving it blank uses the bundled key. APK client keys can be extracted. No key is committed to repository source.
 
-The Windows app is branded **ZeroMovies** and uses a single window for browsing and playback, with native fullscreen from the embedded player. Windows 10/11 x64 builds are available from the **Build ZeroMovies Windows** workflow. Future Windows artifacts contain a portable ZIP only. See [Windows instructions](windows/README.md). Future Windows builds run manually on explicit request.
+All platforms are branded **ZeroMovies**. The Windows app and uses a single window for browsing and playback, with native fullscreen from the embedded player. Windows 10/11 x64 builds are available from the **Build ZeroMovies Windows** workflow. Future Windows artifacts contain a portable ZIP only. See [Windows instructions](windows/README.md). Future Windows builds run manually on explicit request.
 
-Run **Build ZeroStreams APKs** manually from GitHub Actions. Download **ZeroStreams-mobile-and-tv-debug**:
+Run **Build ZeroMovies APKs** manually from GitHub Actions. Download **ZeroMovies-mobile-and-tv-debug**:
 
 - `app-mobile-debug.apk`: Android phone/tablet.
 - `app-tv-debug.apk`: Android TV/Google TV.

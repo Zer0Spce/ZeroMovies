@@ -6,18 +6,27 @@
   const heading = value => /^confirm you['’]re not a robot[.!]?$/i.test(value.trim());
   const media = 'video,audio,.jwplayer,.plyr,.vjs-player,[data-player]';
   const challenge = 'iframe[src*="recaptcha"],iframe[src*="hcaptcha"],iframe[src*="challenges.cloudflare.com"],.g-recaptcha,.h-captcha,input[name="cf-turnstile-response"]';
+  let shadowRoots=[],shadowChecked=0;
+  function all(selector,refresh=false){
+    if(refresh||Date.now()-shadowChecked>1500){
+      shadowChecked=Date.now();shadowRoots=[];const roots=[document];
+      for(let i=0;i<roots.length&&i<40;i++)roots[i].querySelectorAll('*').forEach(node=>{if(node.shadowRoot){shadowRoots.push(node.shadowRoot);roots.push(node.shadowRoot);}});
+    }
+    return [document,...shadowRoots].flatMap(root=>Array.from(root.querySelectorAll(selector)));
+  }
+
   if (window.ZeroProgress) window.addEventListener('message', event => {
-    if (event.origin !== 'https://vidstuck.xyz') return;
+    if(!['https://vidstuck.xyz','https://vidsrc.sh'].includes(event.origin))return;
     try {
-      const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+      let data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;if(data?.type==='PLAYER_EVENT'){const p=data.data,info=p?.player_info;data=info?.tmdb?{id:info.tmdb,type:info.mediaType,timestamp:p.player_progress,duration:p.player_duration,season:info.season,episode:info.episode}:null;}
       if (data && (data.type === 'movie' || data.type === 'tv') && Number.isFinite(Number(data.timestamp)) && Number.isFinite(Number(data.duration)))
         window.ZeroProgress.postMessage(JSON.stringify(data));
     } catch (_) {}
   });
   window.__zeroDismissQrAd = () => {
     // Called only after the native screen reader identifies the reported advertising QR.
-    document.querySelectorAll('iframe').forEach(frame => { try { frame.contentWindow.postMessage({type:'zerostreams-dismiss-ad-qr'}, '*'); } catch (_) {} });
-    document.querySelectorAll('img,canvas,svg').forEach(image => {
+    all('iframe',true).forEach(frame => { try { frame.contentWindow.postMessage({type:'zerostreams-dismiss-ad-qr'}, '*'); } catch (_) {} });
+    all('img,canvas,svg').forEach(image => {
       const bounds=image.getBoundingClientRect();
       // A provider may paint the whole white banner as one image/canvas with
       // no white DOM container. Only the native advertising QR confirmation
@@ -46,7 +55,7 @@
     });
     // Some creatives paint the entire banner as CSS background artwork.
     // Native QR confirmation makes this independent of readable DOM text.
-    document.querySelectorAll('div,section,aside,dialog').forEach(node => {
+    all('div,section,aside,dialog').forEach(node => {
       if(node.querySelector(media)||node.querySelector(challenge))return;
       const r=node.getBoundingClientRect(),style=getComputedStyle(node);
       if(r.width>=innerWidth*.7&&r.height>=innerHeight*.7&&
@@ -110,9 +119,18 @@
   {
     const bars = '.jw-controlbar,.plyr__controls,.vjs-control-bar,[role="toolbar"],[data-zero-controlbar],nav,header';
     let idleTimer;
+    const visibleOverrides=new Map();
+    function restoreControls(){for(const [node,values] of visibleOverrides){for(const [name,value,priority] of values)if(value)node.style.setProperty(name,value,priority);else node.style.removeProperty(name);}visibleOverrides.clear();}
+    function showControls(){const nodes=new Set(all('[data-zero-controls]'));for(const bar of Array.from(nodes)){let parent=bar.parentElement;for(let i=0;parent&&i<3;i++,parent=parent.parentElement){if(parent.tagName==='BODY'||parent.querySelector('video,iframe')||parent.closest('[role="dialog"],dialog'))break;const r=parent.getBoundingClientRect();if(r.height>=innerHeight*.25)break;nodes.add(parent);}}nodes.forEach(node=>{
+      if(node.querySelector('video,iframe')||node.closest('[role="dialog"],dialog'))return;
+      if(!visibleOverrides.has(node))visibleOverrides.set(node,['opacity','visibility','pointer-events','display'].map(name=>[name,node.style.getPropertyValue(name),node.style.getPropertyPriority(name)]));
+      node.style.setProperty('opacity','1','important');node.style.setProperty('visibility','visible','important');node.style.setProperty('pointer-events','auto','important');
+      if(getComputedStyle(node).display==='none')node.style.setProperty('display','flex','important');
+    });}
+    function idle(){restoreControls();document.documentElement.classList.add('zero-player-idle');all('.zero-tv-focused').forEach(node=>node.classList.remove('zero-tv-focused'));}
     function activity() {
       // Support custom control bars without hiding their video container or dialogs.
-      document.querySelectorAll('button,[role="button"]').forEach(button => {
+      all('button,[role="button"]').forEach(button => {
         let node = button.parentElement;
         for (let depth = 0; node && depth < 4; depth++, node = node.parentElement) {
           if (node.querySelector('video,iframe') || node.tagName === 'BODY') break;
@@ -126,15 +144,15 @@
       document.documentElement.classList.remove('zero-player-idle');
       // Trigger the player's own mouse/activity listener, including React handlers.
       const target = document.querySelector('video') || document.body;
-      if (target) target.dispatchEvent(new MouseEvent('mousemove', {bubbles: true, clientX: innerWidth / 2, clientY: innerHeight / 2}));
+      if(target){for(const node of [target,target.parentElement,document.body].filter(Boolean)){node.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:innerWidth/2,clientY:innerHeight/2}));node.dispatchEvent(new MouseEvent('mouseover',{bubbles:true}));if(window.PointerEvent)node.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerType:'mouse',clientX:innerWidth/2,clientY:innerHeight/2}));}}showControls();
       clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => document.documentElement.classList.add('zero-player-idle'), 3000);
-      document.querySelectorAll('iframe').forEach(frame => {
+      idleTimer = setTimeout(idle,3000);
+      all('iframe').forEach(frame => {
         try { frame.contentWindow.postMessage({type: 'zerostreams-remote-active'}, '*'); } catch (_) {}
       });
     }
     function markControls() {
-      document.querySelectorAll(bars).forEach(node => {
+      all(bars).forEach(node => {
         if (!node.querySelector('video,iframe')) node.setAttribute('data-zero-controls','true');
       });
     }
@@ -143,14 +161,14 @@
       clearTimeout(idleTimer);
       let visible = false;
       if (!document.documentElement.classList.contains('zero-player-idle')) {
-        document.querySelectorAll(bars).forEach(node => {
+        all(bars).forEach(node => {
           // A player container must never become a control bar.
           if (node.querySelector('video,iframe')) return;
           const r = node.getBoundingClientRect(), style = getComputedStyle(node);
           if (r.width > 0 && r.height > 0 && style.visibility !== 'hidden' && style.display !== 'none' && Number(style.opacity || 1) > 0) visible = true;
         });
       }
-      document.documentElement.classList.add('zero-player-idle');
+      idle();
       return visible;
     }
     let backSequence = 0;
@@ -184,6 +202,45 @@
         clearTimeout(waiter.timer);backWaiters.delete(data.request);waiter.resolve(data.handled!==false);
       }
     });
+    if(window.__zeroTv){
+      let selected=null;
+      const controls='button,a[href],input:not([type="hidden"]),select,summary,[role="button"],[role="menuitem"],[role="option"],[tabindex],.cursor-pointer,iframe';
+      function visible(node){const r=node.getBoundingClientRect(),style=getComputedStyle(node);return r.width>1&&r.height>1&&style.display!=='none'&&style.visibility!=='hidden'&&Number(style.opacity||1)>0&&!node.disabled&&node.getAttribute('aria-disabled')!=='true'&&!node.dataset.zeroQrHidden;}
+      function candidates(){return all(controls).filter(node=>visible(node)&&!node.matches('video,audio')&&!node.querySelector('video')&&(!node.hasAttribute('tabindex')||Number(node.getAttribute('tabindex'))>=0||node.matches('button,a,input,select,iframe')));}
+      function initial(nodes){return nodes.find(node=>node.tagName!=='IFRAME'&&/play|pause/i.test(node.getAttribute('aria-label')||node.getAttribute('title')||node.textContent||''))||nodes.find(node=>node.tagName!=='IFRAME'&&!backButton(node))||nodes[0];}
+      function focus(node){all('.zero-tv-focused').forEach(el=>el.classList.remove('zero-tv-focused'));selected=node;node.classList.add('zero-tv-focused');try{node.focus({preventScroll:true});node.scrollIntoView({block:'nearest',inline:'nearest'});}catch(_){try{node.focus();}catch(_){}}}
+      function backButton(node){return node&&/^(back|go back|return|exit player|close player)(\s+to\s+.*)?$/i.test((node.getAttribute('aria-label')||node.getAttribute('title')||node.textContent||'').trim());}
+      function exitPlayer(){if(window.parent===window){if(window.ZeroPlayer)window.ZeroPlayer.postMessage('back');}else window.parent.postMessage({type:'zerostreams-player-back'},'*');}
+      window.__zeroTvNavigate=(direction,fromChild=null)=>{
+        if(!['left','right','up','down','ok'].includes(direction))return;
+        activity();const nodes=candidates();if(!nodes.length)return;
+        let current=fromChild||(selected&&selected.isConnected&&nodes.includes(selected)?selected:null)||nodes.find(node=>node===document.activeElement);
+        if(current&&current.tagName==='IFRAME'&&!fromChild){try{current.contentWindow.postMessage({type:'zerostreams-tv-nav',direction},'*');}catch(_){}return;}
+        if(direction==='ok'){
+          if(!current){current=initial(nodes);focus(current);}
+          if(current.tagName==='IFRAME'){try{current.contentWindow.postMessage({type:'zerostreams-tv-nav',direction},'*');}catch(_){}}
+          else if(backButton(current))exitPlayer();else current.click();return;
+        }
+        if(!current){const first=initial(nodes);focus(first);if(first.tagName==='IFRAME')try{first.contentWindow.postMessage({type:'zerostreams-tv-nav',direction},'*');}catch(_){}return;}
+        const rect=current.getBoundingClientRect(),x=rect.left+rect.width/2,y=rect.top+rect.height/2;
+        const ranked=nodes.filter(node=>node!==current).map(node=>{const r=node.getBoundingClientRect(),dx=r.left+r.width/2-x,dy=r.top+r.height/2-y;const primary=direction==='left'?-dx:direction==='right'?dx:direction==='up'?-dy:dy;const side=(direction==='left'||direction==='right')?Math.abs(dy):Math.abs(dx);return {node,primary,score:primary+side*3};}).filter(row=>row.primary>2).sort((a,b)=>a.score-b.score);
+        if(ranked.length){focus(ranked[0].node);if(ranked[0].node.tagName==='IFRAME')try{ranked[0].node.contentWindow.postMessage({type:'zerostreams-tv-nav',direction},'*');}catch(_){}return;}
+        if(window.parent!==window){window.parent.postMessage({type:'zerostreams-tv-nav-edge',direction},'*');return;}
+        const index=nodes.indexOf(current),step=(direction==='left'||direction==='up')?-1:1;focus(nodes[(index+step+nodes.length)%nodes.length]);
+      };
+      window.addEventListener('message',event=>{
+        const data=event.data;if(!data)return;
+        if(event.source===window.parent&&window.parent!==window&&data.type==='zerostreams-tv-nav')window.__zeroTvNavigate(data.direction);
+        const frame=all('iframe').find(node=>node.contentWindow===event.source);if(!frame)return;
+        if(data.type==='zerostreams-tv-nav-edge')window.__zeroTvNavigate(data.direction,frame);
+        if(data.type==='zerostreams-player-back')exitPlayer();
+      });
+      document.addEventListener('keydown',event=>{const direction={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',Enter:'ok'}[event.key];if(!direction)return;event.preventDefault();event.stopImmediatePropagation();window.__zeroTvNavigate(direction);},true);
+      document.addEventListener('keyup',event=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter'].includes(event.key)){event.preventDefault();event.stopImmediatePropagation();}},true);
+      document.addEventListener('click',event=>{const node=event.composedPath().find(el=>el.matches&&el.matches('button,a,[role="button"]'))||event.target.closest('button,a,[role="button"]');if(!backButton(node))return;event.preventDefault();event.stopImmediatePropagation();exitPlayer();},true);
+      const style=document.createElement('style');style.textContent='.zero-tv-focused{outline:3px solid #65e6cc!important;outline-offset:3px!important;border-radius:5px!important}';
+      if(document.head)document.head.appendChild(style);else document.addEventListener('DOMContentLoaded',()=>document.head.appendChild(style),{once:true});
+    }
     window.__zeroRemoteActivity = activity;
     window.addEventListener('message', event => {
       if (event.source === window.parent && event.data && event.data.type === 'zerostreams-remote-active') activity();
@@ -263,7 +320,7 @@
   window.addEventListener('message', event => {
     if (!event.data || event.data.type !== 'zerostreams-timed-qr-ad') return;
     // No native bridge: only hide the exact child frame reporting its own ad creative.
-    document.querySelectorAll('iframe').forEach(frame => {
+    all('iframe').forEach(frame => {
       if (frame.contentWindow === event.source) hide(frame);
     });
   });
@@ -277,3 +334,11 @@
   scan();
 })();
 
+
+(() => {
+  if(window.__zeroExitInstalled)return;window.__zeroExitInstalled=true;
+  const back=node=>node&&/^(back|go back|return|exit player|close player)(\s+to\s+.*)?$/i.test((node.getAttribute('aria-label')||node.getAttribute('title')||node.textContent||'').trim());
+  function exit(){if(window.parent===window&&window.ZeroPlayer){window.ZeroPlayer.postMessage('back');return;}if(window.parent===window)window.postMessage({type:'zeromovies-player-exit'},window.location.origin);else window.parent.postMessage({type:'zeromovies-player-exit'},'*');}
+  document.addEventListener('click',event=>{const node=event.composedPath().find(el=>el.matches&&el.matches('button,a,[role="button"]'));if(!back(node))return;event.preventDefault();event.stopImmediatePropagation();exit();},true);
+  window.addEventListener('message',event=>{if(event.source===window)return;if(event.data?.type==='zeromovies-player-exit'&&Array.from(document.querySelectorAll('iframe')).some(frame=>frame.contentWindow===event.source))exit();});
+})();
