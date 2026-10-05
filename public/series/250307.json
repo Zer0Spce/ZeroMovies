@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 1,
+  "id": "tmdb-series-250307",
+  "title": "The Pitt",
+  "checkedAt": "2026-10-05T01:49:55.736Z",
+  "episodes": [
+    {
+      "id": "s1e1",
+      "season": 1,
+      "episode": 1,
+      "title": "7:00 A.M.",
+      "description": "While attempting to distract himself from the anniversary of his mentor's death, Dr. Robby introduces a fresh batch of interns to life in the ER.",
+      "airDate": "2025-01-09",
+      "streams": []
+    },
+    {
+      "id": "s1e2",
+      "season": 1,
+      "episode": 2,
+      "title": "8:00 A.M.",
+      "description": "Robby helps siblings navigate their elderly father's end of life care. Later, Samira fends off cops targeting a woman with a misunderstood condition.",
+      "airDate": "2025-01-09",
+      "streams": []
+    },
+    {
+      "id": "s1e3",
+      "season": 1,
+      "episode": 3,
+      "title": "9:00 A.M.",
+      "description": "Samira does her best to keep Whitaker on the right track. A teen overdose sparks conflict in the ER.",
+      "airDate": "2025-01-16",
+      "streams": []
+    },
+    {
+      "id": "s1e4",
+      "season": 1,
+      "episode": 4,
+      "title": "10:00 A.M.",
+      "description": "Bets are taken on the whereabouts of a stolen ambulance, while Santos learns a hard lesson, and Whitaker helps to tame “The Kraken.”",
+      "airDate": "2025-01-23",
+      "streams": []
+    },
+    {
+      "id": "s1e5",
+      "season": 1,
+      "episode": 5,
+      "title": "11:00 A.M.",
+      "description": "Santos and Collins each deal with moral quandaries. Samira’s careful approach earns praise from patients – and reproach from Robby.",
+      "airDate": "2025-01-30",
+      "streams": []
+    },
+    {
+      "id": "s1e6",
+      "season": 1,
+      "episode": 6,
+      "title": "12:00 P.M.",
+      "description": "While Robby handles an ultimatum from the hospital, Mel, Javadi, and Collins each handle unique mother-daughter dynamics.",
+      "airDate": "2025-02-06",
+      "streams": []
+    },
+    {
+      "id": "s1e7",
+      "season": 1,
+      "episode": 7,
+      "title": "1:00 P.M.",
+      "description": "After examining an influencer with strange symptoms, Samira pushes back against Robby. Santos contends with a patient accused of assault.",
+      "airDate": "2025-02-13",
+      "streams": []
+    },
+    {
+      "id": "s1e8",
+      "season": 1,
+      "episode": 8,
+      "title": "2:00 P.M.",
+      "description": "While Robby attends to an elderly patient with ties to Pittsburgh's history, other members of the team attempt to resuscitate a young drowning victim.",
+      "airDate": "2025-02-20",
+      "streams": []
+    },
+    {
+      "id": "s1e9",
+      "season": 1,
+      "episode": 9,
+      "title": "3:00 P.M.",
+      "description": "After a staff debrief from Robby, Dana defuses a waiting room brawl, Whitaker finds common ground with \"The Kraken,\" and McKay faces a crucial error.",
+      "airDate": "2025-02-27",
+      "streams": []
+    },
+    {
+      "id": "s1e10",
+      "season": 1,
+      "episode": 10,
+      "title": "4:00 P.M.",
+      "description": "With the Pitt down a staff member, Robby relies on his team to pick up the slack. Later, Santos finally voices her suspicions.",
+      "airDate": "2025-03-06",
+      "streams": []
+    },
+    {
+      "id": "s1e11",
+      "season": 1,
+      "episode": 11,
+      "title": "5:00 P.M.",
+      "description": "While Robby tries to keep a developing staffing situation under wraps, Collins guides a surrogate through a difficult delivery.",
+      "airDate": "2025-03-13",
+      "streams": []
+    },
+    {
+      "id": "s1e12",
+      "season": 1,
+      "episode": 12,
+      "title": "6:00 P.M.",
+      "description": "When dozens of critical patients flood the ER, Robby and his team struggle to keep up amid quickly diminished supplies.",
+      "airDate": "2025-03-20",
+      "streams": []
+    },
+    {
+      "id": "s1e13",
+      "season": 1,
+      "episode": 13,
+      "title": "7:00 P.M.",
+      "description": "As the night shift begins, Robby refuses to give up on a mass casualty victim. Samira and Santos each attempt risky moves.",
+      "airDate": "2025-03-27",
+      "streams": []
+    },
+    {
+      "id": "s1e14",
+      "season": 1,
+      "episode": 14,
+      "title": "8:00 P.M.",
+      "description": "While Robby struggles with a loss, Abbott coaches Samira through a risky procedure, and Mel treats a teen with a mysterious rash.",
+      "airDate": "2025-04-03",
+      "streams": []
+    },
+    {
+      "id": "s1e15",
+      "season": 1,
+      "episode": 15,
+      "title": "9:00 P.M.",
+      "description": "Robby resorts to unorthodox methods to convince a father to allow treatment for his son. Later, Whitaker tracks down a missing patient.",
+      "airDate": "2025-04-10",
+      "streams": []
+    },
+    {
+      "id": "s2e1",
+      "season": 2,
+      "episode": 1,
+      "title": "7:00 A.M.",
+      "description": "On July 4th, Robby meets his replacement for his upcoming sabbatical, and a familiar face returns to the Pitt.",
+      "airDate": "2026-01-08",
+      "streams": []
+    },
+    {
+      "id": "s2e2",
+      "season": 2,
+      "episode": 2,
+      "title": "8:00 A.M.",
+      "description": "While nervously awaiting her deposition, King takes a tumble. Al-Hashimi tries to introduce new technology into the ER.",
+      "airDate": "2026-01-15",
+      "streams": []
+    },
+    {
+      "id": "s2e3",
+      "season": 2,
+      "episode": 3,
+      "title": "9:00 A.M.",
+      "description": "After a motorcycle collision, a husband and wife find themselves in the ER. Later, Robby bonds with a Tree of Life survivor.",
+      "airDate": "2026-01-22",
+      "streams": []
+    },
+    {
+      "id": "s2e4",
+      "season": 2,
+      "episode": 4,
+      "title": "10:00 A.M.",
+      "description": "With a nearby hospital shuttered on the busiest day of the year, Robby and team must field extra patients, including the victim of a parkour mishap.",
+      "airDate": "2026-01-29",
+      "streams": []
+    },
+    {
+      "id": "s2e5",
+      "season": 2,
+      "episode": 5,
+      "title": "11:00 A.M.",
+      "description": "As patients continue to pour in, including a local prison inmate, Robby and Langdon must work together to save a beloved patient.",
+      "airDate": "2026-02-05",
+      "streams": []
+    },
+    {
+      "id": "s2e6",
+      "season": 2,
+      "episode": 6,
+      "title": "12:00 P.M.",
+      "description": "As the team deals with a loss, Al-Hashimi and Robby continue to clash over the best course of treatment for a patient showing signs of malnutrition.",
+      "airDate": "2026-02-12",
+      "streams": []
+    },
+    {
+      "id": "s2e7",
+      "season": 2,
+      "episode": 7,
+      "title": "1:00 P.M.",
+      "description": "While Dana tends to a sexual assault victim, Abbot helps an officer injured in the field, and Mohan attempts to keep her uninsured patient in the ER.",
+      "airDate": "2026-02-19",
+      "streams": []
+    },
+    {
+      "id": "s2e8",
+      "season": 2,
+      "episode": 8,
+      "title": "2:00 P.M.",
+      "description": "In the wake of an IT shutdown, Princess must manage a completely analog ER. Al-Hashimi, Mohan, and King assess a woman with sudden blindness.",
+      "airDate": "2026-02-26",
+      "streams": []
+    },
+    {
+      "id": "s2e9",
+      "season": 2,
+      "episode": 9,
+      "title": "3:00 P.M.",
+      "description": "After one of Javadi's patients slips through the cracks, Dana calls in an old friend with experience running a low-tech ER.",
+      "airDate": "2026-03-05",
+      "streams": []
+    },
+    {
+      "id": "s2e10",
+      "season": 2,
+      "episode": 10,
+      "title": "4:00 P.M.",
+      "description": "After an incident at a nearby water park, several critical patients are rushed to the Pitt. Later, Al-Hashimi confronts Robby.",
+      "airDate": "2026-03-12",
+      "streams": []
+    },
+    {
+      "id": "s2e11",
+      "season": 2,
+      "episode": 11,
+      "title": "5:00 P.M.",
+      "description": "While King struggles to cope with her sister's newfound independence, patients and staff are put on edge by an unexpected presence in the ER.",
+      "airDate": "2026-03-19",
+      "streams": []
+    },
+    {
+      "id": "s2e12",
+      "season": 2,
+      "episode": 12,
+      "title": "6:00 P.M.",
+      "description": "After she steps up to defend her trainee, Dana clashes with Robby about her methods – and his upcoming sabbatical.",
+      "airDate": "2026-03-26",
+      "streams": []
+    },
+    {
+      "id": "s2e13",
+      "season": 2,
+      "episode": 13,
+      "title": "7:00 P.M.",
+      "description": "As the night shift begins, Mohan's AMA patient is brought back to the ER, Langdon doubts his place in the Pitt, and Robby gets Duke's results.",
+      "airDate": "2026-04-02",
+      "streams": []
+    },
+    {
+      "id": "s2e14",
+      "season": 2,
+      "episode": 14,
+      "title": "8:00 P.M.",
+      "description": "After his bike takes a hit in the ambulance bay, Robby levels with Duke. A spinal cord injury forces Langdon to attempt a risky procedure.",
+      "airDate": "2026-04-09",
+      "streams": []
+    },
+    {
+      "id": "s2e15",
+      "season": 2,
+      "episode": 15,
+      "title": "9:00 P.M.",
+      "description": "Al-Hashimi reveals details from her medical history, forcing Robby to face an ethical dilemma as he prepares to leave for his sabbatical.",
+      "airDate": "2026-04-16",
+      "streams": []
+    }
+  ]
+}
