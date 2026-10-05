@@ -41,12 +41,12 @@
         }
         return;
       }
-      if (bounds.width < 100 || bounds.height < 100 || bounds.width/bounds.height < .65 || bounds.width/bounds.height > 1.4) return;
+      if (bounds.width < 48 || bounds.height < 48 || bounds.width/bounds.height < .65 || bounds.width/bounds.height > 1.4) return;
       let node=image.parentElement,candidate=null;
       for(let depth=0;node&&depth<10;depth++,node=node.parentElement){
         if(node.querySelector(media)||node.querySelector(challenge))break;
         const r=node.getBoundingClientRect(),style=getComputedStyle(node);
-        if(r.width>=innerWidth*.4&&r.height>=innerHeight*.4&&/rgb\(255, 255, 255\)|#fff/i.test(style.backgroundColor))candidate=node;
+        if(r.width>=innerWidth*.4&&r.height>=innerHeight*.4&&( /rgb\(255, 255, 255\)|#fff/i.test(style.backgroundColor)||style.position==='fixed'||style.position==='absolute'))candidate=node;
       }
       if(!candidate)return;
       if(candidate===document.body||candidate===document.documentElement){

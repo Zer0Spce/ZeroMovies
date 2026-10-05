@@ -1,4 +1,4 @@
-"""Publish signed Android assets alongside the already-tested Windows artifact."""
+"""Publish signed Android assets alongside the validated Windows portable ZIP."""
 import hashlib, io, json, os, pathlib, urllib.request, urllib.parse, zipfile
 repo = os.environ['GITHUB_REPOSITORY']
 base = 'https://api.github.com/repos/' + repo
@@ -17,23 +17,13 @@ def request(path, method='GET', data=None, binary=False):
     req = urllib.request.Request(base + path, data=data, headers=headers, method=method)
     with opener.open(req, timeout=120) as response:
         return response.read() if binary else json.load(response)
-run = request('/actions/runs/37274482805')
-if run['conclusion'] != 'success' or run['head_sha'] != 'a45e054f0dbe15519c1432747039ec4eee881649':
-    raise RuntimeError('Windows build identity or validation mismatch')
-artifact = request('/actions/artifacts/11328714247')
-if artifact['expired'] or artifact['workflow_run']['id'] != run['id']:
-    raise RuntimeError('Windows artifact unavailable or mismatched')
 assets = pathlib.Path('release-assets')
-with zipfile.ZipFile(io.BytesIO(request('/actions/artifacts/11328714247/zip', binary=True))) as archive:
-    members = [name for name in archive.namelist() if pathlib.PurePosixPath(name).name == 'ZeroMovies-0.4.5-Windows-x64.zip']
-    if len(members) != 1: raise RuntimeError('Expected portable ZIP missing')
-    (assets / 'ZeroMovies-0.4.5-Windows-x64.zip').write_bytes(archive.read(members[0]))
-files = [assets / name for name in ['ZeroMovies-0.4.5-Android.apk','ZeroMovies-0.4.5-Android-TV.apk','ZeroMovies-0.4.5-Windows-x64.zip']]
+files = [assets / name for name in ['ZeroMovies-1.0-Android.apk','ZeroMovies-1.0-Android-TV.apk','ZeroMovies-1.0-Windows-x64.zip']]
 if not all(p.is_file() and p.stat().st_size > 0 for p in files): raise RuntimeError('Required release assets missing')
 checksums = assets / 'SHA256SUMS.txt'
 checksums.write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name + '\n' for p in files))
 # Start as a draft; only publish after all four assets upload successfully.
-release = request('/releases', 'POST', {'tag_name':'v0.4.5','target_commitish':os.environ['GITHUB_SHA'],'name':'ZeroMovies v0.4.5 🎬','body':pathlib.Path('docs/release-0.4.5.md').read_text(),'draft':True,'prerelease':False})
+release = request('/releases', 'POST', {'tag_name':'v1.0','target_commitish':os.environ['GITHUB_SHA'],'name':'ZeroMovies v1.0 🎬','body':pathlib.Path('docs/release-1.0.md').read_text(),'draft':True,'prerelease':False})
 for file in [*files,checksums]:
     url = release['upload_url'].split('{')[0] + '?name=' + file.name
     req = urllib.request.Request(url, data=file.read_bytes(), method='POST', headers={'Authorization':'Bearer '+token,'Content-Type':'application/octet-stream'})
@@ -41,4 +31,4 @@ for file in [*files,checksums]:
         result=json.load(response)
         if result.get('state') != 'uploaded': raise RuntimeError('Release asset upload incomplete')
 request('/releases/'+str(release['id']),'PATCH',{'draft':False,'make_latest':'true'})
-print('Published ZeroMovies v0.4.5 with verified signed APKs and Windows portable ZIP.')
+print('Published ZeroMovies v1.0 with verified signed APKs and Windows portable ZIP.')

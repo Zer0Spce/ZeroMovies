@@ -25,6 +25,12 @@ async function run() {
   dom.window.__zeroDismissQrAd();
   assert.equal(dom.window.document.getElementById('css-ad').style.display,'none');
   dom.window.close();
+  dom=page('<video id="movie"></video><div id="dark-ad" data-large="1" style="position:fixed;background:#111"><canvas width="80" height="80"></canvas></div><div class="plyr__controls"><button>Play</button></div>');
+  dom.window.__zeroDismissQrAd();
+  assert.equal(dom.window.document.getElementById('dark-ad').style.display,'none','Native-confirmed small QR on a dark positioned overlay is dismissed');
+  assert.equal(dom.window.document.getElementById('movie').style.display,'');
+  assert.equal(dom.window.document.querySelector('.plyr__controls').style.display,'');
+  dom.window.close();
   let graphs = 0, gainValue;
   const audioSetup = src => w => {
     const video = w.document.querySelector('video');

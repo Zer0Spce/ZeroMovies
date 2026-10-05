@@ -19,7 +19,7 @@ final class PlayerAdScan {
     void destroy(){stop();decoder.shutdownNow();}
     private void capture(){
         if(busy||web.getWidth()<1||web.getHeight()<1||activity.isFinishing())return;busy=true;
-        int width=720,height=Math.max(1,(int)(720f*activity.getWindow().getDecorView().getHeight()/Math.max(1,activity.getWindow().getDecorView().getWidth())));
+        int width=Math.min(1280,Math.max(1,activity.getWindow().getDecorView().getWidth())),height=Math.max(1,(int)(width*(float)activity.getWindow().getDecorView().getHeight()/Math.max(1,activity.getWindow().getDecorView().getWidth())));
         Bitmap bitmap=Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
         if(Build.VERSION.SDK_INT>=26){try{PixelCopy.request(activity.getWindow(),bitmap,result->{if(result==PixelCopy.SUCCESS)inspect(bitmap);else{bitmap.recycle();busy=false;}},handler);}catch(IllegalArgumentException e){bitmap.recycle();busy=false;}}
         else{Canvas canvas=new Canvas(bitmap);canvas.scale(width/(float)web.getWidth(),height/(float)web.getHeight());web.draw(canvas);inspect(bitmap);}

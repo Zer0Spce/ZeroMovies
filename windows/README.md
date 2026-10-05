@@ -14,3 +14,9 @@ Portable Electron app. Extract the ZIP and run `ZeroMovies.exe`; no installer is
 `npm test` runs catalog, history and player-host tests. `scripts/ui-check.cjs` covers discovery controls using jsdom. The Windows Actions build additionally checks the configured TMDB key, runs actual Electron fullscreen/Back smoke tests and packages the portable ZIP.
 
 TMDB metadata does not guarantee that a title is playable through an external source. Surprise samples up to 500 discovery pages per sort; it is not uniform over every TMDB ID.
+
+## v1.0 live viewing
+
+PPV/Sports uses the ZeroStreams event playlist and checks for updates every 30 minutes while its tab is open. LIVE TV uses the separate IPTV list; its colored refresh button updates it on demand. Both preserve the last good list when refresh fails. Search requires pressing Search. Catalog results load more automatically near the bottom, and categories show relevant artwork.
+
+The local live player uses bundled Shaka Player (Apache 2.0), with HLS/DASH, playlist headers, and ClearKey support. Play/Pause, Live, Retry, Channels, Audio, Subtitles, Fit/Fill, volume and fullscreen controls stay in the same window. Back returns to browsing. Codec and stream availability vary.

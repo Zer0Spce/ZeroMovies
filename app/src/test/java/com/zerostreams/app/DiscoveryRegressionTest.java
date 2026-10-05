@@ -22,6 +22,13 @@ public class DiscoveryRegressionTest {
         assertFalse(QrAdDetector.isAdUrl("https://other.cyou/login?uuid=00000000-0000-0000-0000-000000000000"));
         Arrays.fill(pixels,0xff090a10);assertEquals("",QrAdDetector.decode(pixels,width,height));
     }
+    @Test public void smallAdvertisingQrOnDarkVideoIsDetectedAmongMultipleCodes() throws Exception {
+        String ad="https://rotated.othercampaign.cyou/ri/123/?uuid=00000000-0000-0000-0000-000000000000";
+        int width=1280,height=720;int[] pixels=new int[width*height];Arrays.fill(pixels,0xff090a10);
+        String[] values={"https://www.themoviedb.org/movie/299534",ad};
+        for(int n=0;n<values.length;n++){BitMatrix qr=new QRCodeWriter().encode(values[n],BarcodeFormat.QR_CODE,220,220);for(int y=0;y<220;y++)for(int x=0;x<220;x++)pixels[(y+240)*width+x+150+n*700]=qr.get(x,y)?0xff000000:0xffffffff;}
+        assertEquals(ad,QrAdDetector.decode(pixels,width,height));
+    }
     @Test public void searchHistoryIsRecentDeduplicatedAndBounded() throws Exception {
         HistoryStore store=new HistoryStore(new MemoryPrefs());store.search(" dune ");store.search("DUNE");
         assertEquals(1,store.read("searchHistory").length());assertEquals("DUNE",store.read("searchHistory").getJSONObject(0).getString("query"));

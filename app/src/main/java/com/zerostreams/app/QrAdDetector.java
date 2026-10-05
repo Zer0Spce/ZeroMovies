@@ -2,6 +2,7 @@ package com.zerostreams.app;
 
 import com.google.zxing.*;
 import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.multi.qrcode.QRCodeMultiReader;
 import java.net.URI;
 import java.util.*;
 
@@ -12,13 +13,13 @@ final class QrAdDetector {
             host=host.toLowerCase(Locale.ROOT);
             if(AdBlockRules.blocks(host))return true;
             // Fingerprint of the advertising destination decoded from the user's photo.
-            return host.endsWith(".cyou")&&path!=null&&path.matches("/ri/[0-9]+")&&query!=null&&query.matches("(?:.*&)?uuid=[a-fA-F0-9-]{16,80}(?:&.*)?");
+            return host.endsWith(".cyou")&&path!=null&&path.matches("/ri/[0-9]+/?")&&query!=null&&query.matches("(?:.*&)?uuid=[a-fA-F0-9-]{16,80}(?:&.*)?");
         }catch(Exception e){return false;}
     }
     static String decode(int[] pixels,int width,int height){
-        int white=0,total=0;for(int i=0;i<pixels.length;i+=97){int color=pixels[i];total++;if(((color>>16)&255)>230&&((color>>8)&255)>230&&(color&255)>230)white++;}
-        if(total==0||white<total*.35)return "";
+        if(width<1||height<1||pixels==null||pixels.length!=width*height)return "";
         MultiFormatReader reader=new MultiFormatReader();Map<DecodeHintType,Object> hints=new EnumMap<>(DecodeHintType.class);hints.put(DecodeHintType.POSSIBLE_FORMATS,Collections.singletonList(BarcodeFormat.QR_CODE));hints.put(DecodeHintType.TRY_HARDER,true);
+        try{Result[] found=new QRCodeMultiReader().decodeMultiple(new BinaryBitmap(new HybridBinarizer(new RGBLuminanceSource(width,height,pixels))),hints);for(Result result:found)if(isAdUrl(result.getText()))return result.getText();if(found.length>0)return found[0].getText();}catch(NotFoundException ignored){}
         try{return reader.decode(new BinaryBitmap(new HybridBinarizer(new RGBLuminanceSource(width,height,pixels))),hints).getText();}catch(NotFoundException e){return "";}finally{reader.reset();}
     }
 }

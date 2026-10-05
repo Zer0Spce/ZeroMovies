@@ -14,10 +14,10 @@ Automated checks cover the two-step Back state, focus movement, suppression of r
 
 Remote arrows and OK restore control bars hidden by the provider as well as the app's idle filter. Home includes Watchlist and a night/light mode toggle. Weather is removed. Source choices are VidStuck, VidSrc.to, VidSrc.sh and SuperEmbed.
 
-## Native LiveTV / IPTV player (Android 0.4.6)
+## Native PPV/Sports / LIVE TV player (v1.0)
 
-Open LiveTV or IPTV, choose a channel, and use arrows plus OK to operate the native player controls. Controls hide after a few seconds of playback; arrows or OK reveal them. Channel Up/Down switches channels. Media Play/Pause buttons work directly.
+Open PPV/Sports or LIVE TV, choose a channel, and use arrows plus OK to operate the native player controls. Controls hide after a few seconds of playback; arrows or OK reveal them. Channel Up/Down switches channels. Media Play/Pause buttons work directly.
 
-The player offers Play/Pause, Live (return to the live edge), Retry, Channels, Audio, Subtitles, and Fit/Fill. Back hides visible controls during playback; another Back returns to browsing. Unavailable streams offer Retry or another channel. LiveTV checks for a newer list every 30 minutes while its tab is open. The colored Refresh buttons update either list immediately; failed refreshes preserve the last saved channels.
+The player offers Play/Pause, Live (return to the live edge), Retry, Channels, Audio, Subtitles, and Fit/Fill. Back hides visible controls during playback; another Back returns to browsing. Unavailable streams offer Retry or another channel. PPV/Sports checks for a newer list every 30 minutes while its tab is open. The colored Refresh buttons update either list immediately; failed refreshes preserve the last saved channels.
 
 Catalog and search pages load more titles automatically as you approach the bottom. Search starts only after pressing the Search button or the keyboard Search action.
