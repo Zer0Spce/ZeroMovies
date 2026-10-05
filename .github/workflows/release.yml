@@ -1,0 +1,111 @@
+name: Release ZeroMovies
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish verified signed APKs and the tested Windows portable ZIP
+        type: boolean
+        default: true
+  push:
+    paths: ['.github/workflows/release.yml']
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      signed: ${{ steps.signing.outputs.ready }}
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Configure persistent signing key
+        id: signing
+        shell: bash
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ]; then
+            umask 077
+            printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/zeromovies-release.jks"
+            echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/zeromovies-release.jks" >> "$GITHUB_ENV"
+            echo 'ready=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+            echo 'Signing secrets missing: validating unsigned release variants; publishing is disabled.'
+          fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Player and remote regressions
+        env:
+          NODE_PATH: /tmp/zero-qr-tests/node_modules
+          ZERO_GUARD_PATH: app/src/main/assets/player-guard.js
+        run: |
+          npm install --prefix /tmp/zero-qr-tests --no-audit --no-fund jsdom@24.1.3
+          node tests/player-guard.test.cjs
+          node tests/tv-navigation.test.cjs
+      - name: Test, build and lint production variants
+        run: gradle :app:testMobileReleaseUnitTest :app:testTvReleaseUnitTest :app:assembleMobileRelease :app:assembleTvRelease :app:lintMobileRelease :app:lintTvRelease
+      - name: Verify APKs and prepare assets
+        env:
+          SIGNED: ${{ steps.signing.outputs.ready }}
+        shell: bash
+        run: |
+          mkdir -p release-assets
+          for variant in mobile tv; do
+            apk=$(find "app/build/outputs/apk/$variant/release" -name '*.apk' -print -quit)
+            test -n "$apk"
+            if "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | grep -q application-debuggable; then
+              echo 'Refusing debuggable release APK'; exit 1
+            fi
+            if [ "$SIGNED" = true ]; then
+              "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify "$apk"
+              suffix=''
+            else
+              suffix='-unsigned'
+            fi
+            if [ "$variant" = mobile ]; then
+              cp "$apk" "release-assets/ZeroMovies-0.4.5-Android$suffix.apk"
+            else
+              cp "$apk" "release-assets/ZeroMovies-0.4.5-Android-TV$suffix.apk"
+            fi
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroMovies-production-validation-${{ steps.signing.outputs.ready }}
+          path: release-assets/*.apk
+          if-no-files-found: error
+      - name: Remove temporary signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/zeromovies-release.jks"
+  publish:
+    needs: android
+    if: github.event_name == 'workflow_dispatch' && inputs.publish && needs.android.outputs.signed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ZeroMovies-production-validation-true
+          path: release-assets
+      - name: Publish verified release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/publish-release.py
