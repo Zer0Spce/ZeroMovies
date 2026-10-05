@@ -54,6 +54,10 @@ export function makeServer(catalogPath) {
   });
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const path = process.env.CATALOG_PATH || resolve(dirname(fileURLToPath(import.meta.url)), 'catalog.json');
+  const path = process.env.CATALOG_PATH || resolve(dirname(fileURLToPath(import.meta.url)), '../public/catalog.json');
+  if (process.env.AUTO_SYNC !== '0') {
+    const {startCatalogSync} = await import('./sync-catalog.mjs');
+    startCatalogSync(path);
+  }
   makeServer(path).listen(Number(process.env.PORT || 8080), process.env.HOST || '127.0.0.1', () => console.log('ZeroStreams catalog backend listening'));
 }

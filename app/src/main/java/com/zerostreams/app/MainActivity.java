@@ -27,6 +27,8 @@ public class MainActivity extends Activity {
     private String category="Discover", query="";
     private int loadVersion=0, renderVersion=0;
     private boolean started=false;
+    private long lastRequested=0;
+    private static final String DEFAULT_CATALOG="https://raw.githubusercontent.com/Zer0Spce/ZeroMovies/main/public/catalog.json";
     private Button selectedTab;
 
     int dp(float value) { return (int)(getResources().getDisplayMetrics().density*value+.5f); }
@@ -65,11 +67,12 @@ public class MainActivity extends Activity {
         ScrollView scroll=new ScrollView(this);scroll.setFillViewport(true);content=column();content.setPadding(0,dp(18),0,dp(24));scroll.addView(content);root.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
         setContentView(root);if(BuildConfig.TV&&selectedTab!=null)selectedTab.requestFocus();load();started=true;
     }
-    @Override protected void onResume(){super.onResume();if(started)render();}
+    @Override protected void onResume(){super.onResume();if(started){render();if(android.os.SystemClock.elapsedRealtime()-lastRequested>300_000)load();}}
     @Override protected void onSaveInstanceState(Bundle state){super.onSaveInstanceState(state);state.putString("category",category);state.putString("query",query);}
     void load() {
+        lastRequested=android.os.SystemClock.elapsedRealtime();
         int token=++loadVersion;status.setText("Loading catalog…");
-        String endpoint=prefs.getString("endpoint","");
+        String endpoint=prefs.getString("endpoint",DEFAULT_CATALOG);
         io.execute(()->{try{List<Catalog.Item> rows=Catalog.load(this,endpoint);ui.post(()->{if(isDestroyed()||token!=loadVersion)return;catalog=rows;status.setText(endpoint.isEmpty()?"DEMO CATALOG · Add your backend in Settings":"Connected · "+rows.size()+" titles");render();});}
         catch(Exception e){ui.post(()->{if(isDestroyed()||token!=loadVersion)return;status.setText("Could not load catalog. Check Settings or retry.");Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();});}});
     }
@@ -111,6 +114,7 @@ public class MainActivity extends Activity {
     void details(Catalog.Item item) {
         LinearLayout panel=column();panel.setPadding(dp(24),dp(16),dp(24),dp(16));
         panel.addView(text(item.description,16,Color.DKGRAY));
+        if(item.raw.has("playbackAvailable") && !item.raw.optBoolean("playbackAvailable"))panel.addView(text("Catalog listing · Playback source not available yet",14,Color.DKGRAY));
         Button favorite=button(favorites().contains(item.id)?"Remove from watchlist":"Add to watchlist",()->{Set<String> all=favorites();if(!all.add(item.id))all.remove(item.id);prefs.edit().putStringSet("favorites",all).apply();Toast.makeText(this,all.contains(item.id)?"Added to watchlist":"Removed from watchlist",Toast.LENGTH_SHORT).show();render();});panel.addView(favorite);
         if(item.type.equals("series")) {
             JSONArray episodes=item.episodes();if(episodes==null||episodes.length()==0)panel.addView(text("No episodes available.",15,Color.DKGRAY));
@@ -130,7 +134,7 @@ public class MainActivity extends Activity {
     }
     void settings() {
         LinearLayout panel=column();panel.setPadding(dp(24),dp(12),dp(24),dp(12));
-        panel.addView(text("HTTPS catalog URL (leave empty for demo)",15,Color.DKGRAY));EditText endpoint=new EditText(this);endpoint.setSingleLine(true);endpoint.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_VARIATION_URI);endpoint.setText(prefs.getString("endpoint",""));panel.addView(endpoint);
+        panel.addView(text("HTTPS catalog URL (leave empty for demo)",15,Color.DKGRAY));EditText endpoint=new EditText(this);endpoint.setSingleLine(true);endpoint.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_VARIATION_URI);endpoint.setText(prefs.getString("endpoint",DEFAULT_CATALOG));panel.addView(endpoint);
         new AlertDialog.Builder(this).setTitle("ZeroStreams settings").setView(panel).setPositiveButton("Save & refresh",(d,w)->{
             String value=endpoint.getText().toString().trim();if(!value.isEmpty())try{URL u=new URL(value);if(!u.getProtocol().equals("https")||u.getHost().isEmpty())throw new Exception();}catch(Exception e){Toast.makeText(this,"Enter a valid HTTPS URL",Toast.LENGTH_LONG).show();return;}
             prefs.edit().putString("endpoint",value).apply();catalog=new ArrayList<>();render();load();

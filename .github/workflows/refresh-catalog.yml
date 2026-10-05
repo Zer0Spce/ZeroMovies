@@ -1,0 +1,33 @@
+name: Refresh movie catalog
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: zerostreams-catalog
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test importer and backend
+        run: node --test backend/server.test.mjs backend/sync-catalog.test.mjs
+      - name: Retrieve public catalog
+        run: node backend/sync-catalog.mjs
+      - name: Publish changed catalog
+        run: |
+          git add public/catalog.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git config user.name 'ZeroStreams Catalog'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Refresh public movie and series catalog'
+          git push origin HEAD:main
