@@ -14,7 +14,7 @@ final class TvMouse extends View implements Choreographer.FrameCallback {
     private boolean enabled,running,left,right,up,down;private float x=-1,y=-1;private long lastFrame,heldAt,lastHover,lastWake;
     private final Runnable hide=()->setVisibility(GONE);
     TvMouse(Activity activity,WebView web,FrameLayout parent,Runnable wake){super(activity);this.activity=activity;this.web=web;this.wake=wake;setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);setFocusable(false);setClickable(false);parent.addView(this,new FrameLayout.LayoutParams(-1,-1));setVisibility(GONE);enabled=activity.getSharedPreferences("zero",Activity.MODE_PRIVATE).getBoolean("playerMouse",true);}
-    boolean isEnabled(){return enabled;}
+    boolean isMouseEnabled(){return enabled;}
     boolean handle(KeyEvent event){int key=event.getKeyCode();if(key==KeyEvent.KEYCODE_MENU){if(event.getAction()==KeyEvent.ACTION_DOWN&&event.getRepeatCount()==0){enabled=!enabled;activity.getSharedPreferences("zero",Activity.MODE_PRIVATE).edit().putBoolean("playerMouse",enabled).apply();stop();Toast.makeText(activity,enabled?"Player mouse on · arrows move, OK selects":"Player mouse off · use D-pad focus",Toast.LENGTH_SHORT).show();}return true;}if(!enabled)return false;
         if(key==KeyEvent.KEYCODE_DPAD_CENTER||key==KeyEvent.KEYCODE_ENTER){if(event.getAction()==KeyEvent.ACTION_UP)click();return true;}
         if(key!=KeyEvent.KEYCODE_DPAD_LEFT&&key!=KeyEvent.KEYCODE_DPAD_RIGHT&&key!=KeyEvent.KEYCODE_DPAD_UP&&key!=KeyEvent.KEYCODE_DPAD_DOWN)return false;
