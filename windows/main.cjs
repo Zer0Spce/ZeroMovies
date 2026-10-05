@@ -1,7 +1,7 @@
 const {app,BrowserWindow,WebContentsView,screen,ipcMain,session,shell,safeStorage,Menu,dialog}=require('electron');
 const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
 const {PlayerHost}=require('./player-host.cjs');
-const playlists=require('./playlist.cjs');let playlistStore,liveSelection;const sportsModule=require('./sports.cjs');let sportsStore,sportsSelection;
+const playlists=require('./playlist.cjs');let playlistStore,liveSelection;const sportsModule=require('./sports.cjs');let sportsStore,sportsSelection,sportsHtmlServer;
 const downloadModule=require('./downloads.cjs'),ext=require('./ext-source.cjs');let downloads,downloadMode=false;const downloadCandidates=new Map(),mediaRequestHeaders=new Map();
 const liveURL=pathToFileURL(path.join(__dirname,'ui/live-player.html')).href;
 const sources=require('./playback-sources.cjs');
@@ -45,7 +45,7 @@ async function scanAd(){
   }catch{scanning=false;}
 }
 function closePlayer(){
-  if(!player)return;const host=playerHost;player=null;toolbar=null;playerHost=null;current=null;liveSelection=null;sportsSelection=null;downloadMode=false;downloadCandidates.clear();mediaRequestHeaders.clear();
+  if(!player)return;const host=playerHost;player=null;toolbar=null;playerHost=null;current=null;liveSelection=null;sportsSelection=null;sportsHtmlServer?.close();sportsHtmlServer=null;downloadMode=false;downloadCandidates.clear();mediaRequestHeaders.clear();
   clearInterval(scanTimer);clearInterval(cursorTimer);if(qrWorker)qrWorker.terminate();qrWorker=null;scanning=false;host.close();
   if(main&&!main.isDestroyed()){main.setTitle('ZeroPlay');main.webContents.focus();refresh();}
 }
@@ -99,7 +99,7 @@ async function openSports(id,index){
  contents.setWindowOpenHandler(()=>({action:'allow',overrideBrowserWindowOptions:{webPreferences:{session:isolated,contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}}}));
  contents.on('did-finish-load',()=>update(event.source.label));contents.on('did-fail-load',(_e,code)=>{if(code!==-3)update('Player unavailable · Retry or choose another source');});contents.on('render-process-gone',()=>update('Player stopped · Retry'));
  contents.on('before-input-event',async(e,input)=>{if(input.type!=='keyDown'||input.isAutoRepeat)return;if(input.key==='F11'){e.preventDefault();await playerHost.toggleFullscreen();}if(input.key==='Escape'||input.key==='BrowserBack'){e.preventDefault();if(main.isFullScreen()||playerHost.htmlFullscreen)await playerHost.exitFullscreen();else if(contents.canGoBack())contents.goBack();else closePlayer();}});
- main.setTitle(event.title+' — Live Sports — ZeroPlay');try{if(event.source.embed.url)await contents.loadURL(event.source.embed.url);else {const folder=path.join(dataRoot,'sports-embed');fs.mkdirSync(folder,{recursive:true});const file=path.join(folder,'player.html');fs.writeFileSync(file,'<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><base href="'+event.base+'/"><style>html,body{margin:0;height:100%;background:black}iframe{width:100%;height:100%;border:0}</style>'+event.source.embed.html);await contents.loadFile(file);}contents.focus();}catch{update('Player unavailable · Retry or choose another source');}
+ main.setTitle(event.title+' — Live Sports — ZeroPlay');try{if(event.source.embed.url)await contents.loadURL(event.source.embed.url);else {const token=require('node:crypto').randomBytes(24).toString('hex');const html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><base href="'+event.base+'/"><style>html,body{margin:0;height:100%;background:black}iframe{width:100%;height:100%;border:0}</style>'+event.source.embed.html;sportsHtmlServer=require('node:http').createServer((req,res)=>{if(req.url!=='/'+token){res.writeHead(404).end();return;}res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});res.end(html);});await new Promise(resolve=>sportsHtmlServer.listen(0,'127.0.0.1',resolve));sportsHtmlServer.unref();await contents.loadURL('http://127.0.0.1:'+sportsHtmlServer.address().port+'/'+token);}contents.focus();}catch{update('Player unavailable · Retry or choose another source');}
 }
 function liveTrusted(event){if(event.sender!==player?.webContents||event.senderFrame?.url!==liveURL||!liveSelection)throw Error('Untrusted live control');}
 function selectedLive(index){if(liveSelection?.channel.offline){if(index!==0)throw Error('Invalid download');return {...liveSelection.channel,clearKeys:{}};}if(!Number.isSafeInteger(index)||index<0)throw Error('Invalid channel');const channel=playlistStore.select(liveSelection.section,index);liveSelection.index=index;liveSelection.channel=channel;return {name:channel.name,url:channel.url,mime:channel.mime,clearKeys:channel.drmType?playlists.clearKeys(channel.drmKey):{}};}
