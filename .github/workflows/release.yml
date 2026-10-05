@@ -6,6 +6,10 @@ on:
         description: Publish verified signed APKs and the tested Windows portable ZIP
         type: boolean
         default: true
+      android_only:
+        description: Update Android assets and reuse the published Windows ZIP
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -92,6 +96,7 @@ jobs:
         if: always()
         run: rm -f "$RUNNER_TEMP/zeromovies-release.jks"
   windows:
+    if: ${{ !inputs.android_only }}
     runs-on: windows-latest
     timeout-minutes: 25
     defaults:
@@ -138,7 +143,7 @@ jobs:
 
   publish:
     needs: [android, windows]
-    if: github.event_name == 'workflow_dispatch' && inputs.publish && needs.android.outputs.signed == 'true'
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.publish && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || (inputs.android_only && needs.windows.result == 'skipped'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -150,10 +155,12 @@ jobs:
           name: ZeroMovies-production-validation-true
           path: release-assets
       - uses: actions/download-artifact@v4
+        if: ${{ !inputs.android_only }}
         with:
           name: ZeroMovies-production-windows
           path: release-assets
       - name: Publish verified release assets
         env:
           GH_TOKEN: ${{ github.token }}
+          ANDROID_ONLY: ${{ inputs.android_only }}
         run: python scripts/publish-release.py

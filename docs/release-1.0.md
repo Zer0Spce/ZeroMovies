@@ -45,3 +45,5 @@ Android APKs use the permanent production signing key and can update signed v0.4
 Automated checks cover Android release unit tests/lint/signatures and Windows core/UI/QR regressions, live-player controls, native fullscreen, Back behavior, and portable packaging. Stream availability and codec compatibility still need checking on your own device.
 
 <sub>Made with care by JeremieWTF ✦</sub>
+
+🖱️ Android TV movie players start with mouse mode enabled, including the first launch after this update. Arrows move the cursor and OK clicks; Menu switches to D-pad focus and remembers your choice.

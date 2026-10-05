@@ -21,3 +21,5 @@ Open PPV/Sports or LIVE TV, choose a channel, and use arrows plus OK to operate 
 The player offers Play/Pause, Live (return to the live edge), Retry, Channels, Audio, Subtitles, and Fit/Fill. Back hides visible controls during playback; another Back returns to browsing. Unavailable streams offer Retry or another channel. PPV/Sports checks for a newer list every 30 minutes while its tab is open. The colored Refresh buttons update either list immediately; failed refreshes preserve the last saved channels.
 
 Catalog and search pages load more titles automatically as you approach the bottom. Search starts only after pressing the Search button or the keyboard Search action.
+
+🖱️ Android TV movie players start with mouse mode enabled, including the first launch after this update. Arrows move the cursor and OK clicks; Menu switches to D-pad focus and remembers your choice.

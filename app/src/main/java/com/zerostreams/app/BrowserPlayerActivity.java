@@ -22,7 +22,7 @@ public class BrowserPlayerActivity extends Activity {
     private WebChromeClient.CustomViewCallback fullscreenCallback;
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);boolean reader=getIntent().getBooleanExtra("reader",false);if(reader)setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);String address=getIntent().getStringExtra("url");if(address==null||!address.startsWith("https://")){finish();return;}
-        tvPlayer=BuildConfig.TV&&!reader;if(tvPlayer&&!getSharedPreferences("zero",MODE_PRIVATE).getBoolean("playerDpadV2",false))getSharedPreferences("zero",MODE_PRIVATE).edit().putBoolean("playerMouse",false).putBoolean("playerDpadV2",true).apply();
+        tvPlayer=BuildConfig.TV&&!reader;if(tvPlayer&&!getSharedPreferences("zero",MODE_PRIVATE).getBoolean("playerMouseDefaultV1",false))getSharedPreferences("zero",MODE_PRIVATE).edit().putBoolean("playerMouse",true).putBoolean("playerMouseDefaultV1",true).apply();
         blockAds=!reader&&getSharedPreferences("zero",MODE_PRIVATE).getBoolean("blockAds",true);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         LinearLayout root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(Color.BLACK);
@@ -43,7 +43,7 @@ public class BrowserPlayerActivity extends Activity {
             @Override public boolean onCreateWindow(WebView view,boolean dialog,boolean gesture,android.os.Message message){return false;}
             @Override public void onShowCustomView(View view,CustomViewCallback callback){if(tvPlayer||android.os.SystemClock.elapsedRealtime()-lastPlayerGesture>1500||fullscreen!=null){callback.onCustomViewHidden();return;}fullscreen=view;fullscreenCallback=callback;root.setVisibility(View.GONE);screen.addView(view,new FrameLayout.LayoutParams(-1,-1));}
             @Override public void onHideCustomView(){closeFullscreen();}
-        });root.addView(web,new LinearLayout.LayoutParams(-1,0,1));screen=new FrameLayout(this);screen.setBackgroundColor(Color.BLACK);screen.addView(root,new FrameLayout.LayoutParams(-1,-1));if(tvPlayer){mouse=new TvMouse(this,web,screen,this::wakeControls);Toast.makeText(this,"D-pad navigation · arrows focus, OK selects · Menu toggles mouse",Toast.LENGTH_LONG).show();}setContentView(screen);if(!reader)hideSystemBars();web.loadUrl(address);web.requestFocus();
+        });root.addView(web,new LinearLayout.LayoutParams(-1,0,1));screen=new FrameLayout(this);screen.setBackgroundColor(Color.BLACK);screen.addView(root,new FrameLayout.LayoutParams(-1,-1));if(tvPlayer){mouse=new TvMouse(this,web,screen,this::wakeControls);Toast.makeText(this,mouse.isEnabled()?"Player mouse on · arrows move, OK selects · Menu toggles mouse":"D-pad navigation · arrows focus, OK selects · Menu toggles mouse",Toast.LENGTH_LONG).show();}setContentView(screen);if(!reader)hideSystemBars();web.loadUrl(address);web.requestFocus();
     }
     private void hideSystemBars(){getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY|View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);}
     @Override public void onWindowFocusChanged(boolean focused){super.onWindowFocusChanged(focused);if(focused&&!getIntent().getBooleanExtra("reader",false))hideSystemBars();}
