@@ -12,13 +12,13 @@
       shadowChecked=Date.now();shadowRoots=[];const roots=[document];
       for(let i=0;i<roots.length&&i<40;i++)roots[i].querySelectorAll('*').forEach(node=>{if(node.shadowRoot){shadowRoots.push(node.shadowRoot);roots.push(node.shadowRoot);}});
     }
-    return [document,...shadowRoots].flatMap(root=>Array.from(root.querySelectorAll(selector)));
+    return [document,...shadowRoots].reduce((nodes,root)=>nodes.concat(Array.from(root.querySelectorAll(selector))),[]);
   }
 
   if (window.ZeroProgress) window.addEventListener('message', event => {
     if(!['https://vidstuck.xyz','https://vidsrc.sh'].includes(event.origin))return;
     try {
-      let data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;if(data?.type==='PLAYER_EVENT'){const p=data.data,info=p?.player_info;data=info?.tmdb?{id:info.tmdb,type:info.mediaType,timestamp:p.player_progress,duration:p.player_duration,season:info.season,episode:info.episode}:null;}
+      let data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;if(data&&data.type==='PLAYER_EVENT'){const p=data.data,info=p&&p.player_info;data=info&&info.tmdb?{id:info.tmdb,type:info.mediaType,timestamp:p.player_progress,duration:p.player_duration,season:info.season,episode:info.episode}:null;}
       if (data && (data.type === 'movie' || data.type === 'tv') && Number.isFinite(Number(data.timestamp)) && Number.isFinite(Number(data.duration)))
         window.ZeroProgress.postMessage(JSON.stringify(data));
     } catch (_) {}
@@ -33,7 +33,7 @@
       // permits removing this viewport-sized artwork.
       if(bounds.width>=innerWidth*.7&&bounds.height>=innerHeight*.7&&
         !image.matches('video,audio')&&!image.closest('.g-recaptcha,.h-captcha')&&
-        !image.parentElement?.querySelector(challenge)){
+        !(image.parentElement&&image.parentElement.querySelector(challenge))){
         hide(image);
         if(window.parent!==window&&!document.body.querySelector('iframe,'+media+','+challenge)){
           window.parent.postMessage({type:'zerostreams-timed-qr-ad'},'*');
@@ -347,5 +347,5 @@
   const back=node=>node&&/^(back|go back|return|exit player|close player)(\s+to\s+.*)?$/i.test((node.getAttribute('aria-label')||node.getAttribute('title')||node.textContent||'').trim());
   function exit(){if(window.parent===window&&window.ZeroPlayer){window.ZeroPlayer.postMessage('back');return;}if(window.parent===window)window.postMessage({type:'zeromovies-player-exit'},window.location.origin);else window.parent.postMessage({type:'zeromovies-player-exit'},'*');}
   document.addEventListener('click',event=>{const node=event.composedPath().find(el=>el.matches&&el.matches('button,a,[role="button"]'));if(!back(node))return;event.preventDefault();event.stopImmediatePropagation();exit();},true);
-  window.addEventListener('message',event=>{if(event.source===window)return;if(event.data?.type==='zeromovies-player-exit'&&Array.from(document.querySelectorAll('iframe')).some(frame=>frame.contentWindow===event.source))exit();});
+  window.addEventListener('message',event=>{if(event.source===window)return;if(event.data&&event.data.type==='zeromovies-player-exit'&&Array.from(document.querySelectorAll('iframe')).some(frame=>frame.contentWindow===event.source))exit();});
 })();
