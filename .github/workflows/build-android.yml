@@ -1,6 +1,9 @@
 name: Build ZeroStreams APKs
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'app/**'
 permissions:
   contents: read
 jobs:
@@ -25,8 +28,9 @@ jobs:
       - name: Verify player rules and title search
         run: |
           mkdir -p /tmp/zero-rule-tests
-          javac -d /tmp/zero-rule-tests app/src/main/java/com/zerostreams/app/AdBlockRules.java app/src/main/java/com/zerostreams/app/TitleSearch.java tests/PlayerRulesTest.java
+          javac -d /tmp/zero-rule-tests app/src/main/java/com/zerostreams/app/AdBlockRules.java app/src/main/java/com/zerostreams/app/TitleSearch.java app/src/main/java/com/zerostreams/app/ProgressRules.java tests/PlayerRulesTest.java tests/ProgressRulesTest.java
           java -cp /tmp/zero-rule-tests com.zerostreams.app.PlayerRulesTest
+          java -cp /tmp/zero-rule-tests com.zerostreams.app.ProgressRulesTest
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -44,6 +48,8 @@ jobs:
           else
             echo "No bundled TMDB key; enter your key in app Settings"
           fi
+      - name: Test discovery history and visible QR scanning
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest
       - name: Compile both APKs
         run: gradle :app:assembleMobileDebug :app:assembleTvDebug
       - name: Lint both variants

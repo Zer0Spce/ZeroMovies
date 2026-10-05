@@ -7,7 +7,7 @@ function page(html, tv = false, gain = 1, setup = () => {}) {
   const dom = new JSDOM(html, {runScripts: 'outside-only', url: 'https://vidstuck.xyz/embed/movie/299534'});
   const w = dom.window;
   w.HTMLElement.prototype.getBoundingClientRect = function () {
-    return this.dataset.large ? {width:1024,height:768,bottom:768} : {width:0,height:0,bottom:0};
+    return this.dataset.large ? {width:1024,height:768,bottom:768} : {width:Number(this.getAttribute('width'))||0,height:Number(this.getAttribute('height'))||0,bottom:0};
   };
   w.__zeroBlockAds = true; w.__zeroTv = tv; w.__zeroGain = gain;
   setup(w);
@@ -56,8 +56,17 @@ async function run() {
   dom.window.close();
   dom = page('<video></video>');
   dom.window.document.body.insertAdjacentHTML('beforeend','<div id="late" data-large="1" style="background:white">'+creative+'</div>');
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await new Promise(resolve => setTimeout(resolve, 500));
   assert.equal(dom.window.document.getElementById('late').style.display, 'none');
+  dom.window.close();
+  dom = page('<video id="movie"></video><div id="painted" data-large="1" style="background:white"><img width="420" height="420" alt="advertisement"></div>');
+  dom.window.__zeroDismissQrAd();
+  assert.equal(dom.window.document.getElementById('painted').style.display,'none','Native-confirmed QR ads can be painted images without DOM text');
+  assert.ok(dom.window.document.getElementById('movie'));
+  dom.window.close();
+  dom = page('<div id="challenge" data-large="1" style="background:white"><img width="420" height="420"><iframe src="https://challenges.cloudflare.com/turnstile"></iframe></div>');
+  dom.window.__zeroDismissQrAd();
+  assert.equal(dom.window.document.getElementById('challenge').style.display,'');
   dom.window.close();
   dom = page('<video></video><div class="plyr__controls"><button>Pause</button></div>', true);
   const w = dom.window;

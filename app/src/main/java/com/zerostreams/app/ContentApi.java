@@ -57,7 +57,7 @@ final class ContentApi {
             String date=raw.optString(media.equals("tv")?"first_air_date":"release_date"),poster=raw.optString("poster_path"),backdrop=raw.optString("backdrop_path");int year=0;try{if(date.length()>=4)year=Integer.parseInt(date.substring(0,4));}catch(NumberFormatException ignored){}
             JSONObject item=new JSONObject().put("id","tmdb-"+type+"-"+id).put("title",name).put("type",type).put("year",year).put("description",raw.optString("overview")).put("rating",raw.optDouble("vote_average",0))
                 .put("poster",poster.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/w500"+poster:"")
-                .put("backdrop",backdrop.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/w1280"+backdrop:"").put("onlineSearch",search);
+                .put("backdrop",backdrop.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/w1280"+backdrop:"").put("releaseDate",date).put("genreIds",raw.optJSONArray("genre_ids")).put("onlineSearch",search);
             rows.add(new Catalog.Item(item));
         }return rows;
     }
@@ -68,9 +68,36 @@ final class ContentApi {
         if(section.equals("Movies"))return tmdbRows(tmdb("/movie/popular",key,"&page="+page).getJSONArray("results"),"movie",false);
         if(section.equals("Series"))return tmdbRows(tmdb("/tv/popular",key,"&page="+page).getJSONArray("results"),"tv",false);
         LinkedHashMap<String,Catalog.Item> rows=new LinkedHashMap<>();
-        String[][] endpoints={{"/trending/all/week",""},{"/movie/popular","movie"},{"/tv/popular","tv"},{"/movie/now_playing","movie"},{"/movie/top_rated","movie"}};
-        for(String[] endpoint:endpoints)for(Catalog.Item item:tmdbRows(tmdb(endpoint[0],key,"&page=1").getJSONArray("results"),endpoint[1],false)){if(endpoint[0].equals("/movie/top_rated")){item.raw.put("recommended",true);Catalog.Item existing=rows.get(item.id);if(existing!=null)existing.raw.put("recommended",true);}if(!rows.containsKey(item.id))rows.put(item.id,item);}
+        String[][] endpoints={{"/trending/all/week","","trending"},{"/movie/popular","movie","popular"},{"/tv/popular","tv","popular"},{"/movie/now_playing","movie","nowPlaying"},{"/movie/top_rated","movie","recommended"},{"/movie/upcoming","movie","upcoming"}};
+        Exception failure=null;String today=new java.text.SimpleDateFormat("yyyy-MM-dd",Locale.ROOT).format(new Date());
+        for(String[] endpoint:endpoints){try{for(Catalog.Item item:tmdbRows(tmdb(endpoint[0],key,"&page=1").getJSONArray("results"),endpoint[1],false)){
+            if(endpoint[2].equals("upcoming")&&item.raw.optString("releaseDate").compareTo(today)<=0)continue;
+            item.raw.put(endpoint[2],true);Catalog.Item existing=rows.get(item.id);
+            if(existing!=null)existing.raw.put(endpoint[2],true);else rows.put(item.id,item);
+        }}catch(Exception error){failure=error;}}
+        if(rows.isEmpty()&&failure!=null)throw failure;
         return new ArrayList<>(rows.values());
+    }
+    static String media(Catalog.Item item){return item.type.equals("series")?"tv":"movie";}
+    static JSONObject details(Catalog.Item item,String key) throws Exception {
+        if(!item.id.matches("tmdb-(movie|series)-[0-9]+"))throw new IOException("Not a TMDB title");
+        return tmdb("/"+media(item)+"/"+item.id.substring(item.id.lastIndexOf('-')+1),key,"&append_to_response=credits,videos,recommendations");
+    }
+    static JSONArray providers(String key,String type,String region) throws Exception {
+        if(!type.equals("movie")&&!type.equals("tv")||!region.matches("[A-Z]{2}"))throw new IOException("Invalid provider filter");
+        return tmdb("/watch/providers/"+type,key,"&watch_region="+region).getJSONArray("results");
+    }
+    static List<Catalog.Item> providerTitles(String key,String type,int provider,String region,int page) throws Exception {
+        if(provider<=0||!region.matches("[A-Z]{2}")||!type.equals("movie")&&!type.equals("tv"))throw new IOException("Invalid provider");
+        return tmdbRows(tmdb("/discover/"+type,key,"&include_adult=false&with_watch_providers="+provider+"&watch_region="+region+"&with_watch_monetization_types=flatrate&sort_by=popularity.desc&page="+page).getJSONArray("results"),type,false);
+    }
+    static String image(String path,String size){return path.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/"+size+path:"";}
+    static String weather(String city) throws Exception {
+        JSONObject geo=(JSONObject)json("https://geocoding-api.open-meteo.com/v1/search?name="+URLEncoder.encode(city,"UTF-8")+"&count=1&language=en&format=json");
+        JSONArray results=geo.optJSONArray("results");if(results==null||results.length()==0)throw new IOException("City not found");JSONObject place=results.getJSONObject(0);
+        JSONObject result=(JSONObject)json("https://api.open-meteo.com/v1/forecast?latitude="+place.getDouble("latitude")+"&longitude="+place.getDouble("longitude")+"&current=temperature_2m,weather_code&timezone=auto");
+        JSONObject current=result.getJSONObject("current");int code=current.optInt("weather_code");String icon=code==0?"☀":code<=3?"☁":code>=95?"⛈":"☂";
+        return place.optString("name",city)+" · "+icon+" "+Math.round(current.getDouble("temperature_2m"))+"°C";
     }
     static JSONArray seasons(String id,String key) throws Exception {
         if(!id.matches("[0-9]+"))throw new IOException("Invalid series ID");

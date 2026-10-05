@@ -6,6 +6,35 @@
   const heading = value => /^confirm you['’]re not a robot[.!]?$/i.test(value.trim());
   const media = 'video,audio,.jwplayer,.plyr,.vjs-player,[data-player]';
   const challenge = 'iframe[src*="recaptcha"],iframe[src*="hcaptcha"],iframe[src*="challenges.cloudflare.com"],.g-recaptcha,.h-captcha,input[name="cf-turnstile-response"]';
+  if (window.ZeroProgress) window.addEventListener('message', event => {
+    if (event.origin !== 'https://vidstuck.xyz') return;
+    try {
+      const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+      if (data && (data.type === 'movie' || data.type === 'tv') && Number.isFinite(Number(data.timestamp)) && Number.isFinite(Number(data.duration)))
+        window.ZeroProgress.postMessage(JSON.stringify(data));
+    } catch (_) {}
+  });
+  window.__zeroDismissQrAd = () => {
+    // Called only after the native screen reader identifies the reported advertising QR.
+    document.querySelectorAll('iframe').forEach(frame => { try { frame.contentWindow.postMessage({type:'zerostreams-dismiss-ad-qr'}, '*'); } catch (_) {} });
+    document.querySelectorAll('img,canvas,svg').forEach(image => {
+      const bounds=image.getBoundingClientRect();
+      if (bounds.width < 100 || bounds.height < 100 || bounds.width/bounds.height < .65 || bounds.width/bounds.height > 1.4) return;
+      let node=image.parentElement,candidate=null;
+      for(let depth=0;node&&depth<10;depth++,node=node.parentElement){
+        if(node.querySelector(media)||node.querySelector(challenge))break;
+        const r=node.getBoundingClientRect(),style=getComputedStyle(node);
+        if(r.width>=innerWidth*.4&&r.height>=innerHeight*.4&&/rgb\(255, 255, 255\)|#fff/i.test(style.backgroundColor))candidate=node;
+      }
+      if(!candidate)return;
+      if(candidate===document.body||candidate===document.documentElement){
+        if(window.parent!==window&&!candidate.querySelector('iframe,'+media)){window.parent.postMessage({type:'zerostreams-timed-qr-ad'},'*');Array.from(document.body.children).forEach(hide);document.body.style.backgroundColor='transparent';}
+      }else hide(candidate);
+    });
+  };
+  window.addEventListener('message', event => {
+    if(event.source===window.parent&&event.data&&event.data.type==='zerostreams-dismiss-ad-qr')window.__zeroDismissQrAd();
+  });
   if (Number(window.__zeroGain) > 1) {
     const amount = Math.min(2, Number(window.__zeroGain));
     const connected = new WeakSet();
@@ -142,6 +171,7 @@
         }
       } catch (_) {}
     });
+    if(!/confirm you['’]re not a robot/i.test(document.body.textContent))return;
     document.querySelectorAll('h1,h2,h3,p,span,div').forEach(label => {
       if (label.children.length || !heading(label.textContent)) return;
       const node = adContainer(label);
@@ -167,7 +197,7 @@
   new MutationObserver(() => {
     if (pending) return;
     pending = true;
-    setTimeout(() => { pending = false; scan(); }, 50);
+    setTimeout(() => { pending = false; scan(); }, 400);
   }).observe(document, {subtree: true, childList: true, characterData: true});
   document.addEventListener('DOMContentLoaded', scan);
   scan();
