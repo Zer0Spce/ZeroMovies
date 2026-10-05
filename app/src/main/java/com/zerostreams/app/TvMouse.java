@@ -13,7 +13,7 @@ final class TvMouse extends View implements Choreographer.FrameCallback {
     private final Handler handler=new Handler(Looper.getMainLooper());private final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
     private boolean enabled,running,left,right,up,down;private float x=-1,y=-1;private long lastFrame,heldAt,lastHover,lastWake;
     private final Runnable hide=()->setVisibility(GONE);
-    TvMouse(Activity activity,WebView web,FrameLayout parent,Runnable wake){super(activity);this.activity=activity;this.web=web;this.wake=wake;setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);setFocusable(false);setClickable(false);parent.addView(this,new FrameLayout.LayoutParams(-1,-1));setVisibility(GONE);enabled=activity.getSharedPreferences("zero",Activity.MODE_PRIVATE).getBoolean("playerMouse",true);}
+    TvMouse(Activity activity,WebView web,FrameLayout parent,Runnable wake){super(activity);this.activity=activity;this.web=web;this.wake=wake;setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);setFocusable(false);setClickable(false);parent.addView(this,new FrameLayout.LayoutParams(-1,-1));setVisibility(GONE);enabled=activity.getSharedPreferences("zero",Activity.MODE_PRIVATE).getBoolean("playerMouse",false);}
     boolean handle(KeyEvent event){int key=event.getKeyCode();if(key==KeyEvent.KEYCODE_MENU){if(event.getAction()==KeyEvent.ACTION_DOWN&&event.getRepeatCount()==0){enabled=!enabled;activity.getSharedPreferences("zero",Activity.MODE_PRIVATE).edit().putBoolean("playerMouse",enabled).apply();stop();Toast.makeText(activity,enabled?"Player mouse on · arrows move, OK selects":"Player mouse off · use D-pad focus",Toast.LENGTH_SHORT).show();}return true;}if(!enabled)return false;
         if(key==KeyEvent.KEYCODE_DPAD_CENTER||key==KeyEvent.KEYCODE_ENTER){if(event.getAction()==KeyEvent.ACTION_UP)click();return true;}
         if(key!=KeyEvent.KEYCODE_DPAD_LEFT&&key!=KeyEvent.KEYCODE_DPAD_RIGHT&&key!=KeyEvent.KEYCODE_DPAD_UP&&key!=KeyEvent.KEYCODE_DPAD_DOWN)return false;
@@ -29,3 +29,4 @@ final class TvMouse extends View implements Choreographer.FrameCallback {
     @Override protected void onDraw(Canvas canvas){super.onDraw(canvas);float radius=7*getResources().getDisplayMetrics().density;paint.setStyle(Paint.Style.FILL);paint.setColor(0xCC111111);canvas.drawCircle(web.getLeft()+x,web.getTop()+y,radius+2,paint);paint.setColor(Color.WHITE);canvas.drawCircle(web.getLeft()+x,web.getTop()+y,radius,paint);paint.setColor(0xFF65E6CC);canvas.drawCircle(web.getLeft()+x,web.getTop()+y,radius/2,paint);}
     void stop(){running=false;left=right=up=down=false;Choreographer.getInstance().removeFrameCallback(this);handler.removeCallbacksAndMessages(null);setVisibility(GONE);}
 }
+

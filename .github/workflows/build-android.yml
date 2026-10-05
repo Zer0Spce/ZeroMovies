@@ -1,6 +1,8 @@
 name: Build ZeroStreams APKs
 on:
   workflow_dispatch:
+  push:
+    paths: ['app/**']
 permissions:
   contents: read
 jobs:
@@ -38,6 +40,7 @@ jobs:
         run: |
           npm install --prefix /tmp/zero-qr-tests --no-audit --no-fund jsdom@24.1.3
           node tests/player-guard.test.cjs
+          node tests/tv-navigation.test.cjs
       - name: Check TMDB key configuration
         run: |
           if [ -n "$TMDB_API_KEY" ]; then

@@ -11,10 +11,10 @@ import java.util.concurrent.*;
 /** Small in-memory snapshots only; QR targets are inspected, never opened. */
 final class PlayerAdScan {
     private final Activity activity;private final WebView web;private final Handler handler=new Handler(Looper.getMainLooper());
-    private final ExecutorService decoder=Executors.newSingleThreadExecutor();private boolean active,busy;
+    private final ExecutorService decoder=Executors.newSingleThreadExecutor();private boolean active,busy;private long startedAt,confirmedAt;
     PlayerAdScan(Activity a,WebView w){activity=a;web=w;}
-    private final Runnable tick=new Runnable(){public void run(){if(!active)return;capture();handler.postDelayed(this,3500);}};
-    void start(){if(active)return;active=true;handler.postDelayed(tick,1800);}
+    private final Runnable tick=new Runnable(){public void run(){if(!active)return;capture();handler.postDelayed(this,(SystemClock.elapsedRealtime()-startedAt<18000||SystemClock.elapsedRealtime()-confirmedAt<5000)?1000:3500);}};
+    void start(){if(active)return;active=true;startedAt=SystemClock.elapsedRealtime();handler.postDelayed(tick,300);}
     void stop(){active=false;handler.removeCallbacks(tick);}
     void destroy(){stop();decoder.shutdownNow();}
     private void capture(){
@@ -27,6 +27,7 @@ final class PlayerAdScan {
     private void inspect(Bitmap bitmap){
         if(decoder.isShutdown()){bitmap.recycle();busy=false;return;}
         decoder.execute(()->{String value="";try{int width=bitmap.getWidth(),height=bitmap.getHeight();int[] pixels=new int[width*height];bitmap.getPixels(pixels,0,width,0,0,width,height);value=QrAdDetector.decode(pixels,width,height);}catch(RuntimeException ignored){}finally{bitmap.recycle();}
-            final String url=value;handler.post(()->{busy=false;if(!active||activity.isDestroyed()||url.isEmpty())return;try{String host=new URI(url).getHost();if(host!=null)activity.getSharedPreferences("zero",Activity.MODE_PRIVATE).edit().putString("playerQrLastHost",host).apply();}catch(Exception ignored){}if(QrAdDetector.isAdUrl(url))web.evaluateJavascript("if(window.__zeroDismissQrAd)window.__zeroDismissQrAd();",null);});});
+            final String url=value;handler.post(()->{busy=false;if(!active||activity.isDestroyed()||url.isEmpty())return;try{String host=new URI(url).getHost();if(host!=null)activity.getSharedPreferences("zero",Activity.MODE_PRIVATE).edit().putString("playerQrLastHost",host).apply();}catch(Exception ignored){}if(QrAdDetector.isAdUrl(url)){confirmedAt=SystemClock.elapsedRealtime();web.evaluateJavascript("if(window.__zeroDismissQrAd)window.__zeroDismissQrAd();",null);}});});
     }
 }
+

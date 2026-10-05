@@ -6,6 +6,15 @@
   const heading = value => /^confirm you['’]re not a robot[.!]?$/i.test(value.trim());
   const media = 'video,audio,.jwplayer,.plyr,.vjs-player,[data-player]';
   const challenge = 'iframe[src*="recaptcha"],iframe[src*="hcaptcha"],iframe[src*="challenges.cloudflare.com"],.g-recaptcha,.h-captcha,input[name="cf-turnstile-response"]';
+  let shadowRoots=[],shadowChecked=0;
+  function all(selector,refresh=false){
+    if(refresh||Date.now()-shadowChecked>1500){
+      shadowChecked=Date.now();shadowRoots=[];const roots=[document];
+      for(let i=0;i<roots.length&&i<40;i++)roots[i].querySelectorAll('*').forEach(node=>{if(node.shadowRoot){shadowRoots.push(node.shadowRoot);roots.push(node.shadowRoot);}});
+    }
+    return [document,...shadowRoots].flatMap(root=>Array.from(root.querySelectorAll(selector)));
+  }
+
   if (window.ZeroProgress) window.addEventListener('message', event => {
     if (event.origin !== 'https://vidstuck.xyz') return;
     try {
@@ -16,8 +25,8 @@
   });
   window.__zeroDismissQrAd = () => {
     // Called only after the native screen reader identifies the reported advertising QR.
-    document.querySelectorAll('iframe').forEach(frame => { try { frame.contentWindow.postMessage({type:'zerostreams-dismiss-ad-qr'}, '*'); } catch (_) {} });
-    document.querySelectorAll('img,canvas,svg').forEach(image => {
+    all('iframe',true).forEach(frame => { try { frame.contentWindow.postMessage({type:'zerostreams-dismiss-ad-qr'}, '*'); } catch (_) {} });
+    all('img,canvas,svg').forEach(image => {
       const bounds=image.getBoundingClientRect();
       // A provider may paint the whole white banner as one image/canvas with
       // no white DOM container. Only the native advertising QR confirmation
@@ -46,7 +55,7 @@
     });
     // Some creatives paint the entire banner as CSS background artwork.
     // Native QR confirmation makes this independent of readable DOM text.
-    document.querySelectorAll('div,section,aside,dialog').forEach(node => {
+    all('div,section,aside,dialog').forEach(node => {
       if(node.querySelector(media)||node.querySelector(challenge))return;
       const r=node.getBoundingClientRect(),style=getComputedStyle(node);
       if(r.width>=innerWidth*.7&&r.height>=innerHeight*.7&&
@@ -150,7 +159,7 @@
           if (r.width > 0 && r.height > 0 && style.visibility !== 'hidden' && style.display !== 'none' && Number(style.opacity || 1) > 0) visible = true;
         });
       }
-      document.documentElement.classList.add('zero-player-idle');
+      document.documentElement.classList.add('zero-player-idle');all('.zero-tv-focused').forEach(node=>node.classList.remove('zero-tv-focused'));
       return visible;
     }
     let backSequence = 0;
@@ -184,6 +193,45 @@
         clearTimeout(waiter.timer);backWaiters.delete(data.request);waiter.resolve(data.handled!==false);
       }
     });
+    if(window.__zeroTv){
+      let selected=null;
+      const controls='button,a[href],input:not([type="hidden"]),select,summary,[role="button"],[role="menuitem"],[role="option"],[tabindex],.cursor-pointer,iframe';
+      function visible(node){const r=node.getBoundingClientRect(),style=getComputedStyle(node);return r.width>1&&r.height>1&&style.display!=='none'&&style.visibility!=='hidden'&&Number(style.opacity||1)>0&&!node.disabled&&node.getAttribute('aria-disabled')!=='true'&&!node.dataset.zeroQrHidden;}
+      function candidates(){return all(controls).filter(node=>visible(node)&&!node.matches('video,audio')&&!node.querySelector('video')&&(!node.hasAttribute('tabindex')||Number(node.getAttribute('tabindex'))>=0||node.matches('button,a,input,select,iframe')));}
+      function initial(nodes){return nodes.find(node=>node.tagName!=='IFRAME'&&/play|pause/i.test(node.getAttribute('aria-label')||node.getAttribute('title')||node.textContent||''))||nodes.find(node=>node.tagName!=='IFRAME'&&!backButton(node))||nodes[0];}
+      function focus(node){all('.zero-tv-focused').forEach(el=>el.classList.remove('zero-tv-focused'));selected=node;node.classList.add('zero-tv-focused');try{node.focus({preventScroll:true});node.scrollIntoView({block:'nearest',inline:'nearest'});}catch(_){try{node.focus();}catch(_){}}}
+      function backButton(node){return node&&/^(back|go back|return|exit player|close player)(\s+to\s+.*)?$/i.test((node.getAttribute('aria-label')||node.getAttribute('title')||node.textContent||'').trim());}
+      function exitPlayer(){if(window.parent===window){if(window.ZeroPlayer)window.ZeroPlayer.postMessage('back');}else window.parent.postMessage({type:'zerostreams-player-back'},'*');}
+      window.__zeroTvNavigate=(direction,fromChild=null)=>{
+        if(!['left','right','up','down','ok'].includes(direction))return;
+        activity();const nodes=candidates();if(!nodes.length)return;
+        let current=fromChild||(selected&&selected.isConnected&&nodes.includes(selected)?selected:null)||nodes.find(node=>node===document.activeElement);
+        if(current&&current.tagName==='IFRAME'&&!fromChild){try{current.contentWindow.postMessage({type:'zerostreams-tv-nav',direction},'*');}catch(_){}return;}
+        if(direction==='ok'){
+          if(!current){current=initial(nodes);focus(current);}
+          if(current.tagName==='IFRAME'){try{current.contentWindow.postMessage({type:'zerostreams-tv-nav',direction},'*');}catch(_){}}
+          else if(backButton(current))exitPlayer();else current.click();return;
+        }
+        if(!current){const first=initial(nodes);focus(first);if(first.tagName==='IFRAME')try{first.contentWindow.postMessage({type:'zerostreams-tv-nav',direction},'*');}catch(_){}return;}
+        const rect=current.getBoundingClientRect(),x=rect.left+rect.width/2,y=rect.top+rect.height/2;
+        const ranked=nodes.filter(node=>node!==current).map(node=>{const r=node.getBoundingClientRect(),dx=r.left+r.width/2-x,dy=r.top+r.height/2-y;const primary=direction==='left'?-dx:direction==='right'?dx:direction==='up'?-dy:dy;const side=(direction==='left'||direction==='right')?Math.abs(dy):Math.abs(dx);return {node,primary,score:primary+side*3};}).filter(row=>row.primary>2).sort((a,b)=>a.score-b.score);
+        if(ranked.length){focus(ranked[0].node);if(ranked[0].node.tagName==='IFRAME')try{ranked[0].node.contentWindow.postMessage({type:'zerostreams-tv-nav',direction},'*');}catch(_){}return;}
+        if(window.parent!==window){window.parent.postMessage({type:'zerostreams-tv-nav-edge',direction},'*');return;}
+        const index=nodes.indexOf(current),step=(direction==='left'||direction==='up')?-1:1;focus(nodes[(index+step+nodes.length)%nodes.length]);
+      };
+      window.addEventListener('message',event=>{
+        const data=event.data;if(!data)return;
+        if(event.source===window.parent&&window.parent!==window&&data.type==='zerostreams-tv-nav')window.__zeroTvNavigate(data.direction);
+        const frame=all('iframe').find(node=>node.contentWindow===event.source);if(!frame)return;
+        if(data.type==='zerostreams-tv-nav-edge')window.__zeroTvNavigate(data.direction,frame);
+        if(data.type==='zerostreams-player-back')exitPlayer();
+      });
+      document.addEventListener('keydown',event=>{const direction={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',Enter:'ok'}[event.key];if(!direction)return;event.preventDefault();event.stopImmediatePropagation();window.__zeroTvNavigate(direction);},true);
+      document.addEventListener('keyup',event=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter'].includes(event.key)){event.preventDefault();event.stopImmediatePropagation();}},true);
+      document.addEventListener('click',event=>{const node=event.composedPath().find(el=>el.matches&&el.matches('button,a,[role="button"]'))||event.target.closest('button,a,[role="button"]');if(!backButton(node))return;event.preventDefault();event.stopImmediatePropagation();exitPlayer();},true);
+      const style=document.createElement('style');style.textContent='.zero-tv-focused{outline:3px solid #65e6cc!important;outline-offset:3px!important;border-radius:5px!important}';
+      if(document.head)document.head.appendChild(style);else document.addEventListener('DOMContentLoaded',()=>document.head.appendChild(style),{once:true});
+    }
     window.__zeroRemoteActivity = activity;
     window.addEventListener('message', event => {
       if (event.source === window.parent && event.data && event.data.type === 'zerostreams-remote-active') activity();
