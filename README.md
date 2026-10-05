@@ -4,7 +4,7 @@ ZeroMovies is the repository for **ZeroStreams**, an independently branded nativ
 
 ## Current verification status
 
-The previous 0.1.0 mobile and TV APKs compiled and passed Android lint in run 37251216476. The first expanded 0.2.0 APKs compiled and passed lint in run 37252846761; final reader and memory refinements are undergoing another build. Seven backend/importer tests pass. Native device testing remains required; external service availability, embedded-player behavior and TV WebView navigation are not certified by compilation. This is a development build, not a Play Store release.
+The previous 0.1.0 mobile and TV APKs compiled and passed Android lint in run 37251216476. The final 0.2.0 mobile and TV APKs compiled and passed lint in run 37253365919. Seven backend/importer tests pass. Initial automatic refresh published 126 titles and 40 series snapshots; 33 snapshots are partial because later-season requests returned upstream errors. The updater retains confirmed episodes and retries partial snapshots hourly. Native device testing remains required; external service availability, embedded-player behavior and TV WebView navigation are not certified by compilation. This is a development build, not a Play Store release.
 
 ## App features
 
