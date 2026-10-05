@@ -1,6 +1,10 @@
 name: Build ZeroStreams APKs
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'app/**'
+      - 'tests/**'
 permissions:
   contents: read
 jobs:
@@ -20,6 +24,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Verify player rules and title search
+        run: |
+          mkdir -p /tmp/zero-rule-tests
+          javac -d /tmp/zero-rule-tests app/src/main/java/com/zerostreams/app/AdBlockRules.java app/src/main/java/com/zerostreams/app/TitleSearch.java tests/PlayerRulesTest.java
+          java -cp /tmp/zero-rule-tests com.zerostreams.app.PlayerRulesTest
       - name: Compile both APKs
         run: gradle :app:assembleMobileDebug :app:assembleTvDebug
       - name: Lint both variants
