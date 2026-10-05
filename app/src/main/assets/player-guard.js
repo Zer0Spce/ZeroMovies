@@ -25,7 +25,12 @@
       if(bounds.width>=innerWidth*.7&&bounds.height>=innerHeight*.7&&
         !image.matches('video,audio')&&!image.closest('.g-recaptcha,.h-captcha')&&
         !image.parentElement?.querySelector(challenge)){
-        hide(image);return;
+        hide(image);
+        if(window.parent!==window&&!document.body.querySelector('iframe,'+media+','+challenge)){
+          window.parent.postMessage({type:'zerostreams-timed-qr-ad'},'*');
+          document.body.style.backgroundColor='transparent';
+        }
+        return;
       }
       if (bounds.width < 100 || bounds.height < 100 || bounds.width/bounds.height < .65 || bounds.width/bounds.height > 1.4) return;
       let node=image.parentElement,candidate=null;
