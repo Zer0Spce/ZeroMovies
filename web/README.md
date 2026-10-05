@@ -4,12 +4,12 @@ Responsive movie/TV website using the same design and catalog features as the Wi
 
 ## Connect to Netlify
 
-1. Open https://app.netlify.com/start and import `Zer0Spce/ZeroMovies` from GitHub, using branch `main`.
+1. Open https://app.netlify.com/start and import `Zer0Spce/ZeroPlay` from GitHub, using branch `main`.
 2. Keep the base directory empty. Root `netlify.toml` sets build command `node web/scripts/build.cjs`, publish directory `web/public`, and Functions directory `web/functions`.
 3. In Netlify environment variables, add `TMDB_API_KEY` with your TMDB v3 key, available to **Functions** and production. The GitHub Actions secret does not automatically transfer to Netlify. Redeploy after setting it.
 4. Publish and open the resulting `*.netlify.app` URL. Future commits to the connected production branch update the website automatically.
 
-[Deploy to Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/Zer0Spce/ZeroMovies) can also create a project from this repository. Use direct repository import to keep your existing GitHub repository connected.
+[Deploy to Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/Zer0Spce/ZeroPlay) can also create a project from this repository. Use direct repository import to keep your existing GitHub repository connected.
 
 The TMDB key stays in the serverless function. It is never injected into public assets or browser storage. The metadata endpoint accepts only supported TMDB routes and bounded parameters; it is not an arbitrary URL proxy. Search responses use private caching. No authentication or cross-device account synchronization is included; libraries stay in this browser.
 

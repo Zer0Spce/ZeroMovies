@@ -1,7 +1,7 @@
 {
   "name": "zerostreams-windows",
-  "version": "1.5.0",
-  "description": "ZeroPlay movies, series, Live TV and Live Sports with offline downloads",
+  "version": "1.5.1",
+  "description": "ZeroPlay movies, series, Live TV and Live Sports with sports ad filtering",
   "author": "ZeroPlay",
   "private": true,
   "main": "main.cjs",
@@ -29,6 +29,8 @@
     },
     "files": [
       "*.cjs",
+      "!downloads.cjs",
+      "!ext-source.cjs",
       "generated-config.json",
       "ui/**/*",
       "assets/**/*"
@@ -37,7 +39,7 @@
       "target": [
         "zip"
       ],
-      "artifactName": "ZeroPlay-1.5-Windows-x64.${ext}",
+      "artifactName": "ZeroPlay-1.5.1-Windows-x64.${ext}",
       "icon": "assets/icon.ico"
     },
     "asar": true

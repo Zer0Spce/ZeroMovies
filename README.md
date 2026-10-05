@@ -1,12 +1,12 @@
 # 🎬 ZeroPlay
 
-### Movies. Live TV. One place.
+### Movies. Live TV. Live Sports. One place.
 
-**Movies, series, LIVE TV, and PPV/Sports in one app.** ZeroPlay brings TMDB discovery, your personal library, and embedded playback together in a clean interface for **Android, Android TV / Google TV, and Windows**.
+**Movies, series, anime, LIVE TV, PPV/Sports, and Live Sports in one app.** ZeroPlay brings TMDB discovery, your personal library, and embedded playback together in a clean interface for **Android, Android TV / Google TV, and Windows**.
 
 Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surprise Me** dice when you cannot decide. Softly blurred artwork, light and dark themes, and dedicated TV controls make it comfortable on your phone, desktop, or big screen.
 
-**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroMovies/releases/latest)** · **[📋 v1.5 release notes](docs/release-1.5.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
+**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.5.1 release notes](docs/release-1.5.1.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
 
 Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations, Windows library data, and the permanent signing key.
 
@@ -18,6 +18,9 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | 🎲 **Surprise Me** | Discover released movies beyond the homepage rows with the red dice button beside the theme toggle. |
 | 🗂️ **Categories** | Explore movie and TV genres. v1.0 adds genre artwork and automatically loads more titles as you scroll. |
 | 📡 **PPV/Sports & LIVE TV** | Two dedicated tabs using the ZeroStreams playlists, colored refresh buttons, channel groups, and in-app playback on Android, Android TV and Windows. |
+| 🏟️ **Live Sports** | Event categories, posters, local schedules, labeled alternate sources, fullscreen playback, and a fresh API request every time you press Refresh sports. |
+| ⭐ **Favorite channels** | Star LIVE TV channels and browse your Favorites group. |
+| ⚙️ **Homepage panels** | Keep the default layout or enable extra Action, Comedy, Horror, Animation, and Anime rows in Settings. |
 | 🎞️ **Rich title details** | View artwork, ratings, synopsis, cast, genres, trailers, and related recommendations. |
 | ▶️ **Choose your source** | Switch beside Watch Now between **VidStuck · Recommended**, VidSrc.to, VidSrc.sh, and SuperEmbed. |
 | ❤️ **Your library** | Save a watchlist, organize collections and Plan to Watch, and revisit watch and search history. |
@@ -54,13 +57,13 @@ Explore genres across movies and TV series.
 
 ## ⬇️ Download & get started
 
-Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroMovies/releases/latest)**.
+Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroPlay/releases/latest)**.
 
-| Platform | v1.5 download | Getting started |
+| Platform | v1.5.1 download | Getting started |
 | --- | --- | --- |
-| 📱 Android phone / tablet | `ZeroPlay-1.5-Android.apk` | Android 6+. Install the signed mobile APK. |
-| 📺 Android TV / Google TV | `ZeroPlay-1.5-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
-| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.5-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
+| 📱 Android phone / tablet | `ZeroPlay-1.5.1-Android.apk` | Android 6+. Install the signed mobile APK. |
+| 📺 Android TV / Google TV | `ZeroPlay-1.5.1-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
+| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.5.1-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
 | ✅ Integrity checks | `SHA256SUMS.txt` | Compare your downloaded files against the published SHA-256 checksums. |
 
 Android v0.4.5 uses a permanent production signing key. Moving from an earlier debug build may require uninstalling that build first, which clears its local library and history. Future production releases retain the same signing key.
@@ -93,13 +96,12 @@ Metadata and artwork: **TMDB** and their respective rights holders. This product
 
 If a QR ad appears, press its **X** button or wait for it to close automatically. This is a known bug.
 
-## 🆕 Version 1.5
+## 🆕 Version 1.5.1
 
-- 🏟️ **Live Sports** shows categories, posters, event schedules in your local time, and alternate source labels from the PPV API. It refreshes approximately every minute while open; **↻ Refresh sports** requests a fresh catalogue on every press. Its embedded player keeps provider ads and integrations enabled, separately from native M3U playback.
-- ↓ **Downloads** lets you save supported movie/episode media after starting playback, pause/resume, remove, and watch completed downloads offline.
-- 🧲 **Download as torrent** uses a built-in engine, with EXT search and browser/magnet fallback. Android 7+ is required for torrents. Keep the Windows app open during downloads. Peers exchange pieces while downloading; completed downloads stop seeding.
-- 🌸 **Anime** movies and series in Categories.
-- ⚙️ **Homepage panels** in Settings: existing panels start enabled, extra category rows are optional, and defaults can be restored.
-- ⭐ **Live TV favorites**: star a channel, then select the Favorites group.
+🏟️ **Live Sports is in Discover**, with ad filtering, blocked popups, blocked player file downloads, and fresh API refresh on every press. Anime, homepage panel settings, and LIVE TV favorites remain available.
 
-Direct offline downloads depend on available media sources. Protected sources and ongoing live streams are unsupported. Downloaded torrent files must use codecs supported by your device.
+### 🐛 Downloads temporarily disabled
+
+Movie and torrent downloads are disabled because of bugs we have not been able to fix in the current implementation. The Downloads tab and download/save buttons are removed for now. We plan to reimplement them in a future version once a reliable fix is found. Existing downloaded files are not deleted by this update.
+
+A Windows Defender detection was reported for v1.5 and remains unverified. Ad filtering does not establish the cause or resolve an antivirus detection; do not restore quarantined files or disable antivirus protection.

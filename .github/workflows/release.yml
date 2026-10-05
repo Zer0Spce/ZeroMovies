@@ -71,7 +71,7 @@ jobs:
           for variant in mobile tv; do
             apk=$(find "app/build/outputs/apk/$variant/release" -name '*.apk' -print -quit)
             test -n "$apk"
-            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.5'" || { echo 'Unexpected APK version'; exit 1; }
+            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.5.1'" || { echo 'Unexpected APK version'; exit 1; }
             if "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | grep -q application-debuggable; then
               echo 'Refusing debuggable release APK'; exit 1
             fi
@@ -82,9 +82,9 @@ jobs:
               suffix='-unsigned'
             fi
             if [ "$variant" = mobile ]; then
-              cp "$apk" "release-assets/ZeroPlay-1.5-Android$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.5.1-Android$suffix.apk"
             else
-              cp "$apk" "release-assets/ZeroPlay-1.5-Android-TV$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.5.1-Android-TV$suffix.apk"
             fi
           done
       - uses: actions/upload-artifact@v4
@@ -134,15 +134,24 @@ jobs:
         run: npx electron . --smoke-test
       - name: Package portable ZIP
         run: npm run build
+      - name: Scan packaged Windows files with Microsoft Defender
+        shell: pwsh
+        run: |
+          $scanner = (Get-ChildItem "$env:ProgramData\Microsoft\Windows Defender\Platform\*\MpCmdRun.exe" | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          if (-not $scanner) { throw 'Microsoft Defender scanner unavailable; release blocked.' }
+          & $scanner -Scan -ScanType 3 -File "$pwd\dist\win-unpacked" -DisableRemediation
+          if ($LASTEXITCODE -ne 0) { throw "Microsoft Defender scan failed or detected a threat (exit $LASTEXITCODE); release blocked." }
       - uses: actions/upload-artifact@v4
         with:
           name: ZeroPlay-production-windows
           path: |
             windows/dist/ZeroPlay-*.zip
-            windows/dist/desktop-preview.png
+            windows/dist/desktop-*.png
           if-no-files-found: error
 
   player-devices:
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
@@ -169,7 +178,16 @@ jobs:
           arch: x86_64
           target: google_apis
           disable-animations: true
-          script: gradle :app:connected${{ matrix.variant }}DebugAndroidTest
+          script: |
+            gradle :app:connected${{ matrix.variant }}DebugAndroidTest
+            mkdir -p ui-captures
+            variant=$(echo '${{ matrix.variant }}' | tr '[:upper:]' '[:lower:]')
+            for name in home categories live-sports settings; do adb exec-out run-as "com.zerostreams.app.$variant" cat "files/screenshots/$name.png" > "ui-captures/android-$variant-$name.png"; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: UI-screenshots-${{ matrix.variant }}
+          path: ui-captures/*.png
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:
