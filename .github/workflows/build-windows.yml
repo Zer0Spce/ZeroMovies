@@ -44,7 +44,6 @@ jobs:
         with:
           name: ZeroStreams-Windows-x64
           path: |
-            windows/dist/ZeroStreams-*.exe
             windows/dist/ZeroStreams-*.zip
             windows/dist/desktop-preview.png
           if-no-files-found: error

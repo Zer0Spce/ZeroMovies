@@ -32,17 +32,10 @@
     ],
     "win": {
       "target": [
-        "nsis",
         "zip"
       ],
       "artifactName": "ZeroStreams-${version}-Windows-x64.${ext}",
       "icon": "assets/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true
     },
     "asar": true
   }

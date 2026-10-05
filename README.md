@@ -30,11 +30,15 @@ Common ad domains, popups and top-level cross-site redirects remain blocked. Gen
 
 Tests cover decoder images and advertisement/CAPTCHA/video boundaries. Actual elimination of the provider's TV ad still needs device confirmation. Ads burned into the video, different creatives and unsupported WebViews may remain. No verification or DRM bypass is implemented.
 
+## Website
+
+The responsive website is prepared for Netlify. Import this repository with the root `netlify.toml` and set `TMDB_API_KEY` for Netlify Functions. See [website setup](web/README.md). Browser libraries stay local, and embedded VidStuck ads remain controlled by the provider.
+
 ## API key and builds
 
 Create a TMDB **API Key (v3 auth)** at https://www.themoviedb.org/settings/api. Add repository Actions secret **TMDB_API_KEY** to bundle it in APK builds. A nonempty key entered in Settings overrides the bundled key; leaving it blank uses the bundled key. APK client keys can be extracted. No key is committed to repository source.
 
-Windows 10/11 x64 builds are available from the **Build ZeroStreams Windows** workflow. Its artifact contains an installer and portable ZIP. See [Windows instructions](windows/README.md). Future Windows builds run manually on explicit request.
+Windows 10/11 x64 builds are available from the **Build ZeroStreams Windows** workflow. Future Windows artifacts contain a portable ZIP only. See [Windows instructions](windows/README.md). Future Windows builds run manually on explicit request.
 
 Run **Build ZeroStreams APKs** manually from GitHub Actions. Download **ZeroStreams-mobile-and-tv-debug**:
 
