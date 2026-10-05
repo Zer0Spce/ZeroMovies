@@ -36,11 +36,17 @@ Tests cover decoder images and advertisement/CAPTCHA/video boundaries. Actual el
 
 The responsive website is prepared for Netlify. Import this repository with the root `netlify.toml` and set `TMDB_API_KEY` for Netlify Functions. See [website setup](web/README.md). Browser libraries stay local, and embedded VidStuck ads remain controlled by the provider.
 
+## Production releases
+
+The **Release ZeroMovies** workflow builds non-debug mobile and TV variants and verifies their APK signatures before publishing. Production signing requires repository Actions secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, and `ANDROID_KEY_ALIAS`. Keep a secure backup of this permanent key; future updates must retain it. No signing key or password belongs in source or public build artifacts.
+
+Release notes and download instructions are in [v0.4.5 notes](docs/release-0.4.5.md). The release workflow attaches signed APKs, the already-verified Windows portable ZIP, and SHA-256 checksums. It publishes only after all assets upload successfully. Missing signing secrets permit unsigned build validation but block publication.
+
 ## API key and builds
 
 Create a TMDB **API Key (v3 auth)** at https://www.themoviedb.org/settings/api. Add repository Actions secret **TMDB_API_KEY** to bundle it in APK builds. A nonempty key entered in Settings overrides the bundled key; leaving it blank uses the bundled key. APK client keys can be extracted. No key is committed to repository source.
 
-All platforms are branded **ZeroMovies**. The Windows app and uses a single window for browsing and playback, with native fullscreen from the embedded player. Windows 10/11 x64 builds are available from the **Build ZeroMovies Windows** workflow. Future Windows artifacts contain a portable ZIP only. See [Windows instructions](windows/README.md). Future Windows builds run manually on explicit request.
+All platforms are branded **ZeroMovies**. The Windows app uses a single window for browsing and playback, with native fullscreen from the embedded player. Windows 10/11 x64 builds are available from the **Build ZeroMovies Windows** workflow. Future Windows artifacts contain a portable ZIP only. See [Windows instructions](windows/README.md). Future Windows builds run manually on explicit request.
 
 Run **Build ZeroMovies APKs** manually from GitHub Actions. Download **ZeroMovies-mobile-and-tv-debug**:
 

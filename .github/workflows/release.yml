@@ -6,8 +6,6 @@ on:
         description: Publish verified signed APKs and the tested Windows portable ZIP
         type: boolean
         default: true
-  push:
-    paths: ['.github/workflows/release.yml']
 permissions:
   contents: read
 jobs:
