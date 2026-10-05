@@ -1,17 +1,16 @@
 # ZeroMovies for Windows
 
-Windows 10/11 (64-bit) desktop app. Catalog and search use TMDB; movie and series playback uses VidStuck. There are no Live or Manga tabs.
+Portable Electron app. Extract the ZIP and run `ZeroMovies.exe`; no installer is needed.
 
-Features include the trending carousel, recommendations, popular titles, upcoming movies, provider filters, full TMDB title search, details/cast/trailers/related titles, season and episode selection, watchlists, Plan to Watch, collections, local search/watch history and reported playback resume positions.
+## Version 0.4.5
 
-Download the `ZeroMovies-Windows-x64` artifact from **Build ZeroMovies Windows** in GitHub Actions. Future builds are portable ZIP only: extract the ZIP and run `ZeroMovies.exe` inside it. Keep the extracted folder together. This first build is unsigned and Windows may display a publisher warning.
+- Compact theme toggle with a red 🎲 Surprise me button beside it.
+- Surprise picks released TMDB movies from randomly sampled discovery pages, with recent-pick avoidance, rather than the homepage pool.
+- Categories in the sidebar, separate movie and TV genres, and paginated genre discovery.
+- Watch Now and a separate source picker beside the movie name and poster, above synopsis and cast. VidStuck is marked Recommended; all four sources remain available.
+- Subtle blurred catalog artwork, with sharp buttons and labels in light and night modes.
+- Existing single-window playback, native fullscreen, Back handling, adblocking, watchlist and local library are retained.
 
-Playback stays inside the main app window. The embedded player fullscreen button fills the physical screen with the title bar and taskbar hidden; F11 also toggles native fullscreen. Escape/Browser Back hides visible controls first and leaves the movie open; a second press returns to browsing even if a player frame does not reply. The player Back control returns to the existing catalog/details view. Escape leaves fullscreen without stopping the movie; outside fullscreen, it hides visible controls first. Mouse movement wakes the controls; they hide after three idle seconds. Optional compatible-stream audio boost is in Settings. Night/light mode and a saved playback source are available in Settings. Choose VidStuck, VidSrc.to, VidSrc.sh or SuperEmbed beside Watch now. The home page includes your Watchlist.
+`npm test` runs catalog, history and player-host tests. `scripts/ui-check.cjs` covers discovery controls using jsdom. The Windows Actions build additionally checks the configured TMDB key, runs actual Electron fullscreen/Back smoke tests and packages the portable ZIP.
 
-The player blocks known ad hosts, popups and cross-site top-level navigation. Its QR filter uses temporary in-memory snapshots to identify the reported advertising URL, then removes confirmed ad overlays. No snapshots or decoded campaign URLs are saved. Real provider playback and QR removal need device testing; unknown creatives and burned-in video ads may remain. Genuine verification is preserved.
-
-Library data is saved in Windows `%APPDATA%/zerostreams-windows/library.json` (the legacy data folder is retained so the rename preserves your library). Custom TMDB keys are protected with Electron safeStorage/Windows encryption. The repository `TMDB_API_KEY` secret is bundled by CI, and Settings can override it. Bundled client keys are extractable; no credential is committed to source.
-
-Local development: install Node.js 22+, run `npm ci`, `npm run prepare-config`, then `npm start` from this folder. `npm test` validates content URLs, request boundaries, progress and history. `npm run build` packages a portable Windows x64 ZIP only. Generated config and build outputs are excluded from git.
-
-Credits: TMDB metadata/artwork; JustWatch provider availability through TMDB; VidStuck playback; jsQR (Apache 2.0); Electron; electron-builder. This product uses the TMDB API but is not endorsed or certified by TMDB.
+TMDB metadata does not guarantee that a title is playable through an external source. Surprise samples up to 500 discovery pages per sort; it is not uniform over every TMDB ID.

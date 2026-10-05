@@ -19,7 +19,7 @@ async function api(route,params={}){
   if(!core.endpoint(route))throw Error('Unsupported catalog request');
   if(!key())throw Error('Add your TMDB API key in Settings.');
   const url=new URL('https://api.themoviedb.org/3'+route);url.searchParams.set('api_key',key());url.searchParams.set('include_adult','false');
-  const allowed=new Set(['query','page','append_to_response','watch_region','with_watch_providers','with_watch_monetization_types','sort_by']);
+  const allowed=new Set(['query','page','append_to_response','watch_region','with_watch_providers','with_watch_monetization_types','sort_by','with_genres','include_video','primary_release_date.lte','vote_count.gte']);
   for(const [name,value]of Object.entries(params||{}))if(allowed.has(name)&&typeof value!=='object'&&String(value).length<=300)url.searchParams.set(name,String(value));
   const response=await fetch(url,{signal:AbortSignal.timeout(15000)});
   if(!response.ok)throw Error(response.status===401?'TMDB key rejected. Check Settings.':'TMDB is unavailable. Try again.');return response.json();
@@ -94,6 +94,8 @@ app.whenReady().then(async()=>{
   playerSession.setPermissionRequestHandler((contents,permission,callback)=>callback(permission==='fullscreen'&&contents===player?.webContents));playerSession.setPermissionCheckHandler((contents,permission)=>permission==='fullscreen'&&contents===player?.webContents);
   playerSession.webRequest.onBeforeRequest((details,callback)=>{let cancel=false;try{cancel=core.blocked(new URL(details.url).hostname);}catch{}callback({cancel});});
   playerSession.on('will-download',event=>event.preventDefault());
+  const surprises=require('./discovery.cjs').createSurprise(api,core.item);
+  ipcMain.handle('surprise',event=>{trusted(event);return surprises();});
   ipcMain.handle('api',(event,route,params)=>{trusted(event);return api(route,params);});
   ipcMain.handle('player-close',event=>{if(event.sender!==toolbar?.webContents||event.senderFrame?.url!==toolsURL)throw Error('Untrusted player control');closePlayer();return true;});
   ipcMain.handle('player-fullscreen',event=>{if(event.sender!==toolbar?.webContents||event.senderFrame?.url!==toolsURL)throw Error('Untrusted player control');return playerHost.toggleFullscreen();});
