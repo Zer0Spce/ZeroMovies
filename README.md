@@ -97,3 +97,5 @@ External video players now block requests to a small set of common advertising d
 Phone title search supports accent-insensitive, punctuation-insensitive multiword queries and result counts. Android TV adds a Search shortcut that focuses the field and requests the keyboard. Home searches the downloaded movie and series catalog; section searches filter that section. Manga searches use MangaDex. Search does not index every title on the source website.
 
 `tests/PlayerRulesTest.java` checks domain boundaries and normalized title matching in the APK workflow. Actual provider playback and remote keyboard behavior still require device testing.
+
+Selected-title details now use a softly blurred movie backdrop with a dark readability gradient, sharp poster, prominent Watch action and remote-focus styling. Software blur is bounded to a 128-pixel thumbnail and works on older supported Android versions. The dialog scales to phone and TV screens. Visual appearance still needs on-device review.
