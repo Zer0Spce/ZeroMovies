@@ -14,14 +14,15 @@ export async function syncSeries(catalogPath,outputDir,{getSeason=fetchSeason,ma
   const catalog=JSON.parse(await readFile(catalogPath,'utf8'));const shows=catalog.items.filter(item=>/^tmdb-series-\d+$/.test(item.id)).slice(0,maximumShows);await mkdir(outputDir,{recursive:true});
   let updated=0,retained=0,failed=0,cursor=0;
   async function worker(){while(cursor<shows.length){const item=shows[cursor++],id=item.id.slice('tmdb-series-'.length),path=resolve(outputDir,`${id}.json`);let previous=null;
-    try{previous=JSON.parse(await readFile(path,'utf8'));if(Date.now()-Date.parse(previous.checkedAt)<24*60*60*1000){retained++;continue;}}catch(err){if(err.code!=='ENOENT'){failed++;continue;}}
-    try{const episodes=[];for(let season=1;season<=maximumSeasons;season++){
-        const data=await getSeason(id,season);if(data===null)break;
+    try{previous=JSON.parse(await readFile(path,'utf8'));if(Date.now()-Date.parse(previous.checkedAt)<(previous.partial?60:24*60)*60*1000){retained++;continue;}}catch(err){if(err.code!=='ENOENT'){failed++;continue;}}
+    try{const episodes=[];let partial=false;for(let season=1;season<=maximumSeasons;season++){
+        let data;try{data=await getSeason(id,season);}catch(err){if(episodes.length===0)throw err;partial=true;console.error(`Series ${id}: saved confirmed episodes; remaining seasons unavailable`);break;}if(data===null)break;
         for(const episode of data.episodes){if(!Number.isInteger(episode.episode_number)||episode.episode_number<1)continue;episodes.push({id:`s${season}e${episode.episode_number}`,season,episode:episode.episode_number,title:episode.name||`Episode ${episode.episode_number}`,description:episode.overview||'',airDate:episode.air_date||'',streams:[]});}
         if(data.episodes.length===0)break;
       }
       if(!episodes.length)throw new Error('No episodes found');
-      const result={schemaVersion:1,id:item.id,title:item.title,checkedAt:new Date().toISOString(),episodes};const temp=path+'.tmp';await writeFile(temp,JSON.stringify(result,null,2)+'\n');await rename(temp,path);updated++;
+      if(partial&&previous?.episodes){const ids=new Set(episodes.map(ep=>ep.id));for(const ep of previous.episodes)if(!ids.has(ep.id))episodes.push(ep);}
+      const result={schemaVersion:1,id:item.id,title:item.title,partial,checkedAt:new Date().toISOString(),episodes};const temp=path+'.tmp';await writeFile(temp,JSON.stringify(result,null,2)+'\n');await rename(temp,path);updated++;
     }catch(err){failed++;console.error(`Series ${id}: retained prior snapshot (${err.message})`);}
   }}
   await Promise.all([worker(),worker(),worker()]);return {updated,retained,failed};

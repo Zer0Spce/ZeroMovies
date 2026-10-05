@@ -4,7 +4,7 @@ ZeroMovies is the repository for **ZeroStreams**, an independently branded nativ
 
 ## Current verification status
 
-The previous 0.1.0 mobile and TV APKs compiled and passed Android lint in run 37251216476. The expanded 0.2.0 source is being compiled and linted separately. Six backend/importer tests pass. Native device testing remains required; external service availability, embedded-player behavior and TV WebView navigation are not certified by compilation. This is a development build, not a Play Store release.
+The previous 0.1.0 mobile and TV APKs compiled and passed Android lint in run 37251216476. The first expanded 0.2.0 APKs compiled and passed lint in run 37252846761; final reader and memory refinements are undergoing another build. Seven backend/importer tests pass. Native device testing remains required; external service availability, embedded-player behavior and TV WebView navigation are not certified by compilation. This is a development build, not a Play Store release.
 
 ## App features
 
@@ -49,7 +49,7 @@ https://raw.githubusercontent.com/Zer0Spce/ZeroMovies/main/public/catalog.json
 
 The **Refresh movie catalog** workflow runs hourly at minute 17 and supports manual dispatch. It retrieves metadata visible on Bingeflix's public homepage, imports unique movie/series IDs, preserves configured native playback sources, and publishes changes. This is not an exhaustive mirror of every title in the website database. Listed but unreleased titles may have no playable server yet. No site scripts are executed and no private API key is copied or used.
 
-The same workflow enriches series snapshots under `public/series/` through the publicly accessible season API. Existing series snapshots refresh at most once per day. Initial enrichment covers at most 100 series and 20 regular seasons each; specials and series with more than 20 seasons are not covered by that importer. Upstream errors preserve the last successful snapshot. Episode availability can lag the first catalog import.
+The same workflow enriches series snapshots under `public/series/` through the publicly accessible season API. Existing series snapshots refresh at most once per day. Initial enrichment covers at most 100 series and 20 regular seasons each; specials and series with more than 20 seasons are not covered by that importer. Upstream errors preserve previous snapshots. A later-season error still publishes confirmed episodes and retries partial snapshots hourly. Episode availability can lag the first catalog import.
 
 **New movies and episodes do not require rebuilding the APK.** The app fetches published metadata from GitHub, not directly from Bingeflix. GitHub scheduled jobs can be delayed or paused after inactivity. Site layout/API changes or source blocking require an importer fix while cached content remains available.
 
@@ -61,7 +61,7 @@ Movies and episodes have the externally hosted player options observed in the we
 
 Configured `streams` override these fallbacks. `streams` entries with `embed: true` use the WebView; other entries use Media3. Stream URLs must be HTTPS. Provider URLs are not proof that a title is currently playable. No DRM bypass or provider token extraction is implemented.
 
-Manga browsing and reading use MangaDex's public API and its chapter image servers directly. Native reading supports available English chapters; entries that provide only an external chapter URL are omitted from the native chapter list. Some titles have no readable English chapters. The reader requests image pages one at a time and stores the current page locally.
+Manga browsing and reading use MangaDex's public API and its chapter image servers directly. Native reading supports available English chapters; entries with HTTPS external chapter URLs open a labeled publisher reader instead. Some titles have no readable English chapters. The reader requests image pages one at a time and stores the current page locally.
 
 Live events use the public sports proxy configured by the website, with the base URL editable in Settings. The direct upstream returned a gateway error and the proxy timed out from the authoring environment, so live playback remains an integration requiring live service/device verification. Failure displays an unavailable state; alternate API bases must expose the same `/api/matches/all-today` and `/api/stream/{source}/{id}` shapes.
 
