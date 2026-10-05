@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "jsqr": "1.4.0",
-    "shaka-player": "5.2.12"
+    "shaka-player": "5.2.12",
+    "webtorrent": "3.0.21"
   },
   "devDependencies": {
     "electron": "44.5.1",
