@@ -1,2 +1,0 @@
-const {contextBridge,ipcRenderer}=require('electron');
-contextBridge.exposeInMainWorld('playerTools',{sportsControl:(action,index)=>ipcRenderer.invoke('sports-control',action,index),onSportsMode:callback=>ipcRenderer.on('sports-mode',(_event,value)=>callback(value)),back:()=>ipcRenderer.invoke('player-close'),fullscreen:()=>ipcRenderer.invoke('player-fullscreen'),onTitle:callback=>ipcRenderer.on('player-title',(_event,title)=>callback(title))});

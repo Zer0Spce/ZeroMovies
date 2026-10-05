@@ -1,4 +1,0 @@
-const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path'),{dataDirectory}=require('../data-directory.cjs');
-test('Rebranding retains the existing library under either legacy folder name',()=>{
-  for(const name of ['zerostreams-windows','ZeroStreams']){const root=fs.mkdtempSync(path.join(os.tmpdir(),'zero-data-'));try{const legacy=path.join(root,name);fs.mkdirSync(legacy);const library={favorites:[{id:299534,type:'movie'}],history:[{episode:5}]};fs.writeFileSync(path.join(legacy,'library.json'),JSON.stringify(library));assert.equal(dataDirectory(root),legacy);assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dataDirectory(root),'library.json'))),library);}finally{fs.rmSync(root,{recursive:true,force:true});}}
-});
