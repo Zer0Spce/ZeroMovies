@@ -48,10 +48,7 @@ final class ContentApi {
         String suffix=type.equals("movie")?"movie/"+tmdb:"tv/"+tmdb+"/"+season+"/"+episode;
         String vidstuck="https://vidstuck.xyz/embed/"+suffix+"?branding=ZeroStreams&color=65E6CC&subtitle=english&overlay=true";
         if(!type.equals("movie"))vidstuck+="&nextEpisode=true&episodeSelector=true&autoplayNextEpisode=true";
-        result.put(new JSONObject().put("label","VidStuck · Recommended").put("url",vidstuck).put("embed",true));
-        result.put(new JSONObject().put("label","Vidfast · Fallback").put("url","https://vidfast.pro/"+suffix).put("embed",true));
-        result.put(new JSONObject().put("label","Vidzee · Fallback").put("url","https://player.vidzee.wtf/embed/"+suffix).put("embed",true));
-        result.put(new JSONObject().put("label","Vidnest · Fallback").put("url","https://vidnest.fun/"+suffix).put("embed",true));
+        result.put(new JSONObject().put("label","VidStuck").put("url",vidstuck).put("embed",true));
         return result;
     }
 }
