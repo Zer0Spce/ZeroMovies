@@ -38,7 +38,8 @@ public class PlayerActivity extends Activity {
         if(player!=null)return;
         DefaultHttpDataSource.Factory http=new DefaultHttpDataSource.Factory().setUserAgent("ZeroStreams/0.1").setAllowCrossProtocolRedirects(false);
         Map<String,String> headers=new HashMap<>();JSONObject h=source.optJSONObject("headers");if(h!=null){Iterator<String> names=h.keys();while(names.hasNext()){String name=names.next();headers.put(name,h.optString(name));}}http.setDefaultRequestProperties(headers);
-        player=new ExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(http)).build();view.setPlayer(player);
+        String offline=getIntent().getStringExtra("offline");androidx.media3.exoplayer.offline.Download download=null;if(offline!=null)try{download=OfflineDownloads.manager(this).getDownloadIndex().getDownload(offline);}catch(java.io.IOException ignored){}if(offline!=null&&(download==null||download.state!=androidx.media3.exoplayer.offline.Download.STATE_COMPLETED)){error.setText("Download is not ready. Return to Downloads.");error.setVisibility(View.VISIBLE);return;}
+        androidx.media3.datasource.DataSource.Factory data=offline!=null?OfflineDownloads.factory(this,null,true):new androidx.media3.datasource.DefaultDataSource.Factory(this,http);player=new ExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(data)).build();view.setPlayer(player);
         player.addListener(new Player.Listener(){
             @Override public void onPlayerError(PlaybackException exception){error.setText("Playback failed. Press Back and choose another source.\n"+exception.getErrorCodeName());error.setVisibility(View.VISIBLE);view.showController();}
             @Override public void onPlaybackStateChanged(int state){if(state==Player.STATE_ENDED&&!live)prefs.edit().remove("position:"+key).remove("position:"+parent).apply();}
@@ -47,7 +48,7 @@ public class PlayerActivity extends Activity {
         if(!source.optString("mimeType").isEmpty())media.setMimeType(source.optString("mimeType"));
         JSONArray subtitles=source.optJSONArray("subtitles");List<MediaItem.SubtitleConfiguration> tracks=new ArrayList<>();
         if(subtitles!=null)for(int i=0;i<subtitles.length();i++){JSONObject s=subtitles.optJSONObject(i);if(s!=null&&s.optString("url").startsWith("https://"))tracks.add(new MediaItem.SubtitleConfiguration.Builder(android.net.Uri.parse(s.optString("url"))).setMimeType(s.optString("mimeType","text/vtt")).setLanguage(s.optString("language","en")).setLabel(s.optString("label","Subtitles")).build());}
-        media.setSubtitleConfigurations(tracks);player.setMediaItem(media.build());if(!live)player.seekTo(position);player.prepare();player.setPlayWhenReady(playWhenReady);view.requestFocus();view.showController();
+        media.setSubtitleConfigurations(tracks);player.setMediaItem(download==null?media.build():download.request.toMediaItem());if(!live)player.seekTo(position);player.prepare();player.setPlayWhenReady(playWhenReady);view.requestFocus();view.showController();
     }
     private void stopPlayer() {
         if(player==null)return;position=player.getCurrentPosition();playWhenReady=player.getPlayWhenReady();

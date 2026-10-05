@@ -108,6 +108,7 @@ final class ContentApi {
         return result;
     }
     static JSONArray genres(String type,String key) throws Exception {return DiscoveryApi.genres((path,q)->tmdb(path,key,q),type);}
+    static JSONObject animeData(String key,String type,int page)throws Exception {if(!type.equals("tv")&&!type.equals("movie")||page<1||page>500)throw new IllegalArgumentException("Invalid anime page");return tmdb("/discover/"+type,key,"&include_adult=false&with_genres=16&with_original_language=ja&sort_by=popularity.desc&page="+page);}
     static JSONObject genreData(String key,String type,int genre,int page) throws Exception {return DiscoveryApi.genrePage((path,q)->tmdb(path,key,q),type,genre,page);}
     static Catalog.Item randomMovie(String key,Random random,Set<Long> recent) throws Exception {
         String today=new java.text.SimpleDateFormat("yyyy-MM-dd",Locale.ROOT).format(new Date());

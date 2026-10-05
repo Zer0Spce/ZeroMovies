@@ -6,8 +6,8 @@ android {
         applicationId 'com.zerostreams.app'
         minSdk 23
         targetSdk 35
-        versionCode 21
-        versionName '1.0.1'
+        versionCode 22
+        versionName '1.5'
         buildConfigField 'String', 'DEFAULT_TMDB_KEY', groovy.json.JsonOutput.toJson(System.getenv('TMDB_API_KEY') ?: '')
     }
     flavorDimensions += 'device'
@@ -36,6 +36,12 @@ android {
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
 dependencies {
+    implementation 'org.jsoup:jsoup:1.18.3'
+    implementation 'org.libtorrent4j:libtorrent4j:2.1.0-38'
+    implementation 'org.libtorrent4j:libtorrent4j-android-arm:2.1.0-38'
+    implementation 'org.libtorrent4j:libtorrent4j-android-arm64:2.1.0-38'
+    implementation 'org.libtorrent4j:libtorrent4j-android-x86:2.1.0-38'
+    implementation 'org.libtorrent4j:libtorrent4j-android-x86_64:2.1.0-38'
     implementation 'com.google.zxing:core:3.5.3'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.json:json:20240303'

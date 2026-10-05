@@ -19,3 +19,9 @@ header [data-action="toggle-theme"]{width:40px;min-width:40px;padding:9px;font-s
 @media(max-width:1150px){header{flex-wrap:wrap}header>div{flex:1}#search-form{order:5;width:100%;flex-basis:100%}.detail-heading{align-items:flex-start;gap:12px}.watch-actions{min-width:150px}}
 
 aside{overflow:auto}.genre-grid button{position:relative;overflow:hidden;min-height:150px;color:white;text-shadow:0 2px 8px #000}.genre-grid .genre-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}.genre-grid .genre-caption{position:relative;z-index:1;display:block;background:linear-gradient(transparent,#000b);padding:15px;border-radius:8px}.refresh-live{background:#b73b50!important;color:white!important}.refresh-iptv{background:#0a715e!important;color:white!important}.channel-card{padding:16px;background:var(--surface);border:1px solid #394455;border-radius:12px;text-align:left}.channel-card img{height:95px;object-fit:contain;width:100%;display:block;margin-bottom:14px}.channel-card strong{display:block;margin-bottom:8px}.channel-card small{color:var(--muted)}.load-more{padding:28px;color:var(--muted);text-align:center}
+
+.download-card{padding:24px;margin:18px 0;border:1px solid var(--border,#303444);border-radius:16px;background:var(--surface,#161822)}.download-card progress{width:100%;accent-color:var(--accent,#65e6cc);height:10px}.download-card h3{margin-top:0}#torrent-dialog textarea{width:100%;color:var(--ink);background:var(--surface);border:1px solid var(--border);padding:12px}#torrent-results article{margin:16px 0;padding:12px;border-bottom:1px solid var(--border)}
+
+.panel-toggle{display:flex;align-items:center;gap:12px;margin:10px 0}.panel-toggle input{width:auto}.grid article .channel-card{width:100%}.grid article>button:last-child{margin-top:8px}
+
+.sports-card{padding:14px;border-radius:14px;background:var(--surface)}.sports-card>img{width:100%;aspect-ratio:16/9;object-fit:cover}.sports-card>button{margin:4px}

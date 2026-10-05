@@ -1,7 +1,8 @@
-const {app,BrowserWindow,WebContentsView,screen,ipcMain,session,shell,safeStorage,Menu}=require('electron');
+const {app,BrowserWindow,WebContentsView,screen,ipcMain,session,shell,safeStorage,Menu,dialog}=require('electron');
 const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
 const {PlayerHost}=require('./player-host.cjs');
-const playlists=require('./playlist.cjs');let playlistStore,liveSelection;
+const playlists=require('./playlist.cjs');let playlistStore,liveSelection;const sportsModule=require('./sports.cjs');let sportsStore,sportsSelection;
+const downloadModule=require('./downloads.cjs'),ext=require('./ext-source.cjs');let downloads,downloadMode=false;const downloadCandidates=new Map(),mediaRequestHeaders=new Map();
 const liveURL=pathToFileURL(path.join(__dirname,'ui/live-player.html')).href;
 const sources=require('./playback-sources.cjs');
 const core=require('./core.cjs'),{Worker}=require('node:worker_threads');
@@ -11,7 +12,9 @@ const uiURL=pathToFileURL(path.join(__dirname,'ui/index.html')).href;
 const toolsURL=pathToFileURL(path.join(__dirname,'ui/player-tools.html')).href;
 const smoke=process.argv.includes('--smoke-test');
 const dataRoot=require('./data-directory.cjs').dataDirectory(app.getPath('appData'));fs.mkdirSync(dataRoot,{recursive:true});app.setPath('userData',dataRoot);
-const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',source:'vidstuck'},customKey:''});
+const homePanelIds=['clock','featured','continue','watchlist','upcoming','providers','recommended','trending','popular','series','now','action','comedy','horror','animation','anime'];
+const channelKey=(section,c)=>require('node:crypto').createHash('sha256').update(section+'|'+c.name+'|'+c.group).digest('hex');
+const defaults=()=>({liveFavorites:[],favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',source:'vidstuck',homePanels:homePanelIds.slice(0,11)},customKey:''});
 function persist(){const temp=file+'.tmp';fs.writeFileSync(temp,JSON.stringify(state));fs.renameSync(temp,file);}
 function key(){if(state.customKey&&safeStorage.isEncryptionAvailable())try{return safeStorage.decryptString(Buffer.from(state.customKey,'base64'));}catch{}return config.tmdbKey||process.env.TMDB_API_KEY||'';}
 function snapshot(){const {customKey,...publicState}=state;return {...publicState,hasKey:!!key(),version:app.getVersion()};}
@@ -21,7 +24,7 @@ async function api(route,params={}){
   if(!core.endpoint(route))throw Error('Unsupported catalog request');
   if(!key())throw Error('Add your TMDB API key in Settings.');
   const url=new URL('https://api.themoviedb.org/3'+route);url.searchParams.set('api_key',key());url.searchParams.set('include_adult','false');
-  const allowed=new Set(['query','page','append_to_response','watch_region','with_watch_providers','with_watch_monetization_types','sort_by','with_genres','include_video','primary_release_date.lte','vote_count.gte']);
+  const allowed=new Set(['query','page','append_to_response','watch_region','with_watch_providers','with_watch_monetization_types','sort_by','with_genres','with_original_language','include_video','primary_release_date.lte','vote_count.gte']);
   for(const [name,value]of Object.entries(params||{}))if(allowed.has(name)&&typeof value!=='object'&&String(value).length<=300)url.searchParams.set(name,String(value));
   const response=await fetch(url,{signal:AbortSignal.timeout(15000)});
   if(!response.ok)throw Error(response.status===401?'TMDB key rejected. Check Settings.':'TMDB is unavailable. Try again.');return response.json();
@@ -42,15 +45,15 @@ async function scanAd(){
   }catch{scanning=false;}
 }
 function closePlayer(){
-  if(!player)return;const host=playerHost;player=null;toolbar=null;playerHost=null;current=null;liveSelection=null;
+  if(!player)return;const host=playerHost;player=null;toolbar=null;playerHost=null;current=null;liveSelection=null;sportsSelection=null;downloadMode=false;downloadCandidates.clear();mediaRequestHeaders.clear();
   clearInterval(scanTimer);clearInterval(cursorTimer);if(qrWorker)qrWorker.terminate();qrWorker=null;scanning=false;host.close();
   if(main&&!main.isDestroyed()){main.setTitle('ZeroPlay');main.webContents.focus();refresh();}
 }
-async function openPlayer(value,selected,fixture){
+async function openPlayer(value,selected,fixture,prepare=false){
   value=core.cleanItem(value);const saved=state.positions[core.key(value)];let position=selected?core.episode(selected):saved||{};
   if(selected&&saved&&saved.season===position.season&&saved.episode===position.episode)position=saved;
   closePlayer();
-  current=value;core.record(state,value,position);persist();refresh();
+  downloadMode=prepare;downloadCandidates.clear();mediaRequestHeaders.clear();current=value;core.record(state,value,position);persist();refresh();
   guard='window.__zeroTv=false;window.__zeroBlockAds=true;window.__zeroGain='+state.settings.gain+';'+fs.readFileSync(path.join(__dirname,'assets/player-guard.js'),'utf8')+'\n'+fs.readFileSync(path.join(__dirname,'assets/player-exit.js'),'utf8')+"\nif(!window.__zeroDesktopMouse){window.__zeroDesktopMouse=true;let last=0;document.addEventListener('mousemove',()=>{if(Date.now()-last<350)return;last=Date.now();if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();});}";
   player=new WebContentsView({webPreferences:{partition:'persist:player',preload:path.join(__dirname,'player-preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
   toolbar=new WebContentsView({webPreferences:{preload:path.join(__dirname,'player-tools.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
@@ -58,7 +61,7 @@ async function openPlayer(value,selected,fixture){
   const view=player,contents=view.webContents;
   playerHost=new PlayerHost(main,view,toolbar);installPlayerScripts(contents);
   toolbar.webContents.setWindowOpenHandler(()=>({action:'deny'}));toolbar.webContents.on('will-navigate',event=>event.preventDefault());
-  await toolbar.webContents.loadFile(path.join(__dirname,'ui/player-tools.html'));toolbar.webContents.send('player-title',value.title);
+  await toolbar.webContents.loadFile(path.join(__dirname,'ui/player-tools.html'));toolbar.webContents.send('player-title',value.title);toolbar.webContents.send('download-mode',prepare);
   main.setTitle(value.title+' — ZeroPlay');
   qrWorker=new Worker(path.join(__dirname,'qr-worker.cjs'));scanning=false;
   qrWorker.on('message',confirmed=>{scanning=false;if(confirmed&&!contents.isDestroyed())for(const frame of contents.mainFrame.framesInSubtree)frame.executeJavaScript('if(window.__zeroDismissQrAd)window.__zeroDismissQrAd();').catch(()=>{});});
@@ -85,11 +88,25 @@ async function openPlayer(value,selected,fixture){
   try{if(fixture&&smoke)await contents.loadFile(fixture);else await contents.loadURL(core.playerUrl(value,position,state.settings.source));contents.focus();}catch(error){if(player===view)closePlayer();throw error;}
 
 }
+async function openSports(id,index){
+ const event=sportsStore.select(id,index);closePlayer();sportsSelection={id,index};const isolated=session.fromPartition('persist:live-sports');
+ // Dedicated session has no ad filters, injected guard, request rewriting or QR worker.
+ player=new WebContentsView({webPreferences:{session:isolated,contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
+ toolbar=new WebContentsView({webPreferences:{preload:path.join(__dirname,'player-tools.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
+ const view=player,contents=view.webContents;view.setBackgroundColor('#000000');playerHost=new PlayerHost(main,view,toolbar);
+ toolbar.webContents.setWindowOpenHandler(()=>({action:'deny'}));toolbar.webContents.on('will-navigate',event=>event.preventDefault());await toolbar.webContents.loadFile(path.join(__dirname,'ui/player-tools.html'));
+ toolbar.webContents.send('sports-mode',{sources:event.sources.map(s=>s.label),index});const update=text=>{if(player===view&&!toolbar.webContents.isDestroyed())toolbar.webContents.send('player-title',event.title+' · '+text);};update('Loading player…');
+ contents.setWindowOpenHandler(()=>({action:'allow',overrideBrowserWindowOptions:{webPreferences:{session:isolated,contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}}}));
+ contents.on('did-finish-load',()=>update(event.source.label));contents.on('did-fail-load',(_e,code)=>{if(code!==-3)update('Player unavailable · Retry or choose another source');});contents.on('render-process-gone',()=>update('Player stopped · Retry'));
+ contents.on('before-input-event',async(e,input)=>{if(input.type!=='keyDown'||input.isAutoRepeat)return;if(input.key==='F11'){e.preventDefault();await playerHost.toggleFullscreen();}if(input.key==='Escape'||input.key==='BrowserBack'){e.preventDefault();if(main.isFullScreen()||playerHost.htmlFullscreen)await playerHost.exitFullscreen();else if(contents.canGoBack())contents.goBack();else closePlayer();}});
+ main.setTitle(event.title+' — Live Sports — ZeroPlay');try{if(event.source.embed.url)await contents.loadURL(event.source.embed.url);else {const folder=path.join(dataRoot,'sports-embed');fs.mkdirSync(folder,{recursive:true});const file=path.join(folder,'player.html');fs.writeFileSync(file,'<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><base href="'+event.base+'/"><style>html,body{margin:0;height:100%;background:black}iframe{width:100%;height:100%;border:0}</style>'+event.source.embed.html);await contents.loadFile(file);}contents.focus();}catch{update('Player unavailable · Retry or choose another source');}
+}
 function liveTrusted(event){if(event.sender!==player?.webContents||event.senderFrame?.url!==liveURL||!liveSelection)throw Error('Untrusted live control');}
-function selectedLive(index){if(!Number.isSafeInteger(index)||index<0)throw Error('Invalid channel');const channel=playlistStore.select(liveSelection.section,index);liveSelection.index=index;liveSelection.channel=channel;return {name:channel.name,url:channel.url,mime:channel.mime,clearKeys:channel.drmType?playlists.clearKeys(channel.drmKey):{}};}
-async function openLive(section,index){
-  const channel=playlistStore.select(section,index);closePlayer();liveSelection={section,index,channel};
+function selectedLive(index){if(liveSelection?.channel.offline){if(index!==0)throw Error('Invalid download');return {...liveSelection.channel,clearKeys:{}};}if(!Number.isSafeInteger(index)||index<0)throw Error('Invalid channel');const channel=playlistStore.select(liveSelection.section,index);liveSelection.index=index;liveSelection.channel=channel;return {name:channel.name,url:channel.url,mime:channel.mime,clearKeys:channel.drmType?playlists.clearKeys(channel.drmKey):{}};}
+async function openLive(section,index,offline){
+  const channel=offline||playlistStore.select(section,index);closePlayer();liveSelection={section,index,channel};
   const partition='live-'+Date.now();const liveSession=session.fromPartition(partition);
+  if(channel.offline)liveSession.webRequest.onBeforeRequest((details,callback)=>callback({cancel:!details.url.startsWith('file:')&&!details.url.startsWith('http://127.0.0.1:')}));
   liveSession.setPermissionRequestHandler((c,p,callback)=>callback(['fullscreen','mediaKeySystem'].includes(p)&&c===player?.webContents&&c.getURL()===liveURL));
   liveSession.setPermissionCheckHandler((c,p)=>['fullscreen','mediaKeySystem'].includes(p)&&c===player?.webContents&&c.getURL()===liveURL);
   // Only the isolated local live player receives playlist stream headers and CORS responses.
@@ -114,10 +131,25 @@ app.whenReady().then(async()=>{
   playerSession.setPermissionRequestHandler((contents,permission,callback)=>callback(permission==='fullscreen'&&contents===player?.webContents));playerSession.setPermissionCheckHandler((contents,permission)=>permission==='fullscreen'&&contents===player?.webContents);
   playerSession.webRequest.onBeforeRequest((details,callback)=>{let cancel=false;try{cancel=core.blocked(new URL(details.url).hostname);}catch{}callback({cancel});});
   playerSession.on('will-download',event=>event.preventDefault());
+  playerSession.webRequest.onBeforeSendHeaders((details,callback)=>{if(downloadMode&&details.webContentsId===player?.webContents.id){const headers={};for(const [name,value]of Object.entries(details.requestHeaders))if(['referer','origin','user-agent'].includes(name.toLowerCase()))headers[name]=value;if(mediaRequestHeaders.size<200)mediaRequestHeaders.set(details.url,headers);}callback({requestHeaders:details.requestHeaders});});
+  playerSession.webRequest.onHeadersReceived((details,callback)=>{const mime=Object.entries(details.responseHeaders||{}).find(([name])=>name.toLowerCase()==='content-type')?.[1]?.[0]||'';let ad=true;try{ad=core.blocked(new URL(details.url).hostname);}catch{}if(downloadMode&&details.webContentsId===player?.webContents.id&&!ad&&details.statusCode<400&&downloadModule.mediaKind(details.url,mime)&&downloadCandidates.size<20){downloadCandidates.set(details.url,{url:details.url,mime,headers:mediaRequestHeaders.get(details.url)||{}});toolbar?.webContents.send('download-ready',downloadCandidates.size);}callback({responseHeaders:details.responseHeaders});});
+  downloads=downloadModule.createStore(path.join(dataRoot,smoke?'smoke-downloads':'downloads'),(url,options)=>playerSession.fetch(url,options),()=>{if(main&&!main.isDestroyed())main.webContents.send('downloads-updated');});
+  ipcMain.handle('downloads',event=>{trusted(event);return downloads.list();});
+  ipcMain.handle('download-action',async(event,id,action)=>{trusted(event);if(action==='play'){await openLive('Offline',0,await downloads.playback(id));return true;}if(action==='remove'){const result=await dialog.showMessageBox(main,{type:'question',buttons:['Keep','Remove'],defaultId:0,cancelId:0,message:'Remove this download from this computer?'});if(result.response!==1)return false;}await downloads.action(id,action);return true;});
+  ipcMain.handle('prepare-download',async(event,value,episode)=>{trusted(event);await openPlayer(value,episode,undefined,true);return true;});
+  ipcMain.handle('torrent-search',(event,query)=>{trusted(event);return ext.search(String(query).slice(0,160));});
+  ipcMain.handle('torrent-add',async(event,value)=>{trusted(event);if(!value||typeof value!=='object')throw Error('Invalid torrent request');const url=value.source?await ext.resolve(value.source):downloadModule.magnet(value.magnet);return downloads.add({kind:'torrent',url,key:url,title:String(value.title||'Torrent movie').slice(0,300)});});
+  ipcMain.handle('ext-open',(event,query)=>{trusted(event);return shell.openExternal(ext.extURL(query));});
+  ipcMain.handle('player-download',async event=>{if(event.sender!==toolbar?.webContents||event.senderFrame?.url!==toolsURL||!downloadMode||!current)throw Error('Untrusted download control');const candidates=Array.from(downloadCandidates.values());if(!candidates.length)return 'Start the movie first. If no media is found, try another playback source.';const result=await dialog.showMessageBox(main,{type:'question',message:'Save '+current.title+' for offline playback?',detail:'Choose a detected media source. You can pause, resume, or remove the download from Downloads.',buttons:[...candidates.map((c,i)=>(downloadModule.mediaKind(c.url,c.mime)==='hls'?'HLS movie':'Video file')+' '+(i+1)),'Cancel'],cancelId:candidates.length});if(result.response===candidates.length)return '';const position=state.positions[core.key(current)]||{};const suffix=current.type==='tv'?' · S'+(position.season||1)+' E'+(position.episode||1):'';downloads.add({...candidates[result.response],key:core.key(current)+suffix,title:current.title+suffix});closePlayer();return 'Download started. See Downloads for progress.';});
+  app.on('before-quit',()=>downloads.close());
   playlistStore=playlists.createStore(path.join(dataRoot,smoke?'smoke-playlists':'playlists'),smoke?async()=>new Response('#EXTM3U\n#EXTINF:-1 group-title="Sports",Live smoke channel\nhttps://example.com/zero-smoke.m3u8'):fetch);
-  ipcMain.handle('playlist',async(event,section,force)=>{trusted(event);const snapshot=await playlistStore.get(section,force===true);return {...snapshot,channels:snapshot.channels.map((c,index)=>({index,name:c.name,group:c.group,logo:c.logo}))};});
+  sportsStore=sportsModule.createStore(path.join(dataRoot,'sports-catalogue.json'));
+  ipcMain.handle('sports',async(event,force)=>{trusted(event);const snapshot=await sportsStore.get(force===true);return {...snapshot,categories:snapshot.categories.map(c=>({...c,events:c.events.map(e=>({...e,sources:e.sources.map(s=>({label:s.label}))}))}))};});
+  ipcMain.handle('sports-play',(event,id,index)=>{trusted(event);return openSports(id,index);});
+  ipcMain.handle('playlist',async(event,section,force)=>{trusted(event);const snapshot=await playlistStore.get(section,force===true);return {...snapshot,channels:snapshot.channels.map((c,index)=>({index,name:c.name,group:c.group,logo:c.logo,favorite:(state.liveFavorites||[]).includes(channelKey(section,c))}))};});
   ipcMain.handle('live-play',async(event,section,index)=>{trusted(event);await openLive(section,index);return true;});
-  ipcMain.handle('live-context',event=>{liveTrusted(event);return {index:liveSelection.index,names:playlistStore.get?Array.from({length:3000},(_,i)=>{try{return playlistStore.select(liveSelection.section,i).name;}catch{return null;}}).filter(Boolean):[]};});
+  ipcMain.handle('channel-favorite',(event,section,index)=>{trusted(event);const id=channelKey(section,playlistStore.select(section,index));const saved=new Set(state.liveFavorites||[]);if(!saved.add(id)|| (state.liveFavorites||[]).includes(id))saved.delete(id);state.liveFavorites=[...saved];persist();return saved.has(id);});
+  ipcMain.handle('live-context',event=>{liveTrusted(event);return {offline:!!liveSelection.channel.offline,index:liveSelection.index,names:liveSelection.channel.offline?[liveSelection.channel.name]:playlistStore.get?Array.from({length:3000},(_,i)=>{try{return playlistStore.select(liveSelection.section,i).name;}catch{return null;}}).filter(Boolean):[]};});
   ipcMain.handle('live-select',(event,index)=>{liveTrusted(event);return selectedLive(index);});
   ipcMain.handle('live-close',event=>{liveTrusted(event);closePlayer();return true;});
   ipcMain.handle('live-fullscreen',event=>{liveTrusted(event);return playerHost.toggleFullscreen();});
@@ -125,6 +157,7 @@ app.whenReady().then(async()=>{
   ipcMain.handle('surprise',event=>{trusted(event);return surprises();});
   ipcMain.handle('api',(event,route,params)=>{trusted(event);return api(route,params);});
   ipcMain.handle('player-close',event=>{if(event.sender!==toolbar?.webContents||event.senderFrame?.url!==toolsURL)throw Error('Untrusted player control');closePlayer();return true;});
+  ipcMain.handle('sports-control',(event,action,index)=>{if(event.sender!==toolbar?.webContents||event.senderFrame?.url!==toolsURL||!sportsSelection)throw Error('Untrusted sports control');if(action==='retry'||action==='source')return openSports(sportsSelection.id,action==='source'?index:sportsSelection.index);throw Error('Unsupported sports control');});
   ipcMain.handle('player-fullscreen',event=>{if(event.sender!==toolbar?.webContents||event.senderFrame?.url!==toolsURL)throw Error('Untrusted player control');return playerHost.toggleFullscreen();});
   ipcMain.handle('state',event=>{trusted(event);return snapshot();});
   ipcMain.handle('external',(event,url)=>{trusted(event);const u=new URL(url);if(u.protocol!=='https:'||!['www.youtube.com','www.themoviedb.org'].includes(u.hostname))throw Error('Unsupported link');return shell.openExternal(u.href);});
@@ -141,7 +174,7 @@ app.whenReady().then(async()=>{
       const name=String(value?.name||'').trim().slice(0,60);if(!name||['__proto__','constructor','prototype'].includes(name))throw Error('Invalid collection name');
       const title=core.cleanItem(value.item),rows=state.collections[name]||[];if(!Array.isArray(rows))throw Error('Invalid collection');state.collections[name]=rows.some(row=>core.key(row)===core.key(title))?rows.filter(row=>core.key(row)!==core.key(title)):[title,...rows].slice(0,300);
     }else if(action==='settings'){
-      if(!value||!['PH','US','GB','CA','AU','IN','JP'].includes(value.region)||![1,1.5,2].includes(Number(value.gain)))throw Error('Invalid settings');if(!['dark','light'].includes(value.theme)||!sources.sources.some(s=>s.id===value.source))throw Error('Invalid appearance or playback source');state.settings={region:value.region,gain:Number(value.gain),theme:value.theme,source:value.source};
+      if(!value||!['PH','US','GB','CA','AU','IN','JP'].includes(value.region)||![1,1.5,2].includes(Number(value.gain)))throw Error('Invalid settings');if(!['dark','light'].includes(value.theme)||!sources.sources.some(s=>s.id===value.source))throw Error('Invalid appearance or playback source');state.settings={region:value.region,gain:Number(value.gain),theme:value.theme,source:value.source,homePanels:Array.isArray(value.homePanels)?homePanelIds.filter(id=>value.homePanels.includes(id)):(state.settings.homePanels||homePanelIds.slice(0,11))};
       if(value.key===null)state.customKey='';else if(value.key){if(!/^[a-f\d]{32}$/i.test(value.key))throw Error('Enter a valid TMDB v3 API key');if(!safeStorage.isEncryptionAvailable())throw Error('Windows credential encryption unavailable');state.customKey=safeStorage.encryptString(value.key).toString('base64');}
     }else throw Error('Unsupported library action');
     persist();return snapshot();
