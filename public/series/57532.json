@@ -1,0 +1,5202 @@
+{
+  "schemaVersion": 1,
+  "id": "tmdb-series-57532",
+  "title": "PAW Patrol",
+  "partial": true,
+  "checkedAt": "2026-10-05T01:57:22.967Z",
+  "episodes": [
+    {
+      "id": "s1e1",
+      "season": 1,
+      "episode": 1,
+      "title": "Pups and the Kitty-tastrophe",
+      "description": "A kitten named Precious is floating out to sea, and the PAW Patrol must rescue her, but that's not all. The PAW Patrol must also act fast to find her owner before the mischievous kitten gets into big trouble.",
+      "airDate": "2013-08-12",
+      "streams": []
+    },
+    {
+      "id": "s1e2",
+      "season": 1,
+      "episode": 2,
+      "title": "Pups Save a Train",
+      "description": "The train that Katie and Cali are on is stuck on a bridge because of a rock slide. The PAW Patrol must act fast since the broken bridge beam can't hold the train for long!",
+      "airDate": "2013-08-12",
+      "streams": []
+    },
+    {
+      "id": "s1e3",
+      "season": 1,
+      "episode": 3,
+      "title": "Pup Pup Boogie",
+      "description": "A train car falls off the tracks and also breaks some rails. A train is coming later with important packages in it, with the all new Pup Pup Boogie 2.0 dance game. The PAW Patrol tries to fix the tracks, but how will they fix the tracks when Rubble sprains his paw and can't work? Can Chase save the day?",
+      "airDate": "2013-08-19",
+      "streams": []
+    },
+    {
+      "id": "s1e4",
+      "season": 1,
+      "episode": 4,
+      "title": "Pups in a Fog",
+      "description": "While the pups are having a sleepover, the Lighthouse light runs out of power. Cap'n Turbot, the one who monitors the Lighthouse light, is out at sea.",
+      "airDate": "2013-08-19",
+      "streams": []
+    },
+    {
+      "id": "s1e5",
+      "season": 1,
+      "episode": 5,
+      "title": "Pups Save the Sea Turtles",
+      "description": "Baby sea turtles were hatching at the other side of the road near the beach. They can't get to the beach without crossing the street, there are cars, skateboarders, scooters and all the hungry naughty seagulls around, not to mention Alex's rambunctious antics.",
+      "airDate": "2013-08-20",
+      "streams": []
+    },
+    {
+      "id": "s1e6",
+      "season": 1,
+      "episode": 6,
+      "title": "Pups and the Very Big Baby",
+      "description": "A baby whale has beached herself. The PAW Patrol has to rescue her and make sure her mother doesn't get too close. Can they save her and reunite her with her mother?",
+      "airDate": "2013-08-20",
+      "streams": []
+    },
+    {
+      "id": "s1e7",
+      "season": 1,
+      "episode": 7,
+      "title": "Pups Save the Circus",
+      "description": "Ellie, the baby elephant from the Circus train, has escaped and is loose in Adventure Bay!",
+      "airDate": "2013-08-21",
+      "streams": []
+    },
+    {
+      "id": "s1e8",
+      "season": 1,
+      "episode": 8,
+      "title": "Pup a Doodle Do",
+      "description": "Mayor Goodway's purse chicken, Chickaleta, is on the loose and the PAW Patrol must find her before it's too late for Mayor Goodway and Chickaleta to host Hello, Adventure Bay.",
+      "airDate": "2013-08-21",
+      "streams": []
+    },
+    {
+      "id": "s1e9",
+      "season": 1,
+      "episode": 9,
+      "title": "Pup Pup Goose",
+      "description": "When a flock of migrating geese stops in Adventure Bay, Marshall bonds with Fuzzy, the gosling of the flock.",
+      "airDate": "2013-08-22",
+      "streams": []
+    },
+    {
+      "id": "s1e10",
+      "season": 1,
+      "episode": 10,
+      "title": "Pup Pup and Away",
+      "description": "Mayor Goodway has entered the Mayor's Hot Air Balloon Race, and she wants to beat the arrogant Mayor Humdinger of Foggy Bottom, but her balloon has a hole in it.",
+      "airDate": "2013-08-22",
+      "streams": []
+    },
+    {
+      "id": "s1e11",
+      "season": 1,
+      "episode": 11,
+      "title": "Pups Pit Crew",
+      "description": "The pups help a young boy named Alex fix his broken tricycle and teach him a valuable lesson of taking new things slow.",
+      "airDate": "2013-08-26",
+      "streams": []
+    },
+    {
+      "id": "s1e12",
+      "season": 1,
+      "episode": 12,
+      "title": "Pups Fight Fire",
+      "description": "The pups helps Marshall prepare for a firefighting obstacle course to win the fastest fire pup trophy.",
+      "airDate": "2013-08-26",
+      "streams": []
+    },
+    {
+      "id": "s1e13",
+      "season": 1,
+      "episode": 13,
+      "title": "Pups Save the Bunnies",
+      "description": "A bunch of adorable bunnies have come to Farmer Yumi's carrot patch. The PAW Patrol must catch them all and relocate them to a perfect new home.",
+      "airDate": "2013-08-28",
+      "streams": []
+    },
+    {
+      "id": "s1e14",
+      "season": 1,
+      "episode": 14,
+      "title": "Pup-Tacular",
+      "description": "While the rest of the PAW Patrol are out to rescue Mayor Goodway and Chickaleta and checking the trucks, Rocky must face his hydrophobia so that Katie can enter him in the Pup-Tacular Show.",
+      "airDate": "2013-08-28",
+      "streams": []
+    },
+    {
+      "id": "s1e15",
+      "season": 1,
+      "episode": 15,
+      "title": "Pups Save the Bay",
+      "description": "There's an oil spill in the bay, and a Baby Whale swam into the oil. The PAW Patrol must clean up the Baby Whale and the oil spill before more animals living in Adventure Bay are harmed by it.",
+      "airDate": "2013-09-16",
+      "streams": []
+    },
+    {
+      "id": "s1e16",
+      "season": 1,
+      "episode": 16,
+      "title": "Pups Save a Goodway",
+      "description": "It's Great-Great-Great-Great-Grandpa Grover Day, and Mayor Goodway has been planning anxiously for today's celebration.",
+      "airDate": "2013-09-16",
+      "streams": []
+    },
+    {
+      "id": "s1e17",
+      "season": 1,
+      "episode": 17,
+      "title": "Pups Get a Rubble",
+      "description": "This episode is a flashback story of how Rubble joined the PAW Patrol. Rubble must help Jake when he gets trapped in an Avalanche.",
+      "airDate": "2013-09-18",
+      "streams": []
+    },
+    {
+      "id": "s1e18",
+      "season": 1,
+      "episode": 18,
+      "title": "Pups Save a Walrus",
+      "description": "The playful walrus, Wally, was performing tricks for Cap'n Turbot, but he eventually gets himself tangled in a fishing net during one of his tricks.",
+      "airDate": "2013-09-18",
+      "streams": []
+    },
+    {
+      "id": "s1e19",
+      "season": 1,
+      "episode": 19,
+      "title": "Pups Save the Treats",
+      "description": "On a snow and icy day, Mr. Porter's van ends up sliding on ice. If the ice cracks, it will fall into the bottom of the bay, and inside of the truck has all the pups' treats and food in it!",
+      "airDate": "2013-09-30",
+      "streams": []
+    },
+    {
+      "id": "s1e20",
+      "season": 1,
+      "episode": 20,
+      "title": "Pups Get a Lift",
+      "description": "Katie and Cali are stuck on Jake's Mountain. Rubble wants Ryder to pick him but he picks Marshall and Rocky.",
+      "airDate": "2013-09-30",
+      "streams": []
+    },
+    {
+      "id": "s1e21",
+      "season": 1,
+      "episode": 21,
+      "title": "Pups Save a Hoedown",
+      "description": "The PAW Patrol are having a great time at the Adventure Bay Hoedown, but trouble starts to brew when Farmer Al's cows get spooked out and are on the loose in Adventure Bay.",
+      "airDate": "2013-10-02",
+      "streams": []
+    },
+    {
+      "id": "s1e22",
+      "season": 1,
+      "episode": 22,
+      "title": "Pups Save Alex",
+      "description": "While Cali is playing with her favorite toy on Farmer Yumi's farm, she gets stuck on the top of the silo, which is not safe.",
+      "airDate": "2013-10-02",
+      "streams": []
+    },
+    {
+      "id": "s1e23",
+      "season": 1,
+      "episode": 23,
+      "title": "Pups and the Ghost Pirate",
+      "description": "A Halloween party turns into a spooky time when there's a ghostly figure roaming around on a ship. Can the PAW Patrol solve the paranormal mystery and save the Halloween party?",
+      "airDate": "2013-10-23",
+      "streams": []
+    },
+    {
+      "id": "s1e24",
+      "season": 1,
+      "episode": 24,
+      "title": "Pups Save a School Day",
+      "description": "It's Alex's first day of school, but he has lost his backpack! So the PAW Patrol agrees to help him find it.",
+      "airDate": "2013-11-12",
+      "streams": []
+    },
+    {
+      "id": "s1e25",
+      "season": 1,
+      "episode": 25,
+      "title": "Pups Turn On the Lights",
+      "description": "It's Chase's birthday and the other pups and Katie are setting up Chase's surprise birthday party at Katie's Clinic.",
+      "airDate": "2013-11-12",
+      "streams": []
+    },
+    {
+      "id": "s1e26",
+      "season": 1,
+      "episode": 26,
+      "title": "Pups Save a Pool Day",
+      "description": "It's a hot day and the pups head for the water park, but the pool is empty! The water tower that pumps water into the pool is tilted and has a bent pipe.",
+      "airDate": "2013-11-13",
+      "streams": []
+    },
+    {
+      "id": "s1e27",
+      "season": 1,
+      "episode": 27,
+      "title": "Circus Pup-formers",
+      "description": "The PAW Patrol, for the first time, must all work together to help Eunice and Ellie save the circus when most of the performers are late.",
+      "airDate": "2013-11-13",
+      "streams": []
+    },
+    {
+      "id": "s1e28",
+      "season": 1,
+      "episode": 28,
+      "title": "Pups Make a Splash",
+      "description": "Cap'n Turbot got The Flounder stuck on some rocks. If the PAW Patrol doesn't save him, The Flounder will sink to the bottom of the bay!",
+      "airDate": "2013-11-14",
+      "streams": []
+    },
+    {
+      "id": "s1e29",
+      "season": 1,
+      "episode": 29,
+      "title": "Pups Fall Festival",
+      "description": "Ryder and the PAW Patrol have to save Farmer Yumi's fruit before an early snowfall comes. Everyone has a job to do to help, except for Chase.",
+      "airDate": "2013-11-14",
+      "streams": []
+    },
+    {
+      "id": "s1e30",
+      "season": 1,
+      "episode": 30,
+      "title": "Pups Save Christmas",
+      "description": "Santa's sleigh crashes and breaks in a snow storm on Christmas Eve, and all the presents are strewn across Adventure Bay. It's up to the PAW Patrol to fix the sled, collect the reindeer, find the gifts, find the magic star, and most importantly, save Christmas for Adventure Bay.",
+      "airDate": "2013-12-12",
+      "streams": []
+    },
+    {
+      "id": "s1e31",
+      "season": 1,
+      "episode": 31,
+      "title": "Pups On Ice",
+      "description": "Ryder and the PAW Patrol need to rescue Alex on Jakes mountain.",
+      "airDate": "2014-01-08",
+      "streams": []
+    },
+    {
+      "id": "s1e32",
+      "season": 1,
+      "episode": 32,
+      "title": "Pups and the Snow Monster",
+      "description": "The pups find strange footprints in the snow on the mountain outside Adventure Bay. Everyone thinks it's a \"snow monster\" and it's scaring the skiers away.",
+      "airDate": "2014-01-08",
+      "streams": []
+    },
+    {
+      "id": "s1e33",
+      "season": 1,
+      "episode": 33,
+      "title": "Pups Save a Super Pup",
+      "description": "Rubble is pretending to be a super pup and tries to handle a rescue all by himself, but soon, Ryder and the Paw Patrol have to save Rubble.",
+      "airDate": "2014-01-10",
+      "streams": []
+    },
+    {
+      "id": "s1e34",
+      "season": 1,
+      "episode": 34,
+      "title": "Pups Save Ryder's Robot",
+      "description": "When Ryder's Robot Pup breaks and starts going wild around Adventure Bay, it takes the whole Paw Patrol to help Ryder find it.",
+      "airDate": "2014-01-10",
+      "streams": []
+    },
+    {
+      "id": "s1e35",
+      "season": 1,
+      "episode": 35,
+      "title": "Pups Go All Monkey",
+      "description": "An escaped baby monkey named Mandy leads the PAW Patrol on a chase through Adventure Bay, when she steals Mr. Porter van full of bananas.",
+      "airDate": "2014-03-05",
+      "streams": []
+    },
+    {
+      "id": "s1e36",
+      "season": 1,
+      "episode": 36,
+      "title": "Pups Save a Hoot",
+      "description": "Chase befriends a baby owl and with the PAW Patrol helps rescue its mother who is trapped in the knothole of a fallen tree.",
+      "airDate": "2014-03-05",
+      "streams": []
+    },
+    {
+      "id": "s1e37",
+      "season": 1,
+      "episode": 37,
+      "title": "Pups Save a Bat",
+      "description": "A baby Bat decides to take a nap hanging from the Town Hall's bell and Mayor Goodway can't ring it. Ryder and the Pups attempt to rescue the bat quietly so it doesn't wake up, but it does and causes trouble around town. It's up to Ryder and the Pups to get the Bat and return her to her Bat cave.",
+      "airDate": "2014-03-07",
+      "streams": []
+    },
+    {
+      "id": "s1e38",
+      "season": 1,
+      "episode": 38,
+      "title": "Pups Save a Toof",
+      "description": "Alex is afraid to go to the dentist, so Chase and the PAW Patrol work together to show Alex that fears can be overcome.",
+      "airDate": "2014-03-07",
+      "streams": []
+    },
+    {
+      "id": "s1e39",
+      "season": 1,
+      "episode": 39,
+      "title": "Pups Save the Easter Egg Hunt",
+      "description": "It’s Adventure Bay’s annual Easter Egg Hunt and the pups are helping Mayor Goodway with the egg decorating. The hunt for a very special egg leads Ryder and the PAW Patrol on an exciting adventure.",
+      "airDate": "2014-04-14",
+      "streams": []
+    },
+    {
+      "id": "s1e40",
+      "season": 1,
+      "episode": 40,
+      "title": "Pups and the Lighthouse Boogie",
+      "description": "Cap'n Turbot has accidentally locked himself inside the lighthouse, so it is up to the pups to rescue a rowboat drifting out to sea.",
+      "airDate": "2014-05-06",
+      "streams": []
+    },
+    {
+      "id": "s1e41",
+      "season": 1,
+      "episode": 41,
+      "title": "Pups Save Ryder",
+      "description": "When Ryder and a goat named Garbi are trapped on a ledge at Big View Trail, it is up to the pups to save them.",
+      "airDate": "2014-05-06",
+      "streams": []
+    },
+    {
+      "id": "s1e42",
+      "season": 1,
+      "episode": 42,
+      "title": "Pups Great Race",
+      "description": "It's Adventure Bay Race Day and the pups are about to race each other all across the town to see who is the fastest pup. One other competitor unexpectedly shows up though, Alex in his super trike!",
+      "airDate": "2014-05-08",
+      "streams": []
+    },
+    {
+      "id": "s1e43",
+      "season": 1,
+      "episode": 43,
+      "title": "Pups Take the Cake",
+      "description": "Mr.Porter enters a cake competition and needs Ryder and the pups to help him bake the biggest and tastiest cake. The race is on to get their cake baked and to the competition on time!",
+      "airDate": "2014-05-08",
+      "streams": []
+    },
+    {
+      "id": "s1e44",
+      "season": 1,
+      "episode": 44,
+      "title": "Pups and the Beanstalk",
+      "description": "Rubble has a wondrous dream, similar to Jack and the Beanstalk, where Marshall grows a giant beanstalk and Alex is a giant. However, when giant Alex starts to cause havoc, Ryder and the PAW Patrol must keep him occupied.",
+      "airDate": "2014-05-20",
+      "streams": []
+    },
+    {
+      "id": "s1e45",
+      "season": 1,
+      "episode": 45,
+      "title": "Pups Save the Turbots",
+      "description": "When Cap'n Turbot needs to get a picture of the rare Blue Footed Booby Bird when his French cousin, Francois Turbot, decides to help but gets caught on a cliff! It's up to the PAW Patrol to rescue him and bring the two cousins together again.",
+      "airDate": "2014-05-20",
+      "streams": []
+    },
+    {
+      "id": "s1e46",
+      "season": 1,
+      "episode": 46,
+      "title": "Pups Save the Camping Trip",
+      "description": "When Chickaletta falls in a cave in the ground it's up to the PAW Patrol to save her!",
+      "airDate": "2014-05-22",
+      "streams": []
+    },
+    {
+      "id": "s1e47",
+      "season": 1,
+      "episode": 47,
+      "title": "Pups and the Trouble with Turtles",
+      "description": "Tons of baby turtles are popping up all over the town. Can the PAW Patrol help get them back to their homes before they get hurt?",
+      "airDate": "2014-05-22",
+      "streams": []
+    },
+    {
+      "id": "s2e1",
+      "season": 2,
+      "episode": 1,
+      "title": "Pups Save the Space Alien",
+      "description": "An alien lands on Earth at Farmer Yumi's place, and the gang try to repair his spaceship so he can return home.",
+      "airDate": "2014-08-13",
+      "streams": []
+    },
+    {
+      "id": "s2e2",
+      "season": 2,
+      "episode": 2,
+      "title": "Pups Save a Flying Frog",
+      "description": "Marshall gets a pet frog, and it jumps into a helicopter prior to a big frog-jumping competition.",
+      "airDate": "2014-08-13",
+      "streams": []
+    },
+    {
+      "id": "s2e3",
+      "season": 2,
+      "episode": 3,
+      "title": "Pups and the Pirate Treasure",
+      "description": "Cap'n Turbot accidentally stumbles into a secret cavern that was once a pirate's hideout. When the PAW Patrol rescues him, they find an incomplete treasure map. The adventure is on as the pups follow clues to find the missing map pieces, and eventually to an amazing sunken pirate treasure!",
+      "airDate": "2014-08-18",
+      "streams": []
+    },
+    {
+      "id": "s2e4",
+      "season": 2,
+      "episode": 4,
+      "title": "Pups Save the Penguins",
+      "description": "The pups must find a way to get a group of penguins back to the South Pole.",
+      "airDate": "2014-08-22",
+      "streams": []
+    },
+    {
+      "id": "s2e5",
+      "season": 2,
+      "episode": 5,
+      "title": "Pups Save a Dolphin Pup",
+      "description": "The PAW Patrol must help a Baby Dolphin get back into the bay with her parents.",
+      "airDate": "2014-08-22",
+      "streams": []
+    },
+    {
+      "id": "s2e6",
+      "season": 2,
+      "episode": 6,
+      "title": "Pups Save Jake",
+      "description": "The PAW Patrol must rescue Jake when his ankle gets stuck between some fallen rocks.",
+      "airDate": "2014-09-16",
+      "streams": []
+    },
+    {
+      "id": "s2e7",
+      "season": 2,
+      "episode": 7,
+      "title": "Pups Save the Parade",
+      "description": "Katie's bathtub float floats away when Alex puts too many balloons on it during Adventure Bay Day.",
+      "airDate": "2014-09-16",
+      "streams": []
+    },
+    {
+      "id": "s2e8",
+      "season": 2,
+      "episode": 8,
+      "title": "Pups Save the Diving Bell",
+      "description": "The PAW Patrol uses Zuma's new submarine to help Cap'n Turbot.",
+      "airDate": "2014-09-17",
+      "streams": []
+    },
+    {
+      "id": "s2e9",
+      "season": 2,
+      "episode": 9,
+      "title": "Pups Save the Beavers",
+      "description": "When a storm washes away Chompy the Beaver's dam, he starts chomping wood all over town.",
+      "airDate": "2014-09-17",
+      "streams": []
+    },
+    {
+      "id": "s2e10",
+      "season": 2,
+      "episode": 10,
+      "title": "Pups Save a Ghost",
+      "description": "A mysterious Ghost is causing havoc around the Lookout at night. The Pups and Chase in his new SPY GEAR set up a stakeout to bust it.",
+      "airDate": "2014-10-20",
+      "streams": []
+    },
+    {
+      "id": "s2e11",
+      "season": 2,
+      "episode": 11,
+      "title": "Pups Save a Show",
+      "description": "The Pups are going to put on a Medieval play in town square, but Cap'n Turbot's castle stage prop ends up collapsing and trapping him!",
+      "airDate": "2014-10-20",
+      "streams": []
+    },
+    {
+      "id": "s2e12",
+      "season": 2,
+      "episode": 12,
+      "title": "Pups Save an Ace",
+      "description": "Skye's favorite stunt pilot, Ace Sorensen, is heading to Adventure Bay to put on a fantastic air show. Just before arrival she runs into engine trouble!",
+      "airDate": "2014-10-22",
+      "streams": []
+    },
+    {
+      "id": "s2e13",
+      "season": 2,
+      "episode": 13,
+      "title": "Pups Save a Wedding",
+      "description": "Farmer Al and Farmer Yumi are getting married! Farmer Yumi's barn is being decorated for the big day and all the pups are helping, but a big storm blows in and takes down a wall of the barn!",
+      "airDate": "2014-10-22",
+      "streams": []
+    },
+    {
+      "id": "s2e14",
+      "season": 2,
+      "episode": 14,
+      "title": "The New Pup",
+      "description": "An Arctic storm picks up, but Jake finds help from a brave mountain ranger pup named Everest!",
+      "airDate": "2014-11-14",
+      "streams": []
+    },
+    {
+      "id": "s2e15",
+      "season": 2,
+      "episode": 15,
+      "title": "Pups Jungle Trouble",
+      "description": "The PAW Patrol heads to the Jungle in the PAW Patroller to meet Ryder's 10 year old pen-pal, Carlos.",
+      "airDate": "2014-11-18",
+      "streams": []
+    },
+    {
+      "id": "s2e16",
+      "season": 2,
+      "episode": 16,
+      "title": "Pups Save a Herd",
+      "description": "Chase is taking part in a herding competition and starts to herd people around town as practice which causes more trouble than good.",
+      "airDate": "2014-11-18",
+      "streams": []
+    },
+    {
+      "id": "s2e17",
+      "season": 2,
+      "episode": 17,
+      "title": "Pups and the Big Freeze",
+      "description": "A wintertime storm causes trouble all over Adventure Bay.",
+      "airDate": "2014-11-20",
+      "streams": []
+    },
+    {
+      "id": "s2e18",
+      "season": 2,
+      "episode": 18,
+      "title": "Pups Save a Basketball Game",
+      "description": "Marshall is nervous about playing in the PAW Patrol basketball team. Chase lets Marshall sit out, but when Zuma and Rocky get injured, Marshall is forced to take over.",
+      "airDate": "2014-11-20",
+      "streams": []
+    },
+    {
+      "id": "s2e19",
+      "season": 2,
+      "episode": 19,
+      "title": "Pups Save a Talent Show",
+      "description": "It's Adventure Bay Talent Show Day! Mayor Goodway is excited but afraid there won't be enough acts! Ryder's super talented pups can definitely help out.",
+      "airDate": "2015-01-06",
+      "streams": []
+    },
+    {
+      "id": "s2e20",
+      "season": 2,
+      "episode": 20,
+      "title": "Pups Save the Corn Roast",
+      "description": "Ryder and the Pups help Farmer Al prepare his annual Corn Roast, complete with a Corn Field Maze! Bettina accidentally tips over some hot BBQ coals onto the piles of corn that begin to pop, pop, POP into piles of POPCORN!",
+      "airDate": "2015-01-06",
+      "streams": []
+    },
+    {
+      "id": "s2e21",
+      "season": 2,
+      "episode": 21,
+      "title": "Pups Leave Marshall Home Alone",
+      "description": "Ryder and the Pups head out for a day of Parachute training, but Marshall decides to stay back because of his fear of heights.",
+      "airDate": "2015-01-08",
+      "streams": []
+    },
+    {
+      "id": "s2e22",
+      "season": 2,
+      "episode": 22,
+      "title": "Pups Save the Deer",
+      "description": "Cap'n Turbot goes out ice fishing and finds a family of Deer stuck on the slippery ice! They must have tried to get across the frozen Bay for food! Ryder and the PAW Patrol to the rescue!",
+      "airDate": "2015-01-08",
+      "streams": []
+    },
+    {
+      "id": "s2e23",
+      "season": 2,
+      "episode": 23,
+      "title": "Pups Save a Friend",
+      "description": "Feeling like his clumsy ways are constantly messing up his friends' fun, Marshall decides to take a break from the PAW Patrol and goes off into the woods. Once the pups notice Marshall is gone, they jump to action to find him and bring him back to the Lookout.",
+      "airDate": "2015-02-13",
+      "streams": []
+    },
+    {
+      "id": "s2e24",
+      "season": 2,
+      "episode": 24,
+      "title": "Pups Save a Stowaway",
+      "description": "The PAW Patrol is on another road trip--this time to the icy tundra to help Jake count penguins.",
+      "airDate": "2015-02-13",
+      "streams": []
+    },
+    {
+      "id": "s2e25",
+      "season": 2,
+      "episode": 25,
+      "title": "Pups Save the Parrot",
+      "description": "Ryder and the PAW Patrol head to the Jungle in the PAW PATROLLER to help their good friend CARLOS find his lost Parrot, Matea!",
+      "airDate": "2015-03-02",
+      "streams": []
+    },
+    {
+      "id": "s2e26",
+      "season": 2,
+      "episode": 26,
+      "title": "Pups Save the Queen Bee",
+      "description": "When Cap'n Turbot notices the light in his lighthouse isn't working properly, he discovers it's bee-cause a BIG beehive is inside it!",
+      "airDate": "2015-03-02",
+      "streams": []
+    },
+    {
+      "id": "s2e27",
+      "season": 2,
+      "episode": 27,
+      "title": "Pups' Adventures in Babysitting",
+      "description": "Mayor Goodway has her hands full with her twin niece and nephew Julia and Julius. She calls on the PAW Patrol to rescue them from a tree, and then twin sit for the day!",
+      "airDate": "2015-03-04",
+      "streams": []
+    },
+    {
+      "id": "s2e28",
+      "season": 2,
+      "episode": 28,
+      "title": "Pups Save the Fireworks",
+      "description": "Mayor Goodway receives a package of piglets instead of the fireworks she was expecting. It turns out that the mailman has been making sloppy deliveries as he keeps delivering each package to the wrong address.",
+      "airDate": "2015-03-04",
+      "streams": []
+    },
+    {
+      "id": "s2e29",
+      "season": 2,
+      "episode": 29,
+      "title": "Pups Save an Elephant Family",
+      "description": "The Pups are on a PAW Patroller road trip to the Savana where they meet up with Photo Safari fans Cap'n Turbot and his cousin François Turbot. In the middle of the night the campers are awakened by an intruder who turns out to be a lost baby elephant - Gilda.",
+      "airDate": "2015-03-06",
+      "streams": []
+    },
+    {
+      "id": "s2e30",
+      "season": 2,
+      "episode": 30,
+      "title": "Pups and the Mischievous Kittens",
+      "description": "Adventure Bay has been picked as a Finalist in the Tidiest Town Contest and looks like they're going to win! That is until Mayor Humdinger unleashes his Kitten Catastrophe Crew and those naughty kittens mess up everything in sight.",
+      "airDate": "2015-03-06",
+      "streams": []
+    },
+    {
+      "id": "s2e31",
+      "season": 2,
+      "episode": 31,
+      "title": "Pups Save a Mer-Pup",
+      "description": "When the Pups and Cap'n Turbot camp out under the very rare Magical Mer Moon, magical things begin to happen. Lured by the mystical Mer pup song and then transformed into Mer pups themselves, Skye and Zuma and even water resistant Rocky perform an underwater rescue in a sunken old ship. Cap'n Turbot and Ryder help out by diving deep to bottom of the Bay in their Diving Bell to help a Mer Mom and pup.",
+      "airDate": "2015-03-20",
+      "streams": []
+    },
+    {
+      "id": "s2e32",
+      "season": 2,
+      "episode": 32,
+      "title": "Pups Save a Sniffle",
+      "description": "The PAW Patrol is just about to zoom off on their latest rescue to help Farmer Al capture his run-a-way pigs, Emma and Corny, when Chase sneezes, then Zuma sneezes and in a blink of an eye, Skye joins the group of sick puppies.",
+      "airDate": "2015-04-07",
+      "streams": []
+    },
+    {
+      "id": "s2e33",
+      "season": 2,
+      "episode": 33,
+      "title": "Pups and the Ghost Cabin",
+      "description": "It's spooky good times as Jake is cleaning up an old miner's cabin in the woods to revamp it as a ski chalet! Rubble and Rocky are happy to lend a helping hand, that is until their lunch disappears.",
+      "airDate": "2015-04-07",
+      "streams": []
+    },
+    {
+      "id": "s2e34",
+      "season": 2,
+      "episode": 34,
+      "title": "Pups Save an Adventure",
+      "description": "Alex is working towards getting his Action Scouts Fire Safety Badge, and who better to help him learn all about Fire Safety than Marshall and the PAW Patrol!",
+      "airDate": "2015-04-09",
+      "streams": []
+    },
+    {
+      "id": "s2e35",
+      "season": 2,
+      "episode": 35,
+      "title": "Pups Save a Surprise",
+      "description": "It's just another regular day in Adventure Bay as the PAW Patrol is called to duty. First they have to help Mr. Porter who has his rump stuck in a stump which turns out to be the home of a neighborhood skunk!",
+      "airDate": "2015-04-09",
+      "streams": []
+    },
+    {
+      "id": "s2e36",
+      "season": 2,
+      "episode": 36,
+      "title": "Pups Save the Mayor's Race",
+      "description": "It's the annual Mayor's Race and Mayor Goodway is determined to give it her best.",
+      "airDate": "2015-05-12",
+      "streams": []
+    },
+    {
+      "id": "s2e37",
+      "season": 2,
+      "episode": 37,
+      "title": "Pups Save an Outlaw's Loot",
+      "description": "Ryder helps Mayor Goodway sort through the old cabin of Outlaw Wild Wilbur when they come across a map for his buried treasure.",
+      "airDate": "2015-05-12",
+      "streams": []
+    },
+    {
+      "id": "s2e38",
+      "season": 2,
+      "episode": 38,
+      "title": "Pups Save Walinda",
+      "description": "The PAW Patrol must come to the rescue when Wally's special friend, Walinda, gets tangled in an anchor chain.",
+      "airDate": "2015-05-14",
+      "streams": []
+    },
+    {
+      "id": "s2e39",
+      "season": 2,
+      "episode": 39,
+      "title": "Pups Save a Big Bone",
+      "description": "Cap'n Turbot and his cousin are in the middle of an archaeological dig when the cliff they are on collapses all around them.",
+      "airDate": "2015-05-14",
+      "streams": []
+    },
+    {
+      "id": "s2e40",
+      "season": 2,
+      "episode": 40,
+      "title": "Pups Save a Floundering Francois",
+      "description": "Cap'n Turbot and his cousin Francois are watching white whales in Adventure Bay when their boat hits a rock and starts to sink.",
+      "airDate": "2015-05-29",
+      "streams": []
+    },
+    {
+      "id": "s2e41",
+      "season": 2,
+      "episode": 41,
+      "title": "Pups Save the Pop-Up Penguins",
+      "description": "The PAW Patrol must track down some loose penguins and help them return to the land of ice and snow.",
+      "airDate": "2015-05-29",
+      "streams": []
+    },
+    {
+      "id": "s2e42",
+      "season": 2,
+      "episode": 42,
+      "title": "Pups Save a Pizza",
+      "description": "While delivering special pizza dough for a party, Alex and Mr. Porter get into an accident.",
+      "airDate": "2015-08-24",
+      "streams": []
+    },
+    {
+      "id": "s2e43",
+      "season": 2,
+      "episode": 43,
+      "title": "Pups Save Skye",
+      "description": "A storm causes Skye to crash land in the snow while on her way to Jake's Mountain.",
+      "airDate": "2015-08-24",
+      "streams": []
+    },
+    {
+      "id": "s2e44",
+      "season": 2,
+      "episode": 44,
+      "title": "Pups Save the Woof and Roll Show",
+      "description": "When a storm blows through the town right before a concert, the pups must work together to clean up the mess.",
+      "airDate": "2015-09-18",
+      "streams": []
+    },
+    {
+      "id": "s2e45",
+      "season": 2,
+      "episode": 45,
+      "title": "Pups Save an Eagle",
+      "description": "Mayor Goodway's backpack slips down the side of a cliff with Chickaletta in it.",
+      "airDate": "2015-09-18",
+      "streams": []
+    },
+    {
+      "id": "s2e46",
+      "season": 2,
+      "episode": 46,
+      "title": "Pups Bark with Dinosaurs",
+      "description": "The PAW Patrol is on a big excavation dig in the jungle with Cap'n Turbot looking for dinosaur fossils when they unearth 3 fossilized eggs. Before they know what's happening the eggs start to hatch and there are three baby pterodactyls running around Adventure Bay! ",
+      "airDate": "2015-10-02",
+      "streams": []
+    },
+    {
+      "id": "s2e47",
+      "season": 2,
+      "episode": 47,
+      "title": "Pup-Fu!",
+      "description": "While Sensei Yumi teaches all the Pups the ancient art of Pup-Fu, Mayor Humdinger steals an ancient scroll that holds all the secrets of the art.",
+      "airDate": "2015-10-16",
+      "streams": []
+    },
+    {
+      "id": "s3e1",
+      "season": 3,
+      "episode": 1,
+      "title": "Pups Find a Genie",
+      "description": "Rubble Finds an old brass Jack-in-the-box with a Genie inside who grants him 3 wishes.",
+      "airDate": "2015-11-20",
+      "streams": []
+    },
+    {
+      "id": "s3e2",
+      "season": 3,
+      "episode": 2,
+      "title": "Pups Save a Tightrope Walker",
+      "description": "Francois tries to walk a tightrope from Adventure Bay's Bridge to the Lookout.",
+      "airDate": "2015-11-20",
+      "streams": []
+    },
+    {
+      "id": "s3e3",
+      "season": 3,
+      "episode": 3,
+      "title": "Pups Save a Snowboard Competition",
+      "description": "Jake and Everest are excited today's the day of the big Snowboard Competition, until they look outside and see the course is completely buried under blanket of snow.",
+      "airDate": "2015-12-04",
+      "streams": []
+    },
+    {
+      "id": "s3e4",
+      "season": 3,
+      "episode": 4,
+      "title": "Pups Save a Chicken of the Sea",
+      "description": "The Cap'n is about to test it out in an underwater adventure when Chickaletta, Cali and a seagull beat him to it. All the animal activity on the control panel drives the diving bell to the bottom of the bay.",
+      "airDate": "2015-12-04",
+      "streams": []
+    },
+    {
+      "id": "s3e5",
+      "season": 3,
+      "episode": 5,
+      "title": "Pups Save the Soccer Game",
+      "description": "The pups discover that their opponents in a soccer match are cheating.",
+      "airDate": "2016-01-22",
+      "streams": []
+    },
+    {
+      "id": "s3e6",
+      "season": 3,
+      "episode": 6,
+      "title": "Pups Save a Lucky Collar",
+      "description": "Marshall wins a supposedly lucky collar, leading him to take unnecessary risks while helping Cap'n Turbot save an owl.",
+      "airDate": "2016-01-22",
+      "streams": []
+    },
+    {
+      "id": "s3e7",
+      "season": 3,
+      "episode": 7,
+      "title": "Air Pups",
+      "description": "Cap'n Turbot and Francois go on a monkey communication expedition, but are put in danger when the volcano on the island erupts. The PAW Patrol uses their new Air Patroller to rescue the two, along with a family of monkeys.",
+      "airDate": "2016-01-29",
+      "streams": []
+    },
+    {
+      "id": "s3e8",
+      "season": 3,
+      "episode": 8,
+      "title": "The Pups Save Friendship Day",
+      "description": "While celebrating Friendship Day, the pups must prevent Mayor Humdinger from ruining Adventure Bay's reputation as the friendliest town on the map.",
+      "airDate": "2016-02-12",
+      "streams": []
+    },
+    {
+      "id": "s3e9",
+      "season": 3,
+      "episode": 9,
+      "title": "Pups Save Alex's Mini-Patrol",
+      "description": "The pups prepare for Adventure Bay's Tree Dedication Ceremony and end up receiving help from Alex Porter's newly-formed \"mini-patrol.\"",
+      "airDate": "2016-03-22",
+      "streams": []
+    },
+    {
+      "id": "s3e10",
+      "season": 3,
+      "episode": 10,
+      "title": "Pups Save a Lost Tooth",
+      "description": "The pups' boat ride with Cap'n Turbot is postponed when they must track down a lost tooth.",
+      "airDate": "2016-03-22",
+      "streams": []
+    },
+    {
+      "id": "s3e11",
+      "season": 3,
+      "episode": 11,
+      "title": "Pups Save Daring Danny X",
+      "description": "Ryder uses the Air Patroller to save a wannabe daredevil.",
+      "airDate": "2016-03-24",
+      "streams": []
+    },
+    {
+      "id": "s3e12",
+      "season": 3,
+      "episode": 12,
+      "title": "Pups in a Fix",
+      "description": "Cap'n Turbot's boat, the Flounder, is tuned up by Ryder's robotic pup.",
+      "airDate": "2016-03-24",
+      "streams": []
+    },
+    {
+      "id": "s3e13",
+      "season": 3,
+      "episode": 13,
+      "title": "Pups Save a Dragon",
+      "description": "The PAW Patrol performs a play in which Katie is a princess in a tower.",
+      "airDate": "2016-04-19",
+      "streams": []
+    },
+    {
+      "id": "s3e14",
+      "season": 3,
+      "episode": 14,
+      "title": "Pups Save Three Little Pigs",
+      "description": "Rubble builds a brick house for three pigs on a farm.",
+      "airDate": "2016-04-19",
+      "streams": []
+    },
+    {
+      "id": "s3e15",
+      "season": 3,
+      "episode": 15,
+      "title": "Pups Save a Goldrush",
+      "description": "The pups search for gold using Rocky's makeshift sifting tools.",
+      "airDate": "2016-04-21",
+      "streams": []
+    },
+    {
+      "id": "s3e16",
+      "season": 3,
+      "episode": 16,
+      "title": "Pups Save the Paw Patroller",
+      "description": "The pups take a break from washing the PAW Patroller. When they return, the PAW Patroller is missing.",
+      "airDate": "2016-04-21",
+      "streams": []
+    },
+    {
+      "id": "s3e17",
+      "season": 3,
+      "episode": 17,
+      "title": "Pups Save Apollo",
+      "description": "Rubble dreams about saving his idol, Apollo the Super-Pup, from an evil Spider King.",
+      "airDate": "2016-05-03",
+      "streams": []
+    },
+    {
+      "id": "s3e18",
+      "season": 3,
+      "episode": 18,
+      "title": "Pups Save the Hippos",
+      "description": "Zuma feels left out when he cannot assist in a mission involving a trio of circus hippos.",
+      "airDate": "2016-05-03",
+      "streams": []
+    },
+    {
+      "id": "s3e19",
+      "season": 3,
+      "episode": 19,
+      "title": "Pups Save the Polar Bears",
+      "description": "While on a trip to the Arctic, Cap'n Turbot needs the pups' help to get a family of polar bears back together.",
+      "airDate": "2016-05-05",
+      "streams": []
+    },
+    {
+      "id": "s3e20",
+      "season": 3,
+      "episode": 20,
+      "title": "A Pup in Sheep's Clothing",
+      "description": "Marshall puts on a sheep costume to find missing lambs on a farm.",
+      "airDate": "2016-05-05",
+      "streams": []
+    },
+    {
+      "id": "s3e21",
+      "season": 3,
+      "episode": 21,
+      "title": "Pups Save a School Bus",
+      "description": "Rocky uses his tools to repair the tires on a school bus.",
+      "airDate": "2016-05-24",
+      "streams": []
+    },
+    {
+      "id": "s3e22",
+      "season": 3,
+      "episode": 22,
+      "title": "Pups Save the Songbirds",
+      "description": "",
+      "airDate": "2016-05-24",
+      "streams": []
+    },
+    {
+      "id": "s3e23",
+      "season": 3,
+      "episode": 23,
+      "title": "Pups Save Old Trusty",
+      "description": "The pups discover that Adventure Bay's geyser, Old Trusty, has been plugged up by a boulder.",
+      "airDate": "2016-05-26",
+      "streams": []
+    },
+    {
+      "id": "s3e24",
+      "season": 3,
+      "episode": 24,
+      "title": "Pups Save a Pony",
+      "description": "The PAW Patroller gets stuck while the pups try to find a lost horse.",
+      "airDate": "2016-05-26",
+      "streams": []
+    },
+    {
+      "id": "s3e25",
+      "season": 3,
+      "episode": 25,
+      "title": "All Star Pups!",
+      "description": "The pups compete against a team of monkeys as part of a charity kickball game.",
+      "airDate": "2016-08-22",
+      "streams": []
+    },
+    {
+      "id": "s3e26",
+      "season": 3,
+      "episode": 26,
+      "title": "Pups Save Sports Day",
+      "description": "The pups build a halfpipe ramp so that Everest can compete in a sporting event.",
+      "airDate": "2016-08-22",
+      "streams": []
+    },
+    {
+      "id": "s3e27",
+      "season": 3,
+      "episode": 27,
+      "title": "Tracker Joins the Pups!",
+      "description": "The PAW Patrol's newest member, Tracker, helps find an ancient crown.",
+      "airDate": "2016-09-16",
+      "streams": []
+    },
+    {
+      "id": "s3e28",
+      "season": 3,
+      "episode": 28,
+      "title": "Parroting Pups",
+      "description": "Rocky loses his voice while visiting Tracker in the jungle, so a talkative parrot helps him fulfill his PAW Patrol duties.",
+      "airDate": "2016-09-16",
+      "streams": []
+    },
+    {
+      "id": "s3e29",
+      "season": 3,
+      "episode": 29,
+      "title": "Merpups Save the Turbots",
+      "description": "Cap'n Turbot and Francois try to catch magical mer-pups on film. When they accidentally lure a giant sea slug on top of their diving bell in the process, the mer-pups must rescue them.",
+      "airDate": "2016-09-16",
+      "streams": []
+    },
+    {
+      "id": "s3e30",
+      "season": 3,
+      "episode": 30,
+      "title": "Pups Save a Robo-Saurus",
+      "description": "The pups set out to recover a missing robotic dinosaur.",
+      "airDate": "2016-10-10",
+      "streams": []
+    },
+    {
+      "id": "s3e31",
+      "season": 3,
+      "episode": 31,
+      "title": "Pups Save a Film Festival",
+      "description": "The pups have trouble filming their entry for a film festival.",
+      "airDate": "2016-10-10",
+      "streams": []
+    },
+    {
+      "id": "s3e32",
+      "season": 3,
+      "episode": 32,
+      "title": "Pups Save a Stinky Flower",
+      "description": "Rocky turns his recycling truck into a boat so that he can bring a foul-smelling plant across the bay.",
+      "airDate": "2016-10-18",
+      "streams": []
+    },
+    {
+      "id": "s3e33",
+      "season": 3,
+      "episode": 33,
+      "title": "Pups Save a Monkey-naut",
+      "description": "A monkey's space mission turns into a rescue after Cap'n Turbot finds out that the spaceship's hatch is broken.",
+      "airDate": "2016-10-18",
+      "streams": []
+    },
+    {
+      "id": "s3e34",
+      "season": 3,
+      "episode": 34,
+      "title": "Pups Bear-ly Save Danny",
+      "description": "The boy from \"Pups Save Daring Danny X\" returns and tries to outperform Everest at snowboarding.",
+      "airDate": "2016-10-20",
+      "streams": []
+    },
+    {
+      "id": "s3e35",
+      "season": 3,
+      "episode": 35,
+      "title": "Pups Save the Mayor's Tulips",
+      "description": "Chase and Rocky are left in charge of guarding Mayor Goodway's tulips.",
+      "airDate": "2016-10-20",
+      "streams": []
+    },
+    {
+      "id": "s3e36",
+      "season": 3,
+      "episode": 36,
+      "title": "Pups Get Growing",
+      "description": "The pups must stop overgrown tomatoes from rolling around Adventure Bay. ",
+      "airDate": "2016-11-08",
+      "streams": []
+    },
+    {
+      "id": "s3e37",
+      "season": 3,
+      "episode": 37,
+      "title": "Pups Save a Space Toy",
+      "description": "Marshall is beamed into the sky by space aliens.",
+      "airDate": "2016-11-08",
+      "streams": []
+    },
+    {
+      "id": "s3e38",
+      "season": 3,
+      "episode": 38,
+      "title": "Pups in a Jam",
+      "description": "The pups take care of an ant infestation on the day of Adventure Bay's jam festival. ",
+      "airDate": "2016-11-11",
+      "streams": []
+    },
+    {
+      "id": "s3e39",
+      "season": 3,
+      "episode": 39,
+      "title": "Pups Save a Windsurfing Pig",
+      "description": "Zuma tracks down a pig on a windsurfing board.",
+      "airDate": "2016-11-11",
+      "streams": []
+    },
+    {
+      "id": "s3e40",
+      "season": 3,
+      "episode": 40,
+      "title": "Pups Save the Gliding Turbots",
+      "description": "Cap'n Turbot and Francois break their hang glider while doing research on albino monkeys.",
+      "airDate": "2016-11-29",
+      "streams": []
+    },
+    {
+      "id": "s3e41",
+      "season": 3,
+      "episode": 41,
+      "title": "Pups Save a Plane",
+      "description": "A flock of seagulls damages a wing flap on a plane that the mayor is piloting.",
+      "airDate": "2016-11-29",
+      "streams": []
+    },
+    {
+      "id": "s3e42",
+      "season": 3,
+      "episode": 42,
+      "title": "Pups Get Skunked",
+      "description": "The pups' hunt for berries is cut short when Everest is sprayed by a skunk. ",
+      "airDate": "2016-12-01",
+      "streams": []
+    },
+    {
+      "id": "s3e43",
+      "season": 3,
+      "episode": 43,
+      "title": "Pups and a Whale of a Tale",
+      "description": "During a whale watching trip, Cap'n Turbot finds a baby whale trapped under an ice sheet.",
+      "airDate": "2016-12-01",
+      "streams": []
+    },
+    {
+      "id": "s3e44",
+      "season": 3,
+      "episode": 44,
+      "title": "The Pups' Winter Wonder Show",
+      "description": "Tracker helps out when the pups need to find Cap'n Turbot's skating penguins, who have gone missing during a blizzard.",
+      "airDate": "2016-12-02",
+      "streams": []
+    },
+    {
+      "id": "s3e45",
+      "season": 3,
+      "episode": 45,
+      "title": "Pups Save a Giant Plant",
+      "description": "Tracker's new Venus flytrap grows at an unexpected rate after being planted in an unsuitable area.",
+      "airDate": "2017-01-20",
+      "streams": []
+    },
+    {
+      "id": "s3e46",
+      "season": 3,
+      "episode": 46,
+      "title": "Pups Get Stuck",
+      "description": "Rubble's electromagnet falls into Marshall's fire truck, magnetizing the vehicle and causing problems around the town.",
+      "airDate": "2017-01-20",
+      "streams": []
+    },
+    {
+      "id": "s3e47",
+      "season": 3,
+      "episode": 47,
+      "title": "Pups Raise the PAW Patroller",
+      "description": "The PAW Patrol must find a way to save their waterlogged 18-wheeler after it sinks to the bottom of Adventure Bay.",
+      "airDate": "2017-01-24",
+      "streams": []
+    },
+    {
+      "id": "s3e48",
+      "season": 3,
+      "episode": 48,
+      "title": "Pups Save the Crows",
+      "description": "Two crows start to steal objects from around Adventure Bay, including hats needed for the town's \"Hat-a-palooza\" event.",
+      "airDate": "2017-01-24",
+      "streams": []
+    },
+    {
+      "id": "s3e49",
+      "season": 3,
+      "episode": 49,
+      "title": "Pups Save Their Floating Friends",
+      "description": "A \"floating ray\" from outer space causes the people of Adventure Bay to float in mid-air.",
+      "airDate": "2017-01-26",
+      "streams": []
+    },
+    {
+      "id": "s3e50",
+      "season": 3,
+      "episode": 50,
+      "title": "Pups Save a Satellite",
+      "description": "The PAW Patrol must stop an out-of-orbit satellite from crashing in time to catch Rubble's favourite TV show.",
+      "airDate": "2017-01-26",
+      "streams": []
+    },
+    {
+      "id": "s4e1",
+      "season": 4,
+      "episode": 1,
+      "title": "Pups Save a Blimp",
+      "description": "Capn' Turbot's weather blimp is taken by Mayor Humdinger, who plans to use it to change the weather in Foggy Bottom.",
+      "airDate": "2017-02-06",
+      "streams": []
+    },
+    {
+      "id": "s4e2",
+      "season": 4,
+      "episode": 2,
+      "title": "Pups Save a Chili Cook-Off",
+      "description": "Mr. Porter's stove explodes right before the chili cook-off!",
+      "airDate": "2017-02-06",
+      "streams": []
+    },
+    {
+      "id": "s4e3",
+      "season": 4,
+      "episode": 3,
+      "title": "Pups Save a Teeny Penguin",
+      "description": "Everest and Jake try to rescue a little penguin and end up floating out to sea.",
+      "airDate": "2017-02-08",
+      "streams": []
+    },
+    {
+      "id": "s4e4",
+      "season": 4,
+      "episode": 4,
+      "title": "Pups Save the Cat Show",
+      "description": "Katie's kittens are all covered in mud and running amuck! If they're not rounded up, the Cat Show will be ruined.",
+      "airDate": "2017-02-08",
+      "streams": []
+    },
+    {
+      "id": "s4e5",
+      "season": 4,
+      "episode": 5,
+      "title": "Mission PAW: Quest for the Crown",
+      "description": "Ryder launches a rescue mission after Chase is locked in a dungeon.",
+      "airDate": "2017-03-24",
+      "streams": []
+    },
+    {
+      "id": "s4e6",
+      "season": 4,
+      "episode": 6,
+      "title": "Pups Save a Playful Dragon",
+      "description": "After reading a fantasy book, Rubble dreams that the dragon from the story comes to life.",
+      "airDate": "2017-04-07",
+      "streams": []
+    },
+    {
+      "id": "s4e7",
+      "season": 4,
+      "episode": 7,
+      "title": "Pups Save the Critters",
+      "description": "Francois is preparing to give an animal presentation at school when the creatures in his truck escape.",
+      "airDate": "2017-04-07",
+      "streams": []
+    },
+    {
+      "id": "s4e8",
+      "season": 4,
+      "episode": 8,
+      "title": "Mission PAW: Royally Spooked!",
+      "description": "The PAW Patrol returns to Barkingburg to investigate a seemingly haunted castle.",
+      "airDate": "2017-04-14",
+      "streams": []
+    },
+    {
+      "id": "s4e9",
+      "season": 4,
+      "episode": 9,
+      "title": "Pups Save Monkey-Dinger",
+      "description": "The PAW Patrol works to return a stolen monkey mask to a jungle temple.",
+      "airDate": "2017-04-14",
+      "streams": []
+    },
+    {
+      "id": "s4e10",
+      "season": 4,
+      "episode": 10,
+      "title": "Pups Save Jake's Cake",
+      "description": "The PAW Patrol must bring an enormous ice cream cake to the top of a mountain.",
+      "airDate": "2017-04-21",
+      "streams": []
+    },
+    {
+      "id": "s4e11",
+      "season": 4,
+      "episode": 11,
+      "title": "Pups Save a Wild Ride",
+      "description": "The PAW Patrol must come to the rescue when Alex and Daring Danny X snowboard toward Risky Ridge.",
+      "airDate": "2017-04-21",
+      "streams": []
+    },
+    {
+      "id": "s4e12",
+      "season": 4,
+      "episode": 12,
+      "title": "Pups Save a Sleepover",
+      "description": "Farmer Al's animals go missing during a sleepover.",
+      "airDate": "2017-04-28",
+      "streams": []
+    },
+    {
+      "id": "s4e13",
+      "season": 4,
+      "episode": 13,
+      "title": "Pups Save the Carnival",
+      "description": "Cornelius escapes from the pig ride at the carnival, and all the prizes have gone missing too.",
+      "airDate": "2017-04-28",
+      "streams": []
+    },
+    {
+      "id": "s4e14",
+      "season": 4,
+      "episode": 14,
+      "title": "Pups Save the Flying Food",
+      "description": "Mr. Porter's delivery drones go out of control and air-drop food everywhere.",
+      "airDate": "2017-05-12",
+      "streams": []
+    },
+    {
+      "id": "s4e15",
+      "season": 4,
+      "episode": 15,
+      "title": "Pups Save a Ferris Wheel",
+      "description": "Mayor Humdinger steals Adventure Bay's Ferris wheel.",
+      "airDate": "2017-05-12",
+      "streams": []
+    },
+    {
+      "id": "s4e16",
+      "season": 4,
+      "episode": 16,
+      "title": "Mission PAW: Pups Save the Royal Throne",
+      "description": "The pups must come to the rescue when Sweetie plans to steal the royal throne so that she can rule.",
+      "airDate": "2017-05-26",
+      "streams": []
+    },
+    {
+      "id": "s4e17",
+      "season": 4,
+      "episode": 17,
+      "title": "Sea Patrol: Pups Save a Baby Octopus",
+      "description": "Cap'n Turbot's boat, the Flounder, is sunk by a large pink octopus.",
+      "airDate": "2017-07-07",
+      "streams": []
+    },
+    {
+      "id": "s4e18",
+      "season": 4,
+      "episode": 18,
+      "title": "Pups Save the Runaway Kitties",
+      "description": "The Kit-trastrophe crew gets into the poufy shampoo, and they are blown away.",
+      "airDate": "2017-08-21",
+      "streams": []
+    },
+    {
+      "id": "s4e19",
+      "season": 4,
+      "episode": 19,
+      "title": "Pups Save Tiny Marshall",
+      "description": "Marshall dreams he gets shrunk.",
+      "airDate": "2017-08-21",
+      "streams": []
+    },
+    {
+      "id": "s4e20",
+      "season": 4,
+      "episode": 20,
+      "title": "Pups Chill Out",
+      "description": "Roger's frozen food delivery truck gets stuck in a ditch.",
+      "airDate": "2017-08-23",
+      "streams": []
+    },
+    {
+      "id": "s4e21",
+      "season": 4,
+      "episode": 21,
+      "title": "Pups Save Farmer Alex",
+      "description": "Farmer Yumi's animals stampede toward town.",
+      "airDate": "2017-08-23",
+      "streams": []
+    },
+    {
+      "id": "s4e22",
+      "season": 4,
+      "episode": 22,
+      "title": "Pups Save Big Hairy",
+      "description": "A giant monkey follows the PAW Patrol home after a trip to the jungle.",
+      "airDate": "2017-08-25",
+      "streams": []
+    },
+    {
+      "id": "s4e23",
+      "season": 4,
+      "episode": 23,
+      "title": "Pups Save a Flying Kitty",
+      "description": "While birdwatching, Marshall and Cap'n Turbot spot a kitten stuck in a mountainside tree.",
+      "airDate": "2017-08-25",
+      "streams": []
+    },
+    {
+      "id": "s4e24",
+      "season": 4,
+      "episode": 24,
+      "title": "Sea Patrol: Pups Save a Shark",
+      "description": "The PAW Patrol investigates after reports of a shark near Adventure Beach.",
+      "airDate": "2017-09-08",
+      "streams": []
+    },
+    {
+      "id": "s4e25",
+      "season": 4,
+      "episode": 25,
+      "title": "Sea Patrol: Pups Save the Pier",
+      "description": "Francois sculpts a statue of himself using jelly, attracting hungry animals to the pier.",
+      "airDate": "2017-09-08",
+      "streams": []
+    },
+    {
+      "id": "s4e26",
+      "season": 4,
+      "episode": 26,
+      "title": "Pups Save a Space Rock",
+      "description": "Cap'n Turbot and Francois discover a rock-like space alien in the forest.",
+      "airDate": "2017-09-19",
+      "streams": []
+    },
+    {
+      "id": "s4e27",
+      "season": 4,
+      "episode": 27,
+      "title": "Pups Save a Good Mayor",
+      "description": "Problems arise all over Adventure Bay and the city's mayor is nowhere to be found.",
+      "airDate": "2017-09-19",
+      "streams": []
+    },
+    {
+      "id": "s4e28",
+      "season": 4,
+      "episode": 28,
+      "title": "Pups Save a City Kitty",
+      "description": "Cali gets lost in the woods.",
+      "airDate": "2017-09-21",
+      "streams": []
+    },
+    {
+      "id": "s4e29",
+      "season": 4,
+      "episode": 29,
+      "title": "Pups Save a Cloud Surfer",
+      "description": "Daring Danny X's harness loosens while kite-surfing.",
+      "airDate": "2017-09-21",
+      "streams": []
+    },
+    {
+      "id": "s4e30",
+      "season": 4,
+      "episode": 30,
+      "title": "Pups Save a Sleepwalking Bear",
+      "description": "One of the entries at the Adventure Bay snow sculpture festival turns out to be a real bear covered in snow.",
+      "airDate": "2017-10-06",
+      "streams": []
+    },
+    {
+      "id": "s4e31",
+      "season": 4,
+      "episode": 31,
+      "title": "Pups Save Dude Ranch Danny",
+      "description": "The PAW Patrol takes a trip to a dude ranch, where they embark on a Western trail ride.",
+      "airDate": "2017-10-06",
+      "streams": []
+    },
+    {
+      "id": "s4e32",
+      "season": 4,
+      "episode": 32,
+      "title": "Sea Patrol: Pirate Pups to the Rescue",
+      "description": "The Sea Patrol has to rescue Carlos and Tracker, when they get stranded on an island in the search for buried treasure. Unbeknownst to them, a long-gone pirate hypnotized the animals into protecting the treasure and Carlos gets carried off in a treasure chest.",
+      "airDate": "2017-10-20",
+      "streams": []
+    },
+    {
+      "id": "s4e33",
+      "season": 4,
+      "episode": 33,
+      "title": "Pups Save the Mail",
+      "description": "When the postman's truck gets stuck in the mud, the mail is stuck in a tree.",
+      "airDate": "2017-10-27",
+      "streams": []
+    },
+    {
+      "id": "s4e34",
+      "season": 4,
+      "episode": 34,
+      "title": "Pups Save a Frog Mayor",
+      "description": "Mayor Goodway turns into a frog.",
+      "airDate": "2017-10-27",
+      "streams": []
+    },
+    {
+      "id": "s4e35",
+      "season": 4,
+      "episode": 35,
+      "title": "Sea Patrol: Pups Save a Frozen Flounder",
+      "description": "Cap'n Turbot's boat gets frozen in the Arctic ice.",
+      "airDate": "2017-11-06",
+      "streams": []
+    },
+    {
+      "id": "s4e36",
+      "season": 4,
+      "episode": 36,
+      "title": "Sea Patrol: Pups Save a Narwhal",
+      "description": "The pups use the Sea Patroller to help guide a lost narwhal back home.",
+      "airDate": "2017-11-06",
+      "streams": []
+    },
+    {
+      "id": "s4e37",
+      "season": 4,
+      "episode": 37,
+      "title": "Pups Save the Runaway Turtles",
+      "description": "Daring Danny X accidentally drives off with turtle eggs.",
+      "airDate": "2017-11-07",
+      "streams": []
+    },
+    {
+      "id": "s4e38",
+      "season": 4,
+      "episode": 38,
+      "title": "Pups Save the Shivering Sheep",
+      "description": "Farmer Al's sheep run away, and Mayor Humdinger's kittens go missing.",
+      "airDate": "2017-11-07",
+      "streams": []
+    },
+    {
+      "id": "s4e39",
+      "season": 4,
+      "episode": 39,
+      "title": "Pups Party with Bats",
+      "description": "Rubble prepares to be a disc jockey at an Adventure Bay dance party.",
+      "airDate": "2017-11-10",
+      "streams": []
+    },
+    {
+      "id": "s4e40",
+      "season": 4,
+      "episode": 40,
+      "title": "Pups Save Sensei Yumi",
+      "description": "A windstorm interrupts Marshall's \"Pup-Fu\" training, allowing him to use his skills in real life.",
+      "airDate": "2017-11-10",
+      "streams": []
+    },
+    {
+      "id": "s4e41",
+      "season": 4,
+      "episode": 41,
+      "title": "Sea Patrol: Pups Save Puplantis",
+      "description": "Cap'n Turbot, Ryder, and the pups visit the merpups' undersea kingdom.",
+      "airDate": "2018-01-15",
+      "streams": []
+    },
+    {
+      "id": "s4e42",
+      "season": 4,
+      "episode": 42,
+      "title": "Pups Save Francois the Penguin",
+      "description": "Francois puts on a penguin costume while trying to photograph macaroni penguins.",
+      "airDate": "2018-01-30",
+      "streams": []
+    },
+    {
+      "id": "s4e43",
+      "season": 4,
+      "episode": 43,
+      "title": "Pups Save Daring Danny's Hippo",
+      "description": "The pups get a chance to perform at a circus after they help track down one of the show's missing hippos.",
+      "airDate": "2018-01-30",
+      "streams": []
+    },
+    {
+      "id": "s4e44",
+      "season": 4,
+      "episode": 44,
+      "title": "Pups Save Baby Humdinger",
+      "description": "During a trip to Adventure Bay, Tracker takes a nap and dreams that Mayor Humdinger has become a baby.",
+      "airDate": "2018-02-01",
+      "streams": []
+    },
+    {
+      "id": "s4e45",
+      "season": 4,
+      "episode": 45,
+      "title": "Pups Save a Piñata",
+      "description": "While helping out with decorations for a townwide party, the pups discover that the celebration's piñata has disappeared.",
+      "airDate": "2018-02-01",
+      "streams": []
+    },
+    {
+      "id": "s5e1",
+      "season": 5,
+      "episode": 1,
+      "title": "Pups Save the Kitty Rescue Crew",
+      "description": "The Kitten Catastrophe Crew tries to upstage the PAW Patrol by creating their own rescue missions.",
+      "airDate": "2018-02-06",
+      "streams": []
+    },
+    {
+      "id": "s5e2",
+      "season": 5,
+      "episode": 2,
+      "title": "Pups Save an Ostrich",
+      "description": "Cap'n Turbot brings an ostrich named Oscar to Adventure Bay, and the bird is soon adopted.",
+      "airDate": "2018-02-06",
+      "streams": []
+    },
+    {
+      "id": "s5e3",
+      "season": 5,
+      "episode": 3,
+      "title": "Pups Save Big Paw",
+      "description": "Tracker and Skye investigate the disappearance of a golden relic.",
+      "airDate": "2018-02-08",
+      "streams": []
+    },
+    {
+      "id": "s5e4",
+      "season": 5,
+      "episode": 4,
+      "title": "Pups Save the Hum-Mover",
+      "description": "Rocky builds a transportation system for Mayor Goodway's rival, Mayor Humdinger.",
+      "airDate": "2018-02-08",
+      "streams": []
+    },
+    {
+      "id": "s5e5",
+      "season": 5,
+      "episode": 5,
+      "title": "Sea Patrol: Pups Save a Sunken Sloop",
+      "description": "A pirate named Sid Swashbuckle tries to steal treasure from a submerged ship in the bay.",
+      "airDate": "2018-02-19",
+      "streams": []
+    },
+    {
+      "id": "s5e6",
+      "season": 5,
+      "episode": 6,
+      "title": "Sea Patrol: Pups Save a Wiggly Whale",
+      "description": "Cap'n Turbot and Francois are chased by an unhappy whale with driftwood stuck in its teeth.",
+      "airDate": "2018-02-19",
+      "streams": []
+    },
+    {
+      "id": "s5e7",
+      "season": 5,
+      "episode": 7,
+      "title": "Pups Save Luke Stars",
+      "description": "Ryder and Marshall come to the aid of a pop star who has gotten stuck on a ledge.",
+      "airDate": "2018-03-06",
+      "streams": []
+    },
+    {
+      "id": "s5e8",
+      "season": 5,
+      "episode": 8,
+      "title": "Pups Save Chicken Day",
+      "description": "Chickaletta goes missing on Chicken Day! The PAW Patrol have to find her to save the festivities.",
+      "airDate": "2018-03-06",
+      "streams": []
+    },
+    {
+      "id": "s5e9",
+      "season": 5,
+      "episode": 9,
+      "title": "Pups Save a High-Flying Skye",
+      "description": "A thunderstorm causes a power outage in Adventure Bay while Skye is in the middle of a mission.",
+      "airDate": "2018-03-08",
+      "streams": []
+    },
+    {
+      "id": "s5e10",
+      "season": 5,
+      "episode": 10,
+      "title": "Pups Go for the Gold",
+      "description": "Rubble sets up a barricade to stop an out-of-control mine cart.",
+      "airDate": "2018-03-08",
+      "streams": []
+    },
+    {
+      "id": "s5e11",
+      "season": 5,
+      "episode": 11,
+      "title": "Pups Save an Extreme Lunch",
+      "description": "Daring Danny X is harnessed over a canyon eating an Extreme Lunch when the wind blows him upside down.",
+      "airDate": "2018-03-30",
+      "streams": []
+    },
+    {
+      "id": "s5e12",
+      "season": 5,
+      "episode": 12,
+      "title": "Pups Save a Cat Burglar",
+      "description": "During Pie Swap Day in Adventure Bay, Humdinger sends Rocky Kitty to take one of Mr. Porter's delicious pies so he can join the contest.",
+      "airDate": "2018-03-30",
+      "streams": []
+    },
+    {
+      "id": "s5e13",
+      "season": 5,
+      "episode": 13,
+      "title": "Sea Patrol: Pups Save the Flying Diving Bell",
+      "description": "Francois and Cap'n Turbot learn an underwater volcano is going to erupt while Farmer Yumi and Mayor Goodway are scuba diving nearby.",
+      "airDate": "2018-04-20",
+      "streams": []
+    },
+    {
+      "id": "s5e14",
+      "season": 5,
+      "episode": 14,
+      "title": "Sea Patrol: Pups Save a Soggy Farm",
+      "description": "The pups investigate a flooded farm and discover that a storm drain has been blocked.",
+      "airDate": "2018-04-20",
+      "streams": []
+    },
+    {
+      "id": "s5e15",
+      "season": 5,
+      "episode": 15,
+      "title": "Pups Save a Bookmobile",
+      "description": "When Ms. Marjorie brings her bookmobile to Everest and the kids of the mountains, Maynard accidentally sets the van rolling and goes off on a wild ride.",
+      "airDate": "2018-05-01",
+      "streams": []
+    },
+    {
+      "id": "s5e16",
+      "season": 5,
+      "episode": 16,
+      "title": "Pups Save Heady Humdinger",
+      "description": "Mayor Humdinger carves his face into the cliffs.",
+      "airDate": "2018-05-01",
+      "streams": []
+    },
+    {
+      "id": "s5e17",
+      "season": 5,
+      "episode": 17,
+      "title": "Pups Save the Butterflies",
+      "description": "Chickaletta is stuck on a runaway drone and mysterious butterflies cause chaos all around Adventure Bay.",
+      "airDate": "2018-05-03",
+      "streams": []
+    },
+    {
+      "id": "s5e18",
+      "season": 5,
+      "episode": 18,
+      "title": "Pups Save an Underground Chicken",
+      "description": "Mayor Humdinger steals the statue of Chickaletta.",
+      "airDate": "2018-05-03",
+      "streams": []
+    },
+    {
+      "id": "s5e19",
+      "season": 5,
+      "episode": 19,
+      "title": "Sea Patrol: Pups Save their Pirated Sea Patroller",
+      "description": "Sid the Pirate and Arrby steal the ferris wheel. When the pups set out to bring it back to Adventure Bay, Sid comes up with a sneaky plan to steal the Sea Patroller.",
+      "airDate": "2018-05-25",
+      "streams": []
+    },
+    {
+      "id": "s5e20",
+      "season": 5,
+      "episode": 20,
+      "title": "Ultimate Rescue: Pups Save the Royal Kitties",
+      "description": "When the Royal Kitties are kidnapped on their way to Adventure Bay for a special visit, Ryder needs all the pups to help Chase investigate the case.",
+      "airDate": "2018-06-22",
+      "streams": []
+    },
+    {
+      "id": "s5e21",
+      "season": 5,
+      "episode": 21,
+      "title": "Pups Save the PawPaws",
+      "description": "Carlos and Tracker make PawPaw juice with the PAW Patrol when they find out Mayor Goodway and Chickaletta are in trouble.",
+      "airDate": "2018-06-28",
+      "streams": []
+    },
+    {
+      "id": "s5e22",
+      "season": 5,
+      "episode": 22,
+      "title": "Pups Save a Popped Top",
+      "description": "Farmer Al needs help saving his corn crop after the top of his silo gets knocked off.",
+      "airDate": "2018-06-28",
+      "streams": []
+    },
+    {
+      "id": "s5e23",
+      "season": 5,
+      "episode": 23,
+      "title": "Pups Save the Snowshoeing Goodways",
+      "description": "When Mayor Goodway and the twins are late getting back from snowshoeing, Jake and Everest call the PAW Patrol to search for them.",
+      "airDate": "2018-07-17",
+      "streams": []
+    },
+    {
+      "id": "s5e24",
+      "season": 5,
+      "episode": 24,
+      "title": "Pups Save a Duck Pond",
+      "description": "When water in the duck pond mysteriously drains out, it's up to the Paw Patrol to find out what's happening.",
+      "airDate": "2018-07-17",
+      "streams": []
+    },
+    {
+      "id": "s5e25",
+      "season": 5,
+      "episode": 25,
+      "title": "Sea Patrol: Pups Save Tilly Turbot",
+      "description": "The PAW Patrol must rescue Cap'n Turbot and Francois' Grandma Tilly after she rides off on a dolphin.",
+      "airDate": "2018-07-19",
+      "streams": []
+    },
+    {
+      "id": "s5e26",
+      "season": 5,
+      "episode": 26,
+      "title": "Pups Save an Upset Elephant",
+      "description": "Carlos and Tracker call the PAW Patrol to help solve the mystery of a rumbling sound that is upsetting the jungle elephants.",
+      "airDate": "2018-07-19",
+      "streams": []
+    },
+    {
+      "id": "s5e27",
+      "season": 5,
+      "episode": 27,
+      "title": "Ultimate Rescue: Pups Save the Tigers",
+      "description": "When searching for elusive rumble top tigers, the Turbots fall into a cave deep inside a volcano.",
+      "airDate": "2018-08-11",
+      "streams": []
+    },
+    {
+      "id": "s5e28",
+      "season": 5,
+      "episode": 28,
+      "title": "Rocky Saves Himself",
+      "description": "Rocky must rescue himself when he has been stranded on an island full of trash by Mayor Humdinger.",
+      "airDate": "2018-09-03",
+      "streams": []
+    },
+    {
+      "id": "s5e29",
+      "season": 5,
+      "episode": 29,
+      "title": "Pups and the Mystery of the Driverless Snow Cat",
+      "description": "Daring Danny's new remote control accidentally takes control of Everest's SnoCat and all the vehicles in Adventure Bay.",
+      "airDate": "2018-09-03",
+      "streams": []
+    },
+    {
+      "id": "s5e30",
+      "season": 5,
+      "episode": 30,
+      "title": "Ultimate Rescue: Pups Save the Movie Monster!",
+      "description": "Envious Mayor Humdinger tries to draw the Adventure Bay Monster Movie production to Foggy Bottom by commandeering the mechanical movie monster, but he can't control the fire-breathing robot.",
+      "airDate": "2018-09-21",
+      "streams": []
+    },
+    {
+      "id": "s5e31",
+      "season": 5,
+      "episode": 31,
+      "title": "Save the Trick-or-Treaters",
+      "description": "During Halloween in Adventure Bay, a mysterious kid in a giant spider costume takes all the treats from the trick-or-treaters.",
+      "airDate": "2018-10-08",
+      "streams": []
+    },
+    {
+      "id": "s5e32",
+      "season": 5,
+      "episode": 32,
+      "title": "Pups Save an Out of Control Mini Patrol",
+      "description": "Alex and his Mini-Patrol accidentally take off on Daring Danny's rocket bike.",
+      "airDate": "2018-10-08",
+      "streams": []
+    },
+    {
+      "id": "s5e33",
+      "season": 5,
+      "episode": 33,
+      "title": "Pups and the Werepuppy!",
+      "description": "When Rocky goes missing at Uncle Otis' cabin in the woods, the PAW Patrol needs to solve the mystery of the Werepuppy.",
+      "airDate": "2018-10-12",
+      "streams": []
+    },
+    {
+      "id": "s5e34",
+      "season": 5,
+      "episode": 34,
+      "title": "Pups Save a Sleepwalking Mayor",
+      "description": "On Cowboy Day at the Wingnuts Dude Ranch, Mayor Goodway braves the hazards of the ranch while sleepwalking.",
+      "airDate": "2018-10-12",
+      "streams": []
+    },
+    {
+      "id": "s5e35",
+      "season": 5,
+      "episode": 35,
+      "title": "Mission PAW: Pups Save a Royal Concert",
+      "description": "Luke Stars goes missing before his Royal Concert in Barkingburg, and Sweetie attempts to take over the event.",
+      "airDate": "2018-10-26",
+      "streams": []
+    },
+    {
+      "id": "s5e36",
+      "season": 5,
+      "episode": 36,
+      "title": "Mission PAW: Pups Save the Princess' Pals",
+      "description": "Animals overrun Barkingburg Castle while the Princess is away, forcing Ryder and the PAW Patrol to get them under control.",
+      "airDate": "2018-10-26",
+      "streams": []
+    },
+    {
+      "id": "s5e37",
+      "season": 5,
+      "episode": 37,
+      "title": "Pups Save a Cuckoo Clock",
+      "description": "Jake's family cuckoo clock slides down the mountainside with Chickaletta stuck inside.",
+      "airDate": "2018-11-16",
+      "streams": []
+    },
+    {
+      "id": "s5e38",
+      "season": 5,
+      "episode": 38,
+      "title": "Pups Save Ms. Marjorie's House",
+      "description": "Ryder calls on Everest to help the pups save the day.",
+      "airDate": "2018-11-16",
+      "streams": []
+    },
+    {
+      "id": "s5e39",
+      "season": 5,
+      "episode": 39,
+      "title": "Pups Save Thanksgiving",
+      "description": "When the bouncy turkey from the Thanksgiving feast at City Hall flies away with Mayor Humdinger and his kittens, the pups must save the day.",
+      "airDate": "2018-11-21",
+      "streams": []
+    },
+    {
+      "id": "s5e40",
+      "season": 5,
+      "episode": 40,
+      "title": "Pups Save a Windy Bay",
+      "description": "An extremely strong wind suddenly sweeps up all the surfers in the Adventure Bay Windsurfing Race",
+      "airDate": "2018-11-21",
+      "streams": []
+    },
+    {
+      "id": "s5e41",
+      "season": 5,
+      "episode": 41,
+      "title": "Ultimate Rescue: Pups Save a Swamp Monster",
+      "description": "When something goes wrong on the swamp tour, it's Zuma and his Ultimate Swamp Vehicle to the rescue.",
+      "airDate": "2018-11-30",
+      "streams": []
+    },
+    {
+      "id": "s5e42",
+      "season": 5,
+      "episode": 42,
+      "title": "Ultimate Rescue: Pups and the Hidden Golden Bones",
+      "description": "Everything is shaking and breaking beneath Adventure Bay, so Ryder needs Rocky to lead the pups on an Ultimate Fix-it Rescue.",
+      "airDate": "2018-11-30",
+      "streams": []
+    },
+    {
+      "id": "s5e43",
+      "season": 5,
+      "episode": 43,
+      "title": "Pups Save a Frozen Camp-Out",
+      "description": "A freak snowstorm hits while Alex and Mr. Porter are camping on a tropical island.",
+      "airDate": "2018-12-14",
+      "streams": []
+    },
+    {
+      "id": "s5e44",
+      "season": 5,
+      "episode": 44,
+      "title": "Pups Save the Fizzy Pickles",
+      "description": "Mr. Porter is delivering his famous fizzy pickles to people around town when a bumpy road shakes up the deliveries and causes the pickle juice to spill.",
+      "airDate": "2018-12-14",
+      "streams": []
+    },
+    {
+      "id": "s5e45",
+      "season": 5,
+      "episode": 45,
+      "title": "Pups Save a Pluck-o-matic",
+      "description": "Farmer Yumi's new Robo-Corn Plucker suddenly goes haywire, and Ryder and the Paw Patrol try to get it under control.",
+      "airDate": "2018-12-31",
+      "streams": []
+    },
+    {
+      "id": "s5e46",
+      "season": 5,
+      "episode": 46,
+      "title": "Pups Save a Mascot",
+      "description": "",
+      "airDate": "2018-12-31",
+      "streams": []
+    },
+    {
+      "id": "s5e47",
+      "season": 5,
+      "episode": 47,
+      "title": "Ultimate Rescue: Pups Save a Runaway Stargazer",
+      "description": "The PAW Patrol build an observatory for a coming comet.",
+      "airDate": "2019-01-21",
+      "streams": []
+    },
+    {
+      "id": "s5e48",
+      "season": 5,
+      "episode": 48,
+      "title": "Pups Save Ace's Birthday",
+      "description": "Rocky and the pups fix an old junk car for Ace Sorensen's birthday",
+      "airDate": "2019-01-25",
+      "streams": []
+    },
+    {
+      "id": "s5e49",
+      "season": 5,
+      "episode": 49,
+      "title": "Pups Save a Tower of Pizza",
+      "description": "Adventure Bay works hard to earn the record for having the world's highest tower of pizzas.",
+      "airDate": "2019-01-25",
+      "streams": []
+    },
+    {
+      "id": "s6e1",
+      "season": 6,
+      "episode": 1,
+      "title": "Pups Save the Jungle Penguins",
+      "description": "When an ice floe carrying three penguins lands in the jungle, the pups must get the birds back to their frosty home;",
+      "airDate": "2019-02-22",
+      "streams": []
+    },
+    {
+      "id": "s6e2",
+      "season": 6,
+      "episode": 2,
+      "title": "Pups Save a Freighter",
+      "description": "Daring Danny is locked out of the lighthouse Turbot left him to look after, with a freighter headed his way.",
+      "airDate": "2019-02-22",
+      "streams": []
+    },
+    {
+      "id": "s6e3",
+      "season": 6,
+      "episode": 3,
+      "title": "Ultimate Rescue: Pups Stop a Meltdown",
+      "description": "It's a hot day in Adventure Bay, and things are melting, and the pups will need a lot of fire-pup power to cool things down.",
+      "airDate": "2019-03-04",
+      "streams": []
+    },
+    {
+      "id": "s6e4",
+      "season": 6,
+      "episode": 4,
+      "title": "Ultimate Rescue: Pups and the Mystery of the Missing Cell Phones",
+      "description": "Cell phones are vanishing all over Adventure Bay, and the pups will need a lot of police power to solve this mystery.",
+      "airDate": "2019-03-04",
+      "streams": []
+    },
+    {
+      "id": "s6e5",
+      "season": 6,
+      "episode": 5,
+      "title": "Pups Save a Melon Festival",
+      "description": "Mayor Humdinger's plan to win the great melon contest goes off the rails when his \"melon\" bounces away and causes chaos all over town.",
+      "airDate": "2019-03-15",
+      "streams": []
+    },
+    {
+      "id": "s6e6",
+      "season": 6,
+      "episode": 6,
+      "title": "Pups Save a Cow",
+      "description": "Farmer Al's truck gets stuck on a broken bridge.",
+      "airDate": "2019-03-15",
+      "streams": []
+    },
+    {
+      "id": "s6e7",
+      "season": 6,
+      "episode": 7,
+      "title": "Ultimate Rescue: Pups Save the Mountain Climbers",
+      "description": "Cap'n Turbot, Francois, Mayor Goodway, and Daring Danny X fall into a canyon high up in the mountains",
+      "airDate": "2019-04-19",
+      "streams": []
+    },
+    {
+      "id": "s6e8",
+      "season": 6,
+      "episode": 8,
+      "title": "Ultimate Rescue: Pups Save Captain Gordy",
+      "description": "Rubble leads the pups into building a landing pad for a spaceship",
+      "airDate": "2019-04-19",
+      "streams": []
+    },
+    {
+      "id": "s6e9",
+      "season": 6,
+      "episode": 9,
+      "title": "Pups Save the Honey",
+      "description": "Mayor Humdinger steals Farmer Yumi's beehive to have honey for himself and his kittens.",
+      "airDate": "2019-04-26",
+      "streams": []
+    },
+    {
+      "id": "s6e10",
+      "season": 6,
+      "episode": 10,
+      "title": "Pups Save Mayor Goodway's Purse",
+      "description": "Seagulls carry Mayor Goodway's purse with her precious chicken, Chickaletta in it",
+      "airDate": "2019-04-26",
+      "streams": []
+    },
+    {
+      "id": "s6e11",
+      "season": 6,
+      "episode": 11,
+      "title": "Pups and the Stinky Bubble Trouble",
+      "description": "The PAW Patrol must figure out what is scaring the jungle animals away from their homes. Meanwhile, Mayor Humdinger tries to take over the Lookout while the PAW Patrol is in the jungle",
+      "airDate": "2019-05-03",
+      "streams": []
+    },
+    {
+      "id": "s6e12",
+      "season": 6,
+      "episode": 12,
+      "title": "Pups Save the Baby Ostriches",
+      "description": "New-born Baby ostriches mistake Robo-Dog for their father, Oscar, while the rest of the PAW Patrol tries to save the mother of the chicks",
+      "airDate": "2019-05-03",
+      "streams": []
+    },
+    {
+      "id": "s6e13",
+      "season": 6,
+      "episode": 13,
+      "title": "Pups Save Gustavo's Guitar",
+      "description": "Gustavo Goodway’s guitar is missing. The pups need to find it before tonight’s campfire concert!",
+      "airDate": "2019-05-27",
+      "streams": []
+    },
+    {
+      "id": "s6e14",
+      "season": 6,
+      "episode": 14,
+      "title": "Pups Save the Yoga Goats",
+      "description": "Farmer Yumi’s new Yoga Goat class is a hit, until her goats go missing! The PAW Patrol must find the goats and return them safely to Yumi’s farm.",
+      "airDate": "2019-05-27",
+      "streams": []
+    },
+    {
+      "id": "s6e15",
+      "season": 6,
+      "episode": 15,
+      "title": "Mighty Pups, Super Paws: When Super Kitties Attack",
+      "description": "The Kitty Catastrophe crew gets super powers, and now those little kittens are causing big problems all over town! It’ll take the Mighty Pups and their Super Paws to stop them and restore order to Adventure Bay!",
+      "airDate": "2019-06-28",
+      "streams": []
+    },
+    {
+      "id": "s6e16",
+      "season": 6,
+      "episode": 16,
+      "title": "Mighty Pups, Super Paws: Pups Meet the Mighty Twins",
+      "description": "Super-bandit Ladybird shrieks havoc in Adventure Bay taking all of the town’s treasures – including Mayor Goodway! The Mighty Pups team up with new super pals The Mighty Twins to save the day – and the Mayor - in this super heroic adventure!",
+      "airDate": "2019-07-26",
+      "streams": []
+    },
+    {
+      "id": "s6e17",
+      "season": 6,
+      "episode": 17,
+      "title": "Mighty Pups, Super Paws: Pups Save a Giant Chicken",
+      "description": "The Ladybird is back and Chickaletta has super powers! The Mighty Twins join the Mighty Pups to save a Giant Chicken and the town.",
+      "airDate": "2019-09-02",
+      "streams": []
+    },
+    {
+      "id": "s6e18",
+      "season": 6,
+      "episode": 18,
+      "title": "Mighty Pups, Super Paws: Pups Stop Harold's Deep Freeze",
+      "description": "The Mighty Pups have to stop Harold Humdinger before he puts Adventure Bay in a deep freeze so he can become mayor.",
+      "airDate": "2019-09-02",
+      "streams": []
+    },
+    {
+      "id": "s6e19",
+      "season": 6,
+      "episode": 19,
+      "title": "Pups Save Bedtime",
+      "description": "The Turbots are trapped somewhere in the jungle. They tried to call the PAW Patrol, but their phone cut out!",
+      "airDate": "2019-09-03",
+      "streams": []
+    },
+    {
+      "id": "s6e20",
+      "season": 6,
+      "episode": 20,
+      "title": "Pups Save Chickaletta's Egg",
+      "description": "Chickaletta has laid an egg, but it rolled away and is heading through town. The PAW Patrol has to catch it before it breaks!",
+      "airDate": "2019-09-03",
+      "streams": []
+    },
+    {
+      "id": "s6e21",
+      "season": 6,
+      "episode": 21,
+      "title": "Pups Save a Manatee",
+      "description": "Farmer Al and Farmer Yumi need help from the PAW Patrol to a get a manatee to the swamp!",
+      "airDate": "2019-09-04",
+      "streams": []
+    },
+    {
+      "id": "s6e22",
+      "season": 6,
+      "episode": 22,
+      "title": "Pups Save Breakfast",
+      "description": "Mr. Porter and Alex are in a sticky situation - they’re up to their ears in maple syrup! It’s up to the PAW Patrol to save the Porter’s and Breakfast!",
+      "airDate": "2019-09-04",
+      "streams": []
+    },
+    {
+      "id": "s6e23",
+      "season": 6,
+      "episode": 23,
+      "title": "Pups Save the Land Pirates",
+      "description": "Pirates Alex, Julia, Julius and Chick-ARR-letta, are sent sailing into the desert and get lost! It’s up to the PAW Patrol to save these Land pirates.",
+      "airDate": "2019-09-05",
+      "streams": []
+    },
+    {
+      "id": "s6e24",
+      "season": 6,
+      "episode": 24,
+      "title": "Pups Save the Birdwatching Turbots",
+      "description": "Cap’n Turbot and Francois chirp need help when a bird-watching contest leaves them up in the air",
+      "airDate": "2019-09-05",
+      "streams": []
+    },
+    {
+      "id": "s6e25",
+      "season": 6,
+      "episode": 25,
+      "title": "Pups Save a Bat Family",
+      "description": "A rockslide traps a Bat Family inside their cave, so the PAW Patrol has to free them! The bats search for a new home leads to problems in town though!",
+      "airDate": "2019-10-04",
+      "streams": []
+    },
+    {
+      "id": "s6e26",
+      "season": 6,
+      "episode": 26,
+      "title": "Pups Save a Mud Monster",
+      "description": "Snowboarders on Jake’s Mountain are stuck on a broken chair lift while a monster is on the loose!",
+      "airDate": "2019-10-04",
+      "streams": []
+    },
+    {
+      "id": "s6e27",
+      "season": 6,
+      "episode": 27,
+      "title": "Mighty Pups, Super Paws: Pups and the Big Twin Trick",
+      "description": "The Ladybird is up to her old tricks again, but this time the Mighty Twins have a super trick of their own!",
+      "airDate": "2019-10-11",
+      "streams": []
+    },
+    {
+      "id": "s6e28",
+      "season": 6,
+      "episode": 28,
+      "title": "Mighty Pups, Super Paws: Pups Save a Mega Mayor",
+      "description": "Mayor Humdinger finally gets super powers, and it’s a total cat-astrophe! The Mighty Pups are summoned to save the Mega Mayor from himself.",
+      "airDate": "2019-10-11",
+      "streams": []
+    },
+    {
+      "id": "s6e29",
+      "season": 6,
+      "episode": 29,
+      "title": "Pups Save a Freaky Pup-Day",
+      "description": "Chase and Chickaletta switch bodies and must learn to work together to return Cap'n Turbot's boat to the bay.",
+      "airDate": "2019-11-12",
+      "streams": []
+    },
+    {
+      "id": "s6e30",
+      "season": 6,
+      "episode": 30,
+      "title": "Pups Save a Runaway Mayor",
+      "description": "Mayor Humdinger creates robotic pants to cheat at the Most Amazing Athlete contest. They go haywire so the pups have to save a runaway mayor.",
+      "airDate": "2019-11-12",
+      "streams": []
+    },
+    {
+      "id": "s6e31",
+      "season": 6,
+      "episode": 31,
+      "title": "Pups Save the Bears",
+      "description": "Bears are asleep all over town! The PAW Patrol must work quietly to save the Bears and return them to their cave.",
+      "airDate": "2019-11-13",
+      "streams": []
+    },
+    {
+      "id": "s6e32",
+      "season": 6,
+      "episode": 32,
+      "title": "Pups Save a Farmerless Farm",
+      "description": "With the farmers out of town, Mayor Goodway calls the Paw Patrol to wrangle the animals and control the chaos on the farmerless farm.",
+      "airDate": "2019-11-13",
+      "streams": []
+    },
+    {
+      "id": "s6e33",
+      "season": 6,
+      "episode": 33,
+      "title": "Pups Save the Squirrels",
+      "description": "The PAW Patrol is on a roll when squirrels stash acorns in Alex's treehouse, causing it to fall onto Daring Danny's skateboard!",
+      "airDate": "2019-11-14",
+      "streams": []
+    },
+    {
+      "id": "s6e34",
+      "season": 6,
+      "episode": 34,
+      "title": "Pups Save a Roo",
+      "description": "A joey is separated from its mama, and now the pups must save a roo and the day!",
+      "airDate": "2019-11-14",
+      "streams": []
+    },
+    {
+      "id": "s6e35",
+      "season": 6,
+      "episode": 35,
+      "title": "Pups Save the Balloon Pups",
+      "description": "Giant balloons have floated away from a parade and it’s up to the pups to save the pup balloons, the parade and Mayor Humdinger!",
+      "airDate": "2019-11-27",
+      "streams": []
+    },
+    {
+      "id": "s6e36",
+      "season": 6,
+      "episode": 36,
+      "title": "Pups Save the Spider Spies",
+      "description": "The Turbot cousins try to spot a rare spider, but get stuck in its web. It’s up to the PAW Patrol save the spider spies!",
+      "airDate": "2019-11-27",
+      "streams": []
+    },
+    {
+      "id": "s6e37",
+      "season": 6,
+      "episode": 37,
+      "title": "Pups Save a White Wolf",
+      "description": "After a sudden snow storm, Everest cares for a white wolf cub as they work together to help the PAW Patrol find them.",
+      "airDate": "2019-12-20",
+      "streams": []
+    },
+    {
+      "id": "s6e38",
+      "season": 6,
+      "episode": 38,
+      "title": "Pups Save a Wrong Way Explorer",
+      "description": "Famous wrong-way explorer, Travelling Travis, accidentally takes Chickaletta to the North Pole where they run into... crocodiles?",
+      "airDate": "2019-12-20",
+      "streams": []
+    },
+    {
+      "id": "s6e39",
+      "season": 6,
+      "episode": 39,
+      "title": "Mighty Pups, Charged Up: Mighty Pups vs. the Copycat",
+      "description": "The Mighty Pups get Charged Up to take on new super-baddie, The Copycat. It’ll take all new powers and gear to take down their most formidable foe to date.",
+      "airDate": "2020-01-20",
+      "streams": []
+    },
+    {
+      "id": "s6e40",
+      "season": 6,
+      "episode": 40,
+      "title": "Pups Save a Humsquatch",
+      "description": "Travelling Travis yelps for help when he finds a mysterious creature in trouble. The PAW Patrol heads to Foggy Bottom to save a Humsquatch!",
+      "airDate": "2020-01-27",
+      "streams": []
+    },
+    {
+      "id": "s6e41",
+      "season": 6,
+      "episode": 41,
+      "title": "Pups Stop a Far Flung Flying Disc",
+      "description": "When a robo-toy causes mayhem, Ryder knows just who to call to save the far flung flying disc!",
+      "airDate": "2020-01-27",
+      "streams": []
+    },
+    {
+      "id": "s6e42",
+      "season": 6,
+      "episode": 42,
+      "title": "Mighty Pups, Charged Up: Pups Stop a Big Bad Bot",
+      "description": "When Harold Humdinger uses a GIANT ROBOT to take the buildings of Adventure Bay and make his OWN town, the Mighty Pups must save the day!",
+      "airDate": "2020-02-17",
+      "streams": []
+    },
+    {
+      "id": "s6e43",
+      "season": 6,
+      "episode": 43,
+      "title": "Mighty Pups, Charged Up: Pups vs. the Dome",
+      "description": "The COPYCAT is BACK and Adventure Bay needs a Mighty Rescue when he traps the entire town under a GIANT DOME!",
+      "airDate": "2020-02-17",
+      "streams": []
+    },
+    {
+      "id": "s6e44",
+      "season": 6,
+      "episode": 44,
+      "title": "Pups Rescue a Rescuer",
+      "description": "Mayor Goodway tries to help the PAW Patrol rescue Danny, but the pups end up having to rescue the rescuer, too!",
+      "airDate": "2020-02-28",
+      "streams": []
+    },
+    {
+      "id": "s6e45",
+      "season": 6,
+      "episode": 45,
+      "title": "Pups Save the Phantom of the Frog Pond",
+      "description": "A spooky sound forces frogs from their home. The pups must bring them home and solve the mystery of the frog pond phantom.",
+      "airDate": "2020-02-28",
+      "streams": []
+    },
+    {
+      "id": "s6e46",
+      "season": 6,
+      "episode": 46,
+      "title": "Pups Save a Tour Bus",
+      "description": "The pups have to stop Mayor Humdinger's runaway tour bus after the kitty tastrophe crew hijacks the bus.",
+      "airDate": "2020-03-13",
+      "streams": []
+    },
+    {
+      "id": "s6e47",
+      "season": 6,
+      "episode": 47,
+      "title": "Pups Save Midnight at the Museum",
+      "description": "When Alex and the mini patrol get lost during a sleepover with Mayor Goodway and the twins at the Museum, the pups must come to the rescue.",
+      "airDate": "2020-03-13",
+      "streams": []
+    },
+    {
+      "id": "s7e1",
+      "season": 7,
+      "episode": 1,
+      "title": "Mighty Pups, Charged Up: Pups Stop a Humdinger Horde",
+      "description": "The Mighty Pups have to save the day when Harold makes a cloning machine and Mayor Humdinger clones five versions of himself, as they take Katie's Pet Parlor to Foggy Bottom, with Katie and Cali inside.",
+      "airDate": "2020-03-27",
+      "streams": []
+    },
+    {
+      "id": "s7e2",
+      "season": 7,
+      "episode": 2,
+      "title": "Mighty Pups, Charged Up: Pups Save a Mighty Lighthouse",
+      "description": "Harold uses his superpowers to turn Cap'n Turbot's lighthouse into a rocket ship to fly to the moon, but the pups make him go underwater instead.",
+      "airDate": "2020-03-27",
+      "streams": []
+    },
+    {
+      "id": "s7e3",
+      "season": 7,
+      "episode": 3,
+      "title": "Mighty Pups Charged Up: Pups vs. Three Super Baddies",
+      "description": "Tired of Ryder and the PAW Patrol always winning up to the top, Harold Humdinger, Ladybird and the Copycat team up and uses Mayor Humdinger's idea to take the pups' meteor to get more powers, causing the Mighty Pups to lose their powers. With the help from Tuck and Ella, the Mighty Pups use a piece of the meteor to stop the three baddies and save the meteor.",
+      "airDate": "2020-04-17",
+      "streams": []
+    },
+    {
+      "id": "s7e4",
+      "season": 7,
+      "episode": 4,
+      "title": "Pups Save an Antarctic Martian",
+      "description": "Travelling Travis thinks he is on Mars when he lands in Antarctica, due to his helmet cover being red.",
+      "airDate": "2020-05-08",
+      "streams": []
+    },
+    {
+      "id": "s7e5",
+      "season": 7,
+      "episode": 5,
+      "title": "Pups Save the Maze Explorers",
+      "description": "While visiting Carlos and Tracker in the jungle with the pups, Mr. Porter and Alex get trapped inside a huge maze while going on a hike.",
+      "airDate": "2020-05-08",
+      "streams": []
+    },
+    {
+      "id": "s7e6",
+      "season": 7,
+      "episode": 6,
+      "title": "Pups Save a Waiter Bot",
+      "description": "Mr. Porter gets a new robot that helps him around the café, but it soon malfunctions and cleans things all over town.",
+      "airDate": "2020-06-05",
+      "streams": []
+    },
+    {
+      "id": "s7e7",
+      "season": 7,
+      "episode": 7,
+      "title": "Pups Stop a Pie-Clone",
+      "description": "Mayor Humdinger tries to get pies faster by cooling them down, only to make them fly in a tornado.",
+      "airDate": "2020-06-05",
+      "streams": []
+    },
+    {
+      "id": "s7e8",
+      "season": 7,
+      "episode": 8,
+      "title": "Dino Rescue: Pups and the Lost Dino Eggs",
+      "description": "The pups go into a tunnel in Jake's mountain to go into a world of dinosaurs, where they meet a dino expert pup named Rex and his owners, Dr. Turbot and her daughter, Taylor Turbot. However, Mayor Humdinger has followed the PAW Patrol into the world and decides to take dino eggs back to Foggy Bottom. It is up to the pups to get the baby dinosaurs back to their mothers on a Dino Rescue.",
+      "airDate": "2020-06-26",
+      "streams": []
+    },
+    {
+      "id": "s7e9",
+      "season": 7,
+      "episode": 9,
+      "title": "Pups Save a Big Bad Bird Crew",
+      "description": "The pups must save Chickaletta after she gets lost along with Myrna the Mynha bird.",
+      "airDate": "2020-07-10",
+      "streams": []
+    },
+    {
+      "id": "s7e10",
+      "season": 7,
+      "episode": 10,
+      "title": "Pups Save a Soapbox Derby",
+      "description": "Mayor Humdinger poses as a kid to participate in a \"kids only\" soapbox derby.",
+      "airDate": "2020-07-10",
+      "streams": []
+    },
+    {
+      "id": "s7e11",
+      "season": 7,
+      "episode": 11,
+      "title": "Dino Rescue: Pups Save a Pterodactyl",
+      "description": "Rex, Taylor Turbot, and the Baby Brachiosaurus, whose name was Benny, call for the PAW Patrol to help Maverick the daredevil pterodactyl after his wing gets injured by a rockslide. After being rescued, Dr. Turbot gives Maverick a brace to help him fly. But a fountain splashed on him and then he bumped into a tree, causing him to spin out of control.",
+      "airDate": "2020-07-24",
+      "streams": []
+    },
+    {
+      "id": "s7e12",
+      "season": 7,
+      "episode": 12,
+      "title": "Dino Rescue: Pups and the Big Rumble",
+      "description": "The pups must get the dinosaurs away from an active volcano in the Dino Wilds before it erupts.",
+      "airDate": "2020-08-07",
+      "streams": []
+    },
+    {
+      "id": "s7e13",
+      "season": 7,
+      "episode": 13,
+      "title": "Pups Save the Skydivers",
+      "description": "Mayor Goodway and Farmer Al end up getting stranded up a ledge of a canyon after skydiving from the air and are trapped by a mountain lion and it's cubs.",
+      "airDate": "2020-08-21",
+      "streams": []
+    },
+    {
+      "id": "s7e14",
+      "season": 7,
+      "episode": 14,
+      "title": "Pups Save the Cupcakes",
+      "description": "Cap'n Turbot accidentally takes Alex's cupcakes for school instead of fish treats for Wally and Walinda.",
+      "airDate": "2020-08-21",
+      "streams": []
+    },
+    {
+      "id": "s7e15",
+      "season": 7,
+      "episode": 15,
+      "title": "Dino Rescue: Pups Save a Hum-Dino",
+      "description": "Mayor Humdinger takes his kitties to the Dino Wilds for some dino acting lessons, but instead finds himself on top of a runaway Brachiosaurus bound for Adventure Bay! Now it's up to the pups to save the town before the Dino stomps all over it!",
+      "airDate": "2020-09-07",
+      "streams": []
+    },
+    {
+      "id": "s7e16",
+      "season": 7,
+      "episode": 16,
+      "title": "Ultimate Rescue: Pups Save the Pupmobiles",
+      "description": "Sid Swashbuckle and his pirate pup Arrby steal all of the pups' vehicles (except for Chase's) to steal the Key to the City, which opens every door in Adventure Bay. Since Chase's vehicle was not stolen by Sid and Arrby, the pups work together in an Ultimate police rescue mission to recover the stolen items.",
+      "airDate": "2020-10-09",
+      "streams": []
+    },
+    {
+      "id": "s7e17",
+      "season": 7,
+      "episode": 17,
+      "title": "Pups Save a Lost Gold Miner",
+      "description": "Uncle Otis and Tracker accidentally get into a runaway mine cart in a mine in the jungle, and the pups must save them before they crash.",
+      "airDate": "2020-10-16",
+      "streams": []
+    },
+    {
+      "id": "s7e18",
+      "season": 7,
+      "episode": 18,
+      "title": "Pups Save Uncle Otis from His Cabin",
+      "description": "Mr. Wingnut puts in a \"Smart Home 3000\" in Uncle Otis' cabin, but they end up getting trapped inside after it malfunctions.",
+      "airDate": "2020-10-16",
+      "streams": []
+    },
+    {
+      "id": "s7e19",
+      "season": 7,
+      "episode": 19,
+      "title": "Pups Save a Rocket Roller Skater",
+      "description": "A mix-up delivery leads to Ms. Marjorie and Danny speeding out of control in Adventure Bay. Now the pups must rescue them.",
+      "airDate": "2020-10-23",
+      "streams": []
+    },
+    {
+      "id": "s7e20",
+      "season": 7,
+      "episode": 20,
+      "title": "Pups Save Ryder's Surprise",
+      "description": "Ryder's present ends up in the jungle and Carlos is trapped in a Jungle Gym. It's up to the pups to save the present and Carlos.",
+      "airDate": "2020-10-23",
+      "streams": []
+    },
+    {
+      "id": "s7e21",
+      "season": 7,
+      "episode": 21,
+      "title": "Pups Save Election Day",
+      "description": "When Mayor Humdinger runs for mayor of Adventure Bay, his Mayor Mobile runs out of control, the PAW Patrol have to save the day!",
+      "airDate": "2020-10-30",
+      "streams": []
+    },
+    {
+      "id": "s7e22",
+      "season": 7,
+      "episode": 22,
+      "title": "Pups Save the Bubble Monkeys",
+      "description": "Ryder and the pups visit Tracker and Carlos in the jungle, a group of monkeys find themselves in sticky bubble trouble!",
+      "airDate": "2020-10-30",
+      "streams": []
+    },
+    {
+      "id": "s7e23",
+      "season": 7,
+      "episode": 23,
+      "title": "Pups Saves the Chalk Art",
+      "description": "The Mini Patrol and the Pups race to save a mural before it rains.",
+      "airDate": "2020-11-06",
+      "streams": []
+    },
+    {
+      "id": "s7e24",
+      "season": 7,
+      "episode": 24,
+      "title": "Pups Save the Hot Potato",
+      "description": "Farmer Al and Yumi discover their garden is full of holes and their one-of-a-kind potato is missing.",
+      "airDate": "2020-11-06",
+      "streams": []
+    },
+    {
+      "id": "s7e25",
+      "season": 7,
+      "episode": 25,
+      "title": "Dino Rescue: Pups Save a Sore Dino",
+      "description": "In the Dino Wilds, Marshall performs some Dino dentistry with the help of an ancient geyser and his fellow Dino Pup Pals.",
+      "airDate": "2020-11-13",
+      "streams": []
+    },
+    {
+      "id": "s7e26",
+      "season": 7,
+      "episode": 26,
+      "title": "Dino Rescue: Pups Save the Triceratops Tag-Alongs",
+      "description": "Francois and Cap'n Turbot are in the Dino Wilds for an adventure. But a sightseeing expedition quickly turns into a wild dino ride!",
+      "airDate": "2020-11-13",
+      "streams": []
+    },
+    {
+      "id": "s7e27",
+      "season": 7,
+      "episode": 27,
+      "title": "Pups Save a Bah Humdinger",
+      "description": "Mayor Humdinger is being very naughty on Christmas Eve, and it's up to the PAW Patrol to help Santa and save Christmas.",
+      "airDate": "2020-11-20",
+      "streams": []
+    },
+    {
+      "id": "s7e28",
+      "season": 7,
+      "episode": 28,
+      "title": "Pups Save the Marooned Mayors",
+      "description": "While out ice fishing in the North Country, Mayor Goodway, Humdinger, along with Chickaletta, get stuck in an ice crevasse.",
+      "airDate": "2020-12-11",
+      "streams": []
+    },
+    {
+      "id": "s7e29",
+      "season": 7,
+      "episode": 29,
+      "title": "Pups Save the Game Show",
+      "description": "The Wingnuts' farm plays host to a rootin' tootin' game show hosted by Cowgirl Beryl!",
+      "airDate": "2020-12-11",
+      "streams": []
+    },
+    {
+      "id": "s7e30",
+      "season": 7,
+      "episode": 30,
+      "title": "Moto Pups: Pups vs. the Ruff-Ruff Pack",
+      "description": "The Motorcycle Stunt Show comes to town - bringing famed stunt cyclist Wild Cat, and the trouble-making cyclists, the Ruff-Ruff Pack. Wild Cat joins the PAW Patrol to help stop the baddies from trashing the town!",
+      "airDate": "2021-01-15",
+      "streams": []
+    },
+    {
+      "id": "s7e31",
+      "season": 7,
+      "episode": 31,
+      "title": "Pups Save a Trash-Dinger",
+      "description": "Mayor Humdinger's trash-compacting truck is messing up the beach. It's up to Rocky's new Re-Use It Truck to help save a rescue!",
+      "airDate": "2021-02-05",
+      "streams": []
+    },
+    {
+      "id": "s7e32",
+      "season": 7,
+      "episode": 32,
+      "title": "Pups Save the Royal Armor",
+      "description": "Gifts for the Princess have been scattered all over town. It's up to Rocky's Re-Use It Truck to put her gifts back together!",
+      "airDate": "2021-02-05",
+      "streams": []
+    },
+    {
+      "id": "s7e33",
+      "season": 7,
+      "episode": 33,
+      "title": "Moto Pups: Pups Save the Donuts",
+      "description": "The Ruff-Ruff Pack steals Mr. Porter's Mini-Donut Maker, the Moto-pups set off to get the machine back in one piece.",
+      "airDate": "2021-02-19",
+      "streams": []
+    },
+    {
+      "id": "s7e34",
+      "season": 7,
+      "episode": 34,
+      "title": "Moto Pups: Pups Save the Kitties",
+      "description": "The Ruff-Ruff Pack takes over Humdinger's lair and run off with his kitties. Now the Moto Pups and Wild Cat must rescue Mayor Humdinger's precious felines.",
+      "airDate": "2021-02-19",
+      "streams": []
+    },
+    {
+      "id": "s7e35",
+      "season": 7,
+      "episode": 35,
+      "title": "Ultimate Rescue: Pups Stop a Junk-Monster",
+      "description": "When Wingnut's junk pile and Oscar go missing at the same time, Chase and team are called in to solve the mystery.",
+      "airDate": "2021-02-26",
+      "streams": []
+    },
+    {
+      "id": "s7e36",
+      "season": 7,
+      "episode": 36,
+      "title": "Pups Save the Whale Pod",
+      "description": "When Francois accidentally crashes his diving bell, the PAW Patrol must rescue him, a Pupfish, and a pod of whales.",
+      "airDate": "2021-02-26",
+      "streams": []
+    },
+    {
+      "id": "s7e37",
+      "season": 7,
+      "episode": 37,
+      "title": "Pups Save Queen Cluck-Cluck",
+      "description": "Mayor Goodway dreams she's travelled to the mysterious Cluck Cluck Island-a very strange land where Chickaletta is royalty! Now it's up to the pups to save Chickaletta from her fowl new fans.",
+      "airDate": "2021-03-12",
+      "streams": []
+    },
+    {
+      "id": "s7e38",
+      "season": 7,
+      "episode": 38,
+      "title": "Pups Save a Desert Flounder",
+      "description": "Traveling Travis's balloon gets caught on the Flounder, Travis and Cap'n Turbot wind up on a wayward airborne cruise all the way out into the desert.",
+      "airDate": "2021-03-12",
+      "streams": []
+    },
+    {
+      "id": "s7e39",
+      "season": 7,
+      "episode": 39,
+      "title": "Moto Pups: Pups Save a Moto Mayor",
+      "description": "Mayor Goodway thinks she can change the Ruff-Ruff pack's naughty ways by pretending to be a \"bad\" biker and becoming part of their gang, but when Gasket puts the Mayor through a battery of tough tests, it's up to the Moto Pups to rescue her.",
+      "airDate": "2021-03-19",
+      "streams": []
+    },
+    {
+      "id": "s7e40",
+      "season": 7,
+      "episode": 40,
+      "title": "Pups Save a Sweet Mayor",
+      "description": "Encased in a huge chocolate bunny to steal a gold egg that the Princess of Barkingburg sent to Mayor Goodway for the Easter festival, Mayor Humdinger is carried away by hungry raccoons and ends up being saved by Ryder and the pups.",
+      "airDate": "2021-04-02",
+      "streams": []
+    },
+    {
+      "id": "s7e41",
+      "season": 7,
+      "episode": 41,
+      "title": "Pups Save a Magic Trick",
+      "description": "When a magic trick goes awry from Wendini the magician, the Adventure Bay Easter Festival is overrun by wild bunnies.",
+      "airDate": "2021-04-02",
+      "streams": []
+    },
+    {
+      "id": "s7e42",
+      "season": 7,
+      "episode": 42,
+      "title": "Moto Pup: Pup Save a Sneezy Chase",
+      "description": "The Moto Pups must rescue Chase from his cat allergies and the Ruff-Ruff Pack stranding him on a desert.",
+      "airDate": "2021-04-16",
+      "streams": []
+    },
+    {
+      "id": "s7e43",
+      "season": 7,
+      "episode": 43,
+      "title": "Moto Pups: Rescue at Twisty Top Mesa",
+      "description": "The Moto Pups must rescue the Ruff-Ruff Pack on a bus off the Twisty Top Mesa.",
+      "airDate": "2021-04-16",
+      "streams": []
+    },
+    {
+      "id": "s7e44",
+      "season": 7,
+      "episode": 44,
+      "title": "Pups Save Little Hairy",
+      "description": "Big Hairy's little brother falls into a hole and Tracker gets carried away by Big Hairy. It's time for a Jungle Rescue!",
+      "airDate": "2021-04-23",
+      "streams": []
+    },
+    {
+      "id": "s7e45",
+      "season": 7,
+      "episode": 45,
+      "title": "Pups Save a Kooky Climber",
+      "description": "Daring Danny X tries extreme rock climbing with Ace Sorensen. It's up to the PAW Patrol to rescue the extreme duo.",
+      "airDate": "2021-04-23",
+      "streams": []
+    },
+    {
+      "id": "s7e46",
+      "season": 7,
+      "episode": 46,
+      "title": "Pups Save Thundermouth",
+      "description": "A sound from the jungle scares a mother and baby elephant away, and the pups must figure out where the sound is coming from.",
+      "airDate": "2021-05-07",
+      "streams": []
+    },
+    {
+      "id": "s7e47",
+      "season": 7,
+      "episode": 47,
+      "title": "Pups Save a Class Pet",
+      "description": "The PAW Patrol helps Mayor Goodway get a hamster back to the city hall before Julia and Julius realize Mayor Goodwhiskers is missing.",
+      "airDate": "2021-05-07",
+      "streams": []
+    },
+    {
+      "id": "s8e1",
+      "season": 8,
+      "episode": 1,
+      "title": "Pups Save a Runaway Rooster",
+      "description": "Chickaletta and Roosterio run away from a chicken show and get stuck on top of a runaway drone.",
+      "airDate": "2021-05-28",
+      "streams": []
+    },
+    {
+      "id": "s8e2",
+      "season": 8,
+      "episode": 2,
+      "title": "Pups Save a Snowbound Cow",
+      "description": "When Bettina wanders up Jake's mountain and gets caught in a snowstorm, it's up to the PAW Patrol to bring her safely down.",
+      "airDate": "2021-05-28",
+      "streams": []
+    },
+    {
+      "id": "s8e3",
+      "season": 8,
+      "episode": 3,
+      "title": "Sea Patrol: Pups Save a Water Walker",
+      "description": "Mayor Humdinger swipes Francois' water-walking shoes and ends up trapped in a pit-like turtle nest.",
+      "airDate": "2021-06-18",
+      "streams": []
+    },
+    {
+      "id": "s8e4",
+      "season": 8,
+      "episode": 4,
+      "title": "Sea Patrol: Pups Save a Windsurfer",
+      "description": "A long lost letter inspires Ms. Marjorie to visit an old surfing buddy, The pups spring into action when a nearby volcano erupts.",
+      "airDate": "2021-06-18",
+      "streams": []
+    },
+    {
+      "id": "s8e5",
+      "season": 8,
+      "episode": 5,
+      "title": "Pups Save a Rubble-Double",
+      "description": "Rubble dreams that he's been taken aboard a spaceship and meets his alien double. When the ship crashes on an alien planet, he needs help from Ryder and the rest of the pups.",
+      "airDate": "2021-06-25",
+      "streams": []
+    },
+    {
+      "id": "s8e6",
+      "season": 8,
+      "episode": 6,
+      "title": "Pups Save a Clown",
+      "description": "The pups have to save Mayor Humdinger and his kittens when they mess around with Blinky the Clown's tiny clown car.",
+      "airDate": "2021-06-25",
+      "streams": []
+    },
+    {
+      "id": "s8e7",
+      "season": 8,
+      "episode": 7,
+      "title": "Ultimate Rescue: Pups Save the Opening Ceremonies",
+      "description": "Marshall leads the pups when an underground fire threatens the opening ceremonies in this Ultimate Fire Rescue.",
+      "airDate": "2021-07-23",
+      "streams": []
+    },
+    {
+      "id": "s8e8",
+      "season": 8,
+      "episode": 8,
+      "title": "Ultimate Rescue: Pups Save the Adventure Bay Games",
+      "description": "Chase and his police-pups must find the missing medals to save the Adventure Bay Games in this Ultimate Police Rescue.",
+      "airDate": "2021-07-23",
+      "streams": []
+    },
+    {
+      "id": "s8e9",
+      "season": 8,
+      "episode": 9,
+      "title": "Pups Save the Mustache",
+      "description": "The Pups must find Mayor Humdinger's moustache after he accidentally shaves it off before it's about to be on the cover of a magazine.",
+      "airDate": "2021-07-30",
+      "streams": []
+    },
+    {
+      "id": "s8e10",
+      "season": 8,
+      "episode": 10,
+      "title": "Pups Save the Funhouse",
+      "description": "",
+      "airDate": "2021-07-30",
+      "streams": []
+    },
+    {
+      "id": "s8e11",
+      "season": 8,
+      "episode": 11,
+      "title": "Pups vs. a Neon Humdinger",
+      "description": "When Mayor Humdinger's giant neon sign of himself gets loose, the Paw Patrol must stop it from rolling through town.",
+      "airDate": "2021-08-06",
+      "streams": []
+    },
+    {
+      "id": "s8e12",
+      "season": 8,
+      "episode": 12,
+      "title": "Pups Save a Royal Painting",
+      "description": "The Paw Patrol races to stop Mayor Humdinger's gigantic neon sign from rolling through town. The Paw Patrol goes to work to recover the Princess's royal portrait stolen by Sweetie.",
+      "airDate": "2021-08-06",
+      "streams": []
+    },
+    {
+      "id": "s8e13",
+      "season": 8,
+      "episode": 13,
+      "title": "Pups and Katie Stop the Barking Kitty Crew",
+      "description": "When Mayor Humdinger disrupts Adventure Bay with his \"barking\" cats, the pups must save the town. Then, Cap'n Turbot loses his glasses and creates chaos in his path. It's up to the PAW Patrol to save him.",
+      "airDate": "2021-08-13",
+      "streams": []
+    },
+    {
+      "id": "s8e14",
+      "season": 8,
+      "episode": 14,
+      "title": "Pups Save the Glasses",
+      "description": "",
+      "airDate": "2021-08-13",
+      "streams": []
+    },
+    {
+      "id": "s8e15",
+      "season": 8,
+      "episode": 15,
+      "title": "Pups Stop the Cheetah",
+      "description": "When the Cheetah swipes the PAW Patroller to fulfill her nefarious plan to destroy the jungle and build the cheating-est racetrack ever, the PAW Patrol must get a brand new vehicle and stop her!",
+      "airDate": "2021-09-10",
+      "streams": []
+    },
+    {
+      "id": "s8e16",
+      "season": 8,
+      "episode": 16,
+      "title": "Pups Save a Show Jumper",
+      "description": "When Winnie Winnington and her truck gets stuck in the swamp while Winnie looks for a frog to enter in a frog jumping contest, Ryder and the pups must rescue her.",
+      "airDate": "2021-09-24",
+      "streams": []
+    },
+    {
+      "id": "s8e17",
+      "season": 8,
+      "episode": 17,
+      "title": "Pups Save the Salmon",
+      "description": "When Alex gets carried away on a beaver's house while on a wildwood walk with Julia, Julius and Cap'n Turbot, the PAW Patrol must rescue him and the salmon as well!",
+      "airDate": "2021-09-24",
+      "streams": []
+    },
+    {
+      "id": "s8e18",
+      "season": 8,
+      "episode": 18,
+      "title": "Pups Save the Hiding Elephants",
+      "description": "The elephants become trapped in the Monkey Temple after a bee frightens them away from their watering hole. Can the PAW Patrol rescue the elephants?",
+      "airDate": "2021-10-15",
+      "streams": []
+    },
+    {
+      "id": "s8e19",
+      "season": 8,
+      "episode": 19,
+      "title": "Pups Save a Yodeler",
+      "description": "When Mr. Wingnut runs away from wolves that are attracted to his yodeling, he ends up trapped in a canyon. The PAW Patrol has to hurry to save him.",
+      "airDate": "2021-10-15",
+      "streams": []
+    },
+    {
+      "id": "s8e20",
+      "season": 8,
+      "episode": 20,
+      "title": "Pups vs. Ouchy Paws",
+      "description": "Sid Swashbuckle and Arrby pretend to be a legendary ghost known as Ouchy Paws so that he can take Danny's new skateboard, and it's up to the PAW Patrol to stop them from taking it before it's too late.",
+      "airDate": "2021-10-22",
+      "streams": []
+    },
+    {
+      "id": "s8e21",
+      "season": 8,
+      "episode": 21,
+      "title": "Pups Save a Glow-in-the-Dark Party",
+      "description": "Ryder and the pups set off to save Cap’n Turbot, Mr. Porter, Alex, Katie, Cali, Little Hootie, and Mayor Humdinger from the alien boy's space bubbles so that they can attend Mayor Goodway's glow-in-the-dark party.",
+      "airDate": "2021-10-22",
+      "streams": []
+    },
+    {
+      "id": "s8e22",
+      "season": 8,
+      "episode": 22,
+      "title": "Pups Stop a Super Shaker",
+      "description": "Farmer Al's harvest machine goes haywire and shakes up Adventure Bay, even threatening to rock the Lookout off its foundation.",
+      "airDate": "2021-11-05",
+      "streams": []
+    },
+    {
+      "id": "s8e23",
+      "season": 8,
+      "episode": 23,
+      "title": "Pups Save a Flying Farmhouse",
+      "description": "Farmer Al has a wild dream that the PAW Patrol must rescue him and Farmer Yumi when his animals start acting like humans.",
+      "airDate": "2021-11-05",
+      "streams": []
+    },
+    {
+      "id": "s8e24",
+      "season": 8,
+      "episode": 24,
+      "title": "Pups Save the Dizzy Dust Express",
+      "description": "When the Dizzy Dust Express appears with no one aboard, the PAW Patrol must stop the runaway train and find the missing passengers.",
+      "airDate": "2021-11-19",
+      "streams": []
+    },
+    {
+      "id": "s8e25",
+      "season": 8,
+      "episode": 25,
+      "title": "Pups Save the Treetop Trekkers",
+      "description": "Mayor Goodway, Tilly Turbot and Ms. Marjorie's jungle zip-lining adventure becomes a tragedy, when they get stuck on the treetops, and it's up to the PAW Patrol to rescue them.",
+      "airDate": "2021-11-19",
+      "streams": []
+    },
+    {
+      "id": "s8e26",
+      "season": 8,
+      "episode": 26,
+      "title": "Pups Save the Treasure Cruise",
+      "description": "Mayor Humdinger tricks Mayor Goodway, her uncle Otis, Mr. Porter, and Alex to sail icy waters in search of an Antarctic treasure, but they need the PAW Patrol when they get stranded on shore.",
+      "airDate": "2021-12-03",
+      "streams": []
+    },
+    {
+      "id": "s8e27",
+      "season": 8,
+      "episode": 27,
+      "title": "Pups Save Rocket Ryder",
+      "description": "The pups need to rescue Ryder and Alex when they get out of control on a rocket-powered ATV.",
+      "airDate": "2021-12-03",
+      "streams": []
+    },
+    {
+      "id": "s8e28",
+      "season": 8,
+      "episode": 28,
+      "title": "Rescue Knights: Quest for Dragon's Tooth",
+      "description": "When Ryder and the pups are knighted by the Princess of Barkingburg, they're put to the test when a disgruntled ex-Knight named Claw gains control of a dragon called Sparks and attacks the castle.",
+      "airDate": "2022-01-21",
+      "streams": []
+    },
+    {
+      "id": "s8e29",
+      "season": 8,
+      "episode": 29,
+      "title": "Rescue Knights: Pups Break the Ice",
+      "description": "The Rescue Knights must warm up Barkingburg and rescue the Princess and the Earl from Big Benji after Claw and Sparks freezes it, they can use the help of the baby dragons to melt the ice.",
+      "airDate": "2022-02-04",
+      "streams": []
+    },
+    {
+      "id": "s8e30",
+      "season": 8,
+      "episode": 30,
+      "title": "Rescue Knights: Pups Save Excalibark",
+      "description": "When Chase removes the fake Golden Bone of Excalibark from its stone, he becomes the Princess of Barkingburg's Royal Knight. Will his friends rescue him and fix the bridge?",
+      "airDate": "2022-02-04",
+      "streams": []
+    },
+    {
+      "id": "s8e31",
+      "season": 8,
+      "episode": 31,
+      "title": "Pups Save a Chicken Tulip",
+      "description": "When Mayor Humdinger and his mother Helga help Mayor Goodway look for a rare tulip, Humdinger's attempts to have his mom find the flower first gets them all in trouble.",
+      "airDate": "2022-02-11",
+      "streams": []
+    },
+    {
+      "id": "s8e32",
+      "season": 8,
+      "episode": 32,
+      "title": "Pups Stop an Xtreme Shark",
+      "description": "When Daring Danny X takes off on an mechanical shark with Ms. Marjorie and Mr. Porter swallowed into it, Ryder, Chase, Rocky and Skye must rescue them.",
+      "airDate": "2022-02-11",
+      "streams": []
+    },
+    {
+      "id": "s8e33",
+      "season": 8,
+      "episode": 33,
+      "title": "Rescue Knights: Pups Save a Tournament",
+      "description": "The Rescue Knights help a mystery knight, the Princess of Barkingburg in disguise, win a tournament when Claw and Sparks show up and sabotage the event.",
+      "airDate": "2022-03-04",
+      "streams": []
+    },
+    {
+      "id": "s8e34",
+      "season": 8,
+      "episode": 34,
+      "title": "Rescue Knights: Pups Save the Baby Dragons",
+      "description": "The Rescue Knights must save some baby dragons from Claw and reunite them with their mother.",
+      "airDate": "2022-03-04",
+      "streams": []
+    },
+    {
+      "id": "s8e35",
+      "season": 8,
+      "episode": 35,
+      "title": "Liberty Makes a New Friend",
+      "description": "When Liberty, the star of \"PAW Patrol: The Movie\" arrives at Adventure Bay, she bought a bear named Benny. Can she sort out the mess with the help from the PAW Patrol?",
+      "airDate": "2022-03-25",
+      "streams": []
+    },
+    {
+      "id": "s8e36",
+      "season": 8,
+      "episode": 36,
+      "title": "Pups Save the Pup Pup Boogie Contest",
+      "description": "Francois is floating on a hot air balloon, and it's up to Liberty, Ryder and the pups to rescue him, and fix the screen for the Pup Pup Boogie contest!",
+      "airDate": "2022-03-25",
+      "streams": []
+    },
+    {
+      "id": "s8e37",
+      "season": 8,
+      "episode": 37,
+      "title": "Rescue Knights: Pups Save a Dozing Dragon",
+      "description": "When Claw and the Duke of Flappington use a magic cauldron to put the people of Barkingburg to sleep, their plan backfires when the enchanted fog works on Sparks, it's up to Rubble and the Rescue Knights to wake up the Dragon along with everyone else in town.",
+      "airDate": "2022-04-08",
+      "streams": []
+    },
+    {
+      "id": "s8e38",
+      "season": 8,
+      "episode": 38,
+      "title": "Dancing with Luke Stars",
+      "description": "The pups must rescue Mayor Goodway, Mayor Humdinger, Julia, Julius, Farmer Yumi, Farmer Al, Luke Stars and of course, Rubble from a stranded dance floor!",
+      "airDate": "2022-04-15",
+      "streams": []
+    },
+    {
+      "id": "s8e39",
+      "season": 8,
+      "episode": 39,
+      "title": "Pups Save a Mischievous Octopus",
+      "description": "Ryder and the PAW Patrol must investigate a mystery at the Turbots' exhibit at a museum and rescue the octopus.",
+      "airDate": "2022-04-15",
+      "streams": []
+    },
+    {
+      "id": "s8e40",
+      "season": 8,
+      "episode": 40,
+      "title": "Pups Save a Lonesome Walrus",
+      "description": "While searching for Cap'n Turbot, Wally turns Adventure Bay upside down! Can the PAW Patrol find Wally before it's too late?",
+      "airDate": "2022-05-06",
+      "streams": []
+    },
+    {
+      "id": "s8e41",
+      "season": 8,
+      "episode": 41,
+      "title": "Pups Save the Hummy Gummies",
+      "description": "Mayor Humdinger gets jealous, after everyone loves his mother's Hummy Gummies. Ryder and the pups must rescue him when he is inside a giant Hummy Gummy!",
+      "airDate": "2022-05-06",
+      "streams": []
+    },
+    {
+      "id": "s8e42",
+      "season": 8,
+      "episode": 42,
+      "title": "Pups Save the Kitties and the Kiddies",
+      "description": "Mayor Humdinger babysits his new friend's children, but trouble arises when they start feuding with his kitties. When Mayor Goodway and Mayor Humdinger accidentally get locked in a greenhouse, they need to be rescued.",
+      "airDate": "2022-05-13",
+      "streams": []
+    },
+    {
+      "id": "s8e43",
+      "season": 8,
+      "episode": 43,
+      "title": "Pups Save a Greenhouse",
+      "description": "",
+      "airDate": "2022-05-20",
+      "streams": []
+    },
+    {
+      "id": "s8e44",
+      "season": 8,
+      "episode": 44,
+      "title": "Pups Save a Box Fort",
+      "description": "",
+      "airDate": "2022-05-20",
+      "streams": []
+    },
+    {
+      "id": "s8e45",
+      "season": 8,
+      "episode": 45,
+      "title": "Pups Save Travelin' Travis from Really Big Bill!",
+      "description": "Skye helps Traveling Travis search for Big Bill Island.",
+      "airDate": "2022-05-20",
+      "streams": []
+    },
+    {
+      "id": "s8e46",
+      "season": 8,
+      "episode": 46,
+      "title": "Pups Save the Floating Goodways",
+      "description": "The Goodways drift out to sea on a swan-shaped float and need rescue from a flock of real swans aiming to protect the giant inflatable.",
+      "airDate": "2022-05-27",
+      "streams": []
+    },
+    {
+      "id": "s8e47",
+      "season": 8,
+      "episode": 47,
+      "title": "Pups Save the Portable Pet Wash",
+      "description": "",
+      "airDate": "2022-06-03",
+      "streams": []
+    },
+    {
+      "id": "s9e1",
+      "season": 9,
+      "episode": 1,
+      "title": "Big Truck Pups: Pups Stop a Flood",
+      "description": "With their new Big Truck vehicles and their new friend, Al, the PAW Patrol must save Adventure Bay from flooding.",
+      "airDate": "2022-09-09",
+      "streams": []
+    },
+    {
+      "id": "s9e2",
+      "season": 9,
+      "episode": 2,
+      "title": "Pups Save a Humdinger Doll",
+      "description": "When Mayor Humdinger gets kidnapped as Big Hairy's doll, the PAW Patrol must save him.",
+      "airDate": "2022-09-23",
+      "streams": []
+    },
+    {
+      "id": "s9e3",
+      "season": 9,
+      "episode": 3,
+      "title": "Pups Save a Sand Sculpture Contest",
+      "description": "When Mayor Humdinger tries to cheat at the Adventure Bay sand sculpture contest, the PAW Patrol must stop his out-of-control machine!",
+      "airDate": "2022-09-23",
+      "streams": []
+    },
+    {
+      "id": "s9e4",
+      "season": 9,
+      "episode": 4,
+      "title": "Big Truck Pups: Pups Save the Swiped Speakers",
+      "description": "When Mayor Humdinger hijacks Al's big rig carrying Luke Stars and his concert equipment, it's up to the Big Truck Pups to rescue him.",
+      "airDate": "2022-10-07",
+      "streams": []
+    },
+    {
+      "id": "s9e5",
+      "season": 9,
+      "episode": 5,
+      "title": "Big Truck Pups: Pups Save the Big Big Pipes",
+      "description": "When Al's load of big pipes breaks loose, it's up to the Big Truck Pups to save their friend from the rolling hazards.",
+      "airDate": "2022-10-07",
+      "streams": []
+    },
+    {
+      "id": "s9e6",
+      "season": 9,
+      "episode": 6,
+      "title": "Pups Stop the Return of Humsquatch",
+      "description": "When Eddie and Emmy get impatient at the carnival, they hide in Mayor Humdinger's Humsquatch costume to chase everyone out.",
+      "airDate": "2022-10-21",
+      "streams": []
+    },
+    {
+      "id": "s9e7",
+      "season": 9,
+      "episode": 7,
+      "title": "Pups Save a Lonely Ghost",
+      "description": "Rubble dreams that he meets a ghost and learns that it's not easy to help a ghost make new friends.",
+      "airDate": "2022-10-21",
+      "streams": []
+    },
+    {
+      "id": "s9e8",
+      "season": 9,
+      "episode": 8,
+      "title": "Big Truck Pups:  Pups Save a Sliding Chalet",
+      "description": "When Mayor Humdinger's Mountain vacation literally goes downhill, it's up to the Pups to stop Jake's Chalet before it crashes.",
+      "airDate": "2022-10-28",
+      "streams": []
+    },
+    {
+      "id": "s9e9",
+      "season": 9,
+      "episode": 9,
+      "title": "Big Truck Pups: Pups Save a Really Big Dish",
+      "description": "Mayor Humdinger messes with the satellite dish and downs a satellite and the town's communication systems.",
+      "airDate": "2022-10-28",
+      "streams": []
+    },
+    {
+      "id": "s9e10",
+      "season": 9,
+      "episode": 10,
+      "title": "Pups Save the Tooth Fairy",
+      "description": "Julius loses his tooth and has a dream that the PAW Patrol saves a bumbling Tooth Fairy named Beamy.",
+      "airDate": "2022-11-04",
+      "streams": []
+    },
+    {
+      "id": "s9e11",
+      "season": 9,
+      "episode": 11,
+      "title": "Pups Solve the Mystery of the Missing Art",
+      "description": "When all the paintings mysteriously disappear from the Art Museum festival, except for Eddie and Emmy's painting, the PAW Patrol must solve the Missing Art Mystery and return all the paintings.",
+      "airDate": "2022-11-04",
+      "streams": []
+    },
+    {
+      "id": "s9e12",
+      "season": 9,
+      "episode": 12,
+      "title": "Big Truck Pups: Pups Save the Bridge",
+      "description": "The pups must save Adventure Bay's big bridge from collapsing.",
+      "airDate": "2022-11-21",
+      "streams": []
+    },
+    {
+      "id": "s9e13",
+      "season": 9,
+      "episode": 13,
+      "title": "Pups Meet the Cat Pack",
+      "description": "When Mayor Humdinger transforms his robot cat into a tiger-sized metal-eating menace, the PAW Patrol calls in the Cat Pack for help in stopping the creature.",
+      "airDate": "2022-11-25",
+      "streams": []
+    },
+    {
+      "id": "s9e14",
+      "season": 9,
+      "episode": 14,
+      "title": "Cat Pack: Rocket Rescuers",
+      "description": "When Chickaletta gets trapped in a rocket, it flies all over Adventure Bay very fast. Can the Cat Pack and the Mighty Pups stop the runaway rocket before it's too late?",
+      "airDate": "2022-11-25",
+      "streams": []
+    },
+    {
+      "id": "s9e15",
+      "season": 9,
+      "episode": 15,
+      "title": "Cat Pack: The Golden Lion Mask",
+      "description": "The Ruff-Ruff Pack is back and this time they stole the Golden Lion Mask. Now the cats and the pups must stop the Ruff-Ruff Pack and rescue the mask and return it to the museum!",
+      "airDate": "2022-11-25",
+      "streams": []
+    },
+    {
+      "id": "s9e16",
+      "season": 9,
+      "episode": 16,
+      "title": "Cat Pack: The Cat That Roared",
+      "description": "When a monkey is injured, it's up to the PAW Patrol, along with Cat Pack veterans Leo and Rory to save it and the jungle!",
+      "airDate": "2022-11-25",
+      "streams": []
+    },
+    {
+      "id": "s9e17",
+      "season": 9,
+      "episode": 17,
+      "title": "Cat Pack: Saving the Safe",
+      "description": "When Mayor Humdinger and Meow-Meow break into Mayor Goodway's safe, the Cat Pack and the PAW Patrol must save it and stop Meow-Meow.",
+      "airDate": "2022-11-25",
+      "streams": []
+    },
+    {
+      "id": "s9e18",
+      "season": 9,
+      "episode": 18,
+      "title": "Mighty Pups, Super Paws: Pups Stop a Mighty Eel",
+      "description": "When an eel accidentally swallows a piece of the meteor and becomes gigantic, it's up to the Mighty Pups to save Adventure Bay.",
+      "airDate": "2022-12-26",
+      "streams": []
+    },
+    {
+      "id": "s9e19",
+      "season": 9,
+      "episode": 19,
+      "title": "Mission PAW: Pups Save a Floating Royal Carriage",
+      "description": "After Sweetie decides to commandeer the Princess's royal carriage and horses, Sid the pirate sends Arrby to steal it.",
+      "airDate": "2022-12-27",
+      "streams": []
+    },
+    {
+      "id": "s9e20",
+      "season": 9,
+      "episode": 20,
+      "title": "Pups Save a T-Rex Tyke",
+      "description": "When a baby T-Rex gets lost, Ryder and the pups go on a daring mission to the Dino Wilds to help find him.",
+      "airDate": "2022-12-28",
+      "streams": []
+    },
+    {
+      "id": "s9e21",
+      "season": 9,
+      "episode": 21,
+      "title": "Pups Save a Playful Elephant Calf",
+      "description": "When Everest joins the PAW Patrol for a visit to the jungle, she makes friends with a clumsy elephant calf and then must help rescue him.",
+      "airDate": "2022-12-29",
+      "streams": []
+    },
+    {
+      "id": "s9e22",
+      "season": 9,
+      "episode": 22,
+      "title": "Aqua Pups: Pups Save a Floating Castle",
+      "description": "When an unhappy Merpup tries to float Puplantis to the surface, it's up to the PAW Patrol and their newest member Coral (Skye's long-lost merpup cousin) to save the city and stop him.",
+      "airDate": "2023-01-06",
+      "streams": []
+    },
+    {
+      "id": "s9e23",
+      "season": 9,
+      "episode": 23,
+      "title": "Aqua Pups: Pups Save a Merdinger",
+      "description": "Hearing about the pearls of Puplantis, Mayor Humdinger and the Kitten Catastrophe Crew pilot a mechanical shark to take them to Puplantis. While the Kitten Catastrophe Crew performs a diversion, Mayor Humdinger poses as a mer-pup named Merdinger in order to get close to the giant clam that makes the pearls so that he can get a purple pearl. Coral calls in the PAW Patrol when havoc occurs in Puplantis.",
+      "airDate": "2023-01-13",
+      "streams": []
+    },
+    {
+      "id": "s9e24",
+      "season": 9,
+      "episode": 24,
+      "title": "Aqua Pups: Pups Save the Whale Patroller",
+      "description": "In his latest plan to get to the mainland, Moby hijacks the Whale Patroller and pilots it, though he and McSquidly work on mastering it's controls. With the PAW Patrol's vehicles on the Whale Patroller, Coral summons some sea creatures to come to their aid and act as a mode of transportation for them with Robo-Dog being Ryder's mode of transportation.",
+      "airDate": "2023-01-13",
+      "streams": []
+    },
+    {
+      "id": "s9e25",
+      "season": 9,
+      "episode": 25,
+      "title": "Aqua Pups: Pups Save a Mer-Race",
+      "description": "The PAW Patrol take part in a big mer-race, but must come to the rescue when Moby's cheating puts Puplantis in serious danger.",
+      "airDate": "2023-01-20",
+      "streams": []
+    },
+    {
+      "id": "s9e26",
+      "season": 9,
+      "episode": 26,
+      "title": "Aqua Pups: Pups Save the Reef",
+      "description": "The Aqua Pups rescue Coral, Moby and McSquidly from a submarine before it crashes into a delicate reef.",
+      "airDate": "2023-01-23",
+      "streams": []
+    },
+    {
+      "id": "s9e27",
+      "season": 9,
+      "episode": 27,
+      "title": "Aqua Pups: Pups Stop a Giant Squid",
+      "description": "The Aqua Pups must save the Merpups' golden orb release when Moby lures a Giant Squid into Puplantis.",
+      "airDate": "2023-01-27",
+      "streams": []
+    },
+    {
+      "id": "s9e28",
+      "season": 9,
+      "episode": 28,
+      "title": "Pups Save the Wind Trekkers",
+      "description": "When Mayor Goodway and Chickaletta get trapped inside a mesa, it's up to the PAW Patrol and a little snake to rescue them.",
+      "airDate": "2023-02-03",
+      "streams": []
+    },
+    {
+      "id": "s9e29",
+      "season": 9,
+      "episode": 29,
+      "title": "Pups Save a Trophy",
+      "description": "When Mayor Humdinger's mom Helga loses her son's phony trophy, the PAW Patrol have to rescue her and its secret stash of treats.",
+      "airDate": "2023-02-03",
+      "streams": []
+    },
+    {
+      "id": "s9e30",
+      "season": 9,
+      "episode": 30,
+      "title": "Pups Save Alex's Feathery Friends",
+      "description": "The PAW Patrol must rescue Mr. Porter and reunite an ostrich family before the big birds get into big trouble.",
+      "airDate": "2023-02-10",
+      "streams": []
+    },
+    {
+      "id": "s9e31",
+      "season": 9,
+      "episode": 31,
+      "title": "Pups Save a Puffy Mayor",
+      "description": "During Mayor Goodway's fashion show, the pups must save Farmer Al and Mayor Humdinger after Humdinger's puffy shirt floats away with them.",
+      "airDate": "2023-02-10",
+      "streams": []
+    },
+    {
+      "id": "s9e32",
+      "season": 9,
+      "episode": 32,
+      "title": "Pups Save Katie and Some Kitties",
+      "description": "When Mayor Humdinger tricks Katie into watching his kitties, an alarm system is set off and the PAW Patrol must rescue them.",
+      "airDate": "2023-02-17",
+      "streams": []
+    },
+    {
+      "id": "s9e33",
+      "season": 9,
+      "episode": 33,
+      "title": "Pups Save a Helo Humdinger",
+      "description": "When Mayor Humdinger swipes one of Ryder's early inventions - an aircraft - he must be rescued from an out of control flight.",
+      "airDate": "2023-02-17",
+      "streams": []
+    },
+    {
+      "id": "s9e34",
+      "season": 9,
+      "episode": 34,
+      "title": "Pups Save a Jukebox",
+      "description": "When Mayor Humdinger steals a jukebox so he can play an annoying song all day, Chase and Rubble try to find him to save the records.",
+      "airDate": "2023-02-24",
+      "streams": []
+    },
+    {
+      "id": "s9e35",
+      "season": 9,
+      "episode": 35,
+      "title": "Pups Save a Mayor on a Wire",
+      "description": "",
+      "airDate": "2023-02-24",
+      "streams": []
+    },
+    {
+      "id": "s9e36",
+      "season": 9,
+      "episode": 36,
+      "title": "Pups Save the Baby Space Rocks",
+      "description": "When a mysterious storm drops hailstones that hatch into baby space rocks, the team must find a way to keep the babies safe.",
+      "airDate": "2023-03-06",
+      "streams": []
+    },
+    {
+      "id": "s9e37",
+      "season": 9,
+      "episode": 37,
+      "title": "Pups Save the Eddies and Emmys",
+      "description": "",
+      "airDate": "2023-03-06",
+      "streams": []
+    },
+    {
+      "id": "s9e38",
+      "season": 9,
+      "episode": 38,
+      "title": "Pups Save the Hatchlings",
+      "description": "When Mayor Humdinger decides to make the world's biggest omelet, he accidentally orders the wrong kind of eggs - ones that hatch.",
+      "airDate": "2023-04-07",
+      "streams": []
+    },
+    {
+      "id": "s9e39",
+      "season": 9,
+      "episode": 39,
+      "title": "Pups Save a Wrongway Farmhand",
+      "description": "",
+      "airDate": "2023-04-07",
+      "streams": []
+    },
+    {
+      "id": "s9e40",
+      "season": 9,
+      "episode": 40,
+      "title": "Pups Save a Flamingo Dancer",
+      "description": "The patrol must stop a hi-tech kid inventor from demolishing Adventure Bay.",
+      "airDate": "2023-04-14",
+      "streams": []
+    },
+    {
+      "id": "s9e41",
+      "season": 9,
+      "episode": 41,
+      "title": "Pups Save a Mayor and Her Mini",
+      "description": "",
+      "airDate": "2023-04-14",
+      "streams": []
+    },
+    {
+      "id": "s9e42",
+      "season": 9,
+      "episode": 42,
+      "title": "All Paws on Deck",
+      "description": "Ryder and his team of pups must take on 10-year-old genius Codi Gizmodi, who has her sights set on building her own high-tech city to replace Adventure Bay.",
+      "airDate": "2023-04-24",
+      "streams": []
+    },
+    {
+      "id": "s10e1",
+      "season": 10,
+      "episode": 1,
+      "title": "Pups Save the Wacky Water Skiers",
+      "description": "When Emmy and Eddie take a joyride, Hurricane Harrigan and Cap'n Turbot get caught water skiing behind the out-of-control boat.",
+      "airDate": "2023-07-10",
+      "streams": []
+    },
+    {
+      "id": "s10e2",
+      "season": 10,
+      "episode": 2,
+      "title": "Pups Save the Mayor's Assistant",
+      "description": "Daring Danny X becomes Mayor Humdinger's assistant and builds a theme park! A jealous Humdinger sabotages the rides.",
+      "airDate": "2023-07-10",
+      "streams": []
+    },
+    {
+      "id": "s10e3",
+      "season": 10,
+      "episode": 3,
+      "title": "Pups Save Their Digi Tal Friends",
+      "description": "The PAW Patrol must save the day when two overly helpful robots take on more than they can handle.",
+      "airDate": "2023-07-17",
+      "streams": []
+    },
+    {
+      "id": "s10e4",
+      "season": 10,
+      "episode": 4,
+      "title": "Pups Save the Rainbow",
+      "description": "In a dream, Mayor Humdinger finds a prism that makes rainbows and drains Adventure Bay of color. It's up to the pups to restore color to Adventure Bay.",
+      "airDate": "2023-07-17",
+      "streams": []
+    },
+    {
+      "id": "s10e5",
+      "season": 10,
+      "episode": 5,
+      "title": "Pups Save a High-Flying Hen",
+      "description": "After Chickaletta accidentally takes flight on a toy airplane, it's up to the PAW Patrol to rescue her.",
+      "airDate": "2023-07-24",
+      "streams": []
+    },
+    {
+      "id": "s10e6",
+      "season": 10,
+      "episode": 6,
+      "title": "Pups Save a Sloth",
+      "description": "Mayor Humdinger mistakes a sloth for a monkey. He races the PAW Patrol to find it when it goes missing to cover up his blunder.",
+      "airDate": "2023-07-24",
+      "streams": []
+    },
+    {
+      "id": "s10e7",
+      "season": 10,
+      "episode": 7,
+      "title": "Charger Visits the Pups",
+      "description": "Rubble's cousin, Charger, visits Adventure Bay just in time to help out when a Humdinger-caused geyser destroys Mr. Porter's cafe.",
+      "airDate": "2023-07-31",
+      "streams": []
+    },
+    {
+      "id": "s10e8",
+      "season": 10,
+      "episode": 8,
+      "title": "Pups Save a Shiny Ride",
+      "description": "Mayor Humdinger hatches a plan to sabotage a \"Shiniest Ride Contest,\" so it's up to the PAW Patrol to save the day.",
+      "airDate": "2023-07-31",
+      "streams": []
+    },
+    {
+      "id": "s10e9",
+      "season": 10,
+      "episode": 9,
+      "title": "Mighty Pups vs. the Mayor of the Universe",
+      "description": "Liberty and the Poms team up with the Mighty Pups to save Adventure Bay from being crushed by a giant, flying Top Hat.",
+      "airDate": "2023-10-30",
+      "streams": []
+    },
+    {
+      "id": "s10e10",
+      "season": 10,
+      "episode": 10,
+      "title": "Pups Stop a Gold Finding Machine",
+      "description": "The Paw Patrol springs into action when a digging machine goes out-of-control and takes Uncle Otis on a wild ride.",
+      "airDate": "2023-10-31",
+      "streams": []
+    },
+    {
+      "id": "s10e11",
+      "season": 10,
+      "episode": 11,
+      "title": "Pups Help Mayor Humdinger Out of a Jam",
+      "description": "Digi and Tal try to help Mayor Humdinger but leave the Mayor covered in jam, the Pups must rescue him from hungry animals.",
+      "airDate": "2023-11-01",
+      "streams": []
+    },
+    {
+      "id": "s10e12",
+      "season": 10,
+      "episode": 12,
+      "title": "Liberty's Mountain Rescue",
+      "description": "Liberty comes to visit the pups just in time to help save the Turbots and their radar doppler in a daring mountain rescue.",
+      "airDate": "2023-11-02",
+      "streams": []
+    },
+    {
+      "id": "s10e13",
+      "season": 10,
+      "episode": 13,
+      "title": "Pups Save a Flying Farmer Yumi",
+      "description": "When Farmer Al builds a windmill, the wind takes Farmer Yumi and Garby on a wild flight.",
+      "airDate": "2023-11-02",
+      "streams": []
+    },
+    {
+      "id": "s10e14",
+      "season": 10,
+      "episode": 14,
+      "title": "Mighty Pups vs. the Big Chill",
+      "description": "Harold creates a ray that can freeze things instantly, it goes awry and sends a giant ice ball toward Adventure Bay.",
+      "airDate": "2023-11-06",
+      "streams": []
+    },
+    {
+      "id": "s10e15",
+      "season": 10,
+      "episode": 15,
+      "title": "Mighty Pups vs. the Mighty Cheetah",
+      "description": "The Cheetah snatches half of Chase's Meteor Crystal; Chase must stop the Cheetah and restore his crystal before anyone gets hurt.",
+      "airDate": "2023-11-07",
+      "streams": []
+    },
+    {
+      "id": "s10e16",
+      "season": 10,
+      "episode": 16,
+      "title": "Pups Stop the Falling Space Junk",
+      "description": "When Digi & Tal's space vacuum breaks it's up to the pups to save Mayor Humdinger from falling space debris.",
+      "airDate": "2023-11-08",
+      "streams": []
+    },
+    {
+      "id": "s10e17",
+      "season": 10,
+      "episode": 17,
+      "title": "Pups Stop the Giant Cucko",
+      "description": "Humdinger's Cuckoo Clock goes out of control. Ryder and the Pups must rescue Travis and get control of the Cuckoo to save Humdinger.",
+      "airDate": "2023-11-09",
+      "streams": []
+    },
+    {
+      "id": "s10e18",
+      "season": 10,
+      "episode": 18,
+      "title": "Mighty Pups Stop the Mighty Queen",
+      "description": "The Mighty Pups must stop Sweetie from using her new powers to take over Adventure Bay.",
+      "airDate": "2023-11-13",
+      "streams": []
+    },
+    {
+      "id": "s10e19",
+      "season": 10,
+      "episode": 19,
+      "title": "Mighty Pups Stop the Hiccups",
+      "description": "Mighty Nano gets the hiccups and starts duplicating out of control, it's up to Liberty and the Mighty Pups to find a cure.",
+      "airDate": "2023-11-14",
+      "streams": []
+    },
+    {
+      "id": "s10e20",
+      "season": 10,
+      "episode": 20,
+      "title": "Pups Save a Hum-ñata",
+      "description": "Mayor Humdinger's birthday party goes horribly awry when Cat Marshall gets trapped inside a life-sized piñata.",
+      "airDate": "2023-11-15",
+      "streams": []
+    },
+    {
+      "id": "s10e21",
+      "season": 10,
+      "episode": 21,
+      "title": "Pups Stop the Foggy Skies",
+      "description": "Mayor Humdinger tries pushing fog into Adventure Bay. It's up to the PAW Patrol to find animals missing in the clouds and save the day.",
+      "airDate": "2023-11-16",
+      "streams": []
+    },
+    {
+      "id": "s10e22",
+      "season": 10,
+      "episode": 22,
+      "title": "Charger's Christmas Adventure",
+      "description": "Charger helps the Paw Patrol rescue Santa and his helpers when a blizzard at the North Pole threatens to close down Christmas.",
+      "airDate": "2023-11-27",
+      "streams": []
+    },
+    {
+      "id": "s10e23",
+      "season": 10,
+      "episode": 23,
+      "title": "Pups Save Great Uncle Smiley's Cup",
+      "description": "Mayor Humdinger enlists Digi & Tal to help him win a hockey game, it's up to the pups to undo the mayhem the team causes.",
+      "airDate": "2023-11-28",
+      "streams": []
+    },
+    {
+      "id": "s10e24",
+      "season": 10,
+      "episode": 24,
+      "title": "Jungle Pups: Pups Find a Hidden Jungle",
+      "description": "Tracker stumbles into a hidden jungle and its animal inhabitants who are frightened by the rumblings of an impending volcano. It's up to Ryder and the pups to use their new animal vehicles to rescue the creatures from the hot lava and save their home.",
+      "airDate": "2024-01-08",
+      "streams": []
+    },
+    {
+      "id": "s10e25",
+      "season": 10,
+      "episode": 25,
+      "title": "Jungle Pups: Pups Save the Big, Big Animals",
+      "description": "When the Hidden Jungle animals appear to be uncharacteristically frightened, Marshall discovers a saber-tooth tiger has been stalking them. And the big-fanged tiger is not the only creature strangely awakening from long, long ago",
+      "airDate": "2024-01-09",
+      "streams": []
+    },
+    {
+      "id": "s10e26",
+      "season": 10,
+      "episode": 26,
+      "title": "Jungle Pups: Pups Save the Meerkat Pirates",
+      "description": "Arrby recruits a crew of Meerkats to gather magical seeds. It's up to the Pups to recover the seeds and rescue Arrby and crew.",
+      "airDate": "2024-01-10",
+      "streams": []
+    },
+    {
+      "id": "s10e27",
+      "season": 10,
+      "episode": 27,
+      "title": "Jungle Pups: Pups Save a Hum-Hippo",
+      "description": "Mayor Humdinger wants a hippo as his new hench-animal, but needs a rescue when it gallops off with Humdinger on his back.",
+      "airDate": "2024-01-10",
+      "streams": []
+    },
+    {
+      "id": "s10e28",
+      "season": 10,
+      "episode": 28,
+      "title": "Jungle Pups: Pups Save a Golden Sweetie",
+      "description": "The Pups rescue Sweetie when she sneaks into the Hidden Jungle and finds a mysterious orb which causes everything she touches to turn to gold.",
+      "airDate": "2024-01-11",
+      "streams": []
+    },
+    {
+      "id": "s10e29",
+      "season": 10,
+      "episode": 29,
+      "title": "Jungle Pups: Pups Save the Giant Ants",
+      "description": "The Pups must save a colony of giant ants from destroying the Hidden Jungle and themselves.",
+      "airDate": "2024-01-11",
+      "streams": []
+    },
+    {
+      "id": "s10e30",
+      "season": 10,
+      "episode": 30,
+      "title": "Pups Save a Windswept Polar Bear Cub",
+      "description": "When a windstorm sends a polar bear cub down to Adventure Bay, it's up to Ryder, Everest, and the pups to bring the baby bear back to its family.",
+      "airDate": "2024-01-15",
+      "streams": []
+    },
+    {
+      "id": "s10e31",
+      "season": 10,
+      "episode": 31,
+      "title": "Pups Save a Drive-In",
+      "description": "The Pups must save Mayor Humdinger from a runaway movie projector at the new drive-in.",
+      "airDate": "2024-01-16",
+      "streams": []
+    },
+    {
+      "id": "s10e32",
+      "season": 10,
+      "episode": 32,
+      "title": "Pups Save a Baby Caribou",
+      "description": "When a baby caribou winds up speeding down a mountainside, it's up to the PAW Patrol to save the calf and reunite him with his family.",
+      "airDate": "2024-01-17",
+      "streams": []
+    },
+    {
+      "id": "s10e33",
+      "season": 10,
+      "episode": 33,
+      "title": "Pups Save Luke and His Luke-Alike",
+      "description": "When Luke Stars gets blown away in a giant tumbleweed, Digi and Tal make a duplicate which dances out of control.",
+      "airDate": "2024-01-18",
+      "streams": []
+    },
+    {
+      "id": "s10e34",
+      "season": 10,
+      "episode": 34,
+      "title": "Pups Save a Disappearing Flounder",
+      "description": "When Cap'n Turbot's ship disappears, the PAW Patrol must venture into the mysterious Adventure Bay Triangle to find the missing vessel.",
+      "airDate": "2024-01-22",
+      "streams": []
+    },
+    {
+      "id": "s10e35",
+      "season": 10,
+      "episode": 35,
+      "title": "Pups Save Little Grandpa and Mr. Alex",
+      "description": "When Alex and Mr. Porter swap roles, the pups must help track down the Mini-Patrol after they go missing.",
+      "airDate": "2024-01-23",
+      "streams": []
+    },
+    {
+      "id": "s10e36",
+      "season": 10,
+      "episode": 36,
+      "title": "Pups Save the Elephant Spa",
+      "description": "While trying to save Traveling Travis, Ryder and the pups stumble across the legendary Elephants Spa.",
+      "airDate": "2024-01-24",
+      "streams": []
+    },
+    {
+      "id": "s10e37",
+      "season": 10,
+      "episode": 37,
+      "title": "Pups Save an Underwater Otis",
+      "description": "Uncle Otis believes he's found gold but when Sid the Pirate tries to jump on Otis's claim, Otis gets trapped in a sunken shipping container.",
+      "airDate": "2024-01-25",
+      "streams": []
+    },
+    {
+      "id": "s10e38",
+      "season": 10,
+      "episode": 38,
+      "title": "Pups and Cats Save HumCatDingerMan",
+      "description": "",
+      "airDate": "2024-04-08",
+      "streams": []
+    },
+    {
+      "id": "s10e39",
+      "season": 10,
+      "episode": 39,
+      "title": "Pups Save a Turbot Tournament",
+      "description": "",
+      "airDate": "2024-04-08",
+      "streams": []
+    },
+    {
+      "id": "s10e40",
+      "season": 10,
+      "episode": 40,
+      "title": "Pups Save a Runaway Robo-Chicken Purse",
+      "description": "Digi and Tal's inventions to help a busy Mayor Goodway go haywire and lead to a wild woodland chase.",
+      "airDate": "2024-05-06",
+      "streams": []
+    },
+    {
+      "id": "s10e41",
+      "season": 10,
+      "episode": 41,
+      "title": "Pups Save the Buggy Trekkers",
+      "description": "When Mayor Humdinger squeezes himself into the Trekkers' friendly dune buggy race, his cheating ways put the other racers in jeopardy.",
+      "airDate": "2024-05-06",
+      "streams": []
+    },
+    {
+      "id": "s10e42",
+      "season": 10,
+      "episode": 42,
+      "title": "Pups vs. the Hum-flectors",
+      "description": "After a drone carrying Humdinger's reflecting panel crashes in a tree, the reflector concentrates a beam of light on a wooden bridge, causing it to burn.",
+      "airDate": "2024-05-08",
+      "streams": []
+    },
+    {
+      "id": "s10e43",
+      "season": 10,
+      "episode": 43,
+      "title": "Pups Save a Capybara",
+      "description": "The PAW Patrol rescues Winnie and a capybara when they go rolling off in a giant exercise ball.",
+      "airDate": "2024-05-08",
+      "streams": []
+    },
+    {
+      "id": "s10e44",
+      "season": 10,
+      "episode": 44,
+      "title": "Pups Take in a Runaway Kitty!",
+      "description": "When Rocky Kitty runs away and tries to join the PAW Patrol, he helps the pups rescue Humdinger and the kitties from a hang-glider ride.",
+      "airDate": "2024-05-13",
+      "streams": []
+    },
+    {
+      "id": "s10e45",
+      "season": 10,
+      "episode": 45,
+      "title": "Pups Save the Cheese Goat",
+      "description": "When the Good Neighbor Robots confuse Farmer Al's request, they wind up the target of a hungry eagle.",
+      "airDate": "2024-05-13",
+      "streams": []
+    },
+    {
+      "id": "s10e46",
+      "season": 10,
+      "episode": 46,
+      "title": "Pups Save a Talkative Mini Patrol",
+      "description": "Alex dreams that his Mini Patrol animals can talk and they take the Bookmobile on a wild ride.",
+      "airDate": "2024-05-14",
+      "streams": []
+    },
+    {
+      "id": "s10e47",
+      "season": 10,
+      "episode": 47,
+      "title": "Pups Save the History of Adventure Bay",
+      "description": "When Mayor Humdinger steals \"The History of Adventure Bay,\" the ancient book falls apart. It's up to the Paw Patrol to retrieve the pages and find the map.",
+      "airDate": "2024-05-15",
+      "streams": []
+    },
+    {
+      "id": "s10e48",
+      "season": 10,
+      "episode": 48,
+      "title": "Rescue Wheels: Pups Save Adventure Bay!",
+      "description": "",
+      "airDate": "2024-09-15",
+      "streams": []
+    },
+    {
+      "id": "s10e49",
+      "season": 10,
+      "episode": 49,
+      "title": "Rescue Wheels: Pups vs. the Monster Mayor",
+      "description": "",
+      "airDate": "2024-09-16",
+      "streams": []
+    },
+    {
+      "id": "s11e1",
+      "season": 11,
+      "episode": 1,
+      "title": "Rescue Wheels: Pups Save the Teetering Tower",
+      "description": "When Boomer starts swiping vehicles from all over Adventure Bay, the Rescue Wheels roll out to get them back!",
+      "airDate": "2024-09-18",
+      "streams": []
+    },
+    {
+      "id": "s11e2",
+      "season": 11,
+      "episode": 2,
+      "title": "Rescue Wheels: Pups Save the Spelunkers",
+      "description": "When the Turbot cousins go spelunking, they're left clinging to a stalactite after a cave floor collapses.",
+      "airDate": "2024-09-18",
+      "streams": []
+    },
+    {
+      "id": "s11e3",
+      "season": 11,
+      "episode": 3,
+      "title": "Rescue Wheels: Pups Save the Risky Race",
+      "description": "When Boomer challenges Roxi in a race to the top of a mountain, his reckless driving causes an avalanche of boulders!",
+      "airDate": "2024-09-19",
+      "streams": []
+    },
+    {
+      "id": "s11e4",
+      "season": 11,
+      "episode": 4,
+      "title": "Rescue Wheels: Pups Save the Runaway Truck",
+      "description": "When Boomer's monster truck stunt goes wrong, he's left dangling from a drawbridge while his monster truck goes without a driver.",
+      "airDate": "2024-09-19",
+      "streams": []
+    },
+    {
+      "id": "s11e5",
+      "season": 11,
+      "episode": 5,
+      "title": "Pups Get Your Goat",
+      "description": "Cap'n Turbot and his cousin Francois are observing a pair of mountain goats when a sudden avalanche strikes.",
+      "airDate": "2024-09-23",
+      "streams": []
+    },
+    {
+      "id": "s11e6",
+      "season": 11,
+      "episode": 6,
+      "title": "Pups Save the Crop Circles",
+      "description": "Farmer Al finds mysterious crop circles in his corn field, so he calls on the PAW Patrol to find out who is making them.",
+      "airDate": "2024-09-24",
+      "streams": []
+    },
+    {
+      "id": "s11e7",
+      "season": 11,
+      "episode": 7,
+      "title": "Pups Plus a Plucky Chicken",
+      "description": "When Humdinger steals Farmer Al's super-powered seeds, Chickaletta joins the PAW Patrol to help stop the mayor's corny plan.",
+      "airDate": "2024-09-25",
+      "streams": []
+    },
+    {
+      "id": "s11e8",
+      "season": 11,
+      "episode": 8,
+      "title": "Pups Save a Pet Show",
+      "description": "When Humdinger steals Katie and Cali's tiaras, it's up to the PAW Patrol to save their costumes and the pet show!",
+      "airDate": "2024-09-26",
+      "streams": []
+    },
+    {
+      "id": "s11e9",
+      "season": 11,
+      "episode": 9,
+      "title": "Pups Save Helga & the Humsquatch",
+      "description": "While Humdinger gets dressed for a day with his Hummy Mummy, the Humsquatch accidentally puts on the mayor's suit and takes his place!",
+      "airDate": "2024-09-30",
+      "streams": []
+    },
+    {
+      "id": "s11e10",
+      "season": 11,
+      "episode": 10,
+      "title": "Pups Save the Missing Bone-Stone",
+      "description": "When a precious bone goes missing, the pups' only chance at getting it back is to team up with Sweetie!",
+      "airDate": "2024-10-01",
+      "streams": []
+    },
+    {
+      "id": "s11e11",
+      "season": 11,
+      "episode": 11,
+      "title": "Pups Save the Director",
+      "description": "Francois is directing a video when his camera crane rolls away. The PAW Patrol must rescue Francois and track down his missing camera.",
+      "airDate": "2024-10-02",
+      "streams": []
+    },
+    {
+      "id": "s11e12",
+      "season": 11,
+      "episode": 12,
+      "title": "Pups Save the Super Cows",
+      "description": "Winnie's cow competitor Moona Lisa and Bettina run away during the Super Farm Fair.",
+      "airDate": "2024-10-03",
+      "streams": []
+    },
+    {
+      "id": "s11e13",
+      "season": 11,
+      "episode": 13,
+      "title": "Pups Save the Mountain Surfers",
+      "description": "A mighty wind sweeps Zuma and Harrigan off the beach and blows them all the way up to Jake's Mountain.",
+      "airDate": "2024-11-04",
+      "streams": []
+    },
+    {
+      "id": "s11e14",
+      "season": 11,
+      "episode": 14,
+      "title": "Pups Save Humdinger's Home Away from Home",
+      "description": "A mighty wind sweeps Zuma and Harrigan off the beach and blows them all the way up to Jake's Mountain.",
+      "airDate": "2024-11-04",
+      "streams": []
+    },
+    {
+      "id": "s11e15",
+      "season": 11,
+      "episode": 15,
+      "title": "Pups Save the Baddies",
+      "description": "Humdinger, Sid, and Sweetie have joined forces to try and take over the Lookout.",
+      "airDate": "2024-11-06",
+      "streams": []
+    },
+    {
+      "id": "s11e16",
+      "season": 11,
+      "episode": 16,
+      "title": "Pups Save the Yumi Bee",
+      "description": "Humdinger sabotages Yumi's Bee costume sending her buzzing out of control! It's up to the PAW Patrol to stop the Yumi Bee before the Buzzy Bee-Fest is totally smashed!",
+      "airDate": "2024-11-07",
+      "streams": []
+    },
+    {
+      "id": "s11e17",
+      "season": 11,
+      "episode": 17,
+      "title": "A Jr. Patrollers' Christmas",
+      "description": "At a Christmas Eve sleepover, the Jr. Patrollers are fooled into helping Mayor Humdinger steal everyone's stockings so he can get all the presents.",
+      "airDate": "2024-12-02",
+      "streams": []
+    },
+    {
+      "id": "s11e18",
+      "season": 11,
+      "episode": 18,
+      "title": "Pups Save the Big Book Delivery",
+      "description": "Mayor Humdinger's kitties make off with Mayor Goodway's book delivery truck.",
+      "airDate": "2024-12-03",
+      "streams": []
+    },
+    {
+      "id": "s11e19",
+      "season": 11,
+      "episode": 19,
+      "title": "Pups Save the Puppets",
+      "description": "Julius and Julia get into a sticky situation when the paper bag puppets they created for a puppet show become stuck on the antlers of a deer!",
+      "airDate": "2024-12-04",
+      "streams": []
+    },
+    {
+      "id": "s11e20",
+      "season": 11,
+      "episode": 20,
+      "title": "Pups vs. The Robo-Ducky",
+      "description": "Digi and Tal build a giant Robo-Ducky that runs amok through Adventure Bay.",
+      "airDate": "2024-12-05",
+      "streams": []
+    },
+    {
+      "id": "s11e21",
+      "season": 11,
+      "episode": 21,
+      "title": "Pups Save the Lost Penguin",
+      "description": "When Mayor Goodway tries to catch a glimpse of a migrating penguin colony, her precious Chickaletta and a baby penguin accidentally switch places.",
+      "airDate": "2024-12-06",
+      "streams": []
+    },
+    {
+      "id": "s11e22",
+      "season": 11,
+      "episode": 22,
+      "title": "Pups Save the Chicken Conductor!",
+      "description": "Chickaletta is left driving the train after an enormous chicken floaty launches Engineer Ed out the window!",
+      "airDate": "2024-12-13",
+      "streams": []
+    },
+    {
+      "id": "s11e23",
+      "season": 11,
+      "episode": 23,
+      "title": "Pups Save the Digi-Tal Stylists",
+      "description": "When Katie needs to close the Pet Parlor early, Digi and Tal volunteer to keep the shop open; however, when they run out of pets to pamper, they bring in wild animals.",
+      "airDate": "2024-12-16",
+      "streams": []
+    },
+    {
+      "id": "s11e24",
+      "season": 11,
+      "episode": 24,
+      "title": "Pups Save the Stage Actor",
+      "description": "Francois kicks off his production, but he is accidentally transported into the woods and comes face-to-face with mountain lions that threaten his show.",
+      "airDate": "2024-12-17",
+      "streams": []
+    },
+    {
+      "id": "s11e25",
+      "season": 11,
+      "episode": 25,
+      "title": "Pups Save Fogstock",
+      "description": "Mayor Humdinger's music festival shakes up Adventure Bay and causes a big mess.",
+      "airDate": "2024-12-18",
+      "streams": []
+    },
+    {
+      "id": "s11e26",
+      "season": 11,
+      "episode": 26,
+      "title": "Hum-Patrol to the Rescue",
+      "description": "When Adventure Bay holds a raffle, a pair of nest-building seagulls snatch the winning prize.",
+      "airDate": "2024-12-23",
+      "streams": []
+    },
+    {
+      "id": "s11e27",
+      "season": 11,
+      "episode": 27,
+      "title": "Pups Save Morning Mountain Yoga",
+      "description": "A rockslide leaves Mayor Goodway, Farmer Yumi and Garbie stranded on the side of a mountain.",
+      "airDate": "2024-12-24",
+      "streams": []
+    },
+    {
+      "id": "s11e28",
+      "season": 11,
+      "episode": 28,
+      "title": "Air Rescue: Pups Save the Airport Opening",
+      "description": "Adventure Bay is getting a brand-new airport! Sweetie tries to take the Princess' place at the grand opening.",
+      "airDate": "2025-02-17",
+      "streams": []
+    },
+    {
+      "id": "s11e29",
+      "season": 11,
+      "episode": 29,
+      "title": "Air Rescue: Pups Stop a Rocket-Powered Pogo Stick",
+      "description": "Danny's rocket boosted pogo stick accidentally causes a fire! Now it's up to the entire Air Rescue team to save Danny and stop the forest from going up in flames.",
+      "airDate": "2025-02-19",
+      "streams": []
+    },
+    {
+      "id": "s11e30",
+      "season": 11,
+      "episode": 30,
+      "title": "Air Rescue: Pups Save the Sky-High Stunt Show",
+      "description": "When Francois' big stunt show goes horribly awry, the Air Rescue pups are on a roll!",
+      "airDate": "2025-02-19",
+      "streams": []
+    },
+    {
+      "id": "s11e31",
+      "season": 11,
+      "episode": 31,
+      "title": "Air Rescue: Pups vs. the Hum-Cloud",
+      "description": "Humdinger builds a mechanical rain cloud to sabotage the Air Rescue Pups' Air Show.",
+      "airDate": "2025-02-20",
+      "streams": []
+    },
+    {
+      "id": "s11e32",
+      "season": 11,
+      "episode": 32,
+      "title": "Air Rescue: Pups Save a Hum-stronaut",
+      "description": "Captain Gordy and his Space Shuttle are blasting off from the Adventure Bay Airport with a satellite! But when Mayor Humdinger sneaks on board to snap a couple of selfies, the space shuttle blasts off with him still inside!",
+      "airDate": "2025-02-24",
+      "streams": []
+    },
+    {
+      "id": "s11e33",
+      "season": 11,
+      "episode": 33,
+      "title": "Air Rescue: Pups Stop the Mid-Air Magnet",
+      "description": "Uncle Otis gets a powerful magnetic drone but when the magnet malfunctions, the drone starts picking up every metal object in sight!",
+      "airDate": "2025-02-25",
+      "streams": []
+    },
+    {
+      "id": "s11e34",
+      "season": 11,
+      "episode": 34,
+      "title": "Pups and the Power of Flowers",
+      "description": "A jealous Mayor Humdinger tries to swipe the florist's Easter decorations and winds up on a runaway wagon with Mayor Goodway",
+      "airDate": "2025-02-26",
+      "streams": []
+    },
+    {
+      "id": "s11e35",
+      "season": 11,
+      "episode": 35,
+      "title": "Pups Save the Alien Egg Hunt",
+      "description": "When some mysterious Alien Easter Eggs cause trouble in Adventure Bay, the Paw Patrol and their Alien Friend will team up to catch them on the egg hunt!",
+      "airDate": "2025-03-31",
+      "streams": []
+    },
+    {
+      "id": "s11e36",
+      "season": 11,
+      "episode": 36,
+      "title": "Fire Rescue: Pups Save the Big BBQ",
+      "description": "Summary Adventure Bay is getting a Fire Station! When disaster strikes during the opening day BBQ, it's up to the PAW Patrol in their awesome new Fire Rescue Gear and Vehicles to put it out.",
+      "airDate": "2025-06-02",
+      "streams": []
+    },
+    {
+      "id": "s11e37",
+      "season": 11,
+      "episode": 37,
+      "title": "Fire Rescue: Pups Save Lizzy's Lemonade Blaze",
+      "description": "When Mayor Humdinger and his kitties accidentally set Lizzy's Lemonade Stand and parts of Foggy Bottom ablaze, it's up to the Fire Rescue pups to extinguish the fires!",
+      "airDate": "2025-06-03",
+      "streams": []
+    },
+    {
+      "id": "s11e38",
+      "season": 11,
+      "episode": 38,
+      "title": "Fire Rescue: Pups Save a Baby Goat Birthday",
+      "description": "When Farmer Yumi and Al's baby goat's birthday party goes up in flames, they call on the Fire Rescue Pups to put it out.",
+      "airDate": "2025-06-04",
+      "streams": []
+    },
+    {
+      "id": "s11e39",
+      "season": 11,
+      "episode": 39,
+      "title": "Fire Rescue: Pups Save a S'more-Mergency",
+      "description": "When Mayor Humdinger goes camping, he has just one thing on his mind: s'mores! But roasting marshmallows turns into a recipe for disaster!",
+      "airDate": "2025-06-05",
+      "streams": []
+    },
+    {
+      "id": "s11e40",
+      "season": 11,
+      "episode": 40,
+      "title": "Skye's Road Trip Rescue",
+      "description": "Skye, Liberty, and Everest head off on a road trip in a cool new RV. But when a baby deer, rabbit and bear go missing, the three pups must set aside their sight-seeing fun for a high-stakes triple rescue.",
+      "airDate": "2025-07-11",
+      "streams": []
+    },
+    {
+      "id": "s11e41",
+      "season": 11,
+      "episode": 41,
+      "title": "Pups Save a Pop Star",
+      "description": "",
+      "airDate": "2025-07-18",
+      "streams": []
+    },
+    {
+      "id": "s11e42",
+      "season": 11,
+      "episode": 42,
+      "title": "Pups Save the Meditation Dome",
+      "description": "",
+      "airDate": "2025-07-18",
+      "streams": []
+    },
+    {
+      "id": "s11e43",
+      "season": 11,
+      "episode": 43,
+      "title": "Pups Save Captain Crinkle-cut",
+      "description": "When Alex dons a french-fry costume, a flock of hungry seagulls carry him off, putting him in a series of perilous predicaments.",
+      "airDate": "2025-07-25",
+      "streams": []
+    },
+    {
+      "id": "s11e44",
+      "season": 11,
+      "episode": 44,
+      "title": "Pups Save the Big Nightlight",
+      "description": "Mayor Humdinger and the kitties take the lighthouse from Seal Island.",
+      "airDate": "2025-07-25",
+      "streams": []
+    },
+    {
+      "id": "s11e45",
+      "season": 11,
+      "episode": 45,
+      "title": "Pups Save the Space Kitty",
+      "description": "When Humdinger puts on a cat costume, the Alien Kid mistakes him for a real kitty in need of a home and beams Humdinger into his UFO!",
+      "airDate": "2025-08-01",
+      "streams": []
+    },
+    {
+      "id": "s11e46",
+      "season": 11,
+      "episode": 46,
+      "title": "Pups Save the Sea Sponges",
+      "description": "After a tiring deep-sea dive, Zuma dozes off and dreams about the life he might have if he never joined the PAW Patrol.",
+      "airDate": "2025-08-01",
+      "streams": []
+    },
+    {
+      "id": "s11e47",
+      "season": 11,
+      "episode": 47,
+      "title": "Pups Stop a Coconut Catapult",
+      "description": "",
+      "airDate": "2025-08-08",
+      "streams": []
+    },
+    {
+      "id": "s11e48",
+      "season": 11,
+      "episode": 48,
+      "title": "Pups Save Humdinger's Goose!",
+      "description": "",
+      "airDate": "2025-08-08",
+      "streams": []
+    },
+    {
+      "id": "s11e49",
+      "season": 11,
+      "episode": 49,
+      "title": "Fire Rescue: Pups Save the Flaming Flounder",
+      "description": "Francois' pants catch on fire, sending both the lighthouse and Cap'n Turbot's Flounder up in flames.",
+      "airDate": "2025-08-15",
+      "streams": []
+    },
+    {
+      "id": "s11e50",
+      "season": 11,
+      "episode": 50,
+      "title": "Fire Rescue: Pups Make the News",
+      "description": "A news crew is in town when Chickaletta accidently causes a fire.",
+      "airDate": "2025-08-15",
+      "streams": []
+    },
+    {
+      "id": "s12e1",
+      "season": 12,
+      "episode": 1,
+      "title": "Pups Save a Haunted Farm",
+      "description": "Farmer Yumi and Farmer Al get stuck in the Haunted Maze; it's up to the Paw Patrol to rescue the farmers and solve this spooky mystery.",
+      "airDate": "2025-10-17",
+      "streams": []
+    },
+    {
+      "id": "s12e2",
+      "season": 12,
+      "episode": 2,
+      "title": "Pups Save the Adventure Bay Boogie",
+      "description": "Sid Swashbuckle steals the Jack-O-Lantern Disco Ball at the Adventure Bay Boogie with C.",
+      "airDate": "2025-10-24",
+      "streams": []
+    },
+    {
+      "id": "s12e3",
+      "season": 12,
+      "episode": 3,
+      "title": "Katie's Arctic Road Trip",
+      "description": "Skye, Everest, Liberty and Katie go on a camping adventure and encounter a polar bear with a sweet tooth.",
+      "airDate": "2025-12-02",
+      "streams": []
+    },
+    {
+      "id": "s12e4",
+      "season": 12,
+      "episode": 4,
+      "title": "Pups Save a Magical Mishap",
+      "description": "When Julia and Julius put on a twin-credible magic show, they are convinced they accidentally turned Mr. Carter into a rabbit!",
+      "airDate": "2025-12-04",
+      "streams": []
+    },
+    {
+      "id": "s12e5",
+      "season": 12,
+      "episode": 5,
+      "title": "Pups Save Hummy Mummy's New Home",
+      "description": "A pair of alligators take Mayor Humdinger's mother, Helga Humdinger, on a wild ride across Foggy Bottom!",
+      "airDate": "2025-12-08",
+      "streams": []
+    },
+    {
+      "id": "s12e6",
+      "season": 12,
+      "episode": 6,
+      "title": "Pups Save Adventure Bakes",
+      "description": "Winnie Winnington is determined to beat Mayor Goodway and Chickaletta in a cooking competition to find Adventure Bay's best bakers.",
+      "airDate": "2025-12-10",
+      "streams": []
+    },
+    {
+      "id": "s12e7",
+      "season": 12,
+      "episode": 7,
+      "title": "Pups Save a Topiary Tal",
+      "description": "Mr. Park has trouble with a Chickaletta topiary, but when Digi and Tal try to help, things get worse!",
+      "airDate": "2025-12-15",
+      "streams": []
+    },
+    {
+      "id": "s12e8",
+      "season": 12,
+      "episode": 8,
+      "title": "Pups Save a Hum-Ball",
+      "description": "Humdinger creates havoc with a moose and geyser as he tours Yellowbone Park in his rolling Hum-Ball.",
+      "airDate": "2025-12-17",
+      "streams": []
+    },
+    {
+      "id": "s12e9",
+      "season": 12,
+      "episode": 9,
+      "title": "Pups Save a Big Brother",
+      "description": "Farmer Al and Yumi are expecting a baby, when Al thinks his beloved goat Garbie is running away!",
+      "airDate": "2025-12-19",
+      "streams": []
+    },
+    {
+      "id": "s12e10",
+      "season": 12,
+      "episode": 10,
+      "title": "Pups Save a Giant Baby",
+      "description": "Farmer Yumi dreams about what her new baby will be like when she's bigger.",
+      "airDate": "2025-12-22",
+      "streams": []
+    },
+    {
+      "id": "s12e11",
+      "season": 12,
+      "episode": 11,
+      "title": "Search & Rescue: Pups Save the Bike Race",
+      "description": "Adventure Bay is having a big bike race! With so many bikes on the road, it's going to be tough to keep everyone safe. Chase is on the case with his team of Search and Rescue Pups - a crew dedicated to keeping Adventure Bay as safe as possible!",
+      "airDate": "2026-02-24",
+      "streams": []
+    },
+    {
+      "id": "s12e12",
+      "season": 12,
+      "episode": 12,
+      "title": "Search & Rescue: Pups Save a Snack Snatcher",
+      "description": "When the Adventure Bay potluck food goes missing, the Safety and Rescue pups deputize the whole community to track it down.",
+      "airDate": "2026-02-25",
+      "streams": []
+    },
+    {
+      "id": "s12e13",
+      "season": 12,
+      "episode": 13,
+      "title": "Search & Rescue: Pups Save a Swept-Away Sweetheart",
+      "description": "Ms. Marjorie is paddleboarding out to celebrate her anniversary with Hurricane Harrigan on Seal Island when she mysteriously disappears!",
+      "airDate": "2026-02-26",
+      "streams": []
+    },
+    {
+      "id": "s12e14",
+      "season": 12,
+      "episode": 14,
+      "title": "Search & Rescue: the Mystery of the Missing Kitties",
+      "description": "Mayor Humdinger can't find his kitties, so he runs to the Safety and Rescue Pups for help!",
+      "airDate": "2026-02-26",
+      "streams": []
+    },
+    {
+      "id": "s12e15",
+      "season": 12,
+      "episode": 15,
+      "title": "Search and Rescue: Pups Help the Chickens Cross the Road",
+      "description": "Chickaletta's family is scattered around town, causing major traffic jams! The Safety and Rescue Pups have to help the chickens cross the road.",
+      "airDate": "2026-02-27",
+      "streams": []
+    },
+    {
+      "id": "s12e16",
+      "season": 12,
+      "episode": 16,
+      "title": "Search and Rescue: Pups Save a Lost Ryder",
+      "description": "Chase leads a pup-tastic mission to rescue a lost Ryder which involves clues, tools, and - Chewington?!",
+      "airDate": "2026-02-27",
+      "streams": []
+    },
+    {
+      "id": "s12e17",
+      "season": 12,
+      "episode": 17,
+      "title": "Pups Save the Goldfish",
+      "description": "Uncle Otis accidentally slips and tosses Julia and Julius' new goldfish, Marigold, into the river!",
+      "airDate": "2026-03-04",
+      "streams": []
+    },
+    {
+      "id": "s12e18",
+      "season": 12,
+      "episode": 18,
+      "title": "Pups Save a Flying Florist",
+      "description": "When Ms. Marjorie and Mr. Park don wingsuits to see a rare flower, a flying squirrel sends them off course!",
+      "airDate": "2026-03-04",
+      "streams": []
+    },
+    {
+      "id": "s12e19",
+      "season": 12,
+      "episode": 19,
+      "title": "Pups Save the Hum-Sprayer",
+      "description": "When Rubble's cousin Mix comes to town to paint a mural, Humdinger steals the paint and careens through the countryside.",
+      "airDate": "2026-03-04",
+      "streams": []
+    },
+    {
+      "id": "s12e20",
+      "season": 12,
+      "episode": 20,
+      "title": "Pups Save the Hot Springs",
+      "description": "When Rubble's cousin Mix comes to town to paint a mural, Humdinger steals the paint and careens through the countryside.",
+      "airDate": "2026-03-05",
+      "streams": []
+    },
+    {
+      "id": "s13e1",
+      "season": 13,
+      "episode": 1,
+      "title": "Pups Solve a Snap-N-Wrap Problem",
+      "description": "Before Chickaletta's playdate with Baby Yukiko, Mayor Goodway baby-proofs the playground, wrapping everything in rubbery Snap-N-Wrap - and gets stuck!",
+      "airDate": "2026-03-09",
+      "streams": []
+    },
+    {
+      "id": "s13e2",
+      "season": 13,
+      "episode": 2,
+      "title": "Pups Save Helga and the Dingers",
+      "description": "When Mayor Humdinger loses his voice on the day of the Annual Adventure Bay Sing-Off, a competition to find the best singer in town, someone else steps up to replace him.",
+      "airDate": "2026-03-10",
+      "streams": []
+    },
+    {
+      "id": "s13e3",
+      "season": 13,
+      "episode": 3,
+      "title": "Pups Save the Orienteers",
+      "description": "Things go wrong for Mr. Porter and Winnie Winnington at the orienteering relay in Yellowbone National Park.",
+      "airDate": "2026-03-11",
+      "streams": []
+    },
+    {
+      "id": "s13e4",
+      "season": 13,
+      "episode": 4,
+      "title": "Pups Save Teatime",
+      "description": "Mayor Goodway invites her friend Helga Humdinger, and her rival Mayor Humdinger, to City Hall for afternoon tea.",
+      "airDate": "2026-03-12",
+      "streams": []
+    },
+    {
+      "id": "s13e5",
+      "season": 13,
+      "episode": 5,
+      "title": "Pups and the Alien Grandpa",
+      "description": "Cap'n Turbot tells the tale of how he learned to speak fluent \"alien\" while shipwrecked with an Alien Grandpa!",
+      "airDate": "2026-06-05",
+      "streams": []
+    },
+    {
+      "id": "s13e6",
+      "season": 13,
+      "episode": 6,
+      "title": "Pups Save a Lemon-Loving Duckling",
+      "description": "A lemon-loving baby duckling from Yumi's Farm gets mixed up in a delivery to Lizzy's Lemonade Shoppe.",
+      "airDate": "2026-06-05",
+      "streams": []
+    },
+    {
+      "id": "s13e7",
+      "season": 13,
+      "episode": 7,
+      "title": "Pups Save a Hum-Kicker",
+      "description": "Mayor Humdinger turns up the power on his robotic soccer cleats, the 'Hum-Kickers', and starts wrecking the town!",
+      "airDate": "2026-06-12",
+      "streams": []
+    },
+    {
+      "id": "s13e8",
+      "season": 13,
+      "episode": 8,
+      "title": "Pups Save the One-Man Band",
+      "description": "Francois causes musical mayhem, as a one-man band, when he plans a special song for Wally's birthday.",
+      "airDate": "2026-06-12",
+      "streams": []
+    },
+    {
+      "id": "s13e9",
+      "season": 13,
+      "episode": 9,
+      "title": "Air Rescue: Pups Save the Mother Tree",
+      "description": "In the jungle, Tracker and Lucita Buena call on the Air Rescue Pups to help save an irreplaceable Mother Tree.",
+      "airDate": "2026-06-19",
+      "streams": []
+    },
+    {
+      "id": "s13e10",
+      "season": 13,
+      "episode": 10,
+      "title": "Pups Save the Ice Cream Truck",
+      "description": "When the freezer in Mr. Porter's new Ice Cream Truck breaks, it's up to the PAW Patrol to fix the freezer before everything melts!",
+      "airDate": "2026-06-19",
+      "streams": []
+    },
+    {
+      "id": "s13e11",
+      "season": 13,
+      "episode": 11,
+      "title": "Pups Save a Woodland Walrus",
+      "description": "After stowing away on the Turbots' camping trip, Wally the walrus gets stuck in a mountain crevasse! It's up to Everest and the PAW Patrol to rescue him.",
+      "airDate": "2026-06-26",
+      "streams": []
+    },
+    {
+      "id": "s13e12",
+      "season": 13,
+      "episode": 12,
+      "title": "Pups Save a DJ in a Jam",
+      "description": "Mayor Humdinger challenges Rubble for the right to deejay a dance party on Jake's Mountain.",
+      "airDate": "2026-06-26",
+      "streams": []
+    },
+    {
+      "id": "s13e13",
+      "season": 13,
+      "episode": 13,
+      "title": "Pups and the Digi Tal Safety Suit",
+      "description": "After Danny's baseball accident, Digi and Tal create a bouncy safety suit for him to wear. But when Danny bounces away, the PAW Patrol have to find him.",
+      "airDate": "2026-07-10",
+      "streams": []
+    },
+    {
+      "id": "s13e14",
+      "season": 13,
+      "episode": 14,
+      "title": "Pups Put a Mouse on the Move",
+      "description": "Francois' fancy fromage goes missing before the cheese competition, and with Chase's nose plagued by allergies, he enlists Squeak the mouse to lead the rescue!",
+      "airDate": "2026-07-10",
+      "streams": []
+    },
+    {
+      "id": "s13e15",
+      "season": 13,
+      "episode": 15,
+      "title": "Pups Save a Solar System",
+      "description": "Francois builds a person-sized solar system attraction to celebrate the appearance of a shooting star. But when the remote control goes haywire, it sends the attraction soaring.",
+      "airDate": "2026-07-17",
+      "streams": []
+    },
+    {
+      "id": "s13e16",
+      "season": 13,
+      "episode": 16,
+      "title": "Pups Save the Suitcase",
+      "description": "Lizzy returns from Adventure City with a priceless family heirloom. But when her bag gets mixed up with Danny's stunt bag, the PAW Patrol need to find him and swap the cases before Danny gets hurt.",
+      "airDate": "2026-07-17",
+      "streams": []
+    },
+    {
+      "id": "s13e17",
+      "season": 13,
+      "episode": 17,
+      "title": "Fire Rescue: Pups and the Missing Water Mystery",
+      "description": "When Mr. Park's rooftop garden accidentally catches fire, the Fire Rescue Pups make a terrible discovery: there's no water in Adventure Bay! Marshall and Skye go in search of a solution to the missing water mystery before the flames start to spread.",
+      "airDate": "2026-07-24",
+      "streams": []
+    },
+    {
+      "id": "s13e18",
+      "season": 13,
+      "episode": 18,
+      "title": "Pups Save a Squirrely Cabin",
+      "description": "A trio of mischievous squirrels have concocted a plan to take over Jake's cozy mountain cabin. Now it's up to Everest and the pups to rescue Jake and find a way to get his home back.",
+      "airDate": "2026-07-24",
+      "streams": []
+    },
+    {
+      "id": "s13e19",
+      "season": 13,
+      "episode": 19,
+      "title": "Pups Save the Dino Chicken",
+      "description": "",
+      "airDate": "2026-09-07",
+      "streams": []
+    },
+    {
+      "id": "s14e1",
+      "season": 14,
+      "episode": 1,
+      "title": "Pups Stop the Garboni",
+      "description": "Farmer Al's new machine, the Garboni goes haywire, and it's up to Ryder and the PAW Patrol to stop it before it gives them the slip.",
+      "airDate": "2026-07-31",
+      "streams": []
+    },
+    {
+      "id": "s14e2",
+      "season": 14,
+      "episode": 2,
+      "title": "Pups Save the Porcupine",
+      "description": "The PAW Patrol have to catch a trouble making sleepy porcupine and bring it back to the woods.",
+      "airDate": "2026-07-31",
+      "streams": []
+    },
+    {
+      "id": "s14e3",
+      "season": 14,
+      "episode": 3,
+      "title": "Pups and the Ace of the Skies",
+      "description": "Ace's plane gets stuck in the mountains while giving pilot lessons to Skye and it's up to the PAW Patrol to rescue the stranded pilots.",
+      "airDate": "2026-08-07",
+      "streams": []
+    },
+    {
+      "id": "s14e4",
+      "season": 14,
+      "episode": 4,
+      "title": "Pups Save the Babysitter",
+      "description": "Roles are reversed when Priya has to save the PAW Patrol when animal hijinks ensue.",
+      "airDate": "2026-08-07",
+      "streams": []
+    },
+    {
+      "id": "s14e5",
+      "season": 14,
+      "episode": 5,
+      "title": "Pups Save a Splashy Bottom",
+      "description": "The Pups are on the case when mechanical issues occur at the new water park, Splashy Bottom.",
+      "airDate": "2026-08-14",
+      "streams": []
+    },
+    {
+      "id": "s14e6",
+      "season": 14,
+      "episode": 6,
+      "title": "Pups Save a Daring Tour Guide",
+      "description": "The Pups have to save ancient relics when hijinks ensue at Danny's new job at the Museum.",
+      "airDate": "2026-08-14",
+      "streams": []
+    },
+    {
+      "id": "s14e7",
+      "season": 14,
+      "episode": 7,
+      "title": "Pups Save the Farm Festival",
+      "description": "The pups are on the hunt for a mysterious critter chewing up everything in sight at the farm.",
+      "airDate": "2026-08-21",
+      "streams": []
+    },
+    {
+      "id": "s14e8",
+      "season": 14,
+      "episode": 8,
+      "title": "Pups and the Bubble Bath Bay!",
+      "description": "Rocky falls asleep while avoiding a bath at the Pet Parlor and dreams of a sudsy adventure.",
+      "airDate": "2026-08-21",
+      "streams": []
+    },
+    {
+      "id": "s14e9",
+      "season": 14,
+      "episode": 9,
+      "title": "Pups vs. the Dino Doubles",
+      "description": "Humdinger wants to be mayor of Dino Island and uses a duplicator to make copies of dinosaurs. The PAW Patrol must enlist the help of the island's dinosaurs to stop Mayor Humdinger.",
+      "airDate": "2026-09-04",
+      "streams": []
+    },
+    {
+      "id": "s14e10",
+      "season": 14,
+      "episode": 10,
+      "title": "Pups Save Dino Digi and Tal",
+      "description": "Digi & Tal are visiting Dino Island to help Rex with dinosaur safety. When they take safety too far, they accidentally put the island at risk.",
+      "airDate": "2026-09-11",
+      "streams": []
+    },
+    {
+      "id": "s14e11",
+      "season": 14,
+      "episode": 11,
+      "title": "Pups Save a Dino Daredevil",
+      "description": "When Daring Danny X's epic dino-stunt goes awry, he winds up with a grouchy Spinosaurus on his trail!",
+      "airDate": "2026-09-11",
+      "streams": []
+    },
+    {
+      "id": "s14e12",
+      "season": 14,
+      "episode": 12,
+      "title": "Pups Save a Dino Documentary",
+      "description": "Vanessa Pressley is on Dino Island to film her new dino documentary. Her and the cameraman get carried off by a Brachiosaurus.",
+      "airDate": "2026-09-18",
+      "streams": []
+    },
+    {
+      "id": "s14e13",
+      "season": 14,
+      "episode": 13,
+      "title": "Pups Save a Grump-a-saurus",
+      "description": "Humdinger and Helga visit Dino Island, and get trapped in a cave. The pups have to save everyone before hot lava spills!",
+      "airDate": "2026-09-18",
+      "streams": []
+    },
+    {
+      "id": "s14e14",
+      "season": 14,
+      "episode": 14,
+      "title": "Pups vs The Velociraptors!",
+      "description": "",
+      "airDate": "2026-09-23",
+      "streams": []
+    },
+    {
+      "id": "s14e15",
+      "season": 14,
+      "episode": 15,
+      "title": "Pups Save a T-Rex in Trouble",
+      "description": "",
+      "airDate": "2026-09-23",
+      "streams": []
+    },
+    {
+      "id": "s14e16",
+      "season": 14,
+      "episode": 16,
+      "title": "Pups and the Clumsy Heroes!",
+      "description": "",
+      "airDate": "2026-09-28",
+      "streams": []
+    },
+    {
+      "id": "s14e17",
+      "season": 14,
+      "episode": 17,
+      "title": "Pups Save the Baby Brachiosaurus!",
+      "description": "",
+      "airDate": "2026-09-30",
+      "streams": []
+    },
+    {
+      "id": "s14e18",
+      "season": 14,
+      "episode": 18,
+      "title": "Pups and the Dino Racers",
+      "description": "",
+      "airDate": "2026-09-30",
+      "streams": []
+    }
+  ]
+}

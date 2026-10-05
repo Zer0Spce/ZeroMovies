@@ -2,7 +2,8 @@
   "schemaVersion": 1,
   "id": "tmdb-series-1396",
   "title": "Breaking Bad",
-  "checkedAt": "2026-10-03T01:26:00Z",
+  "partial": true,
+  "checkedAt": "2026-10-05T01:56:23.181Z",
   "episodes": [
     {
       "id": "s1e1",
@@ -65,6 +66,501 @@
       "title": "A No Rough Stuff Type Deal",
       "description": "Walter accepts his new identity as a drug dealer after a PTA meeting. Elsewhere, Jesse decides to put his aunt's house on the market and Skyler is the recipient of a baby shower.",
       "airDate": "2008-03-09",
+      "streams": []
+    },
+    {
+      "id": "s2e1",
+      "season": 2,
+      "episode": 1,
+      "title": "Seven Thirty-Seven",
+      "description": "Walt and Jesse are vividly reminded of Tuco’s volatile nature, and try to figure a way out of their business partnership. Hank attempts to mend fences between the estranged Marie and Skyler.",
+      "airDate": "2009-03-08",
+      "streams": []
+    },
+    {
+      "id": "s2e2",
+      "season": 2,
+      "episode": 2,
+      "title": "Grilled",
+      "description": "Walt and Jesse find themselves in close quarters with an unhinged Tuco. Marie and Hank comfort Skyler, who is distraught over Walt’s disappearance. Hank pays a visit to Mrs. Pinkman on some not-so-official business.",
+      "airDate": "2009-03-15",
+      "streams": []
+    },
+    {
+      "id": "s2e3",
+      "season": 2,
+      "episode": 3,
+      "title": "Bit by a Dead Bee",
+      "description": "Walt and Jesse become short on cash when they try to cover their tracks. Meanwhile, the DEA has a lead that could them straight to Walt and Jesse.",
+      "airDate": "2009-03-22",
+      "streams": []
+    },
+    {
+      "id": "s2e4",
+      "season": 2,
+      "episode": 4,
+      "title": "Down",
+      "description": "Walt attempts to reconnect with his family, while Jesse struggles to rebuild his life.",
+      "airDate": "2009-03-29",
+      "streams": []
+    },
+    {
+      "id": "s2e5",
+      "season": 2,
+      "episode": 5,
+      "title": "Breakage",
+      "description": "Hank suffers from the aftermath of his encounter with Tuco. Meanwhile, Jesse hires a crew to get their product out on the streets.",
+      "airDate": "2009-04-05",
+      "streams": []
+    },
+    {
+      "id": "s2e6",
+      "season": 2,
+      "episode": 6,
+      "title": "Peekaboo",
+      "description": "Walt's secret is in jeopardy when Skyler thanks Gretchen for paying for his treatment.",
+      "airDate": "2009-04-12",
+      "streams": []
+    },
+    {
+      "id": "s2e7",
+      "season": 2,
+      "episode": 7,
+      "title": "Negro y Azul",
+      "description": "Jesse and Walt discuss expanding into new territories; Hank struggles to fit in; Skyler pursues a new job opportunity; Jesse gets to know his landlord.",
+      "airDate": "2009-04-19",
+      "streams": []
+    },
+    {
+      "id": "s2e8",
+      "season": 2,
+      "episode": 8,
+      "title": "Better Call Saul",
+      "description": "Walt and Jesse seek advice from a shady attorney when Badger gets in trouble with the law; the DEA believes they have caught up with \"Heisenberg\" ; Hank returns.",
+      "airDate": "2009-04-26",
+      "streams": []
+    },
+    {
+      "id": "s2e9",
+      "season": 2,
+      "episode": 9,
+      "title": "4 Days Out",
+      "description": "Walt and his family wait for news after he undergoes a PET-CT scan. Walt follows Saul's advice; Jesse's relationship with Jane is put on hold when he and Walt head to the desert for a marathon of cooking.",
+      "airDate": "2009-05-03",
+      "streams": []
+    },
+    {
+      "id": "s2e10",
+      "season": 2,
+      "episode": 10,
+      "title": "Over",
+      "description": "Walt and Hank get into a heated argument at a party. Skyler opens up to her boss. Jane hides her relationship with Jesse from her father.",
+      "airDate": "2009-05-10",
+      "streams": []
+    },
+    {
+      "id": "s2e11",
+      "season": 2,
+      "episode": 11,
+      "title": "Mandala",
+      "description": "As the end of her pregnancy finds Skyler conflicted about her feelings, a dealer's death forces Walt to look for somewhere to unload a load of meth.",
+      "airDate": "2009-05-17",
+      "streams": []
+    },
+    {
+      "id": "s2e12",
+      "season": 2,
+      "episode": 12,
+      "title": "Phoenix",
+      "description": "As Walt explores money laundering options, he and Jesse spar over the profits from their latest deal. Jesse and Jane clash with her father. Walt makes a fatal decision.",
+      "airDate": "2009-05-24",
+      "streams": []
+    },
+    {
+      "id": "s2e13",
+      "season": 2,
+      "episode": 13,
+      "title": "ABQ",
+      "description": "Skyler confronts Walt about his secrecy; Jesse falls apart; and Jane's grief-stricken father takes action that results in further tragedy.",
+      "airDate": "2009-05-31",
+      "streams": []
+    },
+    {
+      "id": "s3e1",
+      "season": 3,
+      "episode": 1,
+      "title": "No Más",
+      "description": "Walt faces a new threat, on a new front and deals with an increasingly angry Skyler, who must consider what to do next with her life and the kids. Meanwhile, Jesse comes face-to-face with some startling self-revelations.",
+      "airDate": "2010-03-21",
+      "streams": []
+    },
+    {
+      "id": "s3e2",
+      "season": 3,
+      "episode": 2,
+      "title": "Caballo sin Nombre",
+      "description": "Despite ever-increasing tension between Walt and Skyler, he pulls out all the stops in an effort to reconcile with the family. Elsewhere, Saul is instrumental in getting Jesse involved in a most-unusual investment opportunity.",
+      "airDate": "2010-03-28",
+      "streams": []
+    },
+    {
+      "id": "s3e3",
+      "season": 3,
+      "episode": 3,
+      "title": "I.F.T.",
+      "description": "Walt ignores Skyler's demands, furthering the rift between them and pushing her to break bad. Still suffering from panic and anxiety attacks, Hank crosses a line at work.",
+      "airDate": "2010-04-04",
+      "streams": []
+    },
+    {
+      "id": "s3e4",
+      "season": 3,
+      "episode": 4,
+      "title": "Green Light",
+      "description": "Walt loses control as he reacts to Skyler's news, endangering his job and relationships with Saul and Jesse. Hank throws himself into his blue meth investigation. Jesse enacts a new plan.",
+      "airDate": "2010-04-11",
+      "streams": []
+    },
+    {
+      "id": "s3e5",
+      "season": 3,
+      "episode": 5,
+      "title": "Más",
+      "description": "Gus increases his efforts to lure Walt back into business, forcing a rift between Walt and Jesse. Skyler doubts her new relationship. Marie confides in Skyler about her concern for Hank's well-being.",
+      "airDate": "2010-04-18",
+      "streams": []
+    },
+    {
+      "id": "s3e6",
+      "season": 3,
+      "episode": 6,
+      "title": "Sunset",
+      "description": "Walt settles into his new surroundings; Walt, Jr. wants answers about his parents' relationship; Hank's investigation causes problems for Walt and Jesse.",
+      "airDate": "2010-04-25",
+      "streams": []
+    },
+    {
+      "id": "s3e7",
+      "season": 3,
+      "episode": 7,
+      "title": "One Minute",
+      "description": "Hank's increasing volatility forces a confrontation with Jesse and trouble at work. Skyler pressures Walt to make a deal. Gus' actions have severe consequences.",
+      "airDate": "2010-05-02",
+      "streams": []
+    },
+    {
+      "id": "s3e8",
+      "season": 3,
+      "episode": 8,
+      "title": "I See You",
+      "description": "The family waits for news about Hank. While Jesse covers at the lab, Walt attempts to placate Gus. After witnessing a disturbing outburst, Walt worries he and his family are in danger.",
+      "airDate": "2010-05-09",
+      "streams": []
+    },
+    {
+      "id": "s3e9",
+      "season": 3,
+      "episode": 9,
+      "title": "Kafkaesque",
+      "description": "As Hank's hospital bills stack up, Skyler hatches a plan. Walt and Gus come to a better understanding. Jesse, looking for more independence, pursues a new opportunity.",
+      "airDate": "2010-05-16",
+      "streams": []
+    },
+    {
+      "id": "s3e10",
+      "season": 3,
+      "episode": 10,
+      "title": "Fly",
+      "description": "Walt becomes obsessed with a contaminant in the lab and refuses to finish the cook until it is eliminated. A frustrated Jesse attempts to get Walt back on track.",
+      "airDate": "2010-05-23",
+      "streams": []
+    },
+    {
+      "id": "s3e11",
+      "season": 3,
+      "episode": 11,
+      "title": "Abiquiu",
+      "description": "Skyler gets involved with Walt's business. Hank struggles with his recovery. Jesse makes a startling discovery after meeting a girl at group therapy.",
+      "airDate": "2010-05-30",
+      "streams": []
+    },
+    {
+      "id": "s3e12",
+      "season": 3,
+      "episode": 12,
+      "title": "Half Measures",
+      "description": "Against Walt's advice, Jesse lashes out. Fearing for Jesse's safety, Walt takes drastic action to intervene and tragic event leads to a shocking confrontation.",
+      "airDate": "2010-06-06",
+      "streams": []
+    },
+    {
+      "id": "s3e13",
+      "season": 3,
+      "episode": 13,
+      "title": "Full Measure",
+      "description": "With Jesse on the run and Mike in hot pursuit, Walt negotiates a bargain with Gus and concocts a disturbing plan to provide for his and Jesse's safety.",
+      "airDate": "2010-06-13",
+      "streams": []
+    },
+    {
+      "id": "s4e1",
+      "season": 4,
+      "episode": 1,
+      "title": "Box Cutter",
+      "description": "Walt and Jesse face the deadly consequences of their actions. Skyler deals with a puzzling disappearance, as Marie struggles to help Hank with his recovery.",
+      "airDate": "2011-07-17",
+      "streams": []
+    },
+    {
+      "id": "s4e2",
+      "season": 4,
+      "episode": 2,
+      "title": "Thirty-Eight Snub",
+      "description": "Walt attempts to form a new alliance as he plans his next move. Skyler pushes Walt towards a business opportunity, in hopes of protecting the family.",
+      "airDate": "2011-07-24",
+      "streams": []
+    },
+    {
+      "id": "s4e3",
+      "season": 4,
+      "episode": 3,
+      "title": "Open House",
+      "description": "Events spiral out of control at Jesse's place. Skyler reluctantly asks for Saul's help. Marie returns to an old pastime and a friend asks Hank for help.",
+      "airDate": "2011-07-31",
+      "streams": []
+    },
+    {
+      "id": "s4e4",
+      "season": 4,
+      "episode": 4,
+      "title": "Bullet Points",
+      "description": "The Cartel takes steps to gain the upper hand. Walt and Skyler share an embarrassing secret with the rest of the family. Jesse's activities draw unwanted attention.",
+      "airDate": "2011-08-07",
+      "streams": []
+    },
+    {
+      "id": "s4e5",
+      "season": 4,
+      "episode": 5,
+      "title": "Shotgun",
+      "description": "When Jesse goes missing, Walt fears the worst. Skyler has an unlikely reunion. Hank shares some bad news with Detective Tim Roberts.",
+      "airDate": "2011-08-14",
+      "streams": []
+    },
+    {
+      "id": "s4e6",
+      "season": 4,
+      "episode": 6,
+      "title": "Cornered",
+      "description": "Skyler makes an unsettling discovery. Walter, Jr. pushes his dad into a questionable purchase. Jesse offers Mike some unexpected help.",
+      "airDate": "2011-08-21",
+      "streams": []
+    },
+    {
+      "id": "s4e7",
+      "season": 4,
+      "episode": 7,
+      "title": "Problem Dog",
+      "description": "A frustrated Walt gambles on a risky new plan. Skyler's business venture hits a snag. Hank recruits Walter, Jr. for an unusual outing.",
+      "airDate": "2011-08-28",
+      "streams": []
+    },
+    {
+      "id": "s4e8",
+      "season": 4,
+      "episode": 8,
+      "title": "Hermanos",
+      "description": "Skyler develops an unusual solution to her money troubles. Hank enlists Walt to investigate a theory. Walt's impatience with Jesse grows.",
+      "airDate": "2011-09-04",
+      "streams": []
+    },
+    {
+      "id": "s4e9",
+      "season": 4,
+      "episode": 9,
+      "title": "Bug",
+      "description": "Skyler's past mistakes come back to haunt her. Gus takes action to thwart his rivals. Jesse seeks Walt's help, with mixed results.",
+      "airDate": "2011-09-11",
+      "streams": []
+    },
+    {
+      "id": "s4e10",
+      "season": 4,
+      "episode": 10,
+      "title": "Salud",
+      "description": "Walt's family worries when he doesn't turn up for Walter, Jr.'s 16th birthday. Jesse is forced to put his lab skills to the test without Mr. White's help.",
+      "airDate": "2011-09-18",
+      "streams": []
+    },
+    {
+      "id": "s4e11",
+      "season": 4,
+      "episode": 11,
+      "title": "Crawl Space",
+      "description": "Walt takes drastic action to protect his secret and Gus. Skyler's efforts to solve Ted's financial problems hit a wall.",
+      "airDate": "2011-09-25",
+      "streams": []
+    },
+    {
+      "id": "s4e12",
+      "season": 4,
+      "episode": 12,
+      "title": "End Times",
+      "description": "Hank pushes Gomez to pursue one last lead, while Walt struggles to protect the family. Jesse gets alarming news and rushes to meet with Mr. White.",
+      "airDate": "2011-10-02",
+      "streams": []
+    },
+    {
+      "id": "s4e13",
+      "season": 4,
+      "episode": 13,
+      "title": "Face Off",
+      "description": "Walt and Jesse team up to take on Gus. With Saul's help, Walt finds an unexpected ally.",
+      "airDate": "2011-10-09",
+      "streams": []
+    },
+    {
+      "id": "s5e1",
+      "season": 5,
+      "episode": 1,
+      "title": "Live Free or Die",
+      "description": "As Walt deals with the aftermath of the Casa Tranquila explosion, Hank works to wrap up his investigation of Gus' empire.",
+      "airDate": "2012-07-15",
+      "streams": []
+    },
+    {
+      "id": "s5e2",
+      "season": 5,
+      "episode": 2,
+      "title": "Madrigal",
+      "description": "Walt and Jesse pursue an unlikely business partner. The DEA filters through various leads in hopes of finding something.",
+      "airDate": "2012-07-22",
+      "streams": []
+    },
+    {
+      "id": "s5e3",
+      "season": 5,
+      "episode": 3,
+      "title": "Hazard Pay",
+      "description": "Walt and Jesse formulate a new business plan. Walt shares a secret with Marie.",
+      "airDate": "2012-07-29",
+      "streams": []
+    },
+    {
+      "id": "s5e4",
+      "season": 5,
+      "episode": 4,
+      "title": "Fifty-One",
+      "description": "Walt celebrates another birthday. Skyler contemplates her options, and an associate puts a crimp in Walt and Jesse's business strategy.",
+      "airDate": "2012-08-05",
+      "streams": []
+    },
+    {
+      "id": "s5e5",
+      "season": 5,
+      "episode": 5,
+      "title": "Dead Freight",
+      "description": "Walt's team gets creative to obtain the methylamine they need to continue their operation.",
+      "airDate": "2012-08-12",
+      "streams": []
+    },
+    {
+      "id": "s5e6",
+      "season": 5,
+      "episode": 6,
+      "title": "Buyout",
+      "description": "Walt, Jesse, and Mike struggle over the future of their business, as occupational hazards weigh on Jesse.",
+      "airDate": "2012-08-19",
+      "streams": []
+    },
+    {
+      "id": "s5e7",
+      "season": 5,
+      "episode": 7,
+      "title": "Say My Name",
+      "description": "Walt takes control of business matters; Mike deals with the consequences of his actions.",
+      "airDate": "2012-08-26",
+      "streams": []
+    },
+    {
+      "id": "s5e8",
+      "season": 5,
+      "episode": 8,
+      "title": "Gliding Over All",
+      "description": "Walt takes care of loose ends; Walt makes a dangerous decision.",
+      "airDate": "2012-09-02",
+      "streams": []
+    },
+    {
+      "id": "s5e9",
+      "season": 5,
+      "episode": 9,
+      "title": "Blood Money",
+      "description": "As Walt and Jesse adjust to life out of the business, Hank grapples with a troubling lead.",
+      "airDate": "2013-08-11",
+      "streams": []
+    },
+    {
+      "id": "s5e10",
+      "season": 5,
+      "episode": 10,
+      "title": "Buried",
+      "description": "While Skyler's past catches up with her, Walt covers his tracks. Jesse continues to struggle with his guilt.",
+      "airDate": "2013-08-18",
+      "streams": []
+    },
+    {
+      "id": "s5e11",
+      "season": 5,
+      "episode": 11,
+      "title": "Confessions",
+      "description": "Jesse decides to make a change, while Walt and Skyler try to deal with an unexpected demand.",
+      "airDate": "2013-08-25",
+      "streams": []
+    },
+    {
+      "id": "s5e12",
+      "season": 5,
+      "episode": 12,
+      "title": "Rabid Dog",
+      "description": "An unusual strategy starts to bear fruit, while plans are set in motion that could change everything.",
+      "airDate": "2013-09-01",
+      "streams": []
+    },
+    {
+      "id": "s5e13",
+      "season": 5,
+      "episode": 13,
+      "title": "To'hajiilee",
+      "description": "Things heat up for Walt in unexpected ways.",
+      "airDate": "2013-09-08",
+      "streams": []
+    },
+    {
+      "id": "s5e14",
+      "season": 5,
+      "episode": 14,
+      "title": "Ozymandias",
+      "description": "Everyone copes with radically changed circumstances.",
+      "airDate": "2013-09-15",
+      "streams": []
+    },
+    {
+      "id": "s5e15",
+      "season": 5,
+      "episode": 15,
+      "title": "Granite State",
+      "description": "Events set in motion long ago move toward a conclusion.",
+      "airDate": "2013-09-22",
+      "streams": []
+    },
+    {
+      "id": "s5e16",
+      "season": 5,
+      "episode": 16,
+      "title": "Felina",
+      "description": "All bad things must come to an end.",
+      "airDate": "2013-09-29",
       "streams": []
     }
   ]

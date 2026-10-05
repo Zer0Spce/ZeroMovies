@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "id": "tmdb-series-87108",
+  "title": "Chernobyl",
+  "partial": true,
+  "checkedAt": "2026-10-05T01:56:46.993Z",
+  "episodes": [
+    {
+      "id": "s1e1",
+      "season": 1,
+      "episode": 1,
+      "title": "1:23:45",
+      "description": "April 26, 1986, Ukrainian SSR. Plant workers and firefighters put their lives on the line to control a catastrophic 1986 explosion at a Soviet nuclear power plant.",
+      "airDate": "2019-05-06",
+      "streams": []
+    },
+    {
+      "id": "s1e2",
+      "season": 1,
+      "episode": 2,
+      "title": "Please Remain Calm",
+      "description": "With untold millions at risk after the Chernobyl explosion, nuclear physicist Ulana Khomyuk makes a desperate attempt to reach Valery Legasov, a leading Soviet nuclear physicist, and warn him about the threat of second explosion that could devastate the continent.",
+      "airDate": "2019-05-13",
+      "streams": []
+    },
+    {
+      "id": "s1e3",
+      "season": 1,
+      "episode": 3,
+      "title": "Open Wide, O Earth",
+      "description": "Lyudmilla Ignatenko, a Pripyat resident, ignores warning about her firefighter husband's contamination. Valery Legasov lays out a decontamination plan, complete with human risks.",
+      "airDate": "2019-05-20",
+      "streams": []
+    },
+    {
+      "id": "s1e4",
+      "season": 1,
+      "episode": 4,
+      "title": "The Happiness of All Mankind",
+      "description": "Valery Legasov and Soviet Deputy Prime Minister Boris Shcherbina consider using lunar rovers to remove radioactive debris, while Ulana Khomyuk faces government hurdles in determining the truth about the cause of the explosion.",
+      "airDate": "2019-05-27",
+      "streams": []
+    },
+    {
+      "id": "s1e5",
+      "season": 1,
+      "episode": 5,
+      "title": "Vichnaya Pamyat",
+      "description": "Valery Legasov, Boris Shcherbina and Ulana Khomyuk risk their lives and reputations to expose the truth about Chernobyl.",
+      "airDate": "2019-06-03",
+      "streams": []
+    }
+  ]
+}

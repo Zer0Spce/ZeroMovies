@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "id": "tmdb-series-299167",
+  "title": "Dutton Ranch",
+  "partial": true,
+  "checkedAt": "2026-10-05T01:56:17.793Z",
+  "episodes": [
+    {
+      "id": "s1e1",
+      "season": 1,
+      "episode": 1,
+      "title": "The Untold Want",
+      "description": "Beth and Rip fight to rebuild their lives in Texas.",
+      "airDate": "2026-05-15",
+      "streams": []
+    },
+    {
+      "id": "s1e2",
+      "season": 1,
+      "episode": 2,
+      "title": "Earn Another Day",
+      "description": "Beth and Rip work to forge their new life in Rio Paloma.",
+      "airDate": "2026-05-15",
+      "streams": []
+    },
+    {
+      "id": "s1e3",
+      "season": 1,
+      "episode": 3,
+      "title": "Act of God Business",
+      "description": "As Beth fights to secure their business, Rip confronts a deadly threat.",
+      "airDate": "2026-05-22",
+      "streams": []
+    },
+    {
+      "id": "s1e4",
+      "season": 1,
+      "episode": 4,
+      "title": "Start with a Bullet",
+      "description": "Beth and Rip are pushed to take drastic measures. Beulah tightens her grip.",
+      "airDate": "2026-05-29",
+      "streams": []
+    },
+    {
+      "id": "s1e5",
+      "season": 1,
+      "episode": 5,
+      "title": "Peaceful Find Peace",
+      "description": "Beth offers Beulah a high‑stakes deal to secure both their futures.",
+      "airDate": "2026-06-05",
+      "streams": []
+    },
+    {
+      "id": "s1e6",
+      "season": 1,
+      "episode": 6,
+      "title": "A Cowboy Saint",
+      "description": "Beth and Beulah chase a deal that could alter everything.",
+      "airDate": "2026-06-12",
+      "streams": []
+    },
+    {
+      "id": "s1e7",
+      "season": 1,
+      "episode": 7,
+      "title": "Den of Sin",
+      "description": "A lavish 10 Petal celebration unfolds with Beulah at the helm.",
+      "airDate": "2026-06-19",
+      "streams": []
+    },
+    {
+      "id": "s1e8",
+      "season": 1,
+      "episode": 8,
+      "title": "Whiskey Limits",
+      "description": "A gathering storm shakes Rio Paloma, testing everyone's bonds.",
+      "airDate": "2026-06-26",
+      "streams": []
+    },
+    {
+      "id": "s1e9",
+      "season": 1,
+      "episode": 9,
+      "title": "El Padrino",
+      "description": "Rip and Beth confront a danger that threatens everything",
+      "airDate": "2026-07-03",
+      "streams": []
+    }
+  ]
+}

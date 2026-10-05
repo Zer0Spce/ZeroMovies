@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "id": "tmdb-series-207840",
+  "title": "Harem Camp!",
+  "partial": true,
+  "checkedAt": "2026-10-05T01:57:07.691Z",
+  "episodes": [
+    {
+      "id": "s1e1",
+      "season": 1,
+      "episode": 1,
+      "title": "Can We Sleep in Your Tent?",
+      "description": "The story follows teacher and veteran solo camper Kensuke, who forms a camping group with four girls.",
+      "airDate": "2022-10-03",
+      "streams": []
+    },
+    {
+      "id": "s1e2",
+      "season": 1,
+      "episode": 2,
+      "title": "Shall We Enjoy the Mixed Hot Springs?",
+      "description": "The story follows teacher and veteran solo camper Kensuke, who forms a camping group with four girls.",
+      "airDate": "2022-10-10",
+      "streams": []
+    },
+    {
+      "id": "s1e3",
+      "season": 1,
+      "episode": 3,
+      "title": "I Want to Show You More.",
+      "description": "The story follows teacher and veteran solo camper Kensuke, who forms a camping group with four girls.",
+      "airDate": "2022-10-17",
+      "streams": []
+    },
+    {
+      "id": "s1e4",
+      "season": 1,
+      "episode": 4,
+      "title": "Did We Cross the Line at the Tent?",
+      "description": "The story follows teacher and veteran solo camper Kensuke, who forms a camping group with four girls.",
+      "airDate": "2022-10-31",
+      "streams": []
+    },
+    {
+      "id": "s1e5",
+      "season": 1,
+      "episode": 5,
+      "title": "It's All About Discipline.",
+      "description": "The story follows teacher and veteran solo camper Kensuke, who forms a camping group with four girls.",
+      "airDate": "2022-11-07",
+      "streams": []
+    },
+    {
+      "id": "s1e6",
+      "season": 1,
+      "episode": 6,
+      "title": "You're Going to Have to Deal with All Three of Us Together, Okay?",
+      "description": "The story follows teacher and veteran solo camper Kensuke, who forms a camping group with four girls.",
+      "airDate": "2022-11-14",
+      "streams": []
+    },
+    {
+      "id": "s1e7",
+      "season": 1,
+      "episode": 7,
+      "title": "I Can't Stand It When It's Outdoors.",
+      "description": "The story follows teacher and veteran solo camper Kensuke, who forms a camping group with four girls.",
+      "airDate": "2022-11-28",
+      "streams": []
+    },
+    {
+      "id": "s1e8",
+      "season": 1,
+      "episode": 8,
+      "title": "Putting a Peg on a Tender Heart.",
+      "description": "The story follows teacher and veteran solo camper Kensuke, who forms a camping group with four girls.",
+      "airDate": "2022-12-05",
+      "streams": []
+    }
+  ]
+}

@@ -1,0 +1,1404 @@
+{
+  "schemaVersion": 1,
+  "id": "tmdb-series-65334",
+  "title": "Miraculous: Tales of Ladybug & Cat Noir",
+  "partial": true,
+  "checkedAt": "2026-10-05T01:57:14.020Z",
+  "episodes": [
+    {
+      "id": "s1e1",
+      "season": 1,
+      "episode": 1,
+      "title": "Stormy Weather",
+      "description": "The loser of a kids-channel contest gets akumatized by Hawk Moth. Now Stormy Weather, she takes revenge on those who did not vote for her.  Dark skies await for our superheroes!",
+      "airDate": "2015-10-19",
+      "streams": []
+    },
+    {
+      "id": "s1e2",
+      "season": 1,
+      "episode": 2,
+      "title": "The Bubbler",
+      "description": "Adrien's best friend, Nino, is akumatized into the Bubbler, a villain who traps adults in bubbles and sends them floating away into the atmosphere.",
+      "airDate": "2015-10-20",
+      "streams": []
+    },
+    {
+      "id": "s1e3",
+      "season": 1,
+      "episode": 3,
+      "title": "The Pharaoh",
+      "description": "When a villain with the power of the ancient Egyptian gods wants to sacrifice Alya, Ladybug and Cat Noir must fight an army of mummies to rescue her.",
+      "airDate": "2015-10-21",
+      "streams": []
+    },
+    {
+      "id": "s1e4",
+      "season": 1,
+      "episode": 4,
+      "title": "Lady Wifi",
+      "description": "Mistakenly believing that Chloé is Ladybug, Alya gets expelled from school for her nosiness and becomes akumatized into the villain Lady Wifi.",
+      "airDate": "2015-10-22",
+      "streams": []
+    },
+    {
+      "id": "s1e5",
+      "season": 1,
+      "episode": 5,
+      "title": "Timebreaker",
+      "description": "When anger over a broken watch turns Alix into a time-traveling villain, it's up to Ladybug to return to the past and thwart her plans.",
+      "airDate": "2015-10-23",
+      "streams": []
+    },
+    {
+      "id": "s1e6",
+      "season": 1,
+      "episode": 6,
+      "title": "Mr. Pigeon",
+      "description": "The akuma fighters try to apprehend Mr. Pigeon, a bird lover who has kidnapped all the park keepers in Paris, but Cat Noir's allergies interfere.",
+      "airDate": "2015-10-23",
+      "streams": []
+    },
+    {
+      "id": "s1e7",
+      "season": 1,
+      "episode": 7,
+      "title": "The Evillustrator",
+      "description": "A fellow student with a crush on Marinette is akumatized into the Evillustrator, a villain that Cat Noir must face without Ladybug.",
+      "airDate": "2015-10-26",
+      "streams": []
+    },
+    {
+      "id": "s1e8",
+      "season": 1,
+      "episode": 8,
+      "title": "Rogercop",
+      "description": "When he's fired by the mayor, police officer Roger becomes Rogercop, a villain who thinks he's enforcing the law by ruling Paris as a dictator.",
+      "airDate": "2015-10-27",
+      "streams": []
+    },
+    {
+      "id": "s1e9",
+      "season": 1,
+      "episode": 9,
+      "title": "Copycat",
+      "description": "A jealous sculptor in love with Ladybug akumatizes into Copycat, a duplicate of Cat Noir who tries to take his rival's place by Ladybug's side.",
+      "airDate": "2015-10-28",
+      "streams": []
+    },
+    {
+      "id": "s1e10",
+      "season": 1,
+      "episode": 10,
+      "title": "Dark Cupid",
+      "description": "Marinette considers declaring her feelings to Adrien for Valentine's Day, but first they must stop Dark Cupid, a villain bent on eradicating love.",
+      "airDate": "2015-10-29",
+      "streams": []
+    },
+    {
+      "id": "s1e11",
+      "season": 1,
+      "episode": 11,
+      "title": "Horrificator",
+      "description": "During the filming of a short horror movie for Marinette's class, scared star Mylène is akumatized into a slimy monster that feeds on others' fears.",
+      "airDate": "2015-10-30",
+      "streams": []
+    },
+    {
+      "id": "s1e12",
+      "season": 1,
+      "episode": 12,
+      "title": "Darkblade",
+      "description": "While Marinette tries to retrieve her diary from Chloé, Adrien's fencing teacher is akumatized into Darkblade, a villain who storms city hall.",
+      "airDate": "2015-12-06",
+      "streams": []
+    },
+    {
+      "id": "s1e13",
+      "season": 1,
+      "episode": 13,
+      "title": "The Mime",
+      "description": "When Mylène's father loses a part in a play to his scheming understudy, he akumatizes into the Mime, a villain whose pantomimes become real.",
+      "airDate": "2015-12-13",
+      "streams": []
+    },
+    {
+      "id": "s1e14",
+      "season": 1,
+      "episode": 14,
+      "title": "Kung Food",
+      "description": "When his dish at a competition is sabotaged, Marinette's great-uncle chef Wang Cheng becomes Kung Food, who recruits henchmen with his cooking.",
+      "airDate": "2016-01-10",
+      "streams": []
+    },
+    {
+      "id": "s1e15",
+      "season": 1,
+      "episode": 15,
+      "title": "Gamer",
+      "description": "Marinette beats Adrien's video game tournament partner, Max, so she can replace him and spend time with her crush, but Max akumatizes into a villain.",
+      "airDate": "2016-01-17",
+      "streams": []
+    },
+    {
+      "id": "s1e16",
+      "season": 1,
+      "episode": 16,
+      "title": "Animan",
+      "description": "A humiliated zookeeper is akumatized into a villainous shapeshifting animal on a day when Marinette, Adrien and friends are visiting the zoo in Paris.",
+      "airDate": "2016-01-24",
+      "streams": []
+    },
+    {
+      "id": "s1e17",
+      "season": 1,
+      "episode": 17,
+      "title": "Antibug",
+      "description": "Crestfallen when her hero Ladybug refuses to heed her advice, Chloé akumatizes into Antibug, an evil twin of Ladybug with identical powers.",
+      "airDate": "2016-01-31",
+      "streams": []
+    },
+    {
+      "id": "s1e18",
+      "season": 1,
+      "episode": 18,
+      "title": "The Puppeteer",
+      "description": "Marinette babysits little Manon, who becomes akumatized into the Puppeteer while playing with dolls of Ladybug, Cat Noir and some infamous villains.",
+      "airDate": "2016-02-21",
+      "streams": []
+    },
+    {
+      "id": "s1e19",
+      "season": 1,
+      "episode": 19,
+      "title": "Reflekta",
+      "description": "Excluded from a class photo, dejected Juleka akumatizes into the villain Reflekta, who turns everyone, including Cat Noir, into copies of herself.",
+      "airDate": "2016-02-21",
+      "streams": []
+    },
+    {
+      "id": "s1e20",
+      "season": 1,
+      "episode": 20,
+      "title": "Guitar Villain",
+      "description": "Rock star Jagged Stone is akumatized into a supervillain who tries to transform all Parisians into fans and undermine his musical rival, Mr. XY.",
+      "airDate": "2016-02-28",
+      "streams": []
+    },
+    {
+      "id": "s1e21",
+      "season": 1,
+      "episode": 21,
+      "title": "Pixelator",
+      "description": "Rejected by a rock star, an angry fan becomes Pixelator, who traps Parisians in his camera's memory until Cat Noir and Ladybug halt his photo spree.",
+      "airDate": "2016-03-13",
+      "streams": []
+    },
+    {
+      "id": "s1e22",
+      "season": 1,
+      "episode": 22,
+      "title": "Princess Fragrance",
+      "description": "Marinette can't transform into Ladybug when classmate Rose is akumatized into a villain whose perfume lets her control Cat Noir and a visiting prince.",
+      "airDate": "2016-03-20",
+      "streams": []
+    },
+    {
+      "id": "s1e23",
+      "season": 1,
+      "episode": 23,
+      "title": "Simon Says",
+      "description": "A hypnotist akumatizes into Simon Says, a villain who can make anyone obey him with his deck of cards, and seeks revenge on Adrien's father.",
+      "airDate": "2016-03-27",
+      "streams": []
+    },
+    {
+      "id": "s1e24",
+      "season": 1,
+      "episode": 24,
+      "title": "Volpina",
+      "description": "After Ladybug exposes her lies in front of Adrien, Lila, a new student, becomes akumatized and poses as a superhero.",
+      "airDate": "2016-04-03",
+      "streams": []
+    },
+    {
+      "id": "s1e25",
+      "season": 1,
+      "episode": 25,
+      "title": "Ladybug & Cat Noir - Origins, Part 1",
+      "description": "In a flashback, Ladybug and Cat Noir's origins are revealed, as Marinette befriends Alya and meets Adrien, a famous model with an overprotective dad.",
+      "airDate": "2016-10-30",
+      "streams": []
+    },
+    {
+      "id": "s1e26",
+      "season": 1,
+      "episode": 26,
+      "title": "Stoneheart - Origins, Part 2",
+      "description": "In a continuing flashback to Ladybug and Cat Noir's origins, Marinette mistakes Adrien for a bully and hesitates to embrace her Ladybug persona.",
+      "airDate": "2016-10-30",
+      "streams": []
+    },
+    {
+      "id": "s2e1",
+      "season": 2,
+      "episode": 1,
+      "title": "The Collector",
+      "description": "Master Fu and Marinette believe that the owner of the Miraculous book is Hawk Moth, but that suspicion leads to either Adrien or his father, Gabriel.",
+      "airDate": "2017-10-26",
+      "streams": []
+    },
+    {
+      "id": "s2e2",
+      "season": 2,
+      "episode": 2,
+      "title": "Despair Bear",
+      "description": "Trying to learn how to be nice, Chloé throws a party but loses her temper and fires her butler, who becomes akumatized into the vengeful Despair Bear.",
+      "airDate": "2017-10-27",
+      "streams": []
+    },
+    {
+      "id": "s2e3",
+      "season": 2,
+      "episode": 3,
+      "title": "Prime Queen",
+      "description": "During an exclusive interview, a reporter trying to trap Ladybug and Cat Noir into confessing feelings for each other is akumatized by Hawk Moth.",
+      "airDate": "2017-10-29",
+      "streams": []
+    },
+    {
+      "id": "s2e4",
+      "season": 2,
+      "episode": 4,
+      "title": "Befana",
+      "description": "When Marinette elects to hang out with her friends on her birthday instead of her grandmother, grandma is akumatized into a candy-gun-wielding baddie.",
+      "airDate": "2017-10-30",
+      "streams": []
+    },
+    {
+      "id": "s2e5",
+      "season": 2,
+      "episode": 5,
+      "title": "Riposte",
+      "description": "A fencing opponent who loses a duel against Adrien gets akumatized and goes after him for a rematch while only Ladybug is around to protect him.",
+      "airDate": "2017-11-01",
+      "streams": []
+    },
+    {
+      "id": "s2e6",
+      "season": 2,
+      "episode": 6,
+      "title": "Robostus",
+      "description": "Hawk Moth akumatizes Max's best friend and pet robot, Markov, into Robostus, a raging techno-threat with the power to bring inanimate objects to life.",
+      "airDate": "2017-11-03",
+      "streams": []
+    },
+    {
+      "id": "s2e7",
+      "season": 2,
+      "episode": 7,
+      "title": "Gigantitan",
+      "description": "Marinette's plans to ask Adrien out on a romantic walk are foiled when Hawk Moth akumatizes a frustrated child into a giant, lollipop-seeking baby.",
+      "airDate": "2017-11-26",
+      "streams": []
+    },
+    {
+      "id": "s2e8",
+      "season": 2,
+      "episode": 8,
+      "title": "The Dark Owl",
+      "description": "After school principal Damocles is akumatized into Dark Owl, he traps Ladybug and Cat Noir in a warehouse and tries to uncover their true identities.",
+      "airDate": "2017-12-10",
+      "streams": []
+    },
+    {
+      "id": "s2e9",
+      "season": 2,
+      "episode": 9,
+      "title": "Glaciator",
+      "description": "Marinette meets Alya and friends for a treat at André's, a legendary Parisian ice cream maker, but André is akumatized into the villain Glaciator.",
+      "airDate": "2018-01-14",
+      "streams": []
+    },
+    {
+      "id": "s2e10",
+      "season": 2,
+      "episode": 10,
+      "title": "Sapotis",
+      "description": "During a sleepover with Marinette, Alya punishes her twin sisters, Etta and Ella, who get akumatized into monsters that multiply when they eat.",
+      "airDate": "2018-01-21",
+      "streams": []
+    },
+    {
+      "id": "s2e11",
+      "season": 2,
+      "episode": 11,
+      "title": "Gorizilla",
+      "description": "Marinette must rescue Adrien from a group of overzealous fans and from his own bodyguard, who has been akumatized into the hulking Gorizilla.",
+      "airDate": "2018-05-13",
+      "streams": []
+    },
+    {
+      "id": "s2e12",
+      "season": 2,
+      "episode": 12,
+      "title": "Captain Hardrock",
+      "description": "Hawk Moth akumatizes Juleka's mother into Captain Hardrock, a pirate whose indestructible ship blasts loud music to destroy a music festival.",
+      "airDate": "2018-05-20",
+      "streams": []
+    },
+    {
+      "id": "s2e13",
+      "season": 2,
+      "episode": 13,
+      "title": "Zombizou",
+      "description": "The students give gifts to Miss Bustier on her birthday but the popular teacher is akumatized into Zombizou, a monster armed with evil black lipstick.",
+      "airDate": "2018-05-27",
+      "streams": []
+    },
+    {
+      "id": "s2e14",
+      "season": 2,
+      "episode": 14,
+      "title": "Syren",
+      "description": "When her crush, Kim, goes on a movie date with someone else, talented swimmer Ondine gets akumatized into Syren, who tries to submerge Paris.",
+      "airDate": "2018-06-03",
+      "streams": []
+    },
+    {
+      "id": "s2e15",
+      "season": 2,
+      "episode": 15,
+      "title": "Frightningale",
+      "description": "Marinette is cast to play Ladybug and Adrien as Cat Noir for a music video honoring the heroes, but the star gets akumatized into a musical monster.",
+      "airDate": "2018-06-10",
+      "streams": []
+    },
+    {
+      "id": "s2e16",
+      "season": 2,
+      "episode": 16,
+      "title": "Troublemaker",
+      "description": "A rock star is scheduled to visit the bakery owned by Marinette's parents, but his overwhelmed personal assistant is akumatized by Hawk Moth.",
+      "airDate": "2018-06-17",
+      "streams": []
+    },
+    {
+      "id": "s2e17",
+      "season": 2,
+      "episode": 17,
+      "title": "Anansi",
+      "description": "Alya's older sister Nora becomes akumatized by Hawk Moth into Anansi, an enormous spider-woman hybrid named after an African folktale.",
+      "airDate": "2018-09-23",
+      "streams": []
+    },
+    {
+      "id": "s2e18",
+      "season": 2,
+      "episode": 18,
+      "title": "Sandboy",
+      "description": "The supervillain Sandboy uses his powers to turn the nightmares of Parisians into reality, forcing a Tikki-less Marinette to intervene.",
+      "airDate": "2018-09-30",
+      "streams": []
+    },
+    {
+      "id": "s2e19",
+      "season": 2,
+      "episode": 19,
+      "title": "Reverser",
+      "description": "Angry over his perception that Marinette and Nathaniel humiliated him, fellow student Marc becomes Reverser, who is determined to get revenge.",
+      "airDate": "2018-10-07",
+      "streams": []
+    },
+    {
+      "id": "s2e20",
+      "season": 2,
+      "episode": 20,
+      "title": "Frozer",
+      "description": "A figure skater gets akumatized by Hawk Moth into Frozer, a villain armed with powerful skates who tries to turn Paris into a frozen wasteland.",
+      "airDate": "2018-10-14",
+      "streams": []
+    },
+    {
+      "id": "s2e21",
+      "season": 2,
+      "episode": 21,
+      "title": "Style Queen: The Queen's Battle (1)",
+      "description": "When she is humiliated by Gabriel, Chloe's mother becomes Style Queen, who possesses a magical scepter and aims to exact her revenge on Adrien.",
+      "airDate": "2018-10-21",
+      "streams": []
+    },
+    {
+      "id": "s2e22",
+      "season": 2,
+      "episode": 22,
+      "title": "Queen Wasp: The Queen's Battle (2)",
+      "description": "In an attempt to impress her mother, Chloe tries to become the superhero Queen Bee but is instead transformed into the supervillain Queen Wasp.",
+      "airDate": "2018-10-21",
+      "streams": []
+    },
+    {
+      "id": "s2e23",
+      "season": 2,
+      "episode": 23,
+      "title": "Malediktator",
+      "description": "When Chloe considers leaving Paris, her father, Mayor Bourgeois, turns into Malediktator, a powerful villain who wants her to stay at any cost.",
+      "airDate": "2018-10-28",
+      "streams": []
+    },
+    {
+      "id": "s2e24",
+      "season": 2,
+      "episode": 24,
+      "title": "Catalyst: Heroes' Day (1)",
+      "description": "Marinette lies about preparing a good deed to perform for others on the Day of Heroes and quickly finds her untruth spinning out of control.",
+      "airDate": "2018-11-18",
+      "streams": []
+    },
+    {
+      "id": "s2e25",
+      "season": 2,
+      "episode": 25,
+      "title": "Mayura: Heroes' Day (2)",
+      "description": "Ladybug and Cat Noir face one of their most fearsome opponents when Hawk Moth sets a sinister plan into motion by akumatizing his assistant.",
+      "airDate": "2018-11-18",
+      "streams": []
+    },
+    {
+      "id": "s3e1",
+      "season": 3,
+      "episode": 1,
+      "title": "Backwarder",
+      "description": "After Marinette mixes up some messages, an old love of Master Fu becomes Backwarder, who wields a magic wand that can steal time from others.",
+      "airDate": "2019-04-14",
+      "streams": []
+    },
+    {
+      "id": "s3e2",
+      "season": 3,
+      "episode": 2,
+      "title": "Weredad",
+      "description": "Disappointed that Cat Noir doesn't return his daughter's love, Tom becomes Weredad, who locks Marinette in a magic prison to protect her from hurt.",
+      "airDate": "2019-04-21",
+      "streams": []
+    },
+    {
+      "id": "s3e3",
+      "season": 3,
+      "episode": 3,
+      "title": "Chameleon",
+      "description": "Marinette and Adrien confront Lila with her lies, so she asks Hawk Moth to akumatize her into Chameleon, a new villain determined to destroy Ladybug.",
+      "airDate": "2019-04-28",
+      "streams": []
+    },
+    {
+      "id": "s3e4",
+      "season": 3,
+      "episode": 4,
+      "title": "Animaestro",
+      "description": "Humiliated at the premiere of his new Ladybug and Cat Noir movie, the director becomes Animaestro, forcing the real superheroes to act fast.",
+      "airDate": "2019-05-05",
+      "streams": []
+    },
+    {
+      "id": "s3e5",
+      "season": 3,
+      "episode": 5,
+      "title": "Bakerix",
+      "description": "Marinette meets her grumpy grandpa for the first time, leading him to akumatize into a villain who wants to destroy everything modern in Paris.",
+      "airDate": "2019-05-12",
+      "streams": []
+    },
+    {
+      "id": "s3e6",
+      "season": 3,
+      "episode": 6,
+      "title": "Silencer",
+      "description": "Marinette and Kitty Section record a music video, but an unscrupulous producer, the father of XY, steals their ideas and inspires Luka to seek revenge.",
+      "airDate": "2019-05-19",
+      "streams": []
+    },
+    {
+      "id": "s3e7",
+      "season": 3,
+      "episode": 7,
+      "title": "Oblivio",
+      "description": "When they enter the Montparnasse Tower, Ladybug and Cat Noir lose their memories and transform back into Marinette and Adrien in front of each other.",
+      "airDate": "2019-05-26",
+      "streams": []
+    },
+    {
+      "id": "s3e8",
+      "season": 3,
+      "episode": 8,
+      "title": "Stormy Weather 2",
+      "description": "Ladybug and Cat Noir must fight Aurore Boreale when she is akumatized again into Stormy Weather 2, who wants to plunge the world into endless winter.",
+      "airDate": "2019-06-02",
+      "streams": []
+    },
+    {
+      "id": "s3e9",
+      "season": 3,
+      "episode": 9,
+      "title": "Reflekdoll",
+      "description": "Ladybug and Cat Noir each get the other's Miraculous when they must take on Juleka, who has become Reflekta again and now has a sentimonster.",
+      "airDate": "2019-10-21",
+      "streams": []
+    },
+    {
+      "id": "s3e10",
+      "season": 3,
+      "episode": 10,
+      "title": "Oni-Chan",
+      "description": "Kagami becomes jealous when Lila manipulates her way into the Agreste mansion and turns into Oni-Chan, a masked villain who can teleport.",
+      "airDate": "2019-10-21",
+      "streams": []
+    },
+    {
+      "id": "s3e11",
+      "season": 3,
+      "episode": 11,
+      "title": "Miraculer",
+      "description": "Sabrina, angry at Chloe for the attention she gives to Ladybug, becomes Miraculer, who can steal powers away from superheroes.",
+      "airDate": "2019-10-22",
+      "streams": []
+    },
+    {
+      "id": "s3e12",
+      "season": 3,
+      "episode": 12,
+      "title": "The Puppeteer 2",
+      "description": "Marinette tries to arrange some alone time with Adrien at the wax museum, but she's supposed to be babysitting Manon, who becomes Puppeteer again.",
+      "airDate": "2019-10-23",
+      "streams": []
+    },
+    {
+      "id": "s3e13",
+      "season": 3,
+      "episode": 13,
+      "title": "Desperada",
+      "description": "Jagged Stone seeks to replace the guitarist he fired, who akumatizes into Desperada, a villain with a magic guitar that turns people into stickers.",
+      "airDate": "2019-10-24",
+      "streams": []
+    },
+    {
+      "id": "s3e14",
+      "season": 3,
+      "episode": 14,
+      "title": "Startrain",
+      "description": "Anxiously awaiting news about her astronaut application, Max's mom becomes Startrain, who wants to turn her train into a rocket ship.",
+      "airDate": "2019-10-25",
+      "streams": []
+    },
+    {
+      "id": "s3e15",
+      "season": 3,
+      "episode": 15,
+      "title": "Kwamibuster",
+      "description": "Mrs. Mendeleiev discovers Plagg and Tikki and plans to reveal the existence of the kwamis on a TV show until she is akumatized into Kwami Buster.",
+      "airDate": "2019-10-27",
+      "streams": []
+    },
+    {
+      "id": "s3e16",
+      "season": 3,
+      "episode": 16,
+      "title": "Feast",
+      "description": "A strange statue uncovered in Tibet turns out to be a sentimonster called Feast that was created accidentally by Master Fu when he was a child.",
+      "airDate": "2019-10-28",
+      "streams": []
+    },
+    {
+      "id": "s3e17",
+      "season": 3,
+      "episode": 17,
+      "title": "Ikari Gozen",
+      "description": "Adrien is the prize in a Paris-wide Friendship Day treasure hunt, but Marinette is teamed up with Kagami, who has disobeyed her mother to participate.",
+      "airDate": "2019-10-29",
+      "streams": []
+    },
+    {
+      "id": "s3e18",
+      "season": 3,
+      "episode": 18,
+      "title": "Timetagger",
+      "description": "Ladybug and Cat Noir are trapped between two time travelers from the future, one of whom has been sent by Hawk Moth to steal their Miraculous.",
+      "airDate": "2019-10-30",
+      "streams": []
+    },
+    {
+      "id": "s3e19",
+      "season": 3,
+      "episode": 19,
+      "title": "Party Crasher",
+      "description": "After Adrien tells his friend Wayem he's not allowed to have friends over, Wayem discovers an impromptu party at the Agrestes that makes him jealous.",
+      "airDate": "2019-10-31",
+      "streams": []
+    },
+    {
+      "id": "s3e20",
+      "season": 3,
+      "episode": 20,
+      "title": "Gamer 2.0",
+      "description": "When he can't find anyone to test his video game that pits formerly akumatized villains against one another, Max again becomes one himself: Gamer 2.0.",
+      "airDate": "2019-11-03",
+      "streams": []
+    },
+    {
+      "id": "s3e21",
+      "season": 3,
+      "episode": 21,
+      "title": "Cat Blanc",
+      "description": "Marinette uses her powers to leave a gift for Adrien, causing him to realize her secret identity -- which has a devastating impact on the future.",
+      "airDate": "2019-11-10",
+      "streams": []
+    },
+    {
+      "id": "s3e22",
+      "season": 3,
+      "episode": 22,
+      "title": "Félix",
+      "description": "Marinette reveals her feelings for Adrien on the anniversary of his mom's death, but his lookalike cousin pretends to be Adrien and responds cruelly.",
+      "airDate": "2019-11-17",
+      "streams": []
+    },
+    {
+      "id": "s3e23",
+      "season": 3,
+      "episode": 23,
+      "title": "Ladybug",
+      "description": "Marinette's scheming nemesis Lila manipulates all of her friends into turning against her and even gets Marinette expelled from school.",
+      "airDate": "2019-11-24",
+      "streams": []
+    },
+    {
+      "id": "s3e24",
+      "season": 3,
+      "episode": 24,
+      "title": "Chris Master",
+      "description": "Marinette babysits Nino's little brother, Chris, who akumatizes into Chris Master and wields a magic snow globe that can make giant toys.",
+      "airDate": "2019-12-01",
+      "streams": []
+    },
+    {
+      "id": "s3e25",
+      "season": 3,
+      "episode": 25,
+      "title": "Heart Hunter (The Battle of the Miraculous – Part 1)",
+      "description": "At a celebration for their twentieth anniversary, the Bourgeois couple is akumatized into Hearthunter, a two-headed Cerberus that devours love.",
+      "airDate": "2019-12-08",
+      "streams": []
+    },
+    {
+      "id": "s3e26",
+      "season": 3,
+      "episode": 26,
+      "title": "Miracle Queen (The Battle of the Miraculous – Part 2)",
+      "description": "Hawk Moth changes Chloe into Miracle Queen and conquers Paris, forcing Miraculous wearers to reveal themselves -- but Ladybug and Cat Noir escape.",
+      "airDate": "2019-12-08",
+      "streams": []
+    },
+    {
+      "id": "s4e1",
+      "season": 4,
+      "episode": 1,
+      "title": "Truth",
+      "description": "A friend of Marinette's gets akumatized into Truth. Using his power to force people to tell the truth, he wants to know Marinette's secret.",
+      "airDate": "2021-04-11",
+      "streams": []
+    },
+    {
+      "id": "s4e2",
+      "season": 4,
+      "episode": 2,
+      "title": "Lies",
+      "description": "A friend of Adrien's gets akumatized into Lies and becomes determined to rid the world of lies and those who tell them.",
+      "airDate": "2021-04-18",
+      "streams": []
+    },
+    {
+      "id": "s4e3",
+      "season": 4,
+      "episode": 3,
+      "title": "Gang of Secrets",
+      "description": "Marinette's friends get akumatized into the Gang of Secrets, a team of supervillains determined to save her.",
+      "airDate": "2021-04-25",
+      "streams": []
+    },
+    {
+      "id": "s4e4",
+      "season": 4,
+      "episode": 4,
+      "title": "Mr. Pigeon 72",
+      "description": "Mr. Ramier gets akumatized into Mr. Pigeon for the 72nd time, and now he can turn people into evil pigeons.",
+      "airDate": "2021-05-23",
+      "streams": []
+    },
+    {
+      "id": "s4e5",
+      "season": 4,
+      "episode": 5,
+      "title": "Furious Fu",
+      "description": "Ladybug and Cat Noir face someone they know well, and never imagined they would have to fight someday.",
+      "airDate": "2021-05-30",
+      "streams": []
+    },
+    {
+      "id": "s4e6",
+      "season": 4,
+      "episode": 6,
+      "title": "Sole Crusher",
+      "description": "A newcomer to Marinette's circle of friends gets akumatized into Sole Crusher, a humongous supervillain who can absorb people.",
+      "airDate": "2021-06-06",
+      "streams": []
+    },
+    {
+      "id": "s4e7",
+      "season": 4,
+      "episode": 7,
+      "title": "Queen Banana",
+      "description": "Chloe is akumatized into Queen Banana and Ladybug decides to entrust a Miraculous to help her stop a supervillain.",
+      "airDate": "2021-06-13",
+      "streams": []
+    },
+    {
+      "id": "s4e8",
+      "season": 4,
+      "episode": 8,
+      "title": "Guiltrip",
+      "description": "When Reflekta becomes entangled in a bottomless abyss of guilt, Ladybug calls an ally for help with unshakable optimism.",
+      "airDate": "2021-06-20",
+      "streams": []
+    },
+    {
+      "id": "s4e9",
+      "season": 4,
+      "episode": 9,
+      "title": "Crocoduel",
+      "description": "Because of a plan thought up by Marinette, Shadow Moth akumatizes two villains. Ladybug and Cat Noir will need help to stop the evil duo.",
+      "airDate": "2021-08-29",
+      "streams": []
+    },
+    {
+      "id": "s4e10",
+      "season": 4,
+      "episode": 10,
+      "title": "Optigami",
+      "description": "What would happen if Shadow Moth created a fearsome supervillain while Marinette and Adrien couldn't transform into Ladybug and Cat Noir?",
+      "airDate": "2021-09-05",
+      "streams": []
+    },
+    {
+      "id": "s4e11",
+      "season": 4,
+      "episode": 11,
+      "title": "Sentibubbler",
+      "description": "Shadow Moth creates Sentibubbler, a fearsome sentimonster that will only stop if Rena Rouge betrays Ladybug and Cat Noir!",
+      "airDate": "2021-09-12",
+      "streams": []
+    },
+    {
+      "id": "s4e12",
+      "season": 4,
+      "episode": 12,
+      "title": "Rocketear",
+      "description": "As Guardian of Miraculous, Ladybug must make difficult decisions which affect the people around her. But not everyone is ready to live in permanent hiding like her...",
+      "airDate": "2021-09-19",
+      "streams": []
+    },
+    {
+      "id": "s4e13",
+      "season": 4,
+      "episode": 13,
+      "title": "Mega Leech",
+      "description": "When Malediktator comes back, now seconded by a Sentimonster, Ladybug entrusts a committed friend and ally with a Miraculous to help her save Paris.",
+      "airDate": "2021-09-26",
+      "streams": []
+    },
+    {
+      "id": "s4e14",
+      "season": 4,
+      "episode": 14,
+      "title": "Wishmaker",
+      "description": "As Marinette thinks about her future, a supervillain shows up in Paris. Able to force people to live their childhood dreams, he turns into a nightmare for our heroes.",
+      "airDate": "2021-10-03",
+      "streams": []
+    },
+    {
+      "id": "s4e15",
+      "season": 4,
+      "episode": 15,
+      "title": "Hack-San",
+      "description": "When Marinette needs to leave Paris for a day for her aunt's birthday in London, the fear of something happening in Ladybug's absence makes her super nervous. Shadow Moth manages to infect Max's robot with an evil virus to akumatize it again. What will happen?",
+      "airDate": "2021-10-10",
+      "streams": []
+    },
+    {
+      "id": "s4e16",
+      "season": 4,
+      "episode": 16,
+      "title": "Simpleman",
+      "description": "Adrien asks Marinette a favor, who can't say no and ends up leaving her grandfather taking care of the 4 children she was taking care of to help Adrien. What she doesn't realize is that it ends up making her grandfather the Shadow Moth's next target.",
+      "airDate": "2021-10-17",
+      "streams": []
+    },
+    {
+      "id": "s4e17",
+      "season": 4,
+      "episode": 17,
+      "title": "Glaciator 2",
+      "description": "Ladybug and Cat Noir face Glaciator again. Glaciator annoys Ladybug by insisting that the superheroes are in love. Cat Noir encounters Marinette, who wrestles with secret romance.",
+      "airDate": "2021-10-24",
+      "streams": []
+    },
+    {
+      "id": "s4e18",
+      "season": 4,
+      "episode": 18,
+      "title": "Dearest Family",
+      "description": "Galette Day is eventful for Marinette! Tikki is acting very strange and three supervillains show up! Will Ladybug still manage to establish herself as queen of the day?",
+      "airDate": "2021-10-31",
+      "streams": []
+    },
+    {
+      "id": "s4e19",
+      "season": 4,
+      "episode": 19,
+      "title": "Ephemeral",
+      "description": "Ladybug decides whether she should reveal Cat Noir's identity so that she can remain the Guardian.",
+      "airDate": "2021-11-07",
+      "streams": []
+    },
+    {
+      "id": "s4e20",
+      "season": 4,
+      "episode": 20,
+      "title": "Gabriel Agreste",
+      "description": "Marinette sneaks into the Agreste home during a private dinner, only to find that a supervillain is also crashing the party.",
+      "airDate": "2021-11-14",
+      "streams": []
+    },
+    {
+      "id": "s4e21",
+      "season": 4,
+      "episode": 21,
+      "title": "Psycomedian",
+      "description": "A famous comedian gets akumatized into Psycomedian; able to impose any emotions on anyone, he wants to wipe the smiles off everyone's faces starting with Ladybug and Cat Noir.",
+      "airDate": "2022-02-13",
+      "streams": []
+    },
+    {
+      "id": "s4e22",
+      "season": 4,
+      "episode": 22,
+      "title": "Kuro Neko",
+      "description": "Ladybug manages to assemble an amazing team of superheroes now that she is Guardian of the Miraculous, but Cat Noir is feeling left out and decides to give up his Miraculous. Ladybug now needs to deliver the Cat Miraculous to someone else.",
+      "airDate": "2022-02-20",
+      "streams": []
+    },
+    {
+      "id": "s4e23",
+      "season": 4,
+      "episode": 23,
+      "title": "Penalteam",
+      "description": "When one of Shadow Moth's favorite victims is akumatized into Penalteam, a fearsome team of supervillains, Ladybug calls on her own superhero team in order to face her; may the best team win.",
+      "airDate": "2022-02-27",
+      "streams": []
+    },
+    {
+      "id": "s4e24",
+      "season": 4,
+      "episode": 24,
+      "title": "Qilin",
+      "description": "Because one of Marinette's careless mistakes, one of her closet relatives is akumatized into Qilin, a fearsome supervillain.",
+      "airDate": "2022-03-06",
+      "streams": []
+    },
+    {
+      "id": "s4e25",
+      "season": 4,
+      "episode": 25,
+      "title": "Risk (Shadow Moth's Final Attack - Part 1)",
+      "description": "Without Ladybug and Cat Noir knowing, Shadow Moth patiently sets his final attack in motion...",
+      "airDate": "2022-03-13",
+      "streams": []
+    },
+    {
+      "id": "s4e26",
+      "season": 4,
+      "episode": 26,
+      "title": "Strikeback (Shadow Moth's Final Attack - Part 2)",
+      "description": "Shadow Moth's trap closes in on Ladybug and Cat Noir, threatening to turn their fate upside down forever...",
+      "airDate": "2022-03-13",
+      "streams": []
+    },
+    {
+      "id": "s5e1",
+      "season": 5,
+      "episode": 1,
+      "title": "Evolution",
+      "description": "After having access to almost all the Miraculouses, Hawk Moth turns into Monarch and uses the Rabbit Miraculous to return to a vulnerable moment in Ladybug and Cat Noir's past to capture their Miraculous.",
+      "airDate": "2022-10-24",
+      "streams": []
+    },
+    {
+      "id": "s5e2",
+      "season": 5,
+      "episode": 2,
+      "title": "Multiplication",
+      "description": "As the days go by, not a single akumatized villain shows up to torment Paris. Could Monarch possibly have given up?",
+      "airDate": "2022-10-25",
+      "streams": []
+    },
+    {
+      "id": "s5e3",
+      "season": 5,
+      "episode": 3,
+      "title": "Destruction",
+      "description": "What if Ladybug's worst nightmare came true? What if Monarch showed up at Marinette Dupain-Cheng's home... would she be able to escape him?",
+      "airDate": "2022-10-26",
+      "streams": []
+    },
+    {
+      "id": "s5e4",
+      "season": 5,
+      "episode": 4,
+      "title": "Jubilation",
+      "description": "Monarch entrusts an akumatized villain with the power of Jubilation, which shows people their deepest desires. Will Ladybug and Cat Noir escape that dangerous power?",
+      "airDate": "2022-10-27",
+      "streams": []
+    },
+    {
+      "id": "s5e5",
+      "season": 5,
+      "episode": 5,
+      "title": "Determination",
+      "description": "While Marinette and Adrien wonder about their feelings, Ladybug and Cat Noir face a villain... and her 17 goons!",
+      "airDate": "2022-10-28",
+      "streams": []
+    },
+    {
+      "id": "s5e6",
+      "season": 5,
+      "episode": 6,
+      "title": "Passion",
+      "description": "As everything turns upside down in their love lives, Ladybug and Cat Noir must exchange their Miraculous to escape a ruthless villain.",
+      "airDate": "2022-10-31",
+      "streams": []
+    },
+    {
+      "id": "s5e7",
+      "season": 5,
+      "episode": 7,
+      "title": "Reunion",
+      "description": "While visiting the Louvre museum, Marinette discovers the secrets of the kwagatama that Tikki gave her on her birthday.",
+      "airDate": "2022-11-01",
+      "streams": []
+    },
+    {
+      "id": "s5e8",
+      "season": 5,
+      "episode": 8,
+      "title": "Illusion",
+      "description": "A secret network at school is determined to find out how Monarch's new power works by deliberately triggering an akumatization. Would Ladybug and Cat Noir agree with such a plan?",
+      "airDate": "2022-11-02",
+      "streams": []
+    },
+    {
+      "id": "s5e9",
+      "season": 5,
+      "episode": 9,
+      "title": "Elation",
+      "description": "As Ladybug and Cat Noir face Glaciator again, our heroes don’t know that they are about to make a chilling discovery!",
+      "airDate": "2022-11-03",
+      "streams": []
+    },
+    {
+      "id": "s5e10",
+      "season": 5,
+      "episode": 10,
+      "title": "Transmission (The Kwamis' Choice - Part 1)",
+      "description": "Tikki and Plagg are sad to see their carriers so sad to be forced to give up their feelings. The Kwamis will then make a radical choice that will change many things in Paris.",
+      "airDate": "2023-04-02",
+      "streams": []
+    },
+    {
+      "id": "s5e11",
+      "season": 5,
+      "episode": 11,
+      "title": "Deflagration (The Kwamis' Choice - Part 2)",
+      "description": "Monarch is faced with a unique opportunity that he refuses to miss. The world is about to be reconfigured, and no one seems able to prevent it, for the Kwamis have made a choice that completely freed Marinette and Adrien from their responsibilities. For better… and for worse.",
+      "airDate": "2023-04-02",
+      "streams": []
+    },
+    {
+      "id": "s5e12",
+      "season": 5,
+      "episode": 12,
+      "title": "Perfection",
+      "description": "The whole class has decided to do everything to help Marinette finally get closer to Adrien, but what they don't know is that she also has come up with a unique plan to try and tell Adrien how she feels.",
+      "airDate": "2023-04-09",
+      "streams": []
+    },
+    {
+      "id": "s5e13",
+      "season": 5,
+      "episode": 13,
+      "title": "Migration",
+      "description": "As the son of a celebrity, Luka piques special interest in Bob Roth, who would do anything to make money! But Luka himself would do anything to defend his values and his friends.",
+      "airDate": "2023-04-16",
+      "streams": []
+    },
+    {
+      "id": "s5e14",
+      "season": 5,
+      "episode": 14,
+      "title": "Derision",
+      "description": "Marinette is about to have a normal date with Adrien, but she starts to suffer repeated panic attacks creating an emotional situation that can make her a target for Monarch.",
+      "airDate": "2023-04-16",
+      "streams": []
+    },
+    {
+      "id": "s5e15",
+      "season": 5,
+      "episode": 15,
+      "title": "Intuition",
+      "description": "Monarch senses a unique occasion to get a real second chance. He is ready to do anything, even if it means that this could be his last chance to seize the Miraculous.",
+      "airDate": "2023-04-23",
+      "streams": []
+    },
+    {
+      "id": "s5e16",
+      "season": 5,
+      "episode": 16,
+      "title": "Protection",
+      "description": "While the gang concocts yet another elaborate plan to reunite Marinette and Adrien, Lila uses her talents for manipulation to persuade Kagami that Marinette is a liar.",
+      "airDate": "2023-04-30",
+      "streams": []
+    },
+    {
+      "id": "s5e17",
+      "season": 5,
+      "episode": 17,
+      "title": "Adoration",
+      "description": "Marinette learns that Zoé is secretly in love with someone in ninth grade at school. Zoé says that she cannot talk about it. To Marinette, this can only mean one thing: Zoé is in love with Adrien!",
+      "airDate": "2023-05-07",
+      "streams": []
+    },
+    {
+      "id": "s5e18",
+      "season": 5,
+      "episode": 18,
+      "title": "Emotion",
+      "description": "Adrien must attend the Diamonds’ Dance organized by his father and Mrs. Tsurugi. When she finds out that Adrien did not dare to tell her about the dance, Marinette decides to go too.",
+      "airDate": "2023-05-14",
+      "streams": []
+    },
+    {
+      "id": "s5e19",
+      "season": 5,
+      "episode": 19,
+      "title": "Pretension",
+      "description": "Marinette decides to have a frank talk with Gabriel Agreste about her love for Adrien, and her courage inspires her friend Kagami as she tries to open up to her mother.",
+      "airDate": "2023-10-23",
+      "streams": []
+    },
+    {
+      "id": "s5e20",
+      "season": 5,
+      "episode": 20,
+      "title": "Revelation",
+      "description": "Marinette and Adrien’s closeness pushes the boy’s father to make Kagami the face of the brand, which infuriates Lila. She uses the class accident to call for a new election so that she can replace Marinette as class representative.",
+      "airDate": "2023-10-24",
+      "streams": []
+    },
+    {
+      "id": "s5e21",
+      "season": 5,
+      "episode": 21,
+      "title": "Confrontation",
+      "description": "The end of secondary school is approaching and Lila & Chloé have to defend their classmates futures in front of the class council. Marinette is worried. What will be the next evil plan of the 2 villains?",
+      "airDate": "2023-10-25",
+      "streams": []
+    },
+    {
+      "id": "s5e22",
+      "season": 5,
+      "episode": 22,
+      "title": "Collusion",
+      "description": "The end of the school year is approaching and the rebellion is growing. Monarch decides to implement a dangerous plan for his secret identity, but also very precarious for Ladybug and Cat Noir.",
+      "airDate": "2023-10-26",
+      "streams": []
+    },
+    {
+      "id": "s5e23",
+      "season": 5,
+      "episode": 23,
+      "title": "Revolution",
+      "description": "Chloé is more powerful than ever and, thanks to her, so is Monarch. Ladybug and Cat Noir wonder about their superpowers, unaware that they have just fallen into a machiavellian trap. As for Marinette and Adrien, their lives are about to change forever.",
+      "airDate": "2023-10-27",
+      "streams": []
+    },
+    {
+      "id": "s5e24",
+      "season": 5,
+      "episode": 24,
+      "title": "Representation",
+      "description": "When Adrien disobeys his father to join Marinette, the latter is forced to find his son. At the same time, Marinette is convinced that Adrien is looking for her. Thinking she will find the boy she loves, she discovers a secret that nothing prepared her for.",
+      "airDate": "2023-10-31",
+      "streams": []
+    },
+    {
+      "id": "s5e25",
+      "season": 5,
+      "episode": 25,
+      "title": "Conformation (The Final Day - Part 1)",
+      "description": "Monarch has just placed the final pieces of his machiavellian plan on his chessboard of evil. Are Ladybug and Chat Noir doomed?",
+      "airDate": "2023-11-01",
+      "streams": []
+    },
+    {
+      "id": "s5e26",
+      "season": 5,
+      "episode": 26,
+      "title": "Re-creation (The Final Day - Part 2)",
+      "description": "Monarch's ultimate plan is now underway. Nothing seems to be able to stop him. Especially as, while the world is plunged into chaos, the super-villain has just trapped Ladybug himself.",
+      "airDate": "2023-11-01",
+      "streams": []
+    },
+    {
+      "id": "s6e1",
+      "season": 6,
+      "episode": 1,
+      "title": "The Illustrhater",
+      "description": "Ladybug and her team face a villain full of imagination.",
+      "airDate": "2025-03-23",
+      "streams": []
+    },
+    {
+      "id": "s6e2",
+      "season": 6,
+      "episode": 2,
+      "title": "Sublimation",
+      "description": "Adrien has made a new friend whom Marinette is determined to befriend too. But Marinette has no clue how to become friends with someone who doesn't need to be helped.",
+      "airDate": "2025-03-23",
+      "streams": []
+    },
+    {
+      "id": "s6e3",
+      "season": 6,
+      "episode": 3,
+      "title": "Werepapas",
+      "description": "When Adrien gets nervous about meeting his grandparents, Marinette gatecrashes the lunch to support him... unaware that a family war is about to break out.",
+      "airDate": "2025-03-30",
+      "streams": []
+    },
+    {
+      "id": "s6e4",
+      "season": 6,
+      "episode": 4,
+      "title": "Daddycop",
+      "description": "To celebrate her hundredth kiss with Adrien, Marinette has planned a romantic evening - forgetting that she'd already planned a movie night with her girl friends at the same time!",
+      "airDate": "2025-04-06",
+      "streams": []
+    },
+    {
+      "id": "s6e5",
+      "season": 6,
+      "episode": 5,
+      "title": "Revelator",
+      "description": "Marinette and Adrien are now the most famous couple in Paris. As such, they catch the attention of an unscrupulous influencer who will do anything to generate buzz...",
+      "airDate": "2025-04-13",
+      "streams": []
+    },
+    {
+      "id": "s6e6",
+      "season": 6,
+      "episode": 6,
+      "title": "Climatiqueen",
+      "description": "Ladybug and Cat Noir face a villain determined to steal their thunder. Will the superheroes weather the storm?",
+      "airDate": "2025-04-20",
+      "streams": []
+    },
+    {
+      "id": "s6e7",
+      "season": 6,
+      "episode": 7,
+      "title": "El Toro de Piedra",
+      "description": "While Ivan faces a difficult family situation, Marinette finds a letter addressed to Adrien...from his father.",
+      "airDate": "2025-04-27",
+      "streams": []
+    },
+    {
+      "id": "s6e8",
+      "season": 6,
+      "episode": 8,
+      "title": "The Ruler",
+      "description": "While trying desperately to hide her seasonal cold from Adrien, Marinette tries to help Nathaniel assert himself so he can illustrate the comic Marc wrote for him.",
+      "airDate": "2025-05-04",
+      "streams": []
+    },
+    {
+      "id": "s6e9",
+      "season": 6,
+      "episode": 9,
+      "title": "Mister Agreste",
+      "description": "Marinette finds it increasingly difficult to keep a secret from Adrien... and the arrival of a supervillain who looks just like her old enemy won't help!",
+      "airDate": "2025-09-28",
+      "streams": []
+    },
+    {
+      "id": "s6e10",
+      "season": 6,
+      "episode": 10,
+      "title": "Sleeping Syren",
+      "description": "When Ondine worries that she still hasn’t had a first kiss with Kim and wonders about his true feelings, Marinette decides to help her… in her own way.",
+      "airDate": "2025-10-05",
+      "streams": []
+    },
+    {
+      "id": "s6e11",
+      "season": 6,
+      "episode": 11,
+      "title": "Wreckless Driver",
+      "description": "Marinette wishes she could come up with a magic solution to help a phobic friend, but not all problems can be fixed with a Miraculous Ladybug!",
+      "airDate": "2025-10-12",
+      "streams": []
+    },
+    {
+      "id": "s6e12",
+      "season": 6,
+      "episode": 12,
+      "title": "The Dark Castle",
+      "description": "To allow Alix to celebrate her birthday with her friends and family, Marinette gets the Rabbit Miraculous back and becomes the Keeper of Time for a few hours.",
+      "airDate": "2025-10-19",
+      "streams": []
+    },
+    {
+      "id": "s6e13",
+      "season": 6,
+      "episode": 13,
+      "title": "Yaksi Gozen",
+      "description": "While Adrien wonders how to be as surprising as Marinette, Kagami and Félix wonder how to avoid unpleasant surprises. But a supervillain will upset the plans of the four teenagers.",
+      "airDate": "2025-10-26",
+      "streams": []
+    },
+    {
+      "id": "s6e14",
+      "season": 6,
+      "episode": 14,
+      "title": "Noe",
+      "description": "A film is being developed, with a script that discredits Ladybug and Cat Noir. If the people of Paris came to see this web of lies as the truth, this film could change everything.",
+      "airDate": "2025-11-02",
+      "streams": []
+    },
+    {
+      "id": "s6e15",
+      "season": 6,
+      "episode": 15,
+      "title": "Grendiaper",
+      "description": "While Zoé searches for a way to stop the malicious people she encounters from doing harm, Ladybug and her team find themselves facing a series of strange events in Paris. In addition to confronting a particularly vengeful supervillain, our superheroes, the Miraculers, will have to hunt down a mysterious masked vigilante with unconventional methods.",
+      "airDate": "2025-11-16",
+      "streams": []
+    },
+    {
+      "id": "s6e16",
+      "season": 6,
+      "episode": 16,
+      "title": "Vampigami",
+      "description": "Fearing he'd stop loving her if she didn't go to the movies with him, Marinette forces herself to go with Adrien to a special showing of a horror film. Marinette's worst phobia. chills, anxiety, and terror guaranteed! Boo!",
+      "airDate": "2025-11-23",
+      "streams": []
+    },
+    {
+      "id": "s6e17",
+      "season": 6,
+      "episode": 17,
+      "title": "A Fairy Good Night",
+      "description": "Max's mom is leaving for a space mission soon. When Marinette hears the news, she comes up with an idea to help Max cope well with the separation.",
+      "airDate": "2026-03-29",
+      "streams": []
+    },
+    {
+      "id": "s6e18",
+      "season": 6,
+      "episode": 18,
+      "title": "Heartfixer",
+      "description": "Supervillains threaten Marinette and Adrien's relationship.",
+      "airDate": "2026-04-05",
+      "streams": []
+    },
+    {
+      "id": "s6e19",
+      "season": 6,
+      "episode": 19,
+      "title": "Lady Chaos",
+      "description": "When Adrien decides to make a documentary about his father, Gabriel Agreste, Marinette does her best to protect her secrets.",
+      "airDate": "2026-04-12",
+      "streams": []
+    },
+    {
+      "id": "s6e20",
+      "season": 6,
+      "episode": 20,
+      "title": "Sadnansi",
+      "description": "Marinette is convinced Nora and her coworker, Twig, have feelings for each other but are too afraid to confess, risking their chance at love.",
+      "airDate": "2026-04-19",
+      "streams": []
+    },
+    {
+      "id": "s6e21",
+      "season": 6,
+      "episode": 21,
+      "title": "Riginarazione",
+      "description": "As her grandparents' 75th birthday approaches, Marinette learns news that will turn her life and her family's upside down. What will she discover? Will this unexpected revelation truly change her life forever?",
+      "airDate": "2026-04-26",
+      "streams": []
+    },
+    {
+      "id": "s6e22",
+      "season": 6,
+      "episode": 22,
+      "title": "The Chained Titans",
+      "description": "Nino suggests to Alya to replace Carapace and Rena Rouge in order to protect Marinette and Adrien. But the arrival of two supervillains complicates everything: how can Marinette and Adrien be both their friends' replacements and Ladybug and Cat Noir at the same time?",
+      "airDate": "2026-05-03",
+      "streams": []
+    },
+    {
+      "id": "s6e23",
+      "season": 6,
+      "episode": 23,
+      "title": "The Dirtifiers",
+      "description": "After a sleepover full of surprises, Marinette and her friends worry when Kagami suddenly disappears. As they search for her, two supervillains arrive and interrupt them.",
+      "airDate": "2026-09-27",
+      "streams": []
+    },
+    {
+      "id": "s6e24",
+      "season": 6,
+      "episode": 24,
+      "title": "Queen of the Dreadzone",
+      "description": "When Marinette learns that Chloe is back in Paris, she fears the worst... Sabrina, on the other hand, is convinced that Chloe has changed and become a good person. Who is right?",
+      "airDate": "2026-09-27",
+      "streams": []
+    },
+    {
+      "id": "s6e25",
+      "season": 6,
+      "episode": 25,
+      "title": "Secret Protocol",
+      "description": "Marinette organizes a surprise for Sabine's birthday. But it's her who's going to experience a day full of surprises... not all of them pleasant.",
+      "airDate": "2026-10-04",
+      "streams": []
+    },
+    {
+      "id": "s6e26",
+      "season": 6,
+      "episode": 26,
+      "title": "Nemesis",
+      "description": "As Marinette feels Alya getting closer and closer to her secrets, Ladybug comes up with a plan to flush out the new Butterfly holder.",
+      "airDate": "2026-10-11",
+      "streams": []
+    }
+  ]
+}

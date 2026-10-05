@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "id": "tmdb-series-94605",
+  "title": "Arcane",
+  "partial": true,
+  "checkedAt": "2026-10-05T01:56:43.518Z",
+  "episodes": [
+    {
+      "id": "s1e1",
+      "season": 1,
+      "episode": 1,
+      "title": "Welcome to the Playground",
+      "description": "Orphaned sisters Vi and Powder bring trouble to Zaun's underground streets in the wake of a heist in posh Piltover.",
+      "airDate": "2021-11-06",
+      "streams": []
+    },
+    {
+      "id": "s1e2",
+      "season": 1,
+      "episode": 2,
+      "title": "Some Mysteries Are Better Left Unsolved",
+      "description": "Idealistic inventor Jayce attempts to harness magic through science—despite his mentor's warnings. Criminal kingpin Silco tests a powerful substance.",
+      "airDate": "2021-11-06",
+      "streams": []
+    },
+    {
+      "id": "s1e3",
+      "season": 1,
+      "episode": 3,
+      "title": "The Base Violence Necessary for Change",
+      "description": "An epic showdown between old rivals results in a fateful moment for Zaun. Jayce and Viktor risk it all for their research.",
+      "airDate": "2021-11-06",
+      "streams": []
+    },
+    {
+      "id": "s1e4",
+      "season": 1,
+      "episode": 4,
+      "title": "Happy Progress Day!",
+      "description": "With Piltover prospering from their tech, Jayce and Viktor weigh their next move. A familiar face re-emerges from Zaun to wreak havoc.",
+      "airDate": "2021-11-13",
+      "streams": []
+    },
+    {
+      "id": "s1e5",
+      "season": 1,
+      "episode": 5,
+      "title": "Everybody Wants to Be My Enemy",
+      "description": "Rogue enforcer Caitlyn tours the undercity to track down Silco. Jayce puts a target on his back trying to root out Piltover corruption.",
+      "airDate": "2021-11-13",
+      "streams": []
+    },
+    {
+      "id": "s1e6",
+      "season": 1,
+      "episode": 6,
+      "title": "When These Walls Come Tumbling Down",
+      "description": "An eager protégé undermines his mentor on the council as a magical tech rapidly evolves. With authorities in pursuit, Jinx must face her past.",
+      "airDate": "2021-11-13",
+      "streams": []
+    },
+    {
+      "id": "s1e7",
+      "season": 1,
+      "episode": 7,
+      "title": "The Boy Savior",
+      "description": "Caitlyn and Vi meet an ally in Zaun’s streets and head into a frenzied battle with a common foe. Viktor makes a dire decision.",
+      "airDate": "2021-11-20",
+      "streams": []
+    },
+    {
+      "id": "s1e8",
+      "season": 1,
+      "episode": 8,
+      "title": "Oil and Water",
+      "description": "Disowned heir Mel and her visiting mother trade combat tactics. Caitlyn and Vi forge an unlikely alliance. Jinx undergoes a startling change.",
+      "airDate": "2021-11-20",
+      "streams": []
+    },
+    {
+      "id": "s1e9",
+      "season": 1,
+      "episode": 9,
+      "title": "The Monster You Created",
+      "description": "Perilously close to war, the leaders of Piltover and Zaun reach an ultimatum. But a fateful standoff changes both cities forever.",
+      "airDate": "2021-11-20",
+      "streams": []
+    },
+    {
+      "id": "s2e1",
+      "season": 2,
+      "episode": 1,
+      "title": "Heavy Is the Crown",
+      "description": "Vi and Caitlyn wrestle with how best to respond in the wake of a terrible tragedy that claims lives — and escalates tensions between the twin cities.",
+      "airDate": "2024-11-09",
+      "streams": []
+    },
+    {
+      "id": "s2e2",
+      "season": 2,
+      "episode": 2,
+      "title": "Watch It All Burn",
+      "description": "With Piltover ready for war, the Undercity weighs its options. Jinx lies low and plots her next move. A pivotal conversation takes place.",
+      "airDate": "2024-11-09",
+      "streams": []
+    },
+    {
+      "id": "s2e3",
+      "season": 2,
+      "episode": 3,
+      "title": "Finally Got the Name Right",
+      "description": "Caitlyn doubles down on her hunt for Jinx. Ambessa accepts a fateful meeting. Changes in Zaun lead to a shocking discovery.",
+      "airDate": "2024-11-09",
+      "streams": []
+    },
+    {
+      "id": "s2e4",
+      "season": 2,
+      "episode": 4,
+      "title": "Paint the Town Blue",
+      "description": "As rumors of Jinx's return swirl, Ambessa pursues her target with renewed enthusiasm. Jinx and Sevika go undercover and into the belly of the beast.",
+      "airDate": "2024-11-16",
+      "streams": []
+    },
+    {
+      "id": "s2e5",
+      "season": 2,
+      "episode": 5,
+      "title": "Blisters and Bedrock",
+      "description": "Vi awakens to surprising news. An unsettling reunion isn't what it seems. Caitlyn uncovers the origins of Shimmer.",
+      "airDate": "2024-11-16",
+      "streams": []
+    },
+    {
+      "id": "s2e6",
+      "season": 2,
+      "episode": 6,
+      "title": "The Message Hidden Within the Pattern",
+      "description": "Healing comes from a familiar face — in an unfamiliar place. A stunning betrayal threatens to change countless lives.",
+      "airDate": "2024-11-16",
+      "streams": []
+    },
+    {
+      "id": "s2e7",
+      "season": 2,
+      "episode": 7,
+      "title": "Pretend Like It's the First Time",
+      "description": "A moment of darkness, a moment of light — and a vision of What Could Have Been.",
+      "airDate": "2024-11-23",
+      "streams": []
+    },
+    {
+      "id": "s2e8",
+      "season": 2,
+      "episode": 8,
+      "title": "Killing Is a Cycle",
+      "description": "A brewing storm fuels a series of startling transformations. Elsewhere, the spark of rebellion still burns.",
+      "airDate": "2024-11-23",
+      "streams": []
+    },
+    {
+      "id": "s2e9",
+      "season": 2,
+      "episode": 9,
+      "title": "The Dirt Under Your Nails",
+      "description": "Magic. Science. Power. Revenge. Destinies clash in an epic final chapter, igniting an all-out war.",
+      "airDate": "2024-11-23",
+      "streams": []
+    }
+  ]
+}

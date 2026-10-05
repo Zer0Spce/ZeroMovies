@@ -1,0 +1,4095 @@
+{
+  "schemaVersion": 1,
+  "id": "tmdb-series-45140",
+  "title": "Teen Titans Go!",
+  "partial": true,
+  "checkedAt": "2026-10-05T01:57:16.670Z",
+  "episodes": [
+    {
+      "id": "s1e1",
+      "season": 1,
+      "episode": 1,
+      "title": "Legendary Sandwich",
+      "description": "Beast Boy, Robin and Starfire go in search of the ingredients for a legendary sandwich.",
+      "airDate": "2013-04-23",
+      "streams": []
+    },
+    {
+      "id": "s1e2",
+      "season": 1,
+      "episode": 2,
+      "title": "Pie Bros",
+      "description": "Beast Boy gets a job at a pie shop in order to buy Cyborg a birthday gift.",
+      "airDate": "2013-04-23",
+      "streams": []
+    },
+    {
+      "id": "s1e3",
+      "season": 1,
+      "episode": 3,
+      "title": "Driver's Ed",
+      "description": "Robin takes driver's ed, and his teacher has some tricks up his sleeve.",
+      "airDate": "2013-04-30",
+      "streams": []
+    },
+    {
+      "id": "s1e4",
+      "season": 1,
+      "episode": 4,
+      "title": "Dog Hand",
+      "description": "Raven's dad cozies up to her friends in hopes of luring her over to the dark side.",
+      "airDate": "2013-04-30",
+      "streams": []
+    },
+    {
+      "id": "s1e5",
+      "season": 1,
+      "episode": 5,
+      "title": "Double Trouble",
+      "description": "Cyborg has Raven create doubles of himself and Beast Boy.",
+      "airDate": "2013-05-07",
+      "streams": []
+    },
+    {
+      "id": "s1e6",
+      "season": 1,
+      "episode": 6,
+      "title": "The Date",
+      "description": "To go on a date with Starfire, Robin kidnaps Speedy.",
+      "airDate": "2013-05-07",
+      "streams": []
+    },
+    {
+      "id": "s1e7",
+      "season": 1,
+      "episode": 7,
+      "title": "Dude Relax!",
+      "description": "The gang try to teach Robin to relax after his high-strung nature begins affecting the team. Later, chores pile up while the team bicker, and soon their dirty uniforms go on the offensive.",
+      "airDate": "2013-05-14",
+      "streams": []
+    },
+    {
+      "id": "s1e8",
+      "season": 1,
+      "episode": 8,
+      "title": "Laundry Day",
+      "description": "Later, chores pile up while the team bicker, and soon their dirty uniforms go on the offensive.",
+      "airDate": "2013-05-14",
+      "streams": []
+    },
+    {
+      "id": "s1e9",
+      "season": 1,
+      "episode": 9,
+      "title": "Ghostboy",
+      "description": "Beast Boy pretends to be a ghost haunting Starfire so she will do his bidding. When she figures out the ruse, she and the other Titans convince Beast Boy that he's actually dead.",
+      "airDate": "2013-05-21",
+      "streams": []
+    },
+    {
+      "id": "s1e10",
+      "season": 1,
+      "episode": 10,
+      "title": "La Larva de Amor",
+      "description": "Robin, Cyborg, Beast Boy, and Raven agree to take on the responsibility of babysitting Silkie while Starfire is away.",
+      "airDate": "2013-05-28",
+      "streams": []
+    },
+    {
+      "id": "s1e11",
+      "season": 1,
+      "episode": 11,
+      "title": "Hey Pizza!",
+      "description": "Cyborg and Beast Boy try to capitalize on Zippy's Pizza's \"thirty minutes or its free\" deal, but the delivery boy is seemingly unstoppable. It becomes a bit of a challenge as an all-out war of wits between them erupts. Meanwhile, Robin struggles with whether to build a senior center or a pool (leaning toward the pool mostly to see Starfire in a bikini).",
+      "airDate": "2013-06-04",
+      "streams": []
+    },
+    {
+      "id": "s1e12",
+      "season": 1,
+      "episode": 12,
+      "title": "Gorilla",
+      "description": "Beast Boy turns into a loud, obnoxious gorilla and refuses to change back driving Robin crazy. Gorilla Beast Boy takes over the leadership of the Titans leading to chaos ranging from not letting a girl get onto Beast Boy's monkey bars, fighting crocodiles, and freeing captive gorillas from the zoo. Cyborg teaches Robin how to be an alpha male so he can take back his role as leader of the Teen Titans.",
+      "airDate": "2013-06-11",
+      "streams": []
+    },
+    {
+      "id": "s1e13",
+      "season": 1,
+      "episode": 13,
+      "title": "Girl's Night Out",
+      "description": "When Robin, Cyborg, and Beast Boy won’t let Starfire and Raven come along on their \"Boys' Night Out,\" Starfire and Raven spring Jinx from prison and the three of them have a wild night of their own.",
+      "airDate": "2013-06-18",
+      "streams": []
+    },
+    {
+      "id": "s1e14",
+      "season": 1,
+      "episode": 14,
+      "title": "You're Fired!",
+      "description": "Beast Boy's behavior causes him to be fired from the Teen Titans and replaced by a pair of shape-shifting twins.",
+      "airDate": "2013-06-25",
+      "streams": []
+    },
+    {
+      "id": "s1e15",
+      "season": 1,
+      "episode": 15,
+      "title": "Super Robin",
+      "description": "Envious of the other Titans' superpowers following their fight with the H.I.V.E. Five (consisting of Mammoth, Gizmo, Jinx, Billy Numerous, and See-More), Robin wants some of his own. After a disastrous scientific experiment goes awry that merges him with the DNA of the American Robin, he convinces Raven to use her magic to give him superpowers even though she claims that superpowers are a curse.",
+      "airDate": "2013-07-02",
+      "streams": []
+    },
+    {
+      "id": "s1e16",
+      "season": 1,
+      "episode": 16,
+      "title": "Tower Power",
+      "description": "Cyborg plugs into the control panel of the Titans tower and drives the others crazy.",
+      "airDate": "2013-07-09",
+      "streams": []
+    },
+    {
+      "id": "s1e17",
+      "season": 1,
+      "episode": 17,
+      "title": "Parasite",
+      "description": "Starfire's new pet is a horribly dangerous parasite, but Robin is the only one who is suspicious of the beast.",
+      "airDate": "2013-07-16",
+      "streams": []
+    },
+    {
+      "id": "s1e18",
+      "season": 1,
+      "episode": 18,
+      "title": "Starliar",
+      "description": "Beast Boy teaches Starfire how to lie and it backfires as her lies get more and more outrageous.",
+      "airDate": "2013-07-23",
+      "streams": []
+    },
+    {
+      "id": "s1e19",
+      "season": 1,
+      "episode": 19,
+      "title": "Meatball Party",
+      "description": "Raven eats a bad meatball that causes tentacles to spring from her teeth and devour the other Titans.",
+      "airDate": "2013-07-30",
+      "streams": []
+    },
+    {
+      "id": "s1e20",
+      "season": 1,
+      "episode": 20,
+      "title": "Staff Meeting",
+      "description": "When Robin's long bo-staff is accidentally broken by the other four Titans, he seeks a new one at the mystical Tree of the Universe.",
+      "airDate": "2013-08-13",
+      "streams": []
+    },
+    {
+      "id": "s1e21",
+      "season": 1,
+      "episode": 21,
+      "title": "Terra-ized",
+      "description": "When Beast Boy believes that Terra is his new beloved sweetheart and girlfriend, Raven is suspicious of her true motives.",
+      "airDate": "2013-08-20",
+      "streams": []
+    },
+    {
+      "id": "s1e22",
+      "season": 1,
+      "episode": 22,
+      "title": "Artful Dodgers",
+      "description": "The Titans believe they will win an upcoming dodgeball championship.",
+      "airDate": "2013-08-27",
+      "streams": []
+    },
+    {
+      "id": "s1e23",
+      "season": 1,
+      "episode": 23,
+      "title": "Burger vs. Burrito",
+      "description": "Cyborg and Beast Boy are in perfect sync, except when it comes to their taste in food. What’s the best food ever created, burgers or burritos? The two friends have an all-out competition to settle things once and for all.",
+      "airDate": "2013-09-03",
+      "streams": []
+    },
+    {
+      "id": "s1e24",
+      "season": 1,
+      "episode": 24,
+      "title": "Matched",
+      "description": "Cyborg’s Love Matcher 5000 program pairs Raven with Beast Boy and Starfire with Aquaman. While Beast Boy does everything he can to get Raven to love him, Robin tries to be more like Aquaman to win Starfire’s heart.",
+      "airDate": "2013-09-11",
+      "streams": []
+    },
+    {
+      "id": "s1e25",
+      "season": 1,
+      "episode": 25,
+      "title": "Colors of Raven",
+      "description": "A magical prism causes Raven to fragment into five distinct personalities which wreak havoc around town until the other Titans can figure out how to rejoin her.",
+      "airDate": "2013-09-18",
+      "streams": []
+    },
+    {
+      "id": "s1e26",
+      "season": 1,
+      "episode": 26,
+      "title": "The Left Leg",
+      "description": "When the gang bands together to form a giant robot, Robin is relegated to the left leg, but he makes the left leg count!",
+      "airDate": "2013-09-25",
+      "streams": []
+    },
+    {
+      "id": "s1e27",
+      "season": 1,
+      "episode": 27,
+      "title": "Books",
+      "description": "The Titans discover the wonders of reading, but after opening a book that brings their thoughts to life, they must fight against their own imaginations!",
+      "airDate": "2013-10-02",
+      "streams": []
+    },
+    {
+      "id": "s1e28",
+      "season": 1,
+      "episode": 28,
+      "title": "Lazy Sunday",
+      "description": "Cyborg and Beast Boy love lazy Sundays sitting on the couch … even when it’s a Tuesday! But when Robin replaces the couch with a treadmill, the two lazy teens must embrace the new active lifestyle.",
+      "airDate": "2013-10-09",
+      "streams": []
+    },
+    {
+      "id": "s1e29",
+      "season": 1,
+      "episode": 29,
+      "title": "Starfire the Terrible",
+      "description": "When Robin needs an archenemy, Starfire generously offers to fill the role and she exceeds expectations.",
+      "airDate": "2013-10-16",
+      "streams": []
+    },
+    {
+      "id": "s1e30",
+      "season": 1,
+      "episode": 30,
+      "title": "Power Moves",
+      "description": "When Robin starts doing power moves with Cyborg, Beast Boy gets very jealous.",
+      "airDate": "2013-10-23",
+      "streams": []
+    },
+    {
+      "id": "s1e31",
+      "season": 1,
+      "episode": 31,
+      "title": "Staring at the Future",
+      "description": "Cyborg and Beast Boy have a staring contest that lasts 30 years, bringing them face to face with a future of adulthood and responsibility… and they hate it.",
+      "airDate": "2013-10-30",
+      "streams": []
+    },
+    {
+      "id": "s1e32",
+      "season": 1,
+      "episode": 32,
+      "title": "No Power",
+      "description": "Feeling the other Titans depend too much on their super powers, Robin challenges them to go 24 hours without using their powers. To his distress, they all succeed, leading him to question his own value to the team.",
+      "airDate": "2013-11-06",
+      "streams": []
+    },
+    {
+      "id": "s1e33",
+      "season": 1,
+      "episode": 33,
+      "title": "Sidekick",
+      "description": "Robin gets called back to the Batcave but only as a house-sitter while Batman’s away.",
+      "airDate": "2013-11-13",
+      "streams": []
+    },
+    {
+      "id": "s1e34",
+      "season": 1,
+      "episode": 34,
+      "title": "Caged Tiger",
+      "description": "Cyborg, Beast Boy, and Robin return from a Bro-cation closer than ever, but their bro-mentum is interrupted by Dr. Light!",
+      "airDate": "2013-11-20",
+      "streams": []
+    },
+    {
+      "id": "s1e35",
+      "season": 1,
+      "episode": 35,
+      "title": "Second Christmas",
+      "description": "The Titans trick Starfire into believing in second Christmas with a second Santa.",
+      "airDate": "2013-12-04",
+      "streams": []
+    },
+    {
+      "id": "s1e36",
+      "season": 1,
+      "episode": 36,
+      "title": "Nose Mouth",
+      "description": "Raven's past powers may cause consequences to the other Titans.",
+      "airDate": "2014-01-08",
+      "streams": []
+    },
+    {
+      "id": "s1e37",
+      "season": 1,
+      "episode": 37,
+      "title": "Legs",
+      "description": "After Robin swipes her cloak, Raven's leggy figure is revealed and she transforms into Lady Legasus. Meanwhile, Cyborg gets stuck in the discarded cloak, revealing a dark side of his personality.",
+      "airDate": "2014-01-15",
+      "streams": []
+    },
+    {
+      "id": "s1e38",
+      "season": 1,
+      "episode": 38,
+      "title": "Breakfast Cheese",
+      "description": "Starfire convinces the reluctant Titans to try defeating their enemies with compassion rather than violence.",
+      "airDate": "2014-01-22",
+      "streams": []
+    },
+    {
+      "id": "s1e39",
+      "season": 1,
+      "episode": 39,
+      "title": "Waffles",
+      "description": "Cyborg and Beast Boy show their love of waffles by making it the only word they say, much to the annoyance of the other Titans.",
+      "airDate": "2014-02-05",
+      "streams": []
+    },
+    {
+      "id": "s1e40",
+      "season": 1,
+      "episode": 40,
+      "title": "Be Mine",
+      "description": "It's Valentine's Day, and the Titans are throwing a dance. Beast Boy knows who he wants to go with, and thing is... he wants to go with Terra, his ex-girlfriend, who already made a crack at eliminating the Titans.",
+      "airDate": "2014-02-12",
+      "streams": []
+    },
+    {
+      "id": "s1e41",
+      "season": 1,
+      "episode": 41,
+      "title": "Opposites",
+      "description": "Cyborg has a crush on Jinx.",
+      "airDate": "2014-02-19",
+      "streams": []
+    },
+    {
+      "id": "s1e42",
+      "season": 1,
+      "episode": 42,
+      "title": "Birds",
+      "description": "Robin removes two mockingbirds from the chimney with a gas he created in his lab. But the chemical mutates the birds into muscular bullies who then move into the tower.",
+      "airDate": "2014-02-26",
+      "streams": []
+    },
+    {
+      "id": "s1e43",
+      "season": 1,
+      "episode": 43,
+      "title": "Brain Food",
+      "description": "Beast Boy is tired of being the least intelligent of the Titans. When all of his efforts to get smart fail, he uses Raven's spell book to cast a spell - not to make him smarter, but to make all of the other Titans dumber.",
+      "airDate": "2014-03-05",
+      "streams": []
+    },
+    {
+      "id": "s1e44",
+      "season": 1,
+      "episode": 44,
+      "title": "In and Out",
+      "description": "Robin infiltrates the H.I.V.E. Tower to destroy it, but instead he is distracted by its awesomeness!",
+      "airDate": "2014-03-12",
+      "streams": []
+    },
+    {
+      "id": "s1e45",
+      "season": 1,
+      "episode": 45,
+      "title": "Little Buddies",
+      "description": "Cyborg wants Pain Bot to be his \"little buddy\" but is the destructive robot too dangerous to be a sidekick?",
+      "airDate": "2014-03-19",
+      "streams": []
+    },
+    {
+      "id": "s1e46",
+      "season": 1,
+      "episode": 46,
+      "title": "Missing",
+      "description": "Killer Moth offers a reward for Silkie's return, but will Silkie be happier away from the Titans?",
+      "airDate": "2014-03-26",
+      "streams": []
+    },
+    {
+      "id": "s1e47",
+      "season": 1,
+      "episode": 47,
+      "title": "Uncle Jokes",
+      "description": "Starfire is allowed to join Beast Boy and Cyborg's revelry, if she avoids uncle jokes.",
+      "airDate": "2014-04-09",
+      "streams": []
+    },
+    {
+      "id": "s1e48",
+      "season": 1,
+      "episode": 48,
+      "title": "Mas Y Menos",
+      "description": "Robin tries to teach Spanish-speaking brothers his superhero ways.",
+      "airDate": "2014-04-16",
+      "streams": []
+    },
+    {
+      "id": "s1e49",
+      "season": 1,
+      "episode": 49,
+      "title": "Dreams",
+      "description": "The dream worlds of the Titans.",
+      "airDate": "2014-04-23",
+      "streams": []
+    },
+    {
+      "id": "s1e50",
+      "season": 1,
+      "episode": 50,
+      "title": "Grandma Voice",
+      "description": "Cyborg is possessed by a \"Grandma Voice\", which irritates the Titans.",
+      "airDate": "2014-04-30",
+      "streams": []
+    },
+    {
+      "id": "s1e51",
+      "season": 1,
+      "episode": 51,
+      "title": "Real Magic",
+      "description": "Robin dabbles with magic, ignoring Raven's warning that he will anger the magic god.",
+      "airDate": "2014-05-14",
+      "streams": []
+    },
+    {
+      "id": "s1e52",
+      "season": 1,
+      "episode": 52,
+      "title": "Puppets, Whaaaaat?",
+      "description": "Robin makes a deal with a sock puppet which turns him and the other titans into puppets.",
+      "airDate": "2014-06-05",
+      "streams": []
+    },
+    {
+      "id": "s2e1",
+      "season": 2,
+      "episode": 1,
+      "title": "Mr. Butt",
+      "description": "Blackfire pays a surprise visit to her sister Starfire, saying she wants to spend some quality time with her. The other Titans think that Blackfire is playing another trick, but Starfire is sure that this time Blackfire is serious about reviving their sisterly love",
+      "airDate": "2014-06-12",
+      "streams": []
+    },
+    {
+      "id": "s2e2",
+      "season": 2,
+      "episode": 2,
+      "title": "Man Person",
+      "description": "Despite the Titans' protests, Beast Boy becomes convinced that replacing his body parts with robotic limbs makes him more manly.",
+      "airDate": "2014-06-19",
+      "streams": []
+    },
+    {
+      "id": "s2e3",
+      "season": 2,
+      "episode": 3,
+      "title": "Pirates",
+      "description": "Aqualad asks Raven out on a date, which makes Beast Boy jealous. Cyborg tries to prove that Aqualad is really a pirate.",
+      "airDate": "2014-06-26",
+      "streams": []
+    },
+    {
+      "id": "s2e4",
+      "season": 2,
+      "episode": 4,
+      "title": "Money Grandma",
+      "description": "When Robin starts a smear campaign against all of the other Titans so that he can be re-elected  Team Leader, Raven uses a time machine to bring a great leader from the past to teach Robin how to lead.",
+      "airDate": "2014-07-03",
+      "streams": []
+    },
+    {
+      "id": "s2e5",
+      "season": 2,
+      "episode": 5,
+      "title": "I See You",
+      "description": "Robin brings Starfire on a fake stakeout in an attempt to get a kiss, while Cyborg and Beast Boy hold their own stakeout to discover Raven's dark secret.",
+      "airDate": "2014-07-24",
+      "streams": []
+    },
+    {
+      "id": "s2e6",
+      "season": 2,
+      "episode": 6,
+      "title": "Brian",
+      "description": "When the Brain captures the Titans to fuel Project B.R.I.A.N., the Titans' little buddies are the only heroes who can save them.",
+      "airDate": "2014-07-31",
+      "streams": []
+    },
+    {
+      "id": "s2e7",
+      "season": 2,
+      "episode": 7,
+      "title": "Nature",
+      "description": "When Beast Boy loses his ability to change into animals, he realizes that he’s lost touch with his wild side. He goes to the forest to reconnect with his inner beast, but Mother Nature isn't as great as he had hoped.",
+      "airDate": "2014-08-07",
+      "streams": []
+    },
+    {
+      "id": "s2e8",
+      "season": 2,
+      "episode": 8,
+      "title": "Salty Codgers",
+      "description": "Raven is delighted when the other Titans are magically turned into old people during a battle.",
+      "airDate": "2014-08-14",
+      "streams": []
+    },
+    {
+      "id": "s2e9",
+      "season": 2,
+      "episode": 9,
+      "title": "Knowledge",
+      "description": "Starfire wants to learn more, but will knowledge make her a bummer?",
+      "airDate": "2014-08-21",
+      "streams": []
+    },
+    {
+      "id": "s2e10",
+      "season": 2,
+      "episode": 10,
+      "title": "Slumber Party",
+      "description": "When the other Titans find out that Cyborg is afraid of the dark, they have a slumber party to help him face his fears.",
+      "airDate": "2014-08-28",
+      "streams": []
+    },
+    {
+      "id": "s2e11",
+      "season": 2,
+      "episode": 11,
+      "title": "Love Monsters",
+      "description": "Raven warns the Titans not to go near a box containing the Twin Destroyers of Azarath. Starfire can't help it and opens the box, giving hugs and snuggles to the tiny and adorable destroyers... but love only makes the destroyers stronger. Now, the Titans must find a way to get the monsters back in the box before Raven finds out that they were released.",
+      "airDate": "2014-09-04",
+      "streams": []
+    },
+    {
+      "id": "s2e12",
+      "season": 2,
+      "episode": 12,
+      "title": "Baby Hands",
+      "description": "Robin has been hiding something under his gloves.",
+      "airDate": "2014-09-11",
+      "streams": []
+    },
+    {
+      "id": "s2e13",
+      "season": 2,
+      "episode": 13,
+      "title": "Caramel Apples",
+      "description": "Raven and Starfire clash after Starfire creates a bond with Raven's father, while Robin, Cyborg, and Beast Boy struggle to return to Earth's surface after falling into a deep cavern.",
+      "airDate": "2014-09-18",
+      "streams": []
+    },
+    {
+      "id": "s2e14",
+      "season": 2,
+      "episode": 14,
+      "title": "Sandwich Thief",
+      "description": "Robin's perfect sandwich is missing and he will stop at nothing to find it.",
+      "airDate": "2014-09-25",
+      "streams": []
+    },
+    {
+      "id": "s2e15",
+      "season": 2,
+      "episode": 15,
+      "title": "Friendship",
+      "description": "When Control Freak imprisons the Titans in a Pretty Pretty Pegasus world, the Titans decide to use violence to escape, while Raven decides to use friendship and happiness.",
+      "airDate": "2014-10-02",
+      "streams": []
+    },
+    {
+      "id": "s2e16",
+      "season": 2,
+      "episode": 16,
+      "title": "Vegetables",
+      "description": "When the team tries to live a vegetarian lifestyle, they learn that living that way is not for everyone.",
+      "airDate": "2014-10-09",
+      "streams": []
+    },
+    {
+      "id": "s2e17",
+      "season": 2,
+      "episode": 17,
+      "title": "The Mask",
+      "description": "Robin's mask hides both his secret identity and a horrible secret.",
+      "airDate": "2014-10-16",
+      "streams": []
+    },
+    {
+      "id": "s2e18",
+      "season": 2,
+      "episode": 18,
+      "title": "Serious Business",
+      "description": "When Robin rations bathroom time to five minutes per visit, the other Titans try to show him the magic of the bathroom.",
+      "airDate": "2014-10-23",
+      "streams": []
+    },
+    {
+      "id": "s2e19",
+      "season": 2,
+      "episode": 19,
+      "title": "Halloween",
+      "description": "Raven tries to get the other titans to enjoy Halloween again.",
+      "airDate": "2014-10-30",
+      "streams": []
+    },
+    {
+      "id": "s2e20",
+      "season": 2,
+      "episode": 20,
+      "title": "Boys vs Girls",
+      "description": "The Titans compete against each other to prove who is the better gender.",
+      "airDate": "2014-11-06",
+      "streams": []
+    },
+    {
+      "id": "s2e21",
+      "season": 2,
+      "episode": 21,
+      "title": "Body Adventure",
+      "description": "Cyborg is infected with a cold and the Titans shrink down to fight it off.",
+      "airDate": "2014-11-13",
+      "streams": []
+    },
+    {
+      "id": "s2e22",
+      "season": 2,
+      "episode": 22,
+      "title": "Road Trip",
+      "description": "Cyborg completely rebuilt the T-Car and takes it out on a road trip.",
+      "airDate": "2014-11-20",
+      "streams": []
+    },
+    {
+      "id": "s2e23",
+      "season": 2,
+      "episode": 23,
+      "title": "Thanksgiving",
+      "description": "When Raven’s father Trigon shows up for Thanksgiving dinner, Robin’s seating plan isn't the only thing that gets ruined.",
+      "airDate": "2014-11-26",
+      "streams": []
+    },
+    {
+      "id": "s2e24",
+      "season": 2,
+      "episode": 24,
+      "title": "The Best Robin",
+      "description": "Due to the Titans' laziness, Robin creates another team of himself to battle Brother Blood.",
+      "airDate": "2014-12-04",
+      "streams": []
+    },
+    {
+      "id": "s2e25",
+      "season": 2,
+      "episode": 25,
+      "title": "Mouth Hole",
+      "description": "Robin wants to gain the power of whistling.",
+      "airDate": "2015-01-08",
+      "streams": []
+    },
+    {
+      "id": "s2e26",
+      "season": 2,
+      "episode": 26,
+      "title": "Hot Garbage",
+      "description": "The Titans try to convince Beast Boy to clean his room, but they learn that there is more to garbage than just trash.",
+      "airDate": "2015-01-15",
+      "streams": []
+    },
+    {
+      "id": "s2e27",
+      "season": 2,
+      "episode": 27,
+      "title": "Robin Backwards",
+      "description": "When Nibor, Bizzaro World's Robin, arrives in Jump City, the team decides that they should watch him.",
+      "airDate": "2015-01-22",
+      "streams": []
+    },
+    {
+      "id": "s2e28",
+      "season": 2,
+      "episode": 28,
+      "title": "Crazy Day",
+      "description": "When Crazy Day arrives, Raven tries to avoid being driven crazy by her fellow teammates.",
+      "airDate": "2015-01-29",
+      "streams": []
+    },
+    {
+      "id": "s2e29",
+      "season": 2,
+      "episode": 29,
+      "title": "Smile Bones",
+      "description": "When Cyborg and Beast Boy teach the others to wolf down their food, the group must battle their own obesity.",
+      "airDate": "2015-02-05",
+      "streams": []
+    },
+    {
+      "id": "s2e30",
+      "season": 2,
+      "episode": 30,
+      "title": "Real Boy Adventures",
+      "description": "After transforming himself into 'Fleshy Guy', Cyborg discovers the delight and agony of being human.",
+      "airDate": "2015-02-12",
+      "streams": []
+    },
+    {
+      "id": "s2e31",
+      "season": 2,
+      "episode": 31,
+      "title": "Hose Water",
+      "description": "The discovery of a baby bird fuels Starfire and Cyborg to discover their inner children have been awakened.",
+      "airDate": "2015-02-19",
+      "streams": []
+    },
+    {
+      "id": "s2e32",
+      "season": 2,
+      "episode": 32,
+      "title": "Let's Get Serious",
+      "description": "Robin attempts to make the Teen Titans to be taken more seriously by the real heroes from Young Justice.",
+      "airDate": "2015-02-26",
+      "streams": []
+    },
+    {
+      "id": "s2e33",
+      "season": 2,
+      "episode": 33,
+      "title": "Tamaranian Vacation",
+      "description": "The Titans visit Starfire's home world of Tamaran to try and learn what makes her so sweet and loving.",
+      "airDate": "2015-03-05",
+      "streams": []
+    },
+    {
+      "id": "s2e34",
+      "season": 2,
+      "episode": 34,
+      "title": "Rocks and Water",
+      "description": "Raven and Beast Boy are surprised to discover that their exes, Terra and Aqualad, are dating each other.",
+      "airDate": "2015-03-12",
+      "streams": []
+    },
+    {
+      "id": "s2e35",
+      "season": 2,
+      "episode": 35,
+      "title": "Multiple Trick Pony",
+      "description": "Robin insists that he is a 'multiple trick pony.'",
+      "airDate": "2015-03-19",
+      "streams": []
+    },
+    {
+      "id": "s2e36",
+      "season": 2,
+      "episode": 36,
+      "title": "Truth, Justice and What?",
+      "description": "Pizza is the source of the Titans' goofy humor.",
+      "airDate": "2015-03-26",
+      "streams": []
+    },
+    {
+      "id": "s2e37",
+      "season": 2,
+      "episode": 37,
+      "title": "Two Bumble Bees and a Wasp",
+      "description": "When Robin tries to teach the others to have more respect for money, he ends up learning a lesson.",
+      "airDate": "2015-04-02",
+      "streams": []
+    },
+    {
+      "id": "s2e38",
+      "season": 2,
+      "episode": 38,
+      "title": "Oil Drums",
+      "description": "Cyborg is looking forward to a marathon of '80s television shows, but the remote appears to be missing.",
+      "airDate": "2015-04-09",
+      "streams": []
+    },
+    {
+      "id": "s2e39",
+      "season": 2,
+      "episode": 39,
+      "title": "Video Game References",
+      "description": "The Titans immerse themselves into a variety of video game worlds.",
+      "airDate": "2015-04-16",
+      "streams": []
+    },
+    {
+      "id": "s2e40",
+      "season": 2,
+      "episode": 40,
+      "title": "Cool School",
+      "description": "Raven decides to hang out with Rose Wilson because she is cool; the others believe they are lame by comparison so they attend Cool School.",
+      "airDate": "2015-04-23",
+      "streams": []
+    },
+    {
+      "id": "s2e41",
+      "season": 2,
+      "episode": 41,
+      "title": "Kicking a Ball and Pretending to Be Hurt",
+      "description": "The Titans learn about the magic of soccer.",
+      "airDate": "2015-04-30",
+      "streams": []
+    },
+    {
+      "id": "s2e42",
+      "season": 2,
+      "episode": 42,
+      "title": "Head Fruit",
+      "description": "When Beast Boy's head starts to rattle, Robin suggests that he should find a hobby so that his brain will stop shrinking.",
+      "airDate": "2015-05-07",
+      "streams": []
+    },
+    {
+      "id": "s2e43",
+      "season": 2,
+      "episode": 43,
+      "title": "Yearbook Madness",
+      "description": "Beast Boy and Cyborg decide to create a yearbook for the Titans.",
+      "airDate": "2015-05-14",
+      "streams": []
+    },
+    {
+      "id": "s2e44",
+      "season": 2,
+      "episode": 44,
+      "title": "Beast Man",
+      "description": "Beast Boy discovers he can transform into an adult man.",
+      "airDate": "2015-06-29",
+      "streams": []
+    },
+    {
+      "id": "s2e45",
+      "season": 2,
+      "episode": 45,
+      "title": "Operation Tin Man",
+      "description": "Gizmo convinces the Titans he's kidnapped Cyborg, when in reality Cyborg's just hanging out in the HIVE tower with his girl Jinx. When Gizmo gets annoyed by Cyborg's constant presence, the two start a prank war.",
+      "airDate": "2015-06-30",
+      "streams": []
+    },
+    {
+      "id": "s2e46",
+      "season": 2,
+      "episode": 46,
+      "title": "Nean",
+      "description": "Raven is cursed to be nice; meanwhile, Starfire is about to marry a pot of chili.",
+      "airDate": "2015-07-01",
+      "streams": []
+    },
+    {
+      "id": "s2e47",
+      "season": 2,
+      "episode": 47,
+      "title": "Campfire Stories",
+      "description": "The Titans are having a terrible time on their camping trip, so Robin suggests that they each tell a scary campfire story.",
+      "airDate": "2015-07-02",
+      "streams": []
+    },
+    {
+      "id": "s2e48",
+      "season": 2,
+      "episode": 48,
+      "title": "And the Award for Sound Design Goes to Rob",
+      "description": "Raven just wants some piece and quiet for once, and accidentally makes a magical deal that eliminates all sounds.",
+      "airDate": "2015-07-03",
+      "streams": []
+    },
+    {
+      "id": "s2e49",
+      "season": 2,
+      "episode": 49,
+      "title": "The HIVE Five",
+      "description": "The HIVE decides to take the day off so that they can avoid engaging with the Titans, if it is possible.",
+      "airDate": "2015-07-27",
+      "streams": []
+    },
+    {
+      "id": "s2e50",
+      "season": 2,
+      "episode": 50,
+      "title": "The Return of Slade",
+      "description": "Beast Boy and Cyborg insist on hiring a clown for a Titans party, even though Robin tells them that clowns are for little kids. When the clown fails to live up to their memories, Cyborg and Beast Boy decide to give the clown some cool updates.",
+      "airDate": "2015-07-28",
+      "streams": []
+    },
+    {
+      "id": "s2e51",
+      "season": 2,
+      "episode": 51,
+      "title": "More of the Same",
+      "description": "Can the Titans master the four New Year's traditions in order to break the cycle of bad years?",
+      "airDate": "2015-07-29",
+      "streams": []
+    },
+    {
+      "id": "s2e52",
+      "season": 2,
+      "episode": 52,
+      "title": "Some of Their Parts",
+      "description": "Robin uses the prism to split the Titans into five parts so he can pick out the best ones for the team.",
+      "airDate": "2015-07-30",
+      "streams": []
+    },
+    {
+      "id": "s3e1",
+      "season": 3,
+      "episode": 1,
+      "title": "Cat's Fancy",
+      "description": "Robin is determined to become a cat in order to get Starfire's attention.",
+      "airDate": "2015-07-31",
+      "streams": []
+    },
+    {
+      "id": "s3e2",
+      "season": 3,
+      "episode": 2,
+      "title": "Leg Day",
+      "description": "After a humiliating defeat, Raven and the Titans work on building their lower body strength, becoming the \"League of Legs.\"",
+      "airDate": "2015-08-06",
+      "streams": []
+    },
+    {
+      "id": "s3e3",
+      "season": 3,
+      "episode": 3,
+      "title": "Dignity of Teeth",
+      "description": "After Beast Boy gets money from the Tooth Fairy, the other Titans try to get in on the action by knocking out their own teeth.",
+      "airDate": "2015-08-13",
+      "streams": []
+    },
+    {
+      "id": "s3e4",
+      "season": 3,
+      "episode": 4,
+      "title": "Croissant",
+      "description": "After learning looks don't matter, Beast Boy undergoes a metamorphosis through a cocoon, becoming an ugly, gross creature.",
+      "airDate": "2015-08-20",
+      "streams": []
+    },
+    {
+      "id": "s3e5",
+      "season": 3,
+      "episode": 5,
+      "title": "Spice Game",
+      "description": "Having grown sick of Robin's bland cooking, the other Titans make attempts to spice things up.",
+      "airDate": "2015-08-27",
+      "streams": []
+    },
+    {
+      "id": "s3e6",
+      "season": 3,
+      "episode": 6,
+      "title": "I'm the Sauce",
+      "description": "Stuck inside on a rainy day, the Titans do rainy-day activities to keep from boredom.",
+      "airDate": "2015-09-03",
+      "streams": []
+    },
+    {
+      "id": "s3e7",
+      "season": 3,
+      "episode": 7,
+      "title": "Hey You, Don't Forget About Me In Your Memory",
+      "description": "When Robin decides to become an all-American class president-type person, he convinces the Titans to return to school with him.",
+      "airDate": "2015-09-10",
+      "streams": []
+    },
+    {
+      "id": "s3e8",
+      "season": 3,
+      "episode": 8,
+      "title": "Accept The Next Proposition You Hear",
+      "description": "Robin refuses to give the Titans any more orders so that they'll learn to think for themselves.",
+      "airDate": "2015-10-19",
+      "streams": []
+    },
+    {
+      "id": "s3e9",
+      "season": 3,
+      "episode": 9,
+      "title": "The Fourth Wall",
+      "description": "Control Freak informs the Titans that they are on a TV show he created and demands they earn him an award.",
+      "airDate": "2015-10-20",
+      "streams": []
+    },
+    {
+      "id": "s3e10",
+      "season": 3,
+      "episode": 10,
+      "title": "40%, 40%, 20%",
+      "description": "Cyborg's real strength comes not from his robot parts, but from his favorite song.",
+      "airDate": "2015-10-21",
+      "streams": []
+    },
+    {
+      "id": "s3e11",
+      "season": 3,
+      "episode": 11,
+      "title": "Grube's Fairytales",
+      "description": "Robin tries to teach the Titans valuable life lessons by reading them fairytales, but the others co-opt his stories and spin them into their own twisted yarns.",
+      "airDate": "2015-10-22",
+      "streams": []
+    },
+    {
+      "id": "s3e12",
+      "season": 3,
+      "episode": 12,
+      "title": "A Farce",
+      "description": "The titans are brought to court for the destruction they caused to Jump City.",
+      "airDate": "2015-10-23",
+      "streams": []
+    },
+    {
+      "id": "s3e13",
+      "season": 3,
+      "episode": 13,
+      "title": "Scary Figure Dance",
+      "description": "The Hive succeed in destroying the Titans, but their ghosts come back to haunt them all.",
+      "airDate": "2015-10-29",
+      "streams": []
+    },
+    {
+      "id": "s3e14",
+      "season": 3,
+      "episode": 14,
+      "title": "Animals, It's Just a Word!",
+      "description": "Beast Boy's presses the fire button on Cyborg's laser cannon and the Titans die, but Beast Boy puts his blood in them to save them from dying and now have the ability to transform into animals and act like animals.",
+      "airDate": "2015-11-05",
+      "streams": []
+    },
+    {
+      "id": "s3e15",
+      "season": 3,
+      "episode": 15,
+      "title": "BBBDay!",
+      "description": "It's Beast Boy's birthday, but no one will celebrate it.",
+      "airDate": "2015-11-12",
+      "streams": []
+    },
+    {
+      "id": "s3e16",
+      "season": 3,
+      "episode": 16,
+      "title": "Black Friday",
+      "description": "After refusing to shop on Black Friday, Starfire is visited by the ghosts of Black Friday past, present, and future.",
+      "airDate": "2015-11-19",
+      "streams": []
+    },
+    {
+      "id": "s3e17",
+      "season": 3,
+      "episode": 17,
+      "title": "Two Parter (1)",
+      "description": "The Titans visit the Hall of Justice to use the pool, but then decided to check out the inside.",
+      "airDate": "2015-11-26",
+      "streams": []
+    },
+    {
+      "id": "s3e18",
+      "season": 3,
+      "episode": 18,
+      "title": "Two Parter (2)",
+      "description": "The Titans must save the members of the Justice League from the clutches of the supervillan Darkseid.",
+      "airDate": "2015-11-26",
+      "streams": []
+    },
+    {
+      "id": "s3e19",
+      "season": 3,
+      "episode": 19,
+      "title": "The True Meaning of Christmas",
+      "description": "The Titans attempt to infiltrate Santa's workshop to get their names taken off the Naughty List.",
+      "airDate": "2015-12-03",
+      "streams": []
+    },
+    {
+      "id": "s3e20",
+      "season": 3,
+      "episode": 20,
+      "title": "Squash & Stretch",
+      "description": "The Titans learn about cartoon-style violence while trying to get back a bowl of nuts from a Sqirrel.",
+      "airDate": "2016-01-07",
+      "streams": []
+    },
+    {
+      "id": "s3e21",
+      "season": 3,
+      "episode": 21,
+      "title": "Garage Sale",
+      "description": "Robin makes the other Titans sell their treasured mementos from past episodes.",
+      "airDate": "2016-01-14",
+      "streams": []
+    },
+    {
+      "id": "s3e22",
+      "season": 3,
+      "episode": 22,
+      "title": "Secret Garden",
+      "description": "Cyborg is building stress up, to the point where he directs his built-up rage onto the other Titans. To help calm him down, Starfire takes Cyborg into her own, little secret garden.",
+      "airDate": "2016-01-21",
+      "streams": []
+    },
+    {
+      "id": "s3e23",
+      "season": 3,
+      "episode": 23,
+      "title": "The Cruel Giggling Ghoul",
+      "description": "The Titans go to watch Lebron James at the Wacka Doodles Amusement Park, but find no one is there.",
+      "airDate": "2016-02-11",
+      "streams": []
+    },
+    {
+      "id": "s3e24",
+      "season": 3,
+      "episode": 24,
+      "title": "How 'Bout Some Effort",
+      "description": "It's Valentine's Day and Cyborg goes to great lengths to make it special for his girlfriend Jinx.",
+      "airDate": "2016-02-15",
+      "streams": []
+    },
+    {
+      "id": "s3e25",
+      "season": 3,
+      "episode": 25,
+      "title": "Pyramid Scheme",
+      "description": "Beast Boy makes lots of money due to a pyramid scheme and convinces the other Titans to join in.",
+      "airDate": "2016-02-15",
+      "streams": []
+    },
+    {
+      "id": "s3e26",
+      "season": 3,
+      "episode": 26,
+      "title": "Beast Boy's St. Patrick's Day Luck, and it's Bad",
+      "description": "Beast Boy pinches the other Titans on St. Patty's Day, making them pinch him back, resulting in them all getting curse with bad luck.",
+      "airDate": "2016-03-17",
+      "streams": []
+    },
+    {
+      "id": "s3e27",
+      "season": 3,
+      "episode": 27,
+      "title": "The Teen Titans Go Easter Holiday Classic",
+      "description": "The Easter Bunny is missing, and it's up to the Titans to find him before Easter is ruined.",
+      "airDate": "2016-03-25",
+      "streams": []
+    },
+    {
+      "id": "s3e28",
+      "season": 3,
+      "episode": 28,
+      "title": "Batman v Teen Titans: Dark Injustice",
+      "description": "The Titans try to outprank each other on April Fools' Day.",
+      "airDate": "2016-03-28",
+      "streams": []
+    },
+    {
+      "id": "s3e29",
+      "season": 3,
+      "episode": 29,
+      "title": "Bottle Episode",
+      "description": "After they are trapped in a giant bottle in their living room, the Titans reminisce to pass the time.",
+      "airDate": "2016-04-21",
+      "streams": []
+    },
+    {
+      "id": "s3e30",
+      "season": 3,
+      "episode": 30,
+      "title": "Finally a Lesson",
+      "description": "Robin is able to teach the other Titans a very valuable lesson.",
+      "airDate": "2016-04-28",
+      "streams": []
+    },
+    {
+      "id": "s3e31",
+      "season": 3,
+      "episode": 31,
+      "title": "Arms Race with Legs",
+      "description": "Lady Legasus must stop the League of Legs.",
+      "airDate": "2016-05-05",
+      "streams": []
+    },
+    {
+      "id": "s3e32",
+      "season": 3,
+      "episode": 32,
+      "title": "Obinray",
+      "description": "In order to prevent Robin from eavesdropping, the other Titans begin communicating in Pig Latin.",
+      "airDate": "2016-05-12",
+      "streams": []
+    },
+    {
+      "id": "s3e33",
+      "season": 3,
+      "episode": 33,
+      "title": "Wally T",
+      "description": "Wally T., a fan of the Teen Titans, visits the tower, powering up all the Titans; making them want to get more fans to power up even more.",
+      "airDate": "2016-05-19",
+      "streams": []
+    },
+    {
+      "id": "s3e34",
+      "season": 3,
+      "episode": 34,
+      "title": "Rad Dudes with Bad Tudes",
+      "description": "Robin tries to emulate rollerbladers.",
+      "airDate": "2016-05-26",
+      "streams": []
+    },
+    {
+      "id": "s3e35",
+      "season": 3,
+      "episode": 35,
+      "title": "Operation Dude Rescue (1)",
+      "description": "When Robin, Beast Boy and Cyborg are captured, Starfire and Raven must find extra girl power to rescue them.",
+      "airDate": "2016-05-30",
+      "streams": []
+    },
+    {
+      "id": "s3e36",
+      "season": 3,
+      "episode": 36,
+      "title": "Operation Dude Rescue (2)",
+      "description": "Female heroes and villains all work together in order to rescue Robin, Cyborg and Beast Boy from The Brain.",
+      "airDate": "2016-05-30",
+      "streams": []
+    },
+    {
+      "id": "s3e37",
+      "season": 3,
+      "episode": 37,
+      "title": "History Lesson",
+      "description": "Robin tries to teach the other Titans about world history, but they tell their tales of history instead.",
+      "airDate": "2016-06-09",
+      "streams": []
+    },
+    {
+      "id": "s3e38",
+      "season": 3,
+      "episode": 38,
+      "title": "The Art of Ninjutsu",
+      "description": "The Titans must use ninjutsu to get the McGuffin.",
+      "airDate": "2016-06-16",
+      "streams": []
+    },
+    {
+      "id": "s3e39",
+      "season": 3,
+      "episode": 39,
+      "title": "Think About Your Future",
+      "description": "The future Teen Titans travel back in time to stop their young selves from ruining their lives financially and medically.",
+      "airDate": "2016-06-23",
+      "streams": []
+    },
+    {
+      "id": "s3e40",
+      "season": 3,
+      "episode": 40,
+      "title": "TTG v PPG",
+      "description": "After using a repellent to temporarily prevent the Powerpuff Girls from moving, Mojo Jojo uses a teleportation device to teleport himself into Jump City, in the Titans' tower, then the girls follow him into the same place where he appeared, only to run into Robin, Starfire, and Raven. Then, after the girls compete with three of the Titans to see who's better, and Mojo Jojo traps Cyborg and Beast Boy in his new lair, the girls defeat him, with \"help\" from Robin, Starfire, and Raven.",
+      "airDate": "2016-06-30",
+      "streams": []
+    },
+    {
+      "id": "s3e41",
+      "season": 3,
+      "episode": 41,
+      "title": "Island Adventures (1): Coconut Cream Pie",
+      "description": "The Titans are shipwrecked on a desert island and must use the island's resources to survive.",
+      "airDate": "2016-08-01",
+      "streams": []
+    },
+    {
+      "id": "s3e42",
+      "season": 3,
+      "episode": 42,
+      "title": "Island Adventures (2): Pure Protein",
+      "description": "The Titans hold a team competition, but have to avoid an alien hunter.",
+      "airDate": "2016-08-02",
+      "streams": []
+    },
+    {
+      "id": "s3e43",
+      "season": 3,
+      "episode": 43,
+      "title": "Island Adventures (3): Open Door Policy",
+      "description": "Still shipwrecked on a desert island, the Titans try to find food but stumble upon dinosaurs instead.",
+      "airDate": "2016-08-03",
+      "streams": []
+    },
+    {
+      "id": "s3e44",
+      "season": 3,
+      "episode": 44,
+      "title": "Island Adventures (4): Crazy Desire Island",
+      "description": "Robin eavesdrops on the Titans and grant them wishes to teach them life lessons, but things didn't go as he hoped.",
+      "airDate": "2016-08-04",
+      "streams": []
+    },
+    {
+      "id": "s3e45",
+      "season": 3,
+      "episode": 45,
+      "title": "Island Adventures (5): The Titans Show",
+      "description": "The Titans get sick of the island and decide to leave, only to realize that they have in fact been unknowingly press-ganged into a reality TV show by the Teen Titans villains and Control Freak.",
+      "airDate": "2016-08-05",
+      "streams": []
+    },
+    {
+      "id": "s3e46",
+      "season": 3,
+      "episode": 46,
+      "title": "Booty Scooty",
+      "description": "In order to save Titans Tower from some wealthy land developers, the Titans search for pirate treasure.",
+      "airDate": "2016-09-05",
+      "streams": []
+    },
+    {
+      "id": "s3e47",
+      "season": 3,
+      "episode": 47,
+      "title": "Who's Laughing Now",
+      "description": "Beast Boy searches for his spirit animal and joins a group of bears.",
+      "airDate": "2016-09-08",
+      "streams": []
+    },
+    {
+      "id": "s3e48",
+      "season": 3,
+      "episode": 48,
+      "title": "Oregon Trail",
+      "description": "The group gets into the pioneer spirit on their journey west.",
+      "airDate": "2016-09-15",
+      "streams": []
+    },
+    {
+      "id": "s3e49",
+      "season": 3,
+      "episode": 49,
+      "title": "Snuggle Time",
+      "description": "When yet another crime alert interrupts their relaxation, the Titans decide to become villains and do whatever they want.",
+      "airDate": "2016-09-22",
+      "streams": []
+    },
+    {
+      "id": "s3e50",
+      "season": 3,
+      "episode": 50,
+      "title": "Oh Yeah!",
+      "description": "Cyborg tells the other Titans that TV wrestling is fake and tries to teach them about real wrestling.",
+      "airDate": "2016-09-29",
+      "streams": []
+    },
+    {
+      "id": "s3e51",
+      "season": 3,
+      "episode": 51,
+      "title": "Riding the Dragon",
+      "description": "The Titans are transported inside a fantasy adventure game and must find the key to return home.",
+      "airDate": "2016-09-29",
+      "streams": []
+    },
+    {
+      "id": "s3e52",
+      "season": 3,
+      "episode": 52,
+      "title": "The Overbite",
+      "description": "Raven teaches the other Titans how to dance properly but then they are captured by the Dance Demon.",
+      "airDate": "2016-10-06",
+      "streams": []
+    },
+    {
+      "id": "s3e53",
+      "season": 3,
+      "episode": 53,
+      "title": "The Cape",
+      "description": "The Titans reminisce about the time they threw a surprise party for Cinderblock.",
+      "airDate": "2016-10-13",
+      "streams": []
+    },
+    {
+      "id": "s4e1",
+      "season": 4,
+      "episode": 1,
+      "title": "Shrimps and Prime Rib",
+      "description": "The Titans try to remember how to be superheroes in order to stop The Brain.",
+      "airDate": "2016-10-20",
+      "streams": []
+    },
+    {
+      "id": "s4e2",
+      "season": 4,
+      "episode": 2,
+      "title": "Halloween v Christmas",
+      "description": "When Santa tries to take over Halloween, it's up to the Titans and a few ghouls to stop him.",
+      "airDate": "2016-10-27",
+      "streams": []
+    },
+    {
+      "id": "s4e3",
+      "season": 4,
+      "episode": 3,
+      "title": "Booby Trap House",
+      "description": "Cyborg and Starfire booby-trap the Tower for safety.",
+      "airDate": "2016-11-03",
+      "streams": []
+    },
+    {
+      "id": "s4e4",
+      "season": 4,
+      "episode": 4,
+      "title": "Fish Water",
+      "description": "Starfire wins a goldfish at the carnival and vows to keep it alive.",
+      "airDate": "2016-11-17",
+      "streams": []
+    },
+    {
+      "id": "s4e5",
+      "season": 4,
+      "episode": 5,
+      "title": "TV Knight",
+      "description": "Batman and Commissioner Gordon check in on various happenings around Jump City.",
+      "airDate": "2016-11-26",
+      "streams": []
+    },
+    {
+      "id": "s4e6",
+      "season": 4,
+      "episode": 6,
+      "title": "Teen Titans Save Christmas",
+      "description": "When Santa decides to quit, the Titans pitch in to save Christmas.",
+      "airDate": "2016-12-01",
+      "streams": []
+    },
+    {
+      "id": "s4e7",
+      "season": 4,
+      "episode": 7,
+      "title": "BBSFBDAY!",
+      "description": "Beast Boy agrees to share his birthday with Starfire after learning she's never had one on Earth.",
+      "airDate": "2016-12-03",
+      "streams": []
+    },
+    {
+      "id": "s4e8",
+      "season": 4,
+      "episode": 8,
+      "title": "The Streak (1)",
+      "description": "Robin is determined to continue his streak of stopping 52 crimes during crime season.",
+      "airDate": "2017-01-27",
+      "streams": []
+    },
+    {
+      "id": "s4e9",
+      "season": 4,
+      "episode": 9,
+      "title": "The Streak (2)",
+      "description": "Robin's streak is in jeopardy when the other Titans are poached by Kid Flash.",
+      "airDate": "2017-01-27",
+      "streams": []
+    },
+    {
+      "id": "s4e10",
+      "season": 4,
+      "episode": 10,
+      "title": "The Inner Beauty of a Cactus",
+      "description": "The Titans play Spin The Bottle as Starfire tries to improve her vocabulary through kissing.",
+      "airDate": "2017-02-03",
+      "streams": []
+    },
+    {
+      "id": "s4e11",
+      "season": 4,
+      "episode": 11,
+      "title": "Movie Night",
+      "description": "The Titans have a hard time deciding who gets to choose which movie they watch on movie night.",
+      "airDate": "2017-02-10",
+      "streams": []
+    },
+    {
+      "id": "s4e12",
+      "season": 4,
+      "episode": 12,
+      "title": "BBRAE (1)",
+      "description": "Beast Boy writes a song for Raven to express his feelings, then begins touring with the song, which upsets Raven.",
+      "airDate": "2017-02-20",
+      "streams": []
+    },
+    {
+      "id": "s4e13",
+      "season": 4,
+      "episode": 13,
+      "title": "BBRAE (2)",
+      "description": "Beast Boy writes a song for Raven to express his feelings, then begins touring with the song, which upsets Raven.",
+      "airDate": "2017-02-20",
+      "streams": []
+    },
+    {
+      "id": "s4e14",
+      "season": 4,
+      "episode": 14,
+      "title": "Permanent Record",
+      "description": "It's back to school for the Titans as they teach each other about science and grammar.",
+      "airDate": "2017-03-03",
+      "streams": []
+    },
+    {
+      "id": "s4e15",
+      "season": 4,
+      "episode": 15,
+      "title": "Titan Saving Time",
+      "description": "The Titans are determined to find out what happened to the missing 2'oclock hour during Daylight Saving Time.",
+      "airDate": "2017-03-10",
+      "streams": []
+    },
+    {
+      "id": "s4e16",
+      "season": 4,
+      "episode": 16,
+      "title": "The Gold Standard",
+      "description": "It's St. Patrick's Day and after wishing to become a leprechaun, Beast Boy becomes obsessed with gold.",
+      "airDate": "2017-03-17",
+      "streams": []
+    },
+    {
+      "id": "s4e17",
+      "season": 4,
+      "episode": 17,
+      "title": "Master Detective",
+      "description": "Robin uses his skills as a master detective to discover what happened to the animals that live outside Titans Tower.",
+      "airDate": "2017-03-31",
+      "streams": []
+    },
+    {
+      "id": "s4e18",
+      "season": 4,
+      "episode": 18,
+      "title": "Easter Creeps",
+      "description": "The Tooth Fairy tries to take over Easter.",
+      "airDate": "2017-04-14",
+      "streams": []
+    },
+    {
+      "id": "s4e19",
+      "season": 4,
+      "episode": 19,
+      "title": "Hand Zombie",
+      "description": "After Starfire kisses his hand, Robin vows to never wash it again, which leads to disastrous results.",
+      "airDate": "2017-04-21",
+      "streams": []
+    },
+    {
+      "id": "s4e20",
+      "season": 4,
+      "episode": 20,
+      "title": "Employee of the Month: Redux",
+      "description": "The Titans battle a UFO that is snatching cows, while Beast Boy gets a job so he can save up for a moped.",
+      "airDate": "2017-04-28",
+      "streams": []
+    },
+    {
+      "id": "s4e21",
+      "season": 4,
+      "episode": 21,
+      "title": "The Avogodo",
+      "description": "Robin learns that avocados are a super food that can give you super powers.",
+      "airDate": "2017-05-05",
+      "streams": []
+    },
+    {
+      "id": "s4e22",
+      "season": 4,
+      "episode": 22,
+      "title": "Orangins",
+      "description": "The Teen Titans each tell their slightly inaccurate origin story.",
+      "airDate": "2017-05-29",
+      "streams": []
+    },
+    {
+      "id": "s4e23",
+      "season": 4,
+      "episode": 23,
+      "title": "Jinxed",
+      "description": "Robin ignores the rules for a game of jinx and ends up losing his voice.",
+      "airDate": "2017-06-09",
+      "streams": []
+    },
+    {
+      "id": "s4e24",
+      "season": 4,
+      "episode": 24,
+      "title": "Brain Percentages",
+      "description": "Beast Boy starts using more than 10% of his brain in an effort to find the hidden images in a puzzle.",
+      "airDate": "2017-06-16",
+      "streams": []
+    },
+    {
+      "id": "s4e25",
+      "season": 4,
+      "episode": 25,
+      "title": "BL4Z3",
+      "description": "The Titans become hackers to stop a gang of computer pirates.",
+      "airDate": "2017-06-23",
+      "streams": []
+    },
+    {
+      "id": "s4e26",
+      "season": 4,
+      "episode": 26,
+      "title": "Hot Salad Water",
+      "description": "When drinking tea turns the other Titans English, it's up to Robin to save America from another British invasion brought by the Queen of England herself.",
+      "airDate": "2017-06-30",
+      "streams": []
+    },
+    {
+      "id": "s4e27",
+      "season": 4,
+      "episode": 27,
+      "title": "The Day the Night Stopped Beginning to Shine and Became Dark Even Though It Was the Day - Chapter One: I Saw You Dance",
+      "description": "Cyborg becomes trapped in the alternate reality of Night Begins to Shine with a dragon who wants to steal the song for his own evil purposes.",
+      "airDate": "2017-08-01",
+      "streams": []
+    },
+    {
+      "id": "s4e28",
+      "season": 4,
+      "episode": 28,
+      "title": "The Day the Night Stopped Beginning to Shine and Became Dark Even Though It Was the Day - Chapter Two: The Story in Your Eyes",
+      "description": "Without Cyborg, Beast Boy feels lost and sets out to find himself, but ends up meeting a music legend.",
+      "airDate": "2017-08-02",
+      "streams": []
+    },
+    {
+      "id": "s4e29",
+      "season": 4,
+      "episode": 29,
+      "title": "The Day the Night Stopped Beginning to Shine and Became Dark Even Though It Was the Day - Chapter Three: Playing Hard to Get",
+      "description": "The Titans return to the alternate reality to save Cyborg but will they be able to defeat the dragon?",
+      "airDate": "2017-08-03",
+      "streams": []
+    },
+    {
+      "id": "s4e30",
+      "season": 4,
+      "episode": 30,
+      "title": "The Day the Night Stopped Beginning to Shine and Became Dark Even Though It Was the Day - Chapter Four: The Night Begins to Shine",
+      "description": "In a final epic battle, the Titans and their musician friends square off against the dragon for control of the Night Begins to Shine.",
+      "airDate": "2017-08-04",
+      "streams": []
+    },
+    {
+      "id": "s4e31",
+      "season": 4,
+      "episode": 31,
+      "title": "Lication",
+      "description": "Robin introduces the other Titans to a money-making application but they soon learn the dangers of a shareconomy.",
+      "airDate": "2017-09-01",
+      "streams": []
+    },
+    {
+      "id": "s4e32",
+      "season": 4,
+      "episode": 32,
+      "title": "Labor Day",
+      "description": "Robin uses Labor Day as an opportunity to teach the other Titans about the importance of labor.",
+      "airDate": "2017-09-04",
+      "streams": []
+    },
+    {
+      "id": "s4e33",
+      "season": 4,
+      "episode": 33,
+      "title": "Classic Titans",
+      "description": "Control Freak attempts to prove his point about classic superhero cartoons by sending the Titans to a former version of \"Teen Titans Go!\"",
+      "airDate": "2017-09-15",
+      "streams": []
+    },
+    {
+      "id": "s4e34",
+      "season": 4,
+      "episode": 34,
+      "title": "Ones and Zeroes",
+      "description": "The Titans build an AI robot so it will create a pizza that's never been made before.",
+      "airDate": "2017-09-22",
+      "streams": []
+    },
+    {
+      "id": "s4e35",
+      "season": 4,
+      "episode": 35,
+      "title": "Career Day",
+      "description": "Batman and Commissioner Gordon have a slumber party and watch their favorite TV shows.",
+      "airDate": "2017-09-29",
+      "streams": []
+    },
+    {
+      "id": "s4e36",
+      "season": 4,
+      "episode": 36,
+      "title": "TV Knight 2",
+      "description": "Batman and Commissioner Gordon have a slumber party and watch their favorite TV shows.",
+      "airDate": "2017-10-06",
+      "streams": []
+    },
+    {
+      "id": "s4e37",
+      "season": 4,
+      "episode": 37,
+      "title": "Justice League's Next Top Talent Idol Star (1)",
+      "description": "The Justice League holds a talent competition to find a superhero worthy of joining their team and Robin tries everything to win.",
+      "airDate": "2017-10-09",
+      "streams": []
+    },
+    {
+      "id": "s4e38",
+      "season": 4,
+      "episode": 38,
+      "title": "Justice League's Next Top Talent Idol Star (2)",
+      "description": "The Justice League holds a talent competition to find a superhero worthy of joining their team and Robin tries everything to win.",
+      "airDate": "2017-10-09",
+      "streams": []
+    },
+    {
+      "id": "s4e39",
+      "season": 4,
+      "episode": 39,
+      "title": "The Academy",
+      "description": "Robin creates the Teen Titans Awards in an effort to get his teammates to clean up the tower.",
+      "airDate": "2017-10-20",
+      "streams": []
+    },
+    {
+      "id": "s4e40",
+      "season": 4,
+      "episode": 40,
+      "title": "Costume Contest",
+      "description": "Tired of losing to the Hive Five every year, the Titans hatch a scheme to win the costume contest.",
+      "airDate": "2017-10-27",
+      "streams": []
+    },
+    {
+      "id": "s4e41",
+      "season": 4,
+      "episode": 41,
+      "title": "Throne of Bones",
+      "description": "When the other Titans start listening to heavy metal music, Robin warns them of the dangers.",
+      "airDate": "2017-11-03",
+      "streams": []
+    },
+    {
+      "id": "s4e42",
+      "season": 4,
+      "episode": 42,
+      "title": "Demon Prom",
+      "description": "When Trigon forces Raven to attend her prom, she brings the rest of the Titans along with her to upset him.",
+      "airDate": "2017-11-10",
+      "streams": []
+    },
+    {
+      "id": "s4e43",
+      "season": 4,
+      "episode": 43,
+      "title": "Thanksgetting",
+      "description": "Tired of the normal traditions, the Titans decide to create their own for Thanksgiving.",
+      "airDate": "2017-11-17",
+      "streams": []
+    },
+    {
+      "id": "s4e44",
+      "season": 4,
+      "episode": 44,
+      "title": "The Self-Indulgent 200th Episode Spectacular! (1)",
+      "description": "When their world starts disappearing, the Titans must confront their creators. The Titans learn how difficult it is to make a cartoon when they try to animate Michael and Aaron.",
+      "airDate": "2017-11-24",
+      "streams": []
+    },
+    {
+      "id": "s4e45",
+      "season": 4,
+      "episode": 45,
+      "title": "The Self-Indulgent 200th Episode Spectacular! (2)",
+      "description": "When their world starts disappearing, the Titans must confront their creators. The Titans learn how difficult it is to make a cartoon when they try to animate Michael and Aaron.",
+      "airDate": "2017-11-24",
+      "streams": []
+    },
+    {
+      "id": "s4e46",
+      "season": 4,
+      "episode": 46,
+      "title": "BBCYFSHIPBDAY",
+      "description": "Beast Boy and Cyborg celebrate the anniversary of their friendship.",
+      "airDate": "2017-12-08",
+      "streams": []
+    },
+    {
+      "id": "s4e47",
+      "season": 4,
+      "episode": 47,
+      "title": "Beast Girl",
+      "description": "As the Titans deal with Madame Rouge, Beast Boy is excited to meet his female counterpart Beast Girl.",
+      "airDate": "2018-02-19",
+      "streams": []
+    },
+    {
+      "id": "s4e48",
+      "season": 4,
+      "episode": 48,
+      "title": "Flashback (1)",
+      "description": "A flashback reveals how Robin changed from a mild-mannered sidekick to form the Teen Titans and become their quick-tempered leader.",
+      "airDate": "2018-03-30",
+      "streams": []
+    },
+    {
+      "id": "s4e49",
+      "season": 4,
+      "episode": 49,
+      "title": "Flashback (2)",
+      "description": "The continuation of a flashback that reveals how Robin changed from a mild-mannered sidekick to form the Teen Titans and become their quick-tempered leader.",
+      "airDate": "2018-03-30",
+      "streams": []
+    },
+    {
+      "id": "s4e50",
+      "season": 4,
+      "episode": 50,
+      "title": "Bro-Pocalypse",
+      "description": "When the male Titans are injured, Raven and Starfire must become bros to stop the Bropocalypse.",
+      "airDate": "2018-05-28",
+      "streams": []
+    },
+    {
+      "id": "s4e51",
+      "season": 4,
+      "episode": 51,
+      "title": "Mo' Money Mo' Problems",
+      "description": "The Titans make Robin give them a tour of Wayne Manor and discover how fun it is to be rich.",
+      "airDate": "2018-06-25",
+      "streams": []
+    },
+    {
+      "id": "s4e52",
+      "season": 4,
+      "episode": 52,
+      "title": "TV Knight 3",
+      "description": "Batman is more interested in watching TV than participating in his birthday party.",
+      "airDate": "2018-06-25",
+      "streams": []
+    },
+    {
+      "id": "s5e1",
+      "season": 5,
+      "episode": 1,
+      "title": "The Scoop!",
+      "description": "The Titans find it odd when Starfire becomes friends with an ice cream scoop.",
+      "airDate": "2018-06-25",
+      "streams": []
+    },
+    {
+      "id": "s5e2",
+      "season": 5,
+      "episode": 2,
+      "title": "Chicken in the Cradle",
+      "description": "Beat Boy neglects his responsibilities, leaving the other Titans to raise his baby chick.",
+      "airDate": "2018-06-25",
+      "streams": []
+    },
+    {
+      "id": "s5e3",
+      "season": 5,
+      "episode": 3,
+      "title": "Kabooms (1)",
+      "description": "The Titans are excited to see the movie version of their favorite show \"Babies vs Dogs\".",
+      "airDate": "2018-07-20",
+      "streams": []
+    },
+    {
+      "id": "s5e4",
+      "season": 5,
+      "episode": 4,
+      "title": "Kabooms (2)",
+      "description": "Inspired by the \"Babies vs Dogs\" movie, the Titans decide to make a big Hollywood film of their own.",
+      "airDate": "2018-07-20",
+      "streams": []
+    },
+    {
+      "id": "s5e5",
+      "season": 5,
+      "episode": 5,
+      "title": "Tower Renovation",
+      "description": "What happens to the Titans after TEEN TITANS GO! To the Movies.",
+      "airDate": "2018-08-13",
+      "streams": []
+    },
+    {
+      "id": "s5e6",
+      "season": 5,
+      "episode": 6,
+      "title": "My Name Is Jose",
+      "description": "The Titans have Raven give them new super powers, but have a hard time adjusting.",
+      "airDate": "2018-10-08",
+      "streams": []
+    },
+    {
+      "id": "s5e7",
+      "season": 5,
+      "episode": 7,
+      "title": "The Power of Shrimps",
+      "description": "Aqualad uses shrimps and prime rib to try to win back Raven.",
+      "airDate": "2018-10-08",
+      "streams": []
+    },
+    {
+      "id": "s5e8",
+      "season": 5,
+      "episode": 8,
+      "title": "Monster Squad",
+      "description": "The Titans want to be the scariest trick-or-treaters in town, so Raven casts a spell to turn them into real monsters.",
+      "airDate": "2018-10-19",
+      "streams": []
+    },
+    {
+      "id": "s5e9",
+      "season": 5,
+      "episode": 9,
+      "title": "Real Orangins",
+      "description": "Robin tries again to tell the real origin story of the Teen Titans.",
+      "airDate": "2018-11-05",
+      "streams": []
+    },
+    {
+      "id": "s5e10",
+      "season": 5,
+      "episode": 10,
+      "title": "Quantum Fun",
+      "description": "Robin takes the other Titans on a trip through the dizzying world of quantum physics.",
+      "airDate": "2018-11-06",
+      "streams": []
+    },
+    {
+      "id": "s5e11",
+      "season": 5,
+      "episode": 11,
+      "title": "The Fight",
+      "description": "Robin tries to teach the other Titans about real estate, but they’re only interested in finding a villain to fight.",
+      "airDate": "2018-11-07",
+      "streams": []
+    },
+    {
+      "id": "s5e12",
+      "season": 5,
+      "episode": 12,
+      "title": "The Groover",
+      "description": "Robin takes the Titans on an educational trip to the Grand Canyon.",
+      "airDate": "2018-11-08",
+      "streams": []
+    },
+    {
+      "id": "s5e13",
+      "season": 5,
+      "episode": 13,
+      "title": "Justice League's Next Top Talent Idol Star: Second Greatest Team Edition (1)",
+      "description": "The Justice League holds another talent competition to find the second-best superhero team in the world. The competition heats up and the Titans must find a way to beat the Hive Five.",
+      "airDate": "2018-11-21",
+      "streams": []
+    },
+    {
+      "id": "s5e14",
+      "season": 5,
+      "episode": 14,
+      "title": "Justice League's Next Top Talent Idol Star: Second Greatest Team Edition (2)",
+      "description": "The Justice League holds another talent competition to find the second-best superhero team in the world. The competition heats up and the Titans must find a way to beat the Hive Five.",
+      "airDate": "2018-11-21",
+      "streams": []
+    },
+    {
+      "id": "s5e15",
+      "season": 5,
+      "episode": 15,
+      "title": "How's This for a Special? Spaaaace (1)",
+      "description": "After receiving a galactic crime alert, the Titans take off for an epic space adventure. The Titans have to stop Darkseid's latest scheme, but the excitement of the space adventure might be too much for Robin to handle.",
+      "airDate": "2018-12-21",
+      "streams": []
+    },
+    {
+      "id": "s5e16",
+      "season": 5,
+      "episode": 16,
+      "title": "How's This for a Special? Spaaaace (2)",
+      "description": "After receiving a galactic crime alert, the Titans take off for an epic space adventure. The Titans have to stop Darkseid's latest scheme, but the excitement of the space adventure might be too much for Robin to handle.",
+      "airDate": "2018-12-21",
+      "streams": []
+    },
+    {
+      "id": "s5e17",
+      "season": 5,
+      "episode": 17,
+      "title": "BBRBDAY",
+      "description": "When he isn't invited to Beast Boy's birthday party, Robin throws his own party with special guest Bob Uecker.",
+      "airDate": "2018-12-31",
+      "streams": []
+    },
+    {
+      "id": "s5e18",
+      "season": 5,
+      "episode": 18,
+      "title": "Slapping Butts and Celebrating for No Reason",
+      "description": "When the Big Game is threatened, the Titans must infiltrate the football stadium and stop the attack.",
+      "airDate": "2019-01-28",
+      "streams": []
+    },
+    {
+      "id": "s5e19",
+      "season": 5,
+      "episode": 19,
+      "title": "Nostalgia Is Not a Substitute for an Actual Story",
+      "description": "The Titans time travel back to the 1980s to determine whether or not it was the best decade ever.",
+      "airDate": "2019-02-04",
+      "streams": []
+    },
+    {
+      "id": "s5e20",
+      "season": 5,
+      "episode": 20,
+      "title": "Business Ethics Wink Wink",
+      "description": "Starfire dreams of becoming a successful business alien princess and joins a cookie-selling organization to learn the proper skills.",
+      "airDate": "2019-02-11",
+      "streams": []
+    },
+    {
+      "id": "s5e21",
+      "season": 5,
+      "episode": 21,
+      "title": "Genie President",
+      "description": "Robin hatches a plan to get rich off pennies, but Starfire believes they are magical.",
+      "airDate": "2019-02-18",
+      "streams": []
+    },
+    {
+      "id": "s5e22",
+      "season": 5,
+      "episode": 22,
+      "title": "Tall Titan Tales",
+      "description": "Robin tries to tell some tall tales but the other Titans give their own fractured versions instead.",
+      "airDate": "2019-02-25",
+      "streams": []
+    },
+    {
+      "id": "s5e23",
+      "season": 5,
+      "episode": 23,
+      "title": "I Used To Be a Peoples",
+      "description": "Robin feels the other Titans are spending too much time together so he encourages them to spend some time alone.",
+      "airDate": "2019-03-04",
+      "streams": []
+    },
+    {
+      "id": "s5e24",
+      "season": 5,
+      "episode": 24,
+      "title": "The Metric System vs. Freedom",
+      "description": "Robin teaches the other Titans about the difference between the Imperial System and the Metric System.",
+      "airDate": "2019-03-11",
+      "streams": []
+    },
+    {
+      "id": "s5e25",
+      "season": 5,
+      "episode": 25,
+      "title": "The Chaff",
+      "description": "In an effort to get Teen Titans Go! cancelled, Control Freak shows off some deleted scenes.",
+      "airDate": "2019-03-18",
+      "streams": []
+    },
+    {
+      "id": "s5e26",
+      "season": 5,
+      "episode": 26,
+      "title": "Them Soviet Boys",
+      "description": "In order to quickly get through their chores and karate lessons, the Titans learn how to montage.",
+      "airDate": "2019-03-25",
+      "streams": []
+    },
+    {
+      "id": "s5e27",
+      "season": 5,
+      "episode": 27,
+      "title": "Little Elvis",
+      "description": "The Titans team up with Shazam in order to defeat the evil Mr. Mind.",
+      "airDate": "2019-04-01",
+      "streams": []
+    },
+    {
+      "id": "s5e28",
+      "season": 5,
+      "episode": 28,
+      "title": "Booty Eggs",
+      "description": "Not wanting to be creeped out on Easter the Titans dispatch the Easter Bunny and take matters into their own hands.",
+      "airDate": "2019-04-15",
+      "streams": []
+    },
+    {
+      "id": "s5e29",
+      "season": 5,
+      "episode": 29,
+      "title": "TV Knight 4",
+      "description": "Batman and Commissioner Gordon go camping but instead of fun outdoor activities they’d rather watch TV.",
+      "airDate": "2019-04-22",
+      "streams": []
+    },
+    {
+      "id": "s5e30",
+      "season": 5,
+      "episode": 30,
+      "title": "Lil' Dimples",
+      "description": "Thinking it’s a way to reconnect with her father, Raven enters a beauty pageant.",
+      "airDate": "2019-04-29",
+      "streams": []
+    },
+    {
+      "id": "s5e31",
+      "season": 5,
+      "episode": 31,
+      "title": "Don't Be An Icarus",
+      "description": "Robin tries to tell some Greek myths but the other Titans give their own fractured versions instead.",
+      "airDate": "2019-05-06",
+      "streams": []
+    },
+    {
+      "id": "s5e32",
+      "season": 5,
+      "episode": 32,
+      "title": "Stockton, CA!",
+      "description": "The Titans must find a way to keep all the Jump City residents from moving to Stockton.",
+      "airDate": "2019-05-13",
+      "streams": []
+    },
+    {
+      "id": "s5e33",
+      "season": 5,
+      "episode": 33,
+      "title": "What's Opera Titans",
+      "description": "Robin surprises the Titans with a trip to the opera but they soon fall asleep, and all dream about starring in their own operas.",
+      "airDate": "2019-05-20",
+      "streams": []
+    },
+    {
+      "id": "s5e34",
+      "season": 5,
+      "episode": 34,
+      "title": "Forest Pirates (1)",
+      "description": "The Titans are at Super Hero Summer Camp for the week and they may need to add another teammate to win the big canoe race.",
+      "airDate": "2019-05-27",
+      "streams": []
+    },
+    {
+      "id": "s5e35",
+      "season": 5,
+      "episode": 35,
+      "title": "The Bergerac (2)",
+      "description": "The Titans give Robin advice to guide him through his camp romance with Wonder Girl.",
+      "airDate": "2019-06-03",
+      "streams": []
+    },
+    {
+      "id": "s5e36",
+      "season": 5,
+      "episode": 36,
+      "title": "Snot and Tears (3)",
+      "description": "Robin tells the Titans to stop being reckless teens or the Creepy Catcher will get them.",
+      "airDate": "2019-06-10",
+      "streams": []
+    },
+    {
+      "id": "s5e37",
+      "season": 5,
+      "episode": 37,
+      "title": "Campfire! (4)",
+      "description": "The Titans put on a show but Robin warns that the performance must be boring or else they'll wake up the wolves.",
+      "airDate": "2019-06-17",
+      "streams": []
+    },
+    {
+      "id": "s5e38",
+      "season": 5,
+      "episode": 38,
+      "title": "What We Learned at Camp (5)",
+      "description": "After not receiving participation medals, the Titans must demonstrate what they learned at camp.",
+      "airDate": "2019-06-24",
+      "streams": []
+    },
+    {
+      "id": "s5e39",
+      "season": 5,
+      "episode": 39,
+      "title": "Communicate Openly",
+      "description": "The Bumblebee becomes the sixth Titan and moves into the Tower, but has a hard time adjusting.",
+      "airDate": "2019-07-01",
+      "streams": []
+    },
+    {
+      "id": "s5e40",
+      "season": 5,
+      "episode": 40,
+      "title": "Royal Jelly",
+      "description": "The Bumblebee offers to help Robin with his leadership skills by teaching him how to act like a queen bee.",
+      "airDate": "2019-07-08",
+      "streams": []
+    },
+    {
+      "id": "s5e41",
+      "season": 5,
+      "episode": 41,
+      "title": "Strength of a Grown Man",
+      "description": "Needing a hero with shrinking powers, but forgetting about the Bumblebee, Robin invites the Atom to join their fight against the Brain.",
+      "airDate": "2019-07-15",
+      "streams": []
+    },
+    {
+      "id": "s5e42",
+      "season": 5,
+      "episode": 42,
+      "title": "Had To Be There",
+      "description": "So that she is not left out of inside jokes, the Titans time travel to past adventures and insert the Bumblebee into their memories.",
+      "airDate": "2019-07-22",
+      "streams": []
+    },
+    {
+      "id": "s5e43",
+      "season": 5,
+      "episode": 43,
+      "title": "Girls Night In (1)",
+      "description": "The Girls Night Out Crew decide to stay in and have a slumber party, but an unknown alien threat descends on Jump City.",
+      "airDate": "2019-07-29",
+      "streams": []
+    },
+    {
+      "id": "s5e44",
+      "season": 5,
+      "episode": 44,
+      "title": "Girls Night In (2)",
+      "description": "When Blackfire begins her plan to conquer Earth, the girls must pull out all the stops to defeat her.",
+      "airDate": "2019-08-05",
+      "streams": []
+    },
+    {
+      "id": "s5e45",
+      "season": 5,
+      "episode": 45,
+      "title": "The Great Disaster",
+      "description": "Robin gets amnesia and starts thinking that Hawkman is his mother.",
+      "airDate": "2019-08-12",
+      "streams": []
+    },
+    {
+      "id": "s5e46",
+      "season": 5,
+      "episode": 46,
+      "title": "The Viewers Decide",
+      "description": "It is Titans West vs. Titans East as the two teams compete for who gets Bumblebee.",
+      "airDate": "2019-08-19",
+      "streams": []
+    },
+    {
+      "id": "s5e47",
+      "season": 5,
+      "episode": 47,
+      "title": "Cartoon Feud",
+      "description": "Control Freak forces the Titans and Mystery Inc. to compete.",
+      "airDate": "2019-10-04",
+      "streams": []
+    },
+    {
+      "id": "s5e48",
+      "season": 5,
+      "episode": 48,
+      "title": "Curse Of The Booty Scooty",
+      "description": "When Robin “Booty Scooty’s” his booty off, the Titans must go on an adventure to recover it.",
+      "airDate": "2019-10-04",
+      "streams": []
+    },
+    {
+      "id": "s5e49",
+      "season": 5,
+      "episode": 49,
+      "title": "Collect Them All!",
+      "description": "After the other Titans are turned into collectibles and disappear, Robin must search yard sales and stores to find them.",
+      "airDate": "2019-10-04",
+      "streams": []
+    },
+    {
+      "id": "s5e50",
+      "season": 5,
+      "episode": 50,
+      "title": "Butt Atoms",
+      "description": "Despite Robin’s warning, the Titans mess around with atomic toots and end up causing a worldwide plague.",
+      "airDate": "2019-10-04",
+      "streams": []
+    },
+    {
+      "id": "s5e51",
+      "season": 5,
+      "episode": 51,
+      "title": "TV Knight 5",
+      "description": "Batman pretends to be sick to avoid work so he and Commissioner Gordon can run around town watching their favorite shows.",
+      "airDate": "2019-10-14",
+      "streams": []
+    },
+    {
+      "id": "s5e52",
+      "season": 5,
+      "episode": 52,
+      "title": "Witches Brew",
+      "description": "The Titans throw a Halloween party and invite the Justice League but the witches brew Robin creates has side effects.",
+      "airDate": "2019-10-25",
+      "streams": []
+    },
+    {
+      "id": "s5e53",
+      "season": 5,
+      "episode": 53,
+      "title": "Teen Titans Vroom (1)",
+      "description": "The Titans gain the ability to transform into cars (which parodies the plot of Turbo Teen and the theme music and visual imaging of Transformers), and must learn to work together to stop Dr. Military.",
+      "airDate": "2019-11-09",
+      "streams": []
+    },
+    {
+      "id": "s5e54",
+      "season": 5,
+      "episode": 54,
+      "title": "Teen Titans Vroom (2)",
+      "description": "The Titans gain the ability to transform into cars (which parodies the plot of Turbo Teen and the theme music and visual imaging of Transformers), and must learn to work together to stop Dr. Military.",
+      "airDate": "2019-11-09",
+      "streams": []
+    },
+    {
+      "id": "s6e1",
+      "season": 6,
+      "episode": 1,
+      "title": "Beast Boy's That's What's Up",
+      "description": "Beast Boy goes to visit the Doom Patrol.",
+      "airDate": "2019-11-27",
+      "streams": []
+    },
+    {
+      "id": "s6e2",
+      "season": 6,
+      "episode": 2,
+      "title": "Crab Shenanigans",
+      "description": "Beast Boy, Negative Girl, and Robotman discover some crabs are up to no good.",
+      "airDate": "2019-11-27",
+      "streams": []
+    },
+    {
+      "id": "s6e3",
+      "season": 6,
+      "episode": 3,
+      "title": "Brobots",
+      "description": "Cyborg comes to visit Beast Boy, but once Cyborg realizes how much he and Robotman have in common, they become inseparable.",
+      "airDate": "2019-11-27",
+      "streams": []
+    },
+    {
+      "id": "s6e4",
+      "season": 6,
+      "episode": 4,
+      "title": "Brain Flip",
+      "description": "It's time for Beast Boy to leave, but the Doom Patrol try to get him to stay.",
+      "airDate": "2019-11-27",
+      "streams": []
+    },
+    {
+      "id": "s6e5",
+      "season": 6,
+      "episode": 5,
+      "title": "Beast Boy On A Shelf",
+      "description": "Santa Claus forces Beast Boy to become a spy and report on the Titans' naughty behavior.",
+      "airDate": "2019-12-21",
+      "streams": []
+    },
+    {
+      "id": "s6e6",
+      "season": 6,
+      "episode": 6,
+      "title": "Christmas Crusaders",
+      "description": "Santa Claus and Robin must stop the nefarious Coal Miner.",
+      "airDate": "2019-12-21",
+      "streams": []
+    },
+    {
+      "id": "s6e7",
+      "season": 6,
+      "episode": 7,
+      "title": "We're Off To Get Awards",
+      "description": "During an awards ceremony, Robin is swept up by a tornado and arrives in a magical land.",
+      "airDate": "2020-02-22",
+      "streams": []
+    },
+    {
+      "id": "s6e8",
+      "season": 6,
+      "episode": 8,
+      "title": "Bat Scouts",
+      "description": "To reach the highest rank in the Bat Scouts, Robin teaches the other Titans important vigilante skills.",
+      "airDate": "2020-02-22",
+      "streams": []
+    },
+    {
+      "id": "s6e9",
+      "season": 6,
+      "episode": 9,
+      "title": "Walk Away",
+      "description": "After the T-Car is destroyed in a fight, the Titans go to a used car lot to find another vehicle.",
+      "airDate": "2020-02-29",
+      "streams": []
+    },
+    {
+      "id": "s6e10",
+      "season": 6,
+      "episode": 10,
+      "title": "Record Book",
+      "description": "Starfire wants a world record, so she decides to grow her fingernails.",
+      "airDate": "2020-03-07",
+      "streams": []
+    },
+    {
+      "id": "s6e11",
+      "season": 6,
+      "episode": 11,
+      "title": "Magic Man",
+      "description": "In a quest to become a magic man, Beast Boy accidentally destroys Raven's spell book, so they must find another.",
+      "airDate": "2020-03-14",
+      "streams": []
+    },
+    {
+      "id": "s6e12",
+      "season": 6,
+      "episode": 12,
+      "title": "Titans Go Casual",
+      "description": "The Superhero Board of Authority institutes a dress code, which leads the Titans to introduce Casual Tuesday.",
+      "airDate": "2020-03-21",
+      "streams": []
+    },
+    {
+      "id": "s6e13",
+      "season": 6,
+      "episode": 13,
+      "title": "Rain On Your Wedding Day",
+      "description": "While facing off with the Brain, Robin tries to teach the other Titans the proper definition of irony.",
+      "airDate": "2020-03-28",
+      "streams": []
+    },
+    {
+      "id": "s6e14",
+      "season": 6,
+      "episode": 14,
+      "title": "Teen Titans Roar!",
+      "description": "Outraged when their favorite cartoon is rebooted, the Titans come up with a plan to get the new show off the air.",
+      "airDate": "2020-04-04",
+      "streams": []
+    },
+    {
+      "id": "s6e15",
+      "season": 6,
+      "episode": 15,
+      "title": "Egg Hunt",
+      "description": "Robin still regrets not being able to find an Easter egg when he was a kid, so the Titans head to Gotham to solve this mystery.",
+      "airDate": "2020-04-10",
+      "streams": []
+    },
+    {
+      "id": "s6e16",
+      "season": 6,
+      "episode": 16,
+      "title": "Justice League's Next Top Talent Idol Star: Justice League Edition (1)",
+      "description": "The Justice League holds yet another talent competition, only this time they're facing off against the Titans.",
+      "airDate": "2020-05-25",
+      "streams": []
+    },
+    {
+      "id": "s6e17",
+      "season": 6,
+      "episode": 17,
+      "title": "Justice League's Next Top Talent Idol Star: Justice League Edition (2)",
+      "description": "In order to be the most talented superhero team in the DC universe, Robin and Beast Boy must work together on a jazz performance.",
+      "airDate": "2020-05-25",
+      "streams": []
+    },
+    {
+      "id": "s6e18",
+      "season": 6,
+      "episode": 18,
+      "title": "The Night Begins To Shine - Chapter One: Mission To Find The Lost Stems",
+      "description": "The elderly Titans decide to take one last trip to the world of Night Begins to Shine only to encounter a new villian ruling the land, Ultralak.",
+      "airDate": "2020-07-10",
+      "streams": []
+    },
+    {
+      "id": "s6e19",
+      "season": 6,
+      "episode": 19,
+      "title": "The Night Begins To Shine - Chapter Two: Drums",
+      "description": "In order to stop Ultralak, the Titans must find three music stems, but will need help from a local Miner to get the first stem away from the Sheriff.",
+      "airDate": "2020-07-10",
+      "streams": []
+    },
+    {
+      "id": "s6e20",
+      "season": 6,
+      "episode": 20,
+      "title": "The Night Begins To Shine - Chapter Three: Guitar",
+      "description": "The Titans are horrified to learn that songs are being melted down and polluting the landscape.",
+      "airDate": "2020-07-10",
+      "streams": []
+    },
+    {
+      "id": "s6e21",
+      "season": 6,
+      "episode": 21,
+      "title": "The Night Begins To Shine - Chapter Four: Bass",
+      "description": "To retrieve the final stem, the Titans must concur a virtual world full of increasingly harder obstacles.",
+      "airDate": "2020-07-10",
+      "streams": []
+    },
+    {
+      "id": "s6e22",
+      "season": 6,
+      "episode": 22,
+      "title": "The Night Begins To Shine - Chapter Five: You're The One",
+      "description": "The Titans use to the stems to summon BER, but will it be enough to stop Ultralak?",
+      "airDate": "2020-07-10",
+      "streams": []
+    },
+    {
+      "id": "s6e23",
+      "season": 6,
+      "episode": 23,
+      "title": "Where Exactly On The Globe Is Carl SanPedro (1)",
+      "description": "The Titans fly to Los Angeles but end up in San Pedro, where Berto tells them about the villainous long shoreman, Carl Sanpedro.",
+      "airDate": "2020-08-10",
+      "streams": []
+    },
+    {
+      "id": "s6e24",
+      "season": 6,
+      "episode": 24,
+      "title": "Where Exactly On The Globe Is Carl SanPedro (2)",
+      "description": "Carl Sanpedro has struck again, this time in Jamaica, so the Titans take off for the Caribbean.",
+      "airDate": "2020-08-11",
+      "streams": []
+    },
+    {
+      "id": "s6e25",
+      "season": 6,
+      "episode": 25,
+      "title": "Where Exactly On The Globe Is Carl SanPedro (3)",
+      "description": "The Titans travel to India to stop Carl Sanpedro and learn about the sport of cricket.",
+      "airDate": "2020-08-12",
+      "streams": []
+    },
+    {
+      "id": "s6e26",
+      "season": 6,
+      "episode": 26,
+      "title": "Where Exactly On The Globe Is Carl SanPedro (4)",
+      "description": "In the final epic showdown with Carl Sanpedro, the Titans head to Croatia, the home of dragons and ice zombies.",
+      "airDate": "2020-08-13",
+      "streams": []
+    },
+    {
+      "id": "s6e27",
+      "season": 6,
+      "episode": 27,
+      "title": "Ghost With The Most",
+      "description": "When the Halloween Spirit is kidnapped, the Titans must team with Beetlejuice to save the holiday.",
+      "airDate": "2020-10-05",
+      "streams": []
+    },
+    {
+      "id": "s6e28",
+      "season": 6,
+      "episode": 28,
+      "title": "Bucket List",
+      "description": "The Titans give Starfire a bucket list of activies to accomplish.",
+      "airDate": "2020-10-06",
+      "streams": []
+    },
+    {
+      "id": "s6e29",
+      "season": 6,
+      "episode": 29,
+      "title": "TV Knight 6",
+      "description": "Batman is forced to go to the department store with Alfred, but runs off to watch TV with Commissioner Gordon.",
+      "airDate": "2020-10-07",
+      "streams": []
+    },
+    {
+      "id": "s6e30",
+      "season": 6,
+      "episode": 30,
+      "title": "Kryptonite",
+      "description": "When Robin explains that knowing your weakness makes you a better superhero, Starfire journeys to find hers.",
+      "airDate": "2020-10-08",
+      "streams": []
+    },
+    {
+      "id": "s6e31",
+      "season": 6,
+      "episode": 31,
+      "title": "Thumb War",
+      "description": "As the other Titans engage in an all out thumb wrestling war, Starfire tries to broker peace.",
+      "airDate": "2020-10-09",
+      "streams": []
+    },
+    {
+      "id": "s6e32",
+      "season": 6,
+      "episode": 32,
+      "title": "Toddler Titans... Yay!",
+      "description": "Control Freak thinks the Titans' humor is too juvenile for their time-slot, so he ages them down to a preschool show.",
+      "airDate": "2020-11-14",
+      "streams": []
+    },
+    {
+      "id": "s6e33",
+      "season": 6,
+      "episode": 33,
+      "title": "Huggbees",
+      "description": "The Brain teams up with The Lobe, so the Titans enlist the help of Freakazoid to stop them.",
+      "airDate": "2020-11-14",
+      "streams": []
+    },
+    {
+      "id": "s6e34",
+      "season": 6,
+      "episode": 34,
+      "title": "Baby Mouth",
+      "description": "In order to find out about his family history, Robin takes a DNA test and discovers he's from Babylon.",
+      "airDate": "2020-11-21",
+      "streams": []
+    },
+    {
+      "id": "s6e35",
+      "season": 6,
+      "episode": 35,
+      "title": "The Cast",
+      "description": "After breaking his leg, Robin is confined to his room and spies through a telescope.",
+      "airDate": "2020-12-12",
+      "streams": []
+    },
+    {
+      "id": "s6e36",
+      "season": 6,
+      "episode": 36,
+      "title": "Superhero Feud",
+      "description": "Control Freak pits the Titans against the DC Superhero Girls to determine who is the best team in the universe.",
+      "airDate": "2020-12-19",
+      "streams": []
+    },
+    {
+      "id": "s6e37",
+      "season": 6,
+      "episode": 37,
+      "title": "Justice League's Next Top Talent Idol Star: Dance Crew Edition (1)",
+      "description": "It’s time for another Justice League talent competition and Vibe is joining the judges’ panel to critique the moves of the DC universe dance crews.",
+      "airDate": "2021-01-08",
+      "streams": []
+    },
+    {
+      "id": "s6e38",
+      "season": 6,
+      "episode": 38,
+      "title": "Justice League's Next Top Talent Idol Star: Dance Crew Edition (2)",
+      "description": "Robin is left without a dance crew so Vibe gives him lessons on how to be a world class break-dancer and team player.",
+      "airDate": "2021-01-08",
+      "streams": []
+    },
+    {
+      "id": "s6e39",
+      "season": 6,
+      "episode": 39,
+      "title": "Lucky Stars",
+      "description": "Raven explains astrology to the Titans and tells their horoscopes, but Cyborg does not believe.",
+      "airDate": "2021-01-23",
+      "streams": []
+    },
+    {
+      "id": "s6e40",
+      "season": 6,
+      "episode": 40,
+      "title": "Various Modes of Transportation",
+      "description": "With the other Titans away, Cyborg is forced to take a road trip with Robin.",
+      "airDate": "2021-01-23",
+      "streams": []
+    },
+    {
+      "id": "s6e41",
+      "season": 6,
+      "episode": 41,
+      "title": "Cool Uncles",
+      "description": "The Titans take a trip to Wackadoodles, but Trigon makes Raven babysit her little brothers.",
+      "airDate": "2021-01-30",
+      "streams": []
+    },
+    {
+      "id": "s6e42",
+      "season": 6,
+      "episode": 42,
+      "title": "Butter Wall",
+      "description": "When Beast Boy declares the Earth is a pancake, the Titans set sail to find out.",
+      "airDate": "2021-02-06",
+      "streams": []
+    },
+    {
+      "id": "s6e43",
+      "season": 6,
+      "episode": 43,
+      "title": "BBRAEBDAY",
+      "description": "Raven's \"demon side\" has the same birthday as Beast Boy, so the Titans travel to Azarath to celebrate her Sinister Sixteen.",
+      "airDate": "2021-02-13",
+      "streams": []
+    },
+    {
+      "id": "s6e44",
+      "season": 6,
+      "episode": 44,
+      "title": "Don't Press Play",
+      "description": "The Titans must help De La Soul save their music after it is stolen by an alien.",
+      "airDate": "2021-02-20",
+      "streams": []
+    },
+    {
+      "id": "s6e45",
+      "season": 6,
+      "episode": 45,
+      "title": "Real Art",
+      "description": "The Titans learn the true meaning of art.",
+      "airDate": "2021-02-27",
+      "streams": []
+    },
+    {
+      "id": "s6e46",
+      "season": 6,
+      "episode": 46,
+      "title": "Just a Little Patience... Yeah... Yeah",
+      "description": "Robin tries to teach the other Titans to have patience.",
+      "airDate": "2021-03-06",
+      "streams": []
+    },
+    {
+      "id": "s6e47",
+      "season": 6,
+      "episode": 47,
+      "title": "Villains in a Van Getting Gelato",
+      "description": "Four of the Titans' greatest villains reminisce about past incidents and recall how the Titans wronged them.",
+      "airDate": "2021-03-13",
+      "streams": []
+    },
+    {
+      "id": "s6e48",
+      "season": 6,
+      "episode": 48,
+      "title": "I Am Chair",
+      "description": "During a stressful trip to the mall, Robin finds peace in a massage chair.",
+      "airDate": "2021-03-20",
+      "streams": []
+    },
+    {
+      "id": "s6e49",
+      "season": 6,
+      "episode": 49,
+      "title": "Bumgorf",
+      "description": "When the Titans realize they have not seen Silkie for a long time, they take turns guessing what happened to him.",
+      "airDate": "2021-03-27",
+      "streams": []
+    },
+    {
+      "id": "s6e50",
+      "season": 6,
+      "episode": 50,
+      "title": "Feed Me",
+      "description": "The Titans release a small marshmallow ducky that the Easter Bunny had locked up, not knowing the danger they have unleashed.",
+      "airDate": "2021-04-03",
+      "streams": []
+    },
+    {
+      "id": "s7e1",
+      "season": 7,
+      "episode": 1,
+      "title": "The Mug",
+      "description": "Robin dreams of receiving a #1 Dad mug so Raven magically turns them into a sitcom family.",
+      "airDate": "2021-04-17",
+      "streams": []
+    },
+    {
+      "id": "s7e2",
+      "season": 7,
+      "episode": 2,
+      "title": "Hafo Safo",
+      "description": "The Titans travel to the hipster neighborhood of Silver Lake, California to help solve a mystery.",
+      "airDate": "2021-04-24",
+      "streams": []
+    },
+    {
+      "id": "s7e3",
+      "season": 7,
+      "episode": 3,
+      "title": "Zimdings",
+      "description": "When Robin selects the last font on the list for his presentation, it sets off the typocolypse.",
+      "airDate": "2021-05-01",
+      "streams": []
+    },
+    {
+      "id": "s7e4",
+      "season": 7,
+      "episode": 4,
+      "title": "Pig in a Poke",
+      "description": "The Titans are worried when Starfire says she has sent all of her money to a prince online, especially when it could be the clown prince himself.",
+      "airDate": "2021-05-08",
+      "streams": []
+    },
+    {
+      "id": "s7e5",
+      "season": 7,
+      "episode": 5,
+      "title": "P.P.",
+      "description": "While stopping a museum theft, the Titans encounter the P.P. Goblin, who uses the Titan's pet peeves against them.",
+      "airDate": "2021-05-15",
+      "streams": []
+    },
+    {
+      "id": "s7e6",
+      "season": 7,
+      "episode": 6,
+      "title": "A Little Help Please",
+      "description": "When they receive a distress call from the TTG animators and artists, the Titans must tone down their actions and avoid big adventures.",
+      "airDate": "2021-05-22",
+      "streams": []
+    },
+    {
+      "id": "s7e7",
+      "season": 7,
+      "episode": 7,
+      "title": "Marv Wolfman and George Pérez",
+      "description": "Marv Wolfman and George Pérez must pitch an idea for the new Teen Titans in 24 hours, so they brainstorm different concepts for the team.",
+      "airDate": "2021-05-29",
+      "streams": []
+    },
+    {
+      "id": "s7e8",
+      "season": 7,
+      "episode": 8,
+      "title": "Space House (1)",
+      "description": "The Titans set off on an adventure in space, only to find out they'll be sharing their Space House with the DC Super Hero Girls.",
+      "airDate": "2021-05-31",
+      "streams": []
+    },
+    {
+      "id": "s7e9",
+      "season": 7,
+      "episode": 9,
+      "title": "Space House (2)",
+      "description": "After Beast Boy steals the power ring and jumps into Zatanna's hat, Green Lantern must deal with being powerless as she and her friends give chase.",
+      "airDate": "2021-05-31",
+      "streams": []
+    },
+    {
+      "id": "s7e10",
+      "season": 7,
+      "episode": 10,
+      "title": "Space House (3)",
+      "description": "A giant meteor is heading toward the space house, so Starfire, Wonder Woman, Supergirl, and Cyborg take turns in the holographic chamber to see whose plan will work.",
+      "airDate": "2021-05-31",
+      "streams": []
+    },
+    {
+      "id": "s7e11",
+      "season": 7,
+      "episode": 11,
+      "title": "Space House (4)",
+      "description": "The free vacation in space was just an elaborate plot by Brainiac to collect every hero and villain in the DC Multiverse. The Titans and Superhero Girls agree to help Brainiac become an adult in exchange for letting them go.",
+      "airDate": "2021-05-31",
+      "streams": []
+    },
+    {
+      "id": "s7e12",
+      "season": 7,
+      "episode": 12,
+      "title": "Cy & Beasty",
+      "description": "Cyborg and Beast Boy can't agree on the better character, Tom or Jerry, so they play a little game of cat and mouse.",
+      "airDate": "2021-08-02",
+      "streams": []
+    },
+    {
+      "id": "s7e13",
+      "season": 7,
+      "episode": 13,
+      "title": "T is for Titans",
+      "description": "The Titans are shocked to learn that the T Tower had previous owners.",
+      "airDate": "2021-08-03",
+      "streams": []
+    },
+    {
+      "id": "s7e14",
+      "season": 7,
+      "episode": 14,
+      "title": "Creative Geniuses",
+      "description": "The Titans visit the Jump City Comic Book Con, where they meet Marv Wolfman and George Pérez, but also tangle with Control Freak over an exclusive toy.",
+      "airDate": "2021-08-04",
+      "streams": []
+    },
+    {
+      "id": "s7e15",
+      "season": 7,
+      "episode": 15,
+      "title": "Manor and Mannerisms",
+      "description": "Robin attends a ball at Wayne Manor hoping to become heir of the mansion, but will the other Titans spoil his chances?",
+      "airDate": "2021-08-05",
+      "streams": []
+    },
+    {
+      "id": "s7e16",
+      "season": 7,
+      "episode": 16,
+      "title": "Trans Oceanic Magical Cruise",
+      "description": "It's fun on the high seas, as the Teen Titans enjoy a cruise filled with dangerous missions, fast cars, and alien attacks.",
+      "airDate": "2021-08-06",
+      "streams": []
+    },
+    {
+      "id": "s7e17",
+      "season": 7,
+      "episode": 17,
+      "title": "Polly Ethylene and Tara Phthalate",
+      "description": "Teen Titans Go takes a comedic look at the superheroes' lives. Viewers finally get the opportunity to watch what life is like for the super teens when their capes are left at home. The teens will deal with everyday issues of adolescence including laundry contests and quests to construct the perfect sandwich.",
+      "airDate": "2021-09-04",
+      "streams": []
+    },
+    {
+      "id": "s7e18",
+      "season": 7,
+      "episode": 18,
+      "title": "EEBows",
+      "description": "Tired of getting pinched, the Titans' elbows rebel and soon bend the very fabric of time and space.",
+      "airDate": "2021-09-11",
+      "streams": []
+    },
+    {
+      "id": "s7e19",
+      "season": 7,
+      "episode": 19,
+      "title": "Batman's Birthday Gift",
+      "description": "The Titans join Robin as he travels to deliver a birthday gift to Batman but they are detoured several times along the way.",
+      "airDate": "2021-09-18",
+      "streams": []
+    },
+    {
+      "id": "s7e20",
+      "season": 7,
+      "episode": 20,
+      "title": "What a Boy Wonders",
+      "description": "Robin forms a book club to debut his new autobiography, but the Titans would rather discuss other books.",
+      "airDate": "2021-09-25",
+      "streams": []
+    },
+    {
+      "id": "s7e21",
+      "season": 7,
+      "episode": 21,
+      "title": "Doomsday Preppers",
+      "description": "The Tower is in lockdown and supplies are being gathered, as the Titans prepare for Doomsday.",
+      "airDate": "2021-10-02",
+      "streams": []
+    },
+    {
+      "id": "s7e22",
+      "season": 7,
+      "episode": 22,
+      "title": "Fat Cats",
+      "description": "After winning a huge cash prize, the Titans learn about the IRS and taxes.",
+      "airDate": "2021-10-09",
+      "streams": []
+    },
+    {
+      "id": "s7e23",
+      "season": 7,
+      "episode": 23,
+      "title": "Jam",
+      "description": "Harley Quinn, Poison Ivy, and Catwoman recruit Starfire and Raven for their roller deby team.",
+      "airDate": "2021-10-16",
+      "streams": []
+    },
+    {
+      "id": "s7e24",
+      "season": 7,
+      "episode": 24,
+      "title": "DC",
+      "description": "It's Wonder Woman's 80th birthday, so the Titans head to DC Headquarters for the party.",
+      "airDate": "2021-10-23",
+      "streams": []
+    },
+    {
+      "id": "s7e25",
+      "season": 7,
+      "episode": 25,
+      "title": "Pepo The Pumpkinman",
+      "description": "A magic hat brings the Titans' pumpkinman to life, but they have to figure out how to keep Pepo from rotting.",
+      "airDate": "2021-10-27",
+      "streams": []
+    },
+    {
+      "id": "s7e26",
+      "season": 7,
+      "episode": 26,
+      "title": "Breakfast",
+      "description": "The Titans discover the joys of eating breakfast food for every meal, but will that lead to an old friend becoming too powerful?",
+      "airDate": "2021-11-06",
+      "streams": []
+    },
+    {
+      "id": "s7e27",
+      "season": 7,
+      "episode": 27,
+      "title": "Captain Cool",
+      "description": "The Titans' antics with their imaginary friend Captain Cool annoy Robin until make-believe starts becoming real.",
+      "airDate": "2021-11-13",
+      "streams": []
+    },
+    {
+      "id": "s7e28",
+      "season": 7,
+      "episode": 28,
+      "title": "A Doom Patrol Thanksgiving",
+      "description": "Beast Boy returns home for Thanksgiving and the Doom Patrol enter a float in the town's parade. / The Doom Patrol finds old home movies about themselves that The Chief had hidden.",
+      "airDate": "2021-11-19",
+      "streams": []
+    },
+    {
+      "id": "s7e29",
+      "season": 7,
+      "episode": 29,
+      "title": "Glunkakakakah",
+      "description": "Robin teaches the other Titans the art of concealment through a game of hide and seek.",
+      "airDate": "2021-11-27",
+      "streams": []
+    },
+    {
+      "id": "s7e30",
+      "season": 7,
+      "episode": 30,
+      "title": "Control Freak",
+      "description": "When the Titans run amok in the Tower's evidence room, Robin does everything he can to keep things under control.",
+      "airDate": "2021-12-04",
+      "streams": []
+    },
+    {
+      "id": "s7e31",
+      "season": 7,
+      "episode": 31,
+      "title": "A Holiday Story",
+      "description": "Beast Boy is forced to team up with Baby New Year, the Easter Bunny, and Thanksgiving Turkey in an attempt to stop Santa from \"taking over all the holidays\" again.",
+      "airDate": "2021-12-08",
+      "streams": []
+    },
+    {
+      "id": "s7e32",
+      "season": 7,
+      "episode": 32,
+      "title": "The Drip",
+      "description": "Robin tries to keep his new-found cool with The Drip.",
+      "airDate": "2022-02-21",
+      "streams": []
+    },
+    {
+      "id": "s7e33",
+      "season": 7,
+      "episode": 33,
+      "title": "S&P",
+      "description": "The Titans' negative behavior is giving superheroes a bad name, so they must learn proper conduct to be good role models for kids.",
+      "airDate": "2022-03-07",
+      "streams": []
+    },
+    {
+      "id": "s7e34",
+      "season": 7,
+      "episode": 34,
+      "title": "Belly Math",
+      "description": "In order to defeat The Calculator, the Titans must learn common core math.",
+      "airDate": "2022-03-08",
+      "streams": []
+    },
+    {
+      "id": "s7e35",
+      "season": 7,
+      "episode": 35,
+      "title": "Free Perk",
+      "description": "Robin teaches the Titans all about health insurance.",
+      "airDate": "2022-03-09",
+      "streams": []
+    },
+    {
+      "id": "s7e36",
+      "season": 7,
+      "episode": 36,
+      "title": "Go!",
+      "description": "Robin struggles to lead the Titans after finding out that his catchphrase \"GO!\" is trademarked by another team.",
+      "airDate": "2022-03-10",
+      "streams": []
+    },
+    {
+      "id": "s7e37",
+      "season": 7,
+      "episode": 37,
+      "title": "Finding Aquaman",
+      "description": "While searching for a missing Aquaman, the Titans find themselves at the mercy of Black Manta.",
+      "airDate": "2022-05-14",
+      "streams": []
+    },
+    {
+      "id": "s7e38",
+      "season": 7,
+      "episode": 38,
+      "title": "Whodundidit?",
+      "description": "While housesitting at Wayne Manor, the Titans must unravel the mystery of the clogged toilet.",
+      "airDate": "2022-05-23",
+      "streams": []
+    },
+    {
+      "id": "s7e39",
+      "season": 7,
+      "episode": 39,
+      "title": "Sweet Revenge",
+      "description": "Robin starts working at an ice cream shop to get revenge on Joker's Gelato for denying him a free birthday scoop.",
+      "airDate": "2022-05-24",
+      "streams": []
+    },
+    {
+      "id": "s7e40",
+      "season": 7,
+      "episode": 40,
+      "title": "Porch Pirates",
+      "description": "After their package is stolen, the Titans must join a crew of porch pirates to get it back.",
+      "airDate": "2022-05-25",
+      "streams": []
+    },
+    {
+      "id": "s7e41",
+      "season": 7,
+      "episode": 41,
+      "title": "A Sticky Situation",
+      "description": "Sticky Joe's search for a can opener leads to a series of wacky adventures.",
+      "airDate": "2022-05-26",
+      "streams": []
+    },
+    {
+      "id": "s7e42",
+      "season": 7,
+      "episode": 42,
+      "title": "The Perfect Pitch?",
+      "description": "Having watched everything on TV, the Titans decide to make their own show.",
+      "airDate": "2022-05-27",
+      "streams": []
+    },
+    {
+      "id": "s7e43",
+      "season": 7,
+      "episode": 43,
+      "title": "Pool Season",
+      "description": "Black Manta offers to build the Titans a new pool, but Robin thinks the construction process is too slow.",
+      "airDate": "2022-08-01",
+      "streams": []
+    },
+    {
+      "id": "s7e44",
+      "season": 7,
+      "episode": 44,
+      "title": "Kyle",
+      "description": "The Titans time travel back to the 1990s so they can visit a video store but encounter a familiar foe.",
+      "airDate": "2022-08-02",
+      "streams": []
+    },
+    {
+      "id": "s7e45",
+      "season": 7,
+      "episode": 45,
+      "title": "TV Knight 7",
+      "description": "To avoid chores, Batman and Gordon time travel to the future, but still find ways to watch TV.",
+      "airDate": "2022-08-03",
+      "streams": []
+    },
+    {
+      "id": "s7e46",
+      "season": 7,
+      "episode": 46,
+      "title": "We'll Be Right Back",
+      "description": "Since the commercials are the only part of the show he likes, Control Freak creates extra ads to torment the Titans.",
+      "airDate": "2022-08-04",
+      "streams": []
+    },
+    {
+      "id": "s7e47",
+      "season": 7,
+      "episode": 47,
+      "title": "Jump City Rock",
+      "description": "The Titans team up with Nandi and Thomas Bushell to take down The Joker.",
+      "airDate": "2022-09-12",
+      "streams": []
+    },
+    {
+      "id": "s7e48",
+      "season": 7,
+      "episode": 48,
+      "title": "Natural Gas",
+      "description": "Outraged at the price they pay for water, gas, and electricity, the Titans go off the grid.",
+      "airDate": "2022-09-13",
+      "streams": []
+    },
+    {
+      "id": "s7e49",
+      "season": 7,
+      "episode": 49,
+      "title": "50% Chad",
+      "description": "Having grown tired of their current villains, the Titans hold an audition for a new arch nemesis.",
+      "airDate": "2022-09-14",
+      "streams": []
+    },
+    {
+      "id": "s7e50",
+      "season": 7,
+      "episode": 50,
+      "title": "The Score",
+      "description": "The Titans have a hard time dealing with their emotions when an evil composer changes the music in their show.",
+      "airDate": "2022-09-15",
+      "streams": []
+    },
+    {
+      "id": "s7e51",
+      "season": 7,
+      "episode": 51,
+      "title": "365!",
+      "description": "Wanting their 365th episode to be extra special, the Titans head to the Warner Bros. studio lot to find a director.",
+      "airDate": "2022-09-16",
+      "streams": []
+    },
+    {
+      "id": "s7e52",
+      "season": 7,
+      "episode": 52,
+      "title": "Welcome to Halloween",
+      "description": "Continuing their adventure with Pepo, the Titans escape the cold in a nearby castle, where they meet Krampus.",
+      "airDate": "2022-10-07",
+      "streams": []
+    },
+    {
+      "id": "s7e53",
+      "season": 7,
+      "episode": 53,
+      "title": "The Great Holiday Escape",
+      "description": "When they learn that Beast Boy sent Santa to jail, the Titans plan to infiltrate the prison to break him out.",
+      "airDate": "2022-12-09",
+      "streams": []
+    },
+    {
+      "id": "s8e1",
+      "season": 8,
+      "episode": 1,
+      "title": "Looking for Love",
+      "description": "When they receive an alert that Love is missing, the Titans set out to find her using musical clues.",
+      "airDate": "2023-02-06",
+      "streams": []
+    },
+    {
+      "id": "s8e2",
+      "season": 8,
+      "episode": 2,
+      "title": "Teen Titans Action",
+      "description": "The Titans learn that toys from comedy shows don't sell, so they vow to become action heroes. Having grown tired of their new action lifestyle, the Titans try to break their deal with Toy Master, even enlisting help from the Justice League.",
+      "airDate": "2023-02-20",
+      "streams": []
+    },
+    {
+      "id": "s8e3",
+      "season": 8,
+      "episode": 3,
+      "title": "TV Knight 8",
+      "description": "Commissioner Gordon has to work, so Batman joins him at the GCPD for fun and crimefighting.",
+      "airDate": "2023-02-27",
+      "streams": []
+    },
+    {
+      "id": "s8e4",
+      "season": 8,
+      "episode": 4,
+      "title": "A Stickier Situation",
+      "description": "When Sticky Joe tries to clip his pet rat's nails, it leads to a wild adventure.",
+      "airDate": "2023-03-06",
+      "streams": []
+    },
+    {
+      "id": "s8e5",
+      "season": 8,
+      "episode": 5,
+      "title": "Winning a Golf Tournament Is the Solution to All of Life's Money Problems",
+      "description": "After the T-Car is towed due to outstanding parking tickets, Robin has Cyborg enter a golf tournament for the cash prize.",
+      "airDate": "2023-03-13",
+      "streams": []
+    },
+    {
+      "id": "s8e6",
+      "season": 8,
+      "episode": 6,
+      "title": "Always Be Crimefighting",
+      "description": "Looking to motivate them, Robin tells the Titans to solve some crimes or they're fired.",
+      "airDate": "2023-03-20",
+      "streams": []
+    },
+    {
+      "id": "s8e7",
+      "season": 8,
+      "episode": 7,
+      "title": "Easter Annihilation",
+      "description": "When Cyborg's egg hunt tech stops working, the Titans go to their satellite to find out what happened.",
+      "airDate": "2023-03-27",
+      "streams": []
+    },
+    {
+      "id": "s8e8",
+      "season": 8,
+      "episode": 8,
+      "title": "The Brain of the Family",
+      "description": "The Brain's home life is disrupted when his slacker brother Brian comes to visit. Now The Brain and Mallah have to deal with Brian's messes and keep him from ruining their big secret scheme.",
+      "airDate": "2023-05-06",
+      "streams": []
+    },
+    {
+      "id": "s8e9",
+      "season": 8,
+      "episode": 9,
+      "title": "Arthur",
+      "description": "Robin threatens to fire Dr. Light unless he starts coming up with more inventive schemes.",
+      "airDate": "2023-05-13",
+      "streams": []
+    },
+    {
+      "id": "s8e10",
+      "season": 8,
+      "episode": 10,
+      "title": "Toilet Water",
+      "description": "When the Titans dog-sit for Superman, Robin tries to keep the others from spoiling Krypto.",
+      "airDate": "2023-05-13",
+      "streams": []
+    },
+    {
+      "id": "s8e11",
+      "season": 8,
+      "episode": 11,
+      "title": "Plot Holes",
+      "description": "After learning about movie plot holes, the Titans have some fun but end up throwing their world into chaos.",
+      "airDate": "2023-05-20",
+      "streams": []
+    },
+    {
+      "id": "s8e12",
+      "season": 8,
+      "episode": 12,
+      "title": "Utility Belt",
+      "description": "Worried that he's only special because of his utility belt, Robin donates it to a thrift store.",
+      "airDate": "2023-05-20",
+      "streams": []
+    },
+    {
+      "id": "s8e13",
+      "season": 8,
+      "episode": 13,
+      "title": "Our House",
+      "description": "Trying to get the Doom Patrol's house condemned, The Brain becomes a home inspector.",
+      "airDate": "2023-07-24",
+      "streams": []
+    },
+    {
+      "id": "s8e14",
+      "season": 8,
+      "episode": 14,
+      "title": "Beard Hunter",
+      "description": "On a camping trip, The Chief shows off his beard, but warns the Doom Patrol about the Beard Hunter.",
+      "airDate": "2023-07-25",
+      "streams": []
+    },
+    {
+      "id": "s8e15",
+      "season": 8,
+      "episode": 15,
+      "title": "Elasti-Bot",
+      "description": "After ElastGirl is pushed to her limit, The Chief builds a robot replacement.",
+      "airDate": "2023-07-26",
+      "streams": []
+    },
+    {
+      "id": "s8e16",
+      "season": 8,
+      "episode": 16,
+      "title": "Negative Feels",
+      "description": "Negative Girls starts feeding on negative energy, so the Doom Patrol must stay positive before it's too late.",
+      "airDate": "2023-07-27",
+      "streams": []
+    },
+    {
+      "id": "s8e17",
+      "season": 8,
+      "episode": 17,
+      "title": "New Chum",
+      "description": "To prove he is extreme, Robotman becomes friends with King Shark and his gang of suckerfish.",
+      "airDate": "2023-07-28",
+      "streams": []
+    },
+    {
+      "id": "s8e18",
+      "season": 8,
+      "episode": 18,
+      "title": "Intro",
+      "description": "Control Freak leads the Titans on a chase through various cartoon intro sequences.",
+      "airDate": "2023-09-23",
+      "streams": []
+    },
+    {
+      "id": "s8e19",
+      "season": 8,
+      "episode": 19,
+      "title": "Haunted Tank",
+      "description": "At a Halloween festival, the Titans meet the famous Haunted Tank and its ghostly inhabitant, General Tucker.",
+      "airDate": "2023-10-07",
+      "streams": []
+    },
+    {
+      "id": "s8e20",
+      "season": 8,
+      "episode": 20,
+      "title": "Warner Bros. 100th Anniversary",
+      "description": "The Titans are in charge of the 100th anniversary party for Warner Bros on the studio lot, and everything is going well until the magical WB Shield is broken into pieces.",
+      "airDate": "2023-10-14",
+      "streams": []
+    },
+    {
+      "id": "s8e21",
+      "season": 8,
+      "episode": 21,
+      "title": "Wishbone",
+      "description": "The Titans make wishes on a wishbone, but when it's broken, they must travel to Gobble-Gobble Land to set things right.",
+      "airDate": "2023-11-18",
+      "streams": []
+    },
+    {
+      "id": "s8e22",
+      "season": 8,
+      "episode": 22,
+      "title": "Christmas Magic",
+      "description": "After the Titans get shrunken by Mumbo's magic, they must scale a Christmas Tree to prevent Mumbo from ruining their Christmas.",
+      "airDate": "2023-12-02",
+      "streams": []
+    },
+    {
+      "id": "s8e23",
+      "season": 8,
+      "episode": 23,
+      "title": "Ship",
+      "description": "Starfire is the captain of a spaceship heading back to her home planet of Tarmaran and her crew is some of Earth's finest specimens.",
+      "airDate": "2024-03-02",
+      "streams": []
+    },
+    {
+      "id": "s8e24",
+      "season": 8,
+      "episode": 24,
+      "title": "Catpin Freak",
+      "description": "Seeing the benefits of being captain, Freak demands the position which worries the rest of the crew.",
+      "airDate": "2024-03-09",
+      "streams": []
+    },
+    {
+      "id": "s8e25",
+      "season": 8,
+      "episode": 25,
+      "title": "50% Crew",
+      "description": "A teleportation malfunction causes the spaceship crew to lose their upper halves.",
+      "airDate": "2024-03-16",
+      "streams": []
+    },
+    {
+      "id": "s8e26",
+      "season": 8,
+      "episode": 26,
+      "title": "Five Bucks",
+      "description": "Starfire and her crew play Tooth Fairy for the Tooth Fairy.",
+      "airDate": "2024-03-23",
+      "streams": []
+    },
+    {
+      "id": "s8e27",
+      "season": 8,
+      "episode": 27,
+      "title": "Wild Card",
+      "description": "Starfire and her crew go on a dangerous mission to prevent Blackfire from acquiring a powerful Tamaranean relic.",
+      "airDate": "2024-03-30",
+      "streams": []
+    },
+    {
+      "id": "s8e28",
+      "season": 8,
+      "episode": 28,
+      "title": "Azarath, Metrion Bookstore",
+      "description": "Raven returns to Azarath to help out Trigon and Nana at the family bookstore, and learns a lot about her father.",
+      "airDate": "2024-10-05",
+      "streams": []
+    },
+    {
+      "id": "s8e29",
+      "season": 8,
+      "episode": 29,
+      "title": "The Great Azarathian Face Off",
+      "description": "When a visiting author notices the magical abilities of the bookstore gang, she invites them to be contestants on a new game show on TV.",
+      "airDate": "2024-10-12",
+      "streams": []
+    },
+    {
+      "id": "s8e30",
+      "season": 8,
+      "episode": 30,
+      "title": "Bookyman",
+      "description": "When Trigon claims to not be afraid of anything, Nana reminds him of a childhood fear.",
+      "airDate": "2024-10-19",
+      "streams": []
+    },
+    {
+      "id": "s8e31",
+      "season": 8,
+      "episode": 31,
+      "title": "Unleashed",
+      "description": "Trigon shows off his collection of conquered planets, which includes Acmetropolis.",
+      "airDate": "2024-10-26",
+      "streams": []
+    },
+    {
+      "id": "s8e32",
+      "season": 8,
+      "episode": 32,
+      "title": "Original Idea",
+      "description": "After Trigon proclaims the entire bookstore is his domain, Nana informs him that he has no control in the public domain.",
+      "airDate": "2024-11-02",
+      "streams": []
+    },
+    {
+      "id": "s8e33",
+      "season": 8,
+      "episode": 33,
+      "title": "Attention to Detail",
+      "description": "The Titans retreat to an underground bunker after a distress signal, where they enjoy footage from their past adventures, only to notice something isn't right.",
+      "airDate": "2024-11-09",
+      "streams": []
+    },
+    {
+      "id": "s8e34",
+      "season": 8,
+      "episode": 34,
+      "title": "The Ranch",
+      "description": "The Titans must accompany their animation team to the new offices.",
+      "airDate": "2024-11-16",
+      "streams": []
+    },
+    {
+      "id": "s8e35",
+      "season": 8,
+      "episode": 35,
+      "title": "TV Knight 9",
+      "description": "Batman and Commissioner Gordon are ready for another evening in front of the TV, but Alfred is determined to watch his show.",
+      "airDate": "2024-11-23",
+      "streams": []
+    },
+    {
+      "id": "s8e36",
+      "season": 8,
+      "episode": 36,
+      "title": "Four Hundred",
+      "description": "After \"Teen Titans Go!\" wins the award for being D.C.'s longest running animated series, a jealous Superman banishes the Titans to world of stop-motion in order to get their show cancelled.",
+      "airDate": "2024-11-30",
+      "streams": []
+    },
+    {
+      "id": "s9e1",
+      "season": 9,
+      "episode": 1,
+      "title": "Stickiest Situation",
+      "description": "Sticky Joe loses his shoe, and his search takes him on another wild adventure.",
+      "airDate": "2025-03-01",
+      "streams": []
+    },
+    {
+      "id": "s9e2",
+      "season": 9,
+      "episode": 2,
+      "title": "O.S.H.A",
+      "description": "The Titans must clean the Tower for a surprise inspection.",
+      "airDate": "2025-03-01",
+      "streams": []
+    },
+    {
+      "id": "s9e3",
+      "season": 9,
+      "episode": 3,
+      "title": "Teen? Titans",
+      "description": "When the Titans' real ages are revealed, they must think and act like teenagers to remain Teen Titans.",
+      "airDate": "2025-03-08",
+      "streams": []
+    },
+    {
+      "id": "s9e4",
+      "season": 9,
+      "episode": 4,
+      "title": "Moonlighting",
+      "description": "Inspired by a commercial, the Titans visit Dr. Light and Dr. Moon to learn how to make extra money.",
+      "airDate": "2025-03-15",
+      "streams": []
+    },
+    {
+      "id": "s9e5",
+      "season": 9,
+      "episode": 5,
+      "title": "Freak Show",
+      "description": "Control Freak tries once more to convince the Titans that the original show is the superior series.",
+      "airDate": "2025-03-22",
+      "streams": []
+    },
+    {
+      "id": "s9e6",
+      "season": 9,
+      "episode": 6,
+      "title": "Diner Means Breakfast",
+      "description": "Cyborg and Beast Boy realize that what they order to eat at a diner might have much bigger consequences.",
+      "airDate": "2025-03-29",
+      "streams": []
+    },
+    {
+      "id": "s9e7",
+      "season": 9,
+      "episode": 7,
+      "title": "High Five",
+      "description": "While shopping at the mall, the Titans enter a contest to win a hot tub.",
+      "airDate": "2025-04-05",
+      "streams": []
+    },
+    {
+      "id": "s9e8",
+      "season": 9,
+      "episode": 8,
+      "title": "Teen Titans and the Easter Factory",
+      "description": "Will a trip to the Eastory Factory be a magical time for the Titans or is it another one of the Easter Bunny's tricks?",
+      "airDate": "2025-04-12",
+      "streams": []
+    },
+    {
+      "id": "s9e9",
+      "season": 9,
+      "episode": 9,
+      "title": "Passive Income",
+      "description": "Lex Luthor buys the Titans' island and shows them how to make passive income through real estate.",
+      "airDate": "2025-04-19",
+      "streams": []
+    },
+    {
+      "id": "s9e10",
+      "season": 9,
+      "episode": 10,
+      "title": "Winged Warriors",
+      "description": "After they receive a distress call, Robin, Raven, and Birdarang rush off to help the Winged Warriors, a society dedicated to birds.",
+      "airDate": "2025-04-26",
+      "streams": []
+    },
+    {
+      "id": "s9e11",
+      "season": 9,
+      "episode": 11,
+      "title": "Closed Circuit",
+      "description": "Robin installs two security cameras to catch the thief who keeps stealing his overnight oats.",
+      "airDate": "2025-05-03",
+      "streams": []
+    },
+    {
+      "id": "s9e12",
+      "season": 9,
+      "episode": 12,
+      "title": "Best Mom Ever",
+      "description": "It's Mother's Day, and the Titans compete to determine which of them is the best mom and deserves all the gifts.",
+      "airDate": "2025-05-10",
+      "streams": []
+    },
+    {
+      "id": "s9e13",
+      "season": 9,
+      "episode": 13,
+      "title": "DC Comic Book Club",
+      "description": "Robin hosts a DC Comics book club, but the other Titans may not have done the assigned reading.",
+      "airDate": "2025-05-17",
+      "streams": []
+    },
+    {
+      "id": "s9e14",
+      "season": 9,
+      "episode": 14,
+      "title": "Favorite Animated Show Nominee",
+      "description": "Robin finds it suspicious that the Titans are always nominated for an award but never win and is determined to find out why.",
+      "airDate": "2025-06-21",
+      "streams": []
+    },
+    {
+      "id": "s9e15",
+      "season": 9,
+      "episode": 15,
+      "title": "Them Jaws",
+      "description": "The Titans' day at the beach is interrupted by something vicious in the ocean.",
+      "airDate": "2025-07-19",
+      "streams": []
+    },
+    {
+      "id": "s9e16",
+      "season": 9,
+      "episode": 16,
+      "title": "Pool Shark",
+      "description": "The Titans encourage King Shark to start playing pool again, but he must first learn how to trust his gut.",
+      "airDate": "2025-07-19",
+      "streams": []
+    },
+    {
+      "id": "s9e17",
+      "season": 9,
+      "episode": 17,
+      "title": "Shark Tank",
+      "description": "King Shark wears a tank top and teaches the Titans all about the \"tank life.\"",
+      "airDate": "2025-07-19",
+      "streams": []
+    },
+    {
+      "id": "s9e18",
+      "season": 9,
+      "episode": 18,
+      "title": "Lakeside Story",
+      "description": "While at the lake, Robin falls in love with a female fish and must choose between her and the Titans.",
+      "airDate": "2025-07-19",
+      "streams": []
+    },
+    {
+      "id": "s9e19",
+      "season": 9,
+      "episode": 19,
+      "title": "Megalodon Jackson",
+      "description": "The Titans face-off against a giant shark but soon discover that things are not what they seem.",
+      "airDate": "2025-07-19",
+      "streams": []
+    },
+    {
+      "id": "s9e20",
+      "season": 9,
+      "episode": 20,
+      "title": "DC Leader Swap",
+      "description": "Robin becomes the leader of the Joker team in a DC superhero exchange show, and vice versa.",
+      "airDate": "2025-08-30",
+      "streams": []
+    },
+    {
+      "id": "s9e21",
+      "season": 9,
+      "episode": 21,
+      "title": "Shhh",
+      "description": "The Titans attempt to transport the sleeping gray gorilla that destroyed the Titans Tower back to the zoo without waking it.",
+      "airDate": "2025-08-30",
+      "streams": []
+    },
+    {
+      "id": "s9e22",
+      "season": 9,
+      "episode": 22,
+      "title": "Crime Alert",
+      "description": "Robin is ready to answer a crime alert, but the other Titans are in no rush.",
+      "airDate": "2025-09-06",
+      "streams": []
+    },
+    {
+      "id": "s9e23",
+      "season": 9,
+      "episode": 23,
+      "title": "Mani-Pedi",
+      "description": "After defeating Brother Blood, the Titans reward themselves with a trip to the salon.",
+      "airDate": "2025-09-13",
+      "streams": []
+    },
+    {
+      "id": "s9e24",
+      "season": 9,
+      "episode": 24,
+      "title": "Not a Halloween Special",
+      "description": "The Titans decide to not produce a Halloween special this year, but soon discover that they may not have a choice.",
+      "airDate": "2025-09-20",
+      "streams": []
+    },
+    {
+      "id": "s9e25",
+      "season": 9,
+      "episode": 25,
+      "title": "Chowda",
+      "description": "While on a trip to Boston, the Titans enlist the help of Deadman in order to search for a legendary bowl of clam chowder.",
+      "airDate": "2025-09-27",
+      "streams": []
+    },
+    {
+      "id": "s9e26",
+      "season": 9,
+      "episode": 26,
+      "title": "Activate",
+      "description": "The Wonder Twins teach the Titans about water conservation.",
+      "airDate": "2025-10-04",
+      "streams": []
+    },
+    {
+      "id": "s9e27",
+      "season": 9,
+      "episode": 27,
+      "title": "Ice Cold",
+      "description": "Beast Boy and Cyborg disguise themselves as ice villains at the Cold Academy in order to help Captain Cold.",
+      "airDate": "2025-10-11",
+      "streams": []
+    },
+    {
+      "id": "s9e28",
+      "season": 9,
+      "episode": 28,
+      "title": "Cake!",
+      "description": "Cyborg's birthday wish goes wrong and everything becomes cake.",
+      "airDate": "2025-10-18",
+      "streams": []
+    },
+    {
+      "id": "s9e29",
+      "season": 9,
+      "episode": 29,
+      "title": "Unmasking - The Teen Titans Story",
+      "description": "A look behind the scenes of the story of Teen Titans Go!.",
+      "airDate": "2025-10-25",
+      "streams": []
+    },
+    {
+      "id": "s9e30",
+      "season": 9,
+      "episode": 30,
+      "title": "Helmet of Doom",
+      "description": "The Titans get stuck in the swamp and learn the truth about the Hall of Doom.",
+      "airDate": "2025-11-01",
+      "streams": []
+    },
+    {
+      "id": "s9e31",
+      "season": 9,
+      "episode": 31,
+      "title": "Bro, Where's the Batmobile?",
+      "description": "After an eventful night, Birdarang and Batarang must retrace their steps to find the Batmobile.",
+      "airDate": "2025-11-08",
+      "streams": []
+    },
+    {
+      "id": "s9e32",
+      "season": 9,
+      "episode": 32,
+      "title": "White Elephant",
+      "description": "In order to get their Christmas presents back, the Titans are forced to play a game of White Elephant.",
+      "airDate": "2025-11-15",
+      "streams": []
+    },
+    {
+      "id": "s9e33",
+      "season": 9,
+      "episode": 33,
+      "title": "Rulers Rule",
+      "description": "Robin teaches the other Titans how to properly use a ruler.",
+      "airDate": "2025-11-22",
+      "streams": []
+    },
+    {
+      "id": "s9e34",
+      "season": 9,
+      "episode": 34,
+      "title": "Hero Hotline",
+      "description": "Out of boredom, Starfire and Cyborg repeatedly call the Hero Hotline for housework help, but soon there is a real crime alert.",
+      "airDate": "2025-11-29",
+      "streams": []
+    },
+    {
+      "id": "s9e35",
+      "season": 9,
+      "episode": 35,
+      "title": "Elseworlds",
+      "description": "When the Teen Titans are banished to the Elseworlds, they try to find a way back to the main DC universe timeline.",
+      "airDate": "2026-02-07",
+      "streams": []
+    },
+    {
+      "id": "s9e36",
+      "season": 9,
+      "episode": 36,
+      "title": "Use It or Lose It",
+      "description": "The Monitor tries to make the Titans use their powers properly instead of the silly ways they've been used in the past.",
+      "airDate": "2026-02-14",
+      "streams": []
+    },
+    {
+      "id": "s9e37",
+      "season": 9,
+      "episode": 37,
+      "title": "Task Force X",
+      "description": "Tired of fighting low tier villains, the Titans seek out Amanda Waller so they can join Task Force X.",
+      "airDate": "2026-02-21",
+      "streams": []
+    },
+    {
+      "id": "s9e38",
+      "season": 9,
+      "episode": 38,
+      "title": "Philly",
+      "description": "While visiting Philadelphia, the Titans join forces with the Bacon Brothers to stop William Penn's rampage on the city.",
+      "airDate": "2026-02-28",
+      "streams": []
+    },
+    {
+      "id": "s9e39",
+      "season": 9,
+      "episode": 39,
+      "title": "Torso Soap",
+      "description": "The League of Legs returns to help stop crime and learn about the importance of leg washing.",
+      "airDate": "2026-03-07",
+      "streams": []
+    },
+    {
+      "id": "s9e40",
+      "season": 9,
+      "episode": 40,
+      "title": "Select Your Trek",
+      "description": "Robin, Cyborg and Raven are zapped into a book, and must rely on Beast Boy and Starfire to make the right selections of their choice in order to escape.",
+      "airDate": "2026-03-14",
+      "streams": []
+    },
+    {
+      "id": "s9e41",
+      "season": 9,
+      "episode": 41,
+      "title": "Huzzah for the Turkey Leg",
+      "description": "Except for Raven, all of our friends cannot wait to go to the Renaissance Festival in their costume.",
+      "airDate": "2026-07-18",
+      "streams": []
+    },
+    {
+      "id": "s9e42",
+      "season": 9,
+      "episode": 42,
+      "title": "The Joker's on You",
+      "description": "In an attempt to escape from the Joker, the Titans try to make him laugh with various comedy acts.",
+      "airDate": "2026-07-25",
+      "streams": []
+    },
+    {
+      "id": "s9e43",
+      "season": 9,
+      "episode": 43,
+      "title": "TV Knight 10",
+      "description": "Batman and Commissioner Gordon install a satellite dish so they can watch a wide variety of shows.",
+      "airDate": "2026-08-01",
+      "streams": []
+    },
+    {
+      "id": "s9e44",
+      "season": 9,
+      "episode": 44,
+      "title": "A Time to Sew",
+      "description": "After the Thread of Time is corrupted, the Titans travel through time to correct historical events.",
+      "airDate": "2026-08-08",
+      "streams": []
+    },
+    {
+      "id": "s9e45",
+      "season": 9,
+      "episode": 45,
+      "title": "Teen Titans Go to the Repair Shop (1)",
+      "description": "While in London to stop Mad Mod, the Titans' crime-fighting weapons are damaged.",
+      "airDate": "2026-08-15",
+      "streams": []
+    },
+    {
+      "id": "s9e46",
+      "season": 9,
+      "episode": 46,
+      "title": "Teen Titans Go to the Repair Shop (2)",
+      "description": "The Repair Shop crew are pushed to the limit while fixing the Titans' gear so they can stop Mad Mod.",
+      "airDate": "2026-08-22",
+      "streams": []
+    },
+    {
+      "id": "s9e47",
+      "season": 9,
+      "episode": 47,
+      "title": "Fishing!!!",
+      "description": "Robin must learn the ways of sport anime in order to defeat a rival fisherman.",
+      "airDate": "2026-08-29",
+      "streams": []
+    },
+    {
+      "id": "s9e48",
+      "season": 9,
+      "episode": 48,
+      "title": "The Reason Why Things Change",
+      "description": "The Titans are surprised to find there's still something out there running amok.",
+      "airDate": "2026-09-05",
+      "streams": []
+    },
+    {
+      "id": "s9e49",
+      "season": 9,
+      "episode": 49,
+      "title": "Hollywood Squares",
+      "description": "It's the Titans vs. the Justice League in a DC edition of Hollywood Squares, with Weird Al in the center square.",
+      "airDate": "2026-09-12",
+      "streams": []
+    },
+    {
+      "id": "s9e50",
+      "season": 9,
+      "episode": 50,
+      "title": "The Night Begins to Shine - Vinyl City (1)",
+      "description": "Cyborg gets a call from B.E.R. to help restore the Key to the City. Break Beat offers to help, but secretly steals the key instead, forcing Cyborg to reunite with the Titans and track her down to get it back.",
+      "airDate": "",
+      "streams": []
+    },
+    {
+      "id": "s9e51",
+      "season": 9,
+      "episode": 51,
+      "title": "The Night Begins to Shine - Vinyl City (2)",
+      "description": "Cyborg finally finds the Titans, but before they can come up with a plan to get the Key to the City back, they're forced into an arena battle where they'll have to fight their way out.",
+      "airDate": "",
+      "streams": []
+    },
+    {
+      "id": "s9e52",
+      "season": 9,
+      "episode": 52,
+      "title": "The Night Begins to Shine - Vinyl City (3)",
+      "description": "Break Beat corrupts the Key to the City, and before the Titans can stop her, she uses it to corrupt the entire city. When B.E.R. is hurt in the chaos, they snap and unleash a giant 3D robot to destroy the city. With everything falling apart, the Titans must find a way to stop the robot, save the city, and undo the corruption before it's too late.",
+      "airDate": "",
+      "streams": []
+    }
+  ]
+}
