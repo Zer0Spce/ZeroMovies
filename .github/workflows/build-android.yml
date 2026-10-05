@@ -20,8 +20,25 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-      - name: Compile and lint
-        run: gradle :app:assembleMobileDebug :app:assembleTvDebug :app:lintMobileDebug :app:lintTvDebug
+      - name: Compile both APKs
+        run: gradle :app:assembleMobileDebug :app:assembleTvDebug
+      - name: Lint both variants
+        run: gradle --continue :app:lintMobileDebug :app:lintTvDebug
+      - name: Print full lint results
+        if: always()
+        run: |
+          for report in app/build/intermediates/lint_intermediate_text_report/*/lintReport*/lint-results-*.txt; do
+            if [ -f "$report" ]; then
+              cat "$report"
+            fi
+          done
+      - name: Upload lint reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZeroStreams-lint-reports
+          path: app/build/reports/lint-results-*
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
           name: ZeroStreams-mobile-and-tv-debug
