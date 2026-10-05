@@ -1,5 +1,5 @@
 [template]
-  incoming-hooks = ["ZeroStreams updates"]
+  incoming-hooks = ["ZeroMovies updates"]
 
 [template.environment]
   TMDB_API_KEY = "Your TMDB API Key (v3 auth) — kept in the serverless function, not the public website"
