@@ -61,6 +61,12 @@ final class ContentApi {
             rows.add(new Catalog.Item(item));
         }return rows;
     }
+    static JSONObject searchPageData(String query,String key,int page) throws Exception {return tmdb("/search/multi",key,"&query="+URLEncoder.encode(query.trim(),"UTF-8")+"&include_adult=false&page="+page);}
+    static JSONObject browsePageData(String key,String section,int page) throws Exception {return tmdb(section.equals("Series")?"/tv/popular":"/movie/popular",key,"&page="+page);}
+    static JSONObject providerPageData(String key,String type,int provider,String region,int page) throws Exception {
+        if(provider<=0||!region.matches("[A-Z]{2}")||!type.equals("movie")&&!type.equals("tv"))throw new IOException("Invalid provider");
+        return tmdb("/discover/"+type,key,"&include_adult=false&with_watch_providers="+provider+"&watch_region="+region+"&with_watch_monetization_types=flatrate&sort_by=popularity.desc&page="+page);
+    }
     static List<Catalog.Item> searchMovies(String query,String key,int page) throws Exception {
         return tmdbRows(tmdb("/search/multi",key,"&query="+URLEncoder.encode(query.trim(),"UTF-8")+"&include_adult=false&page="+page).getJSONArray("results"),"",true);
     }

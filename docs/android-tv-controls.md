@@ -13,3 +13,11 @@ QR ad scanning starts sooner and runs more often during the first 18 seconds. Co
 Automated checks cover the two-step Back state, focus movement, suppression of raw arrow seeking, OK activation, frame navigation, labelled player Back, and shadow DOM QR removal. Both Android flavors run their unit tests, build, and lint in GitHub Actions.
 
 Remote arrows and OK restore control bars hidden by the provider as well as the app's idle filter. Home includes Watchlist and a night/light mode toggle. Weather is removed. Source choices are VidStuck, VidSrc.to, VidSrc.sh and SuperEmbed.
+
+## Native LiveTV / IPTV player (Android 0.4.6)
+
+Open LiveTV or IPTV, choose a channel, and use arrows plus OK to operate the native player controls. Controls hide after a few seconds of playback; arrows or OK reveal them. Channel Up/Down switches channels. Media Play/Pause buttons work directly.
+
+The player offers Play/Pause, Live (return to the live edge), Retry, Channels, Audio, Subtitles, and Fit/Fill. Back hides visible controls during playback; another Back returns to browsing. Unavailable streams offer Retry or another channel. LiveTV checks for a newer list every 30 minutes while its tab is open. The colored Refresh buttons update either list immediately; failed refreshes preserve the last saved channels.
+
+Catalog and search pages load more titles automatically as you approach the bottom. Search starts only after pressing the Search button or the keyboard Search action.

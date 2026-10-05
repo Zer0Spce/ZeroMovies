@@ -14,7 +14,8 @@ Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surp
 | --- | --- |
 | 🔎 **Discover & search** | Browse trending, popular, now-playing, recommended, and coming-soon titles, or search movies and TV series through TMDB. |
 | 🎲 **Surprise Me** | Discover released movies beyond the homepage rows with the red dice button beside the theme toggle. |
-| 🗂️ **Categories** | Explore movie and TV genres with paginated results. |
+| 🗂️ **Categories** | Explore movie and TV genres. Android 0.4.6 adds genre artwork and automatically loads more titles as you scroll. |
+| 📡 **LiveTV & IPTV · Android 0.4.6** | Two dedicated tabs using the ZeroStreams playlists, colored refresh buttons, channel groups, and native playback with remote controls. |
 | 🎞️ **Rich title details** | View artwork, ratings, synopsis, cast, genres, trailers, and related recommendations. |
 | ▶️ **Choose your source** | Switch beside Watch Now between **VidStuck · Recommended**, VidSrc.to, VidSrc.sh, and SuperEmbed. |
 | ❤️ **Your library** | Save a watchlist, organize collections and Plan to Watch, and revisit watch and search history. |
@@ -24,6 +25,8 @@ Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surp
 | 📺 **TV remote support** | D-pad navigation and optional player mouse mode; idle controls hide and wake on remote input. |
 | 🖥️ **Windows portable** | Browse and play in one window, use native fullscreen, and return with the player Back button. No installer. |
 | 🔊 **Optional audio boost** | Off, 1.5×, or 2× for compatible embedded audio. |
+
+Android 0.4.6 is the current development update: search runs when you press **Search** (or the keyboard Search action), and movie, series, genre, provider, and search lists load more near the bottom without page buttons. Windows remains on v0.4.5.
 
 ## 📸 A look inside
 
@@ -70,7 +73,7 @@ TMDB metadata refreshes as you browse and on refresh, so new catalog entries do 
 
 ## 🛠️ Build & development
 
-- **Android:** run **Build ZeroMovies APKs** manually in GitHub Actions for development APKs. These are debug builds; use Releases for signed production downloads.
+- **Android:** run **Build ZeroMovies APKs** manually in GitHub Actions for development APKs. The workflow tests both variants and uploads debug APKs plus APKs signed with the permanent Android key. Published production downloads remain in Releases.
 - **Production:** **Release ZeroMovies** runs regressions, unit tests, builds, lint, non-debug checks, and signature verification before publishing signed APKs and checksums. Its v0.4.5 publication reuses the tested Windows portable ZIP.
 - **Windows:** see the [Windows guide](windows/README.md). Windows builds run manually on explicit request.
 - **Website:** the responsive web version is prepared for Netlify. See [website setup](web/README.md).

@@ -46,7 +46,7 @@ jobs:
           else
             echo "No bundled TMDB key; enter your key in app Settings"
           fi
-      - name: Test TMDB categories, surprise discovery, history and QR scanning
+      - name: Test catalog, playlists, paging, history and QR scanning
         run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest
       - name: Compile both APKs
         run: gradle :app:assembleMobileDebug :app:assembleTvDebug
@@ -71,4 +71,24 @@ jobs:
         with:
           name: ZeroMovies-mobile-and-tv-debug
           path: app/build/outputs/apk/*/debug/*.apk
+          if-no-files-found: error
+      - name: Build signed Android update APKs
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/zeromovies-release.jks"
+          trap 'rm -f "$ANDROID_KEYSTORE_FILE"' EXIT
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_FILE"
+          chmod 600 "$ANDROID_KEYSTORE_FILE"
+          gradle :app:assembleMobileRelease :app:assembleTvRelease
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/mobile/release/app-mobile-release.apk
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/tv/release/app-tv-release.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroMovies-mobile-and-tv-signed
+          path: app/build/outputs/apk/*/release/*.apk
           if-no-files-found: error
