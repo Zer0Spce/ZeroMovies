@@ -83,6 +83,43 @@ async function run() {
   w.__zeroRemoteActivity();
   assert.ok(!w.document.documentElement.classList.contains('zero-player-idle'));
   dom.window.close();
+  for (const tv of [true,false]) {
+    dom=page('<video id="movie"></video><nav width="900" height="50"><button>Episodes</button></nav><div class="plyr__controls" width="900" height="60"><button>Pause</button></div>',tv);
+    const player=dom.window;
+    player.__zeroBackRequest(1);
+    await new Promise(resolve=>setTimeout(resolve,10));
+    assert.deepEqual(JSON.parse(JSON.stringify(player.__zeroBackResult)),{token:1,handled:true});
+    assert.equal(player.getComputedStyle(player.document.querySelector('nav')).visibility,'hidden');
+    assert.equal(player.getComputedStyle(player.document.querySelector('video')).visibility,'visible');
+    player.__zeroBackRequest(2);
+    await new Promise(resolve=>setTimeout(resolve,10));
+    assert.equal(player.__zeroBackResult.handled,false,'Second Back can return after controls are hidden');
+    player.__zeroRemoteActivity();
+    assert.equal(player.getComputedStyle(player.document.querySelector('nav')).visibility,'visible');
+    dom.window.close();
+  }
+  dom=page('<iframe></iframe>');
+  dom.window.__zeroBackRequest(3);
+  await new Promise(resolve=>setTimeout(resolve,700));
+  assert.equal(dom.window.__zeroBackResult.handled,true,'Unknown child state must keep playback open');
+  dom.window.close();
+  dom=page('<iframe id="child"></iframe>');
+  const frame=dom.window.document.querySelector('iframe');
+  frame.contentWindow.postMessage=data=>{
+    if(data.type==='zerostreams-hide-controls')dom.window.dispatchEvent(new dom.window.MessageEvent('message',{
+      source:frame.contentWindow,data:{type:'zerostreams-controls-hidden',request:data.request,handled:false}
+    }));
+  };
+  dom.window.__zeroBackRequest(4);
+  await new Promise(resolve=>setTimeout(resolve,10));
+  assert.equal(dom.window.__zeroBackResult.handled,false,'Hidden embedded controls should allow return');
+  dom.window.close();
+  dom=page('<video id="movie"></video><img id="full-ad" data-large="1">');
+  dom.window.__zeroDismissQrAd();
+  assert.equal(dom.window.document.getElementById('full-ad').style.display,'none','Native-confirmed full-screen artwork needs no white wrapper');
+  assert.equal(dom.window.document.getElementById('movie').style.display,'');
+  dom.window.close();
   console.log('QR ad removal, CAPTCHA preservation, playback preservation, late ads, remote activity and audio boost checks passed');
 }
 run().catch(error => { console.error(error); process.exitCode=1; });
+

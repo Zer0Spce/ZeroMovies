@@ -1,6 +1,6 @@
 # ZeroStreams
 
-Android phone and Android TV app for TMDB movie and series discovery, with VidStuck playback. Version **0.4.0**.
+Android phone and Android TV app for TMDB movie and series discovery, with VidStuck playback. Version **0.4.1**.
 
 ## Discovery and library
 
@@ -12,11 +12,11 @@ Android phone and Android TV app for TMDB movie and series discovery, with VidSt
 - Device-local watch history (100 recent entries) and search history (30 queries), with replay, removal and clearing. Queries are recorded on search submission or choosing a result, rather than every partially typed query.
 - Continue Watching uses VidStuck progress events when available. Percentage bars are based on reported timestamps/duration; no invented match scores or playback percentages. Titles without progress events remain marked Started. Episode history preserves the selected season/episode even before a progress event arrives.
 - Local clock, Surprise Me and optional weather for a city chosen by the user.
-- MangaDex readers and live sports via the official Streamed API.
+- Live and Manga tabs are removed from mobile/TV navigation; restored sessions return to Home.
 
 ## TV playback and performance
 
-The homepage and app navigation use standard D-pad focus. **Mouse mode applies only inside the video player**, with continuous movement, acceleration and frame-synced drawing. Arrow keys move the pointer; OK selects; Menu toggles mouse/focus mode. The preference is also available in Settings. Back returns to browsing. There is no app toolbar over playback.
+The homepage and app navigation use standard D-pad focus. **Mouse mode applies only inside the video player**, with continuous movement, acceleration and frame-synced drawing. Arrow keys move the pointer; OK selects; Menu toggles mouse/focus mode. The preference is also available in Settings. Back hides visible player controls first and keeps playback open. A further Back returns to browsing once embedded controls report hidden; unknown frame states keep the movie open. There is no app toolbar over playback.
 
 Recognized player control bars hide after three idle seconds and wake on remote input. Optional audio boost offers Off, 1.5× and 2× with a limiter. Boost requires compatible embedded audio; non-CORS sources retain their original audio path.
 
@@ -24,7 +24,7 @@ Artwork downloads use separate workers from catalog/search requests. Only visibl
 
 ## QR advertisement handling
 
-The earlier text-only QR filter did not eliminate the ad reported on the user's TV. This version additionally inspects small, temporary in-memory snapshots of the player, decodes the visible QR destination with ZXing, and targets the reported advertising domain and its narrow campaign URL fingerprint. It never visits the QR destination or responds to a verification prompt. Confirmed advertising banners can be removed even when their text/QR is painted into an image or CSS background.
+The earlier text-only QR filter did not eliminate the ad reported on the user's TV. This version additionally inspects small, temporary in-memory snapshots of the player, decodes the visible QR destination with ZXing, and targets the reported advertising domain and its narrow campaign URL fingerprint. It never visits the QR destination or responds to a verification prompt. Confirmed advertising banners can be removed even when their text/QR is painted into an image or CSS background, including viewport-sized image/canvas artwork without a white DOM wrapper.
 
 Common ad domains, popups and top-level cross-site redirects remain blocked. Genuine CAPTCHA frames and video containers are protected by the cosmetic filter. Modern Android System WebView document-start support is needed for filtering inside cross-origin player frames; older WebViews receive an update notice and a main-frame fallback.
 

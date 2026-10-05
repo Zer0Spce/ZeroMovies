@@ -19,6 +19,14 @@
     document.querySelectorAll('iframe').forEach(frame => { try { frame.contentWindow.postMessage({type:'zerostreams-dismiss-ad-qr'}, '*'); } catch (_) {} });
     document.querySelectorAll('img,canvas,svg').forEach(image => {
       const bounds=image.getBoundingClientRect();
+      // A provider may paint the whole white banner as one image/canvas with
+      // no white DOM container. Only the native advertising QR confirmation
+      // permits removing this viewport-sized artwork.
+      if(bounds.width>=innerWidth*.7&&bounds.height>=innerHeight*.7&&
+        !image.matches('video,audio')&&!image.closest('.g-recaptcha,.h-captcha')&&
+        !image.parentElement?.querySelector(challenge)){
+        hide(image);return;
+      }
       if (bounds.width < 100 || bounds.height < 100 || bounds.width/bounds.height < .65 || bounds.width/bounds.height > 1.4) return;
       let node=image.parentElement,candidate=null;
       for(let depth=0;node&&depth<10;depth++,node=node.parentElement){
@@ -94,8 +102,8 @@
     });
     boost();
   }
-  if (window.__zeroTv) {
-    const bars = '.jw-controlbar,.plyr__controls,.vjs-control-bar,[role="toolbar"],[data-zero-controlbar]';
+  {
+    const bars = '.jw-controlbar,.plyr__controls,.vjs-control-bar,[role="toolbar"],[data-zero-controlbar],nav,header';
     let idleTimer;
     function activity() {
       // Support custom control bars without hiding their video container or dialogs.
@@ -109,6 +117,7 @@
           }
         }
       });
+      markControls();
       document.documentElement.classList.remove('zero-player-idle');
       // Trigger the player's own mouse/activity listener, including React handlers.
       const target = document.querySelector('video') || document.body;
@@ -119,15 +128,66 @@
         try { frame.contentWindow.postMessage({type: 'zerostreams-remote-active'}, '*'); } catch (_) {}
       });
     }
+    function markControls() {
+      document.querySelectorAll(bars).forEach(node => {
+        if (!node.querySelector('video,iframe')) node.setAttribute('data-zero-controls','true');
+      });
+    }
+    function hideControls() {
+      markControls();
+      clearTimeout(idleTimer);
+      let visible = false;
+      if (!document.documentElement.classList.contains('zero-player-idle')) {
+        document.querySelectorAll(bars).forEach(node => {
+          // A player container must never become a control bar.
+          if (node.querySelector('video,iframe')) return;
+          const r = node.getBoundingClientRect(), style = getComputedStyle(node);
+          if (r.width > 0 && r.height > 0 && style.visibility !== 'hidden' && style.display !== 'none' && Number(style.opacity || 1) > 0) visible = true;
+        });
+      }
+      document.documentElement.classList.add('zero-player-idle');
+      return visible;
+    }
+    let backSequence = 0;
+    const backWaiters = new Map();
+    function dismissControls(budget = 650) {
+      const local = hideControls();
+      const frames = Array.from(document.querySelectorAll('iframe')).filter(frame => {
+        const style=getComputedStyle(frame);
+        return style.display !== 'none' && style.visibility !== 'hidden';
+      });
+      return Promise.all(frames.map(frame => new Promise(resolve => {
+        const request = ++backSequence;
+        const timer = setTimeout(() => { backWaiters.delete(request); resolve(true); }, Math.max(30,budget));
+        backWaiters.set(request, {source:frame.contentWindow, resolve, timer});
+        try { frame.contentWindow.postMessage({type:'zerostreams-hide-controls', request, budget:Math.max(30,budget-200)}, '*'); }
+        catch (_) { clearTimeout(timer); backWaiters.delete(request); resolve(true); }
+      }))).then(results => local || results.some(Boolean));
+    }
+    window.__zeroBackRequest = token => {
+      window.__zeroBackResult = null;
+      dismissControls().then(handled => { window.__zeroBackResult = {token, handled}; });
+    };
+    window.addEventListener('message', event => {
+      const data=event.data;
+      if(!data || !Number.isInteger(data.request)) return;
+      if(data.type==='zerostreams-hide-controls' && window.parent!==window && event.source===window.parent) {
+        dismissControls(Math.min(450,Number(data.budget)||450)).then(handled => event.source.postMessage({type:'zerostreams-controls-hidden',request:data.request,handled}, event.origin==='null'?'*':event.origin));
+      } else if(data.type==='zerostreams-controls-hidden') {
+        const waiter=backWaiters.get(data.request);
+        if(!waiter || waiter.source!==event.source) return;
+        clearTimeout(waiter.timer);backWaiters.delete(data.request);waiter.resolve(data.handled!==false);
+      }
+    });
     window.__zeroRemoteActivity = activity;
     window.addEventListener('message', event => {
       if (event.source === window.parent && event.data && event.data.type === 'zerostreams-remote-active') activity();
     });
-    document.addEventListener('keydown', activity);
+    document.addEventListener('keydown', event => { if (event.key !== 'Escape' && event.key !== 'BrowserBack') activity(); });
     document.addEventListener('pointerdown', activity);
     const setupControls = () => {
       const style = document.createElement('style');
-      style.textContent = bars.split(',').map(selector => '.zero-player-idle ' + selector).join(',') + '{visibility:hidden!important;pointer-events:none!important}';
+      style.textContent = '.zero-player-idle [data-zero-controls]{visibility:hidden!important;pointer-events:none!important}';
       document.head.appendChild(style);
       activity();
     };
@@ -211,3 +271,4 @@
   document.addEventListener('DOMContentLoaded', scan);
   scan();
 })();
+

@@ -14,6 +14,8 @@ public class BrowserPlayerActivity extends Activity {
     private String playerGuard;
     private TvMouse mouse;private PlayerAdScan adScan;private long lastProgressSaved;
     private long lastPlayerGesture;
+    private int backRequest;private boolean backPending;
+    private final android.os.Handler backHandler=new android.os.Handler(android.os.Looper.getMainLooper());
     private volatile boolean blockAds;
     private TextView status;
     private FrameLayout screen;
@@ -48,6 +50,10 @@ public class BrowserPlayerActivity extends Activity {
     @Override public void onWindowFocusChanged(boolean focused){super.onWindowFocusChanged(focused);if(focused&&!getIntent().getBooleanExtra("reader",false))hideSystemBars();}
     private void closeFullscreen(){if(fullscreen==null)return;screen.removeView(fullscreen);fullscreen=null;screen.getChildAt(0).setVisibility(View.VISIBLE);if(fullscreenCallback!=null){fullscreenCallback.onCustomViewHidden();fullscreenCallback=null;}}
     @Override public boolean dispatchKeyEvent(KeyEvent event){
+        if(event.getKeyCode()==KeyEvent.KEYCODE_BACK&&!getIntent().getBooleanExtra("reader",false)){
+            if(event.getAction()==KeyEvent.ACTION_UP&&!event.isCanceled())onBackPressed();
+            return true;
+        }
         if(event.getAction()==KeyEvent.ACTION_DOWN){
             int key=event.getKeyCode();
             if(key==KeyEvent.KEYCODE_DPAD_CENTER||key==KeyEvent.KEYCODE_ENTER)lastPlayerGesture=android.os.SystemClock.elapsedRealtime();
@@ -78,8 +84,33 @@ public class BrowserPlayerActivity extends Activity {
             }
         }catch(java.io.IOException error){android.util.Log.e("ZeroStreams","Player guard could not load",error);}
     }
-    @Override public void onBackPressed(){if(fullscreen!=null)closeFullscreen();else super.onBackPressed();}
+    @Override public void onBackPressed(){
+        if(getIntent().getBooleanExtra("reader",false)||playerGuard==null){if(fullscreen!=null)closeFullscreen();else super.onBackPressed();return;}
+        if(backPending||web==null)return;
+        backPending=true;final int token=++backRequest;
+        web.evaluateJavascript("if(window.__zeroBackRequest)window.__zeroBackRequest("+token+");",null);
+        pollPlayerBack(token,0);
+    }
+    private void pollPlayerBack(int token,int attempt){
+        backHandler.postDelayed(()->{
+            if(isDestroyed()||web==null||token!=backRequest)return;
+            web.evaluateJavascript("window.__zeroBackResult?JSON.stringify(window.__zeroBackResult):null",value->{
+                if(isDestroyed()||token!=backRequest)return;
+                try{
+                    org.json.JSONObject result=new org.json.JSONObject(new org.json.JSONTokener(value).nextValue().toString());
+                    if(result.optInt("token")!=token)throw new org.json.JSONException("Pending");
+                    backPending=false;
+                    if(result.optBoolean("handled",true)){if(mouse!=null)mouse.stop();return;}
+                    if(fullscreen!=null)closeFullscreen();else finish();
+                }catch(Exception ignored){
+                    if(attempt<11)pollPlayerBack(token,attempt+1);
+                    else backPending=false; // Unknown frame state: keep playback open.
+                }
+            });
+        },100);
+    }
     @Override protected void onPause(){if(mouse!=null)mouse.stop();if(adScan!=null)adScan.stop();if(web!=null){CookieManager.getInstance().flush();web.onPause();}super.onPause();}
     @Override protected void onResume(){super.onResume();if(web!=null)web.onResume();if(adScan!=null)adScan.start();}
-    @Override protected void onDestroy(){if(mouse!=null)mouse.stop();if(adScan!=null)adScan.destroy();if(web!=null){web.stopLoading();web.destroy();}super.onDestroy();}
+    @Override protected void onDestroy(){backHandler.removeCallbacksAndMessages(null);++backRequest;if(mouse!=null)mouse.stop();if(adScan!=null)adScan.destroy();if(web!=null){web.stopLoading();web.destroy();}super.onDestroy();}
 }
+
