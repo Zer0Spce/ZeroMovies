@@ -1,11 +1,11 @@
-# Android TV playback controls (v0.4.4)
+# Android TV playback controls (v1.0)
 
 - Press Back once to hide playback controls; press Back again to leave the movie.
 - Using the remote or touching the player starts a new hide-then-exit sequence.
-- D-pad arrows move focus between visible player controls. They do not send the player's arrow-key seek shortcuts.
-- OK activates the focused control. A mint outline marks the focused control.
+- Mouse mode starts enabled: D-pad arrows move the cursor and OK clicks. Press Menu to switch to focus navigation.
+- In focus mode, arrows move between visible player controls and OK activates the focused control. A mint outline marks it.
 - A labelled Back / Go back / Return / Exit player control returns to the app.
-- Menu toggles optional playback-only mouse mode. TV playback defaults to focus navigation after this update. Homepage navigation is unchanged.
+- Menu toggles playback-only mouse mode and remembers your choice. Homepage navigation is unchanged.
 - Controls still hide while idle and return when the remote is used.
 
 QR ad scanning starts sooner and runs more often during the first 18 seconds. Confirmed painted ad overlays in open shadow DOM are also inspected. Video elements and genuine verification prompts remain protected. Real-device playback and third-party ad behavior still need testing; this release does not guarantee ad-free playback.
