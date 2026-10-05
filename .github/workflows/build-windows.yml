@@ -1,0 +1,51 @@
+name: Build ZeroPlay Windows
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - name: Desktop interface regressions
+        run: |
+          npm install --prefix ../ui-test-deps --no-audit --no-fund jsdom@24.1.3
+          $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
+          node scripts/ui-check.cjs
+          node scripts/live-compat-check.cjs
+          node scripts/player-exit-check.cjs
+      - name: Verify player controls and QR filtering
+        run: |
+          $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
+          $env:ZERO_GUARD_PATH = "assets/player-guard.js"
+          node ../tests/player-guard.test.cjs
+      - name: Configure bundled TMDB key
+        run: npm run prepare-config
+      - name: Verify live TMDB discovery and search
+        run: node scripts/tmdb-check.cjs
+      - name: Windows app smoke test
+        run: npx electron . --smoke-test
+      - name: Package portable ZIP
+        run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-Windows-x64
+          path: |
+            windows/dist/ZeroPlay-*.zip
+            windows/dist/desktop-preview.png
+          if-no-files-found: error

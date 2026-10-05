@@ -1,0 +1,28 @@
+package com.zerostreams.app;
+import android.content.Context;
+import android.net.Uri;
+import androidx.media3.common.*;
+import androidx.media3.database.StandaloneDatabaseProvider;
+import androidx.media3.datasource.*;
+import androidx.media3.datasource.cache.*;
+import androidx.media3.exoplayer.DefaultRenderersFactory;
+import androidx.media3.exoplayer.offline.*;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import org.json.*;
+@androidx.annotation.OptIn(markerClass=androidx.media3.common.util.UnstableApi.class)
+final class OfflineDownloads {
+ private static SimpleCache cache;private static DownloadManager manager;
+ static synchronized DownloadManager manager(Context context){if(manager==null){Context app=context.getApplicationContext();StandaloneDatabaseProvider db=new StandaloneDatabaseProvider(app);cache=new SimpleCache(new File(app.getFilesDir(),"offline-media"),new NoOpCacheEvictor(),db);manager=new DownloadManager(app,new DefaultDownloadIndex(db),request->new DefaultDownloaderFactory(factory(app,metadata(request).optJSONObject("headers"),false),Runnable::run).createDownloader(request));manager.setMaxParallelDownloads(1);manager.setMinRetryCount(3);}return manager;}
+ static CacheDataSource.Factory factory(Context context,JSONObject headers,boolean offline){manager(context);CacheDataSource.Factory source=new CacheDataSource.Factory().setCache(cache);if(offline)return source.setUpstreamDataSourceFactory(null);Map<String,String> h=new HashMap<>();if(headers!=null){Iterator<String> keys=headers.keys();while(keys.hasNext()){String key=keys.next();if(Arrays.asList("referer","origin","user-agent","cookie").contains(key.toLowerCase(Locale.ROOT)))h.put(key,headers.optString(key));}}return source.setUpstreamDataSourceFactory(new DefaultHttpDataSource.Factory().setUserAgent("ZeroPlay/1.5").setDefaultRequestProperties(h).setConnectTimeoutMs(20000).setReadTimeoutMs(20000));}
+ static JSONObject metadata(DownloadRequest r){try{return new JSONObject(new String(r.data,StandardCharsets.UTF_8));}catch(Exception e){return new JSONObject();}}
+ static String kind(String address){try{Uri u=Uri.parse(address);if(!"https".equals(u.getScheme())&&!"http".equals(u.getScheme()))return "";String p=u.getPath();if(p==null)return "";p=p.toLowerCase(Locale.ROOT);if(p.endsWith(".m3u8"))return MimeTypes.APPLICATION_M3U8;if(p.endsWith(".mpd"))return MimeTypes.APPLICATION_MPD;if(p.endsWith(".mp4")||p.endsWith(".m4v"))return MimeTypes.VIDEO_MP4;if(p.endsWith(".webm"))return MimeTypes.VIDEO_WEBM;}catch(Exception ignored){}return "";}
+ interface Result {void done(String error);}
+ static void prepare(Context context,String address,String title,String parent,String key,JSONObject headers,Result result){String mime=kind(address);if(mime.isEmpty()){result.done("No downloadable media found. Try another playback source.");return;}JSONObject data=new JSONObject();try{data.put("title",title).put("parent",parent).put("key",key).put("headers",headers);}catch(JSONException ignored){}MediaItem media=new MediaItem.Builder().setUri(address).setMimeType(mime).build();TrackSelectionParameters parameters=new TrackSelectionParameters.Builder(context).setMaxVideoSize(1920,1080).setForceHighestSupportedBitrate(true).build();DownloadHelper helper=DownloadHelper.forMediaItem(media,parameters,new DefaultRenderersFactory(context),factory(context,headers,false));helper.prepare(new DownloadHelper.Callback(){@Override public void onPrepared(DownloadHelper prepared){try{for(int i=0;i<prepared.getPeriodCount();i++)for(Tracks.Group g:prepared.getTracks(i).getGroups())for(int j=0;j<g.length;j++)if(g.getTrackFormat(j).drmInitData!=null)throw new IOException("This protected source cannot be saved offline. Try another source.");DownloadService.sendAddDownload(context,MovieDownloadService.class,prepared.getDownloadRequest(key,data.toString().getBytes(StandardCharsets.UTF_8)),false);DownloadService.sendResumeDownloads(context,MovieDownloadService.class,false);result.done(null);}catch(Exception e){result.done(e instanceof IOException?e.getMessage():"Download could not start. Try again.");}finally{prepared.release();}}@Override public void onPrepareError(DownloadHelper prepared,IOException error){prepared.release();result.done("Source unavailable or live. Start the movie, then try saving again or choose another source.");}});}
+ static List<Download> list(Context c){List<Download> out=new ArrayList<>();DownloadManager m=manager(c);Map<String,Download> active=new HashMap<>();for(Download d:m.getCurrentDownloads())active.put(d.request.id,d);try(DownloadCursor cursor=m.getDownloadIndex().getDownloads()){while(cursor.moveToNext()){Download d=cursor.getDownload();out.add(active.containsKey(d.request.id)?active.get(d.request.id):d);}}catch(IOException ignored){}Collections.sort(out,(a,b)->Long.compare(b.startTimeMs,a.startTimeMs));return out;}
+ static String status(Download d){switch(d.state){case Download.STATE_COMPLETED:return "Ready offline";case Download.STATE_DOWNLOADING:return "Downloading";case Download.STATE_STOPPED:return "Paused";case Download.STATE_FAILED:return "Failed · retry or choose a fresh source";case Download.STATE_REMOVING:return "Removing";default:return "Waiting for network / queued";}}
+ static void pause(Context c,String id){DownloadService.sendSetStopReason(c,MovieDownloadService.class,id,1,false);}
+ static void resume(Context c,Download d){DownloadService.sendAddDownload(c,MovieDownloadService.class,d.request,0,false);DownloadService.sendResumeDownloads(c,MovieDownloadService.class,false);}
+ static void remove(Context c,String id){DownloadService.sendRemoveDownload(c,MovieDownloadService.class,id,false);}
+}

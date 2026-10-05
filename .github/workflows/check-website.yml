@@ -1,0 +1,27 @@
+name: Check ZeroPlay website
+on:
+  push:
+    paths:
+      - 'web/**'
+      - 'netlify.toml'
+      - '.netlifytemplate'
+      - '.github/workflows/check-website.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  website:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate metadata function boundaries
+        run: node --test web/test/*.test.cjs
+      - name: Verify website interactions
+        run: |
+          npm install --prefix /tmp/zero-web-tests --no-audit --no-fund jsdom@24.1.3
+          NODE_PATH=/tmp/zero-web-tests/node_modules node web/scripts/ui-check.cjs
+      - name: Validate website build
+        run: node web/scripts/build.cjs
