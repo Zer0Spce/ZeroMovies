@@ -119,6 +119,13 @@ async function run() {
   assert.equal(dom.window.document.getElementById('full-ad').style.display,'none','Native-confirmed full-screen artwork needs no white wrapper');
   assert.equal(dom.window.document.getElementById('movie').style.display,'');
   dom.window.close();
+  let frameDismissed=false;
+  dom=page('<img data-large="1">',false,1,w=>{
+    Object.defineProperty(w,'parent',{value:{postMessage:data=>{if(data.type==='zerostreams-timed-qr-ad')frameDismissed=true;}}});
+  });
+  dom.window.__zeroDismissQrAd();
+  assert.equal(frameDismissed,true,'Native-confirmed ad-only child artwork should dismiss the whole frame');
+  dom.window.close();
   console.log('QR ad removal, CAPTCHA preservation, playback preservation, late ads, remote activity and audio boost checks passed');
 }
 run().catch(error => { console.error(error); process.exitCode=1; });
