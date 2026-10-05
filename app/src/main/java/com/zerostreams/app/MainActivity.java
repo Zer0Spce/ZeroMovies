@@ -15,6 +15,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+@androidx.annotation.OptIn(markerClass=androidx.media3.common.util.UnstableApi.class)
 public class MainActivity extends Activity {
     int BG=Color.rgb(9,10,16),SURFACE=Color.rgb(22,24,34),INK=Color.rgb(244,245,250),MUTED=Color.rgb(157,162,181),ACCENT=Color.rgb(101,230,204);
     private final ExecutorService io=Executors.newFixedThreadPool(3);
