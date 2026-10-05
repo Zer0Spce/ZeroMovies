@@ -34,7 +34,7 @@ Tests cover decoder images and advertisement/CAPTCHA/video boundaries. Actual el
 
 Create a TMDB **API Key (v3 auth)** at https://www.themoviedb.org/settings/api. Add repository Actions secret **TMDB_API_KEY** to bundle it in APK builds. A nonempty key entered in Settings overrides the bundled key; leaving it blank uses the bundled key. APK client keys can be extracted. No key is committed to repository source.
 
-Windows work is paused; start a Windows build only after an explicit user request.
+Windows 10/11 x64 builds are available from the **Build ZeroStreams Windows** workflow. Its artifact contains an installer and portable ZIP. See [Windows instructions](windows/README.md). Future Windows builds run manually on explicit request.
 
 Run **Build ZeroStreams APKs** manually from GitHub Actions. Download **ZeroStreams-mobile-and-tv-debug**:
 
