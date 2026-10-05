@@ -181,8 +181,7 @@ jobs:
           script: |
             gradle :app:connected${{ matrix.variant }}DebugAndroidTest
             mkdir -p ui-captures
-            variant=$(echo '${{ matrix.variant }}' | tr '[:upper:]' '[:lower:]')
-            for name in home categories live-sports settings; do adb exec-out run-as "com.zerostreams.app.$variant" cat "files/screenshots/$name.png" > "ui-captures/android-$variant-$name.png"; done
+            variant=$(echo '${{ matrix.variant }}' | tr '[:upper:]' '[:lower:]'); for name in home categories live-sports settings; do adb exec-out run-as "com.zerostreams.app.$variant" cat "files/screenshots/$name.png" > "ui-captures/android-$variant-$name.png"; done
       - uses: actions/upload-artifact@v4
         with:
           name: UI-screenshots-${{ matrix.variant }}
