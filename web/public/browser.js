@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const STORAGE='zerostreams-web-v1';
-  const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',source:'vidstuck'},hasKey:true,version:'0.4.4 Web'});
+  const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',source:'vidstuck'},hasKey:true,version:'1.0.1 Web'});
   let saved=defaults(),playing,iframe,idleTimer,lastProgress=0;
   try{const parsed=JSON.parse(localStorage.getItem(STORAGE)||'null');if(parsed&&typeof parsed==='object')saved={...saved,...parsed,settings:{...saved.settings,...parsed.settings}};}catch{}
   for(const name of ['favorites','planned','history','searches'])if(!Array.isArray(saved[name]))saved[name]=[];

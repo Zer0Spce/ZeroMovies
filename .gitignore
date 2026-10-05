@@ -7,3 +7,7 @@ local.properties
 .env
 
 windows/ui/vendor/
+
+# Generated native playback fixtures and Python caches
+windows/test/media/
+__pycache__/

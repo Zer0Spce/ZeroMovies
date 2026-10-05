@@ -1,4 +1,4 @@
-name: Check ZeroMovies website
+name: Check ZeroPlay website
 on:
   push:
     paths:

@@ -23,7 +23,7 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | ❤️ **Your library** | Save a watchlist, organize collections and Plan to Watch, and revisit watch and search history. |
 | ⏯️ **Continue Watching** | Return to started titles and resume where supported by the playback provider. |
 | 🌗 **Make it yours** | Saved light/dark mode, a compact theme toggle, and subtle blurred backgrounds. |
-| 🛡️ **Advertisement filtering** | Filter common popups, redirects, and recognized QR advertisement overlays in supported app playback environments. |
+| 🛡️ **Advertisement filtering** | Block known advertising requests and redirects, and remove explicit banner/ad slots, popups, and recognized timed QR overlays in supported app playback environments. |
 | 📺 **TV remote support** | D-pad navigation and optional player mouse mode; idle controls hide and wake on remote input. |
 | 🖥️ **Windows portable** | Browse and play in one window, use native fullscreen, and return with the player Back button. No installer. |
 | 🔊 **Optional audio boost** | Off, 1.5×, or 2× for compatible embedded audio. |
@@ -56,7 +56,7 @@ Explore genres across movies and TV series.
 
 Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroMovies/releases/latest)**.
 
-| Platform | v1.0 download | Getting started |
+| Platform | v1.0.1 download | Getting started |
 | --- | --- | --- |
 | 📱 Android phone / tablet | `ZeroPlay-1.0.1-Android.apk` | Android 6+. Install the signed mobile APK. |
 | 📺 Android TV / Google TV | `ZeroPlay-1.0.1-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
@@ -67,7 +67,7 @@ Android v0.4.5 uses a permanent production signing key. Moving from an earlier d
 
 ## 📺 Playback & your library
 
-On Android TV, arrows move focus and OK activates controls. Optional **mouse mode** works inside the player; Menu switches mouse/focus mode. Back hides visible controls first, and a second Back returns to browsing. See the [TV controls guide](docs/android-tv-controls.md).
+Android TV movie playback starts with **mouse mode enabled**: arrows move the cursor and OK clicks. Menu switches to D-pad focus and remembers your choice. Back hides visible controls first, and a second Back returns to browsing. See the [TV controls guide](docs/android-tv-controls.md).
 
 Your watchlist, collections, history, and preferences are stored locally on the device. Resume positions and progress depend on provider events; titles without progress remain marked Started. Clearing watch history also clears resume positions.
 

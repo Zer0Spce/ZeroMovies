@@ -1,4 +1,4 @@
-name: Build ZeroMovies APKs
+name: Build ZeroPlay APKs
 on:
   workflow_dispatch:
 permissions:
@@ -64,12 +64,12 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ZeroMovies-lint-reports
+          name: ZeroPlay-lint-reports
           path: app/build/reports/lint-results-*
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
-          name: ZeroMovies-mobile-and-tv-debug
+          name: ZeroPlay-mobile-and-tv-debug
           path: app/build/outputs/apk/*/debug/*.apk
           if-no-files-found: error
       - name: Build signed Android update APKs
@@ -89,6 +89,6 @@ jobs:
           "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/tv/release/app-tv-release.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: ZeroMovies-mobile-and-tv-signed
+          name: ZeroPlay-mobile-and-tv-signed
           path: app/build/outputs/apk/*/release/*.apk
           if-no-files-found: error
