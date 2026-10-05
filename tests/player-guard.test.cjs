@@ -1,0 +1,75 @@
+const {JSDOM} = require('jsdom');
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+const guard = fs.readFileSync(process.env.ZERO_GUARD_PATH || 'qr-ad-filter.js', 'utf8');
+const creative = '<h2>Confirm you\'re not a robot</h2><canvas width="420" height="420"></canvas><span style="border-radius:50%">21</span>';
+function page(html, tv = false, gain = 1, setup = () => {}) {
+  const dom = new JSDOM(html, {runScripts: 'outside-only', url: 'https://vidstuck.xyz/embed/movie/299534'});
+  const w = dom.window;
+  w.HTMLElement.prototype.getBoundingClientRect = function () {
+    return this.dataset.large ? {width:1024,height:768,bottom:768} : {width:0,height:0,bottom:0};
+  };
+  w.__zeroBlockAds = true; w.__zeroTv = tv; w.__zeroGain = gain;
+  setup(w);
+  w.eval(guard);
+  w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
+  return dom;
+}
+async function run() {
+  let dom = page('<video id="movie"></video><div id="ad" data-large="1" style="background:white">'+creative+'</div><div class="plyr__controls"><button>Play</button></div>');
+  assert.equal(dom.window.document.getElementById('ad').style.display, 'none');
+  assert.ok(dom.window.document.getElementById('movie'));
+  assert.equal(dom.window.document.querySelector('.plyr__controls').style.display, '');
+  dom.window.close();
+  let graphs = 0, gainValue;
+  const audioSetup = src => w => {
+    const video = w.document.querySelector('video');
+    Object.defineProperty(video, 'paused', {value:false});
+    Object.defineProperty(video, 'currentSrc', {value:src});
+    const node = () => ({connect(){}});
+    w.AudioContext = class {
+      constructor(){this.state='running';this.destination={};}
+      resume(){return Promise.resolve();}
+      createMediaElementSource(){graphs++;return node();}
+      createGain(){const n=node();n.gain={set value(v){gainValue=v;}};return n;}
+      createDynamicsCompressor(){const n=node();for(const key of ['threshold','knee','ratio','attack','release'])n[key]={value:0};return n;}
+    };
+  };
+  dom = page('<video></video>', false, 2, audioSetup('https://cdn.other.example/movie.mp4'));
+  await Promise.resolve();
+  assert.equal(graphs,0,'Non-CORS streams must retain their original audio path');
+  dom.window.close();
+  dom = page('<video></video>', false, 2, audioSetup('blob:https://vidstuck.xyz/video'));
+  await Promise.resolve();
+  assert.equal(graphs,1);
+  assert.equal(gainValue,2);
+  dom.window.close();
+  dom = page('<div id="check" data-large="1" style="background:white"><h2>Confirm you\'re not a robot</h2><input type="checkbox"></div>');
+  assert.equal(dom.window.document.getElementById('check').style.display, '');
+  dom.window.close();
+  dom = page('<div id="check" data-large="1" style="background:white">'+creative+'<iframe src="https://challenges.cloudflare.com/turnstile"></iframe></div>');
+  assert.equal(dom.window.document.getElementById('check').style.display, '');
+  dom.window.close();
+  dom = page('<iframe id="ad" src="https://unswung.gurlleviter.cyou/ad"></iframe><iframe id="player" src="https://vidstuck.xyz/embed/movie/299534"></iframe>');
+  assert.equal(dom.window.document.getElementById('ad').style.display, 'none');
+  assert.equal(dom.window.document.getElementById('player').style.display, '');
+  dom.window.close();
+  dom = page('<video></video>');
+  dom.window.document.body.insertAdjacentHTML('beforeend','<div id="late" data-large="1" style="background:white">'+creative+'</div>');
+  await new Promise(resolve => setTimeout(resolve, 100));
+  assert.equal(dom.window.document.getElementById('late').style.display, 'none');
+  dom.window.close();
+  dom = page('<video></video><div class="plyr__controls"><button>Pause</button></div>', true);
+  const w = dom.window;
+  let idle;
+  const original = w.setTimeout;
+  w.setTimeout = (fn,ms) => ms === 3000 ? (idle=fn,123) : original(fn,ms);
+  w.__zeroRemoteActivity(); idle();
+  assert.ok(w.document.documentElement.classList.contains('zero-player-idle'));
+  assert.equal(w.getComputedStyle(w.document.querySelector('.plyr__controls')).visibility, 'hidden');
+  w.__zeroRemoteActivity();
+  assert.ok(!w.document.documentElement.classList.contains('zero-player-idle'));
+  dom.window.close();
+  console.log('QR ad removal, CAPTCHA preservation, playback preservation, late ads, remote activity and audio boost checks passed');
+}
+run().catch(error => { console.error(error); process.exitCode=1; });

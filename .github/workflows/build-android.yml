@@ -1,6 +1,9 @@
 name: Build ZeroStreams APKs
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'app/**'
 permissions:
   contents: read
 jobs:
@@ -27,6 +30,16 @@ jobs:
           mkdir -p /tmp/zero-rule-tests
           javac -d /tmp/zero-rule-tests app/src/main/java/com/zerostreams/app/AdBlockRules.java app/src/main/java/com/zerostreams/app/TitleSearch.java tests/PlayerRulesTest.java
           java -cp /tmp/zero-rule-tests com.zerostreams.app.PlayerRulesTest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify QR ad guard and remote controls
+        env:
+          NODE_PATH: /tmp/zero-qr-tests/node_modules
+          ZERO_GUARD_PATH: app/src/main/assets/player-guard.js
+        run: |
+          npm install --prefix /tmp/zero-qr-tests --no-audit --no-fund jsdom@24.1.3
+          node tests/player-guard.test.cjs
       - name: Check TMDB key configuration
         run: |
           if [ -n "$TMDB_API_KEY" ]; then

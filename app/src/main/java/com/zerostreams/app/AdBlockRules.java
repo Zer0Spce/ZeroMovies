@@ -10,7 +10,9 @@ final class AdBlockRules {
         "propellerads.com", "onclicka.com", "onclicksuper.com",
         "exoclick.com", "exosrv.com", "trafficjunky.net", "juicyads.com",
         "hilltopads.net", "a-ads.com", "adnxs.com", "adskeeper.com",
-        "mgid.com", "taboola.com", "outbrain.com"};
+        "mgid.com", "taboola.com", "outbrain.com",
+        // Destination decoded from the reported timed fullscreen QR advertisement.
+        "gurlleviter.cyou"};
     static boolean blocks(String host) {
         if(host==null)return false;
         String normalized=host.toLowerCase(Locale.ROOT);

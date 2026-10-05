@@ -1,0 +1,174 @@
+/* Only the timed QR advertising creative is removed. No CAPTCHA interaction. */
+(() => {
+  if (window.__zeroQrAdFilter) return;
+  window.__zeroQrAdFilter = true;
+  const adHost = host => host === 'gurlleviter.cyou' || host.endsWith('.gurlleviter.cyou');
+  const heading = value => /^confirm you['’]re not a robot[.!]?$/i.test(value.trim());
+  const media = 'video,audio,.jwplayer,.plyr,.vjs-player,[data-player]';
+  const challenge = 'iframe[src*="recaptcha"],iframe[src*="hcaptcha"],iframe[src*="challenges.cloudflare.com"],.g-recaptcha,.h-captcha,input[name="cf-turnstile-response"]';
+  if (Number(window.__zeroGain) > 1) {
+    const amount = Math.min(2, Number(window.__zeroGain));
+    const connected = new WeakSet();
+    const pending = new WeakSet();
+    let context, noticeShown = false;
+    function unavailable() {
+      if (noticeShown || !document.body) return;
+      noticeShown = true;
+      const note = document.createElement('div');
+      note.textContent = 'Audio boost unavailable for this source';
+      note.style.cssText = 'position:fixed;bottom:12px;left:12px;z-index:2147483647;background:#202020;color:white;padding:8px;border-radius:4px;font:14px sans-serif;pointer-events:none';
+      document.body.appendChild(note);
+      setTimeout(() => note.remove(), 4000);
+    }
+    function boost() {
+      document.querySelectorAll('video,audio').forEach(element => {
+        if (connected.has(element) || pending.has(element) || element.paused || !element.currentSrc) return;
+        let sameOrigin = false;
+        try { sameOrigin = new URL(element.currentSrc, location.href).origin === location.origin; } catch (_) {}
+        // Cross-origin media without CORS becomes silent when routed through Web Audio.
+        // Leave those streams on their original audio path.
+        if (!sameOrigin && !element.currentSrc.startsWith('blob:') && !element.crossOrigin) { unavailable(); return; }
+        const Audio = window.AudioContext || window.webkitAudioContext;
+        if (!Audio) { unavailable(); return; }
+        try {
+          context = context || new Audio();
+          pending.add(element);
+          context.resume().then(() => {
+            pending.delete(element);
+            if (context.state !== 'running' || connected.has(element)) return;
+            const source = context.createMediaElementSource(element);
+            const gain = context.createGain();
+            gain.gain.value = amount;
+            const limiter = context.createDynamicsCompressor();
+            limiter.threshold.value = -1; limiter.knee.value = 0; limiter.ratio.value = 20;
+            limiter.attack.value = 0.003; limiter.release.value = 0.1;
+            source.connect(gain); gain.connect(limiter); limiter.connect(context.destination);
+            connected.add(element);
+          }).catch(() => { pending.delete(element); unavailable(); });
+        } catch (_) { pending.delete(element); unavailable(); }
+      });
+    }
+    document.addEventListener('playing', boost, true);
+    document.addEventListener('pointerdown', boost);
+    document.addEventListener('keydown', boost);
+    window.addEventListener('message', event => {
+      if (event.source === window.parent && event.data && event.data.type === 'zerostreams-remote-active') boost();
+    });
+    boost();
+  }
+  if (window.__zeroTv) {
+    const bars = '.jw-controlbar,.plyr__controls,.vjs-control-bar,[role="toolbar"],[data-zero-controlbar]';
+    let idleTimer;
+    function activity() {
+      // Support custom control bars without hiding their video container or dialogs.
+      document.querySelectorAll('button,[role="button"]').forEach(button => {
+        let node = button.parentElement;
+        for (let depth = 0; node && depth < 4; depth++, node = node.parentElement) {
+          if (node.querySelector('video,iframe') || node.tagName === 'BODY') break;
+          const r = node.getBoundingClientRect();
+          if (r.height > 0 && r.height < innerHeight * 0.25 && r.bottom > innerHeight * 0.7 && node.querySelectorAll('button,[role="button"]').length >= 2) {
+            node.setAttribute('data-zero-controlbar', 'true'); break;
+          }
+        }
+      });
+      document.documentElement.classList.remove('zero-player-idle');
+      // Trigger the player's own mouse/activity listener, including React handlers.
+      const target = document.querySelector('video') || document.body;
+      if (target) target.dispatchEvent(new MouseEvent('mousemove', {bubbles: true, clientX: innerWidth / 2, clientY: innerHeight / 2}));
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => document.documentElement.classList.add('zero-player-idle'), 3000);
+      document.querySelectorAll('iframe').forEach(frame => {
+        try { frame.contentWindow.postMessage({type: 'zerostreams-remote-active'}, '*'); } catch (_) {}
+      });
+    }
+    window.__zeroRemoteActivity = activity;
+    window.addEventListener('message', event => {
+      if (event.source === window.parent && event.data && event.data.type === 'zerostreams-remote-active') activity();
+    });
+    document.addEventListener('keydown', activity);
+    document.addEventListener('pointerdown', activity);
+    const setupControls = () => {
+      const style = document.createElement('style');
+      style.textContent = bars.split(',').map(selector => '.zero-player-idle ' + selector).join(',') + '{visibility:hidden!important;pointer-events:none!important}';
+      document.head.appendChild(style);
+      activity();
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupControls, {once: true});
+    else setupControls();
+  }
+  function hide(node) {
+    if (node.dataset.zeroQrHidden) return;
+    node.dataset.zeroQrHidden = 'true';
+    node.style.setProperty('display', 'none', 'important');
+    node.style.setProperty('pointer-events', 'none', 'important');
+  }
+  function graphic(node) {
+    return Array.from(node.querySelectorAll('img,canvas,svg')).some(el => {
+      const r = el.getBoundingClientRect();
+      const w = r.width || Number(el.getAttribute('width'));
+      const h = r.height || Number(el.getAttribute('height'));
+      return w >= 100 && h >= 100 && w / h > 0.7 && w / h < 1.3;
+    });
+  }
+  function timer(node) {
+    return Array.from(node.querySelectorAll('span,div,p,b')).some(el => {
+      if (el.children.length || !/^\d{1,2}$/.test(el.textContent.trim())) return false;
+      const value = Number(el.textContent.trim());
+      const style = getComputedStyle(el);
+      return value > 0 && value <= 60 &&
+        (/timer|countdown|dismiss/i.test(el.className + ' ' + el.id) || parseFloat(style.borderRadius) >= 10);
+    });
+  }
+  function adContainer(label) {
+    let node = label.parentElement;
+    for (let depth = 0; node && depth < 8; depth++, node = node.parentElement) {
+      if (node.querySelector(media) || node.querySelector(challenge)) break;
+      if (!graphic(node) || !timer(node)) continue;
+      const r = node.getBoundingClientRect();
+      const style = getComputedStyle(node);
+      const large = r.width >= innerWidth * 0.5 && r.height >= innerHeight * 0.5;
+      if (large && (/rgb\(255, 255, 255\)|#fff/i.test(style.backgroundColor))) return node;
+    }
+    return null;
+  }
+  function scan() {
+    if (!document.body || !window.__zeroBlockAds) return;
+    // The exact destination decoded from the reported advertising QR code.
+    document.querySelectorAll('iframe[src],a[href]').forEach(el => {
+      try {
+        if (adHost(new URL(el.src || el.href, location.href).hostname)) {
+          if (el.tagName === 'IFRAME') hide(el);
+          else { el.removeAttribute('href'); el.style.pointerEvents = 'none'; }
+        }
+      } catch (_) {}
+    });
+    document.querySelectorAll('h1,h2,h3,p,span,div').forEach(label => {
+      if (label.children.length || !heading(label.textContent)) return;
+      const node = adContainer(label);
+      if (!node) return;
+      if (node === document.body || node === document.documentElement) {
+        // An ad-only child frame must be hidden by its parent, not left as a blank overlay.
+        if (window.parent !== window && !node.querySelector('iframe,' + media)) {
+          window.parent.postMessage({type: 'zerostreams-timed-qr-ad'}, '*');
+          Array.from(document.body.children).forEach(hide);
+          document.body.style.backgroundColor = 'transparent';
+        }
+      } else hide(node);
+    });
+  }
+  window.addEventListener('message', event => {
+    if (!event.data || event.data.type !== 'zerostreams-timed-qr-ad') return;
+    // No native bridge: only hide the exact child frame reporting its own ad creative.
+    document.querySelectorAll('iframe').forEach(frame => {
+      if (frame.contentWindow === event.source) hide(frame);
+    });
+  });
+  let pending = false;
+  new MutationObserver(() => {
+    if (pending) return;
+    pending = true;
+    setTimeout(() => { pending = false; scan(); }, 50);
+  }).observe(document, {subtree: true, childList: true, characterData: true});
+  document.addEventListener('DOMContentLoaded', scan);
+  scan();
+})();
