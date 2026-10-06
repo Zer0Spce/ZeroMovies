@@ -2,11 +2,11 @@
 
 ### Movies. Live TV. Live Sports. One place.
 
-**Movies, series, anime, LIVE TV, PPV/Sports, and Live Sports in one app.** ZeroPlay brings TMDB discovery, your personal library, and embedded playback together in a clean interface for **Android, Android TV / Google TV, and Windows**.
+**Movies, series, anime, Live TV, Live PPV, and Live Sports in one app.** ZeroPlay brings TMDB discovery, your personal library, and embedded playback together in a clean interface for **Android, Android TV / Google TV, and Windows**.
 
 Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surprise Me** dice when you cannot decide. Softly blurred artwork, light and dark themes, and dedicated TV controls make it comfortable on your phone, desktop, or big screen.
 
-**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.6.1 release notes](docs/release-1.6.1.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
+**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.7 release notes](docs/release-1.6.1.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
 
 Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations, Windows library data, and the permanent signing key.
 
@@ -19,13 +19,15 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | 🗂️ **Categories** | Explore movie and TV genres, including Anime cards in both grids. Artwork makes categories easy to browse, and more titles load as you scroll. |
 | 📡 **Live PPV & Live TV** | Two dedicated tabs using the ZeroStreams playlists, colored refresh buttons, channel groups, and in-app playback on Android, Android TV and Windows. |
 | 🏟️ **Live Sports** | Event categories, posters, local schedules, labeled alternate sources, fullscreen playback, and a fresh API request every time you press Refresh sports. |
-| ⭐ **Favorite channels** | Star LIVE TV channels and browse your Favorites group. |
+| ⭐ **Favorite channels** | Star Live TV channels and browse your Favorites group. |
 | ⚙️ **Homepage panels** | Keep the default layout or enable extra Action, Comedy, Horror, Animation, and Anime rows in Settings. |
 | 🎞️ **Rich title details** | View artwork, ratings, synopsis, cast, genres, trailers, and related recommendations. |
 | ▶️ **Choose your source** | Switch beside Watch Now between **VidStuck · Recommended**, VidSrc.sh. |
 | ❤️ **Your library** | Save a watchlist, organize collections and Plan to Watch, and revisit watch and search history. |
 | ⏯️ **Continue Watching** | Return to started titles and resume where supported by the playback provider. |
-| 🌗 **Make it yours** | Saved light/dark mode, a compact theme toggle, and subtle blurred backgrounds. |
+| 🎨 **Make it yours** | Default, Light and three numbered color palettes; immediate theme switching, optional animations and delayed focus/hover previews. |
+| 🎬 **Trailers** | Optional muted homepage trailers and delayed focus/hover trailers, with artwork fallback. |
+| 📥 **Offline downloads** | Download movies and selected episodes using your own securely stored RawCast API key. Queue, pause, resume where supported, retry, play, delete videos or remove history. |
 | 🛡️ **Advertisement filtering** | Block known advertising requests and redirects, and remove explicit banner/ad slots, popups, and recognized timed QR overlays in supported app playback environments. |
 | 📺 **TV remote support** | D-pad navigation and optional player mouse mode; idle controls hide and wake on remote input. |
 | 🖥️ **Windows portable** | Browse and play in one window, use native fullscreen, and return with the player Back button. No installer. |
@@ -45,13 +47,13 @@ Browse artwork, find a movie, change playback sources, and make the homepage you
 
 ### 🖥️ Windows · one app for your next watch
 
-Discover movies and series, switch to LIVE TV or Live Sports, and keep your library close.
+Discover movies and series, switch to Live TV or Live Sports, and keep your library close.
 
 [![Windows ZeroPlay home and Discover navigation](docs/screenshots/windows-home.png)](docs/screenshots/windows-home.png)
 
 ### 🏟️ Android TV · compact Live Sports
 
-Four-column cards match PPV/Sports. Browse sports categories, event schedules, posters, and alternate sources with a remote.
+Four-column cards match Live PPV. Browse sports categories, event schedules, posters, and alternate sources with a remote.
 
 [![Android TV compact Live Sports grid](docs/screenshots/android-tv-live-sports.png)](docs/screenshots/android-tv-live-sports.png)
 
@@ -90,18 +92,18 @@ Choose your playback source, appearance, provider region, and optional audio boo
 
 Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroPlay/releases/latest)**.
 
-| Platform | v1.6.1 download | Getting started |
+| Platform | v1.7 download | Getting started |
 | --- | --- | --- |
-| 📱 Android phone / tablet | `ZeroPlay-1.6.1-Android.apk` | Android 6+. Install the signed mobile APK. |
-| 📺 Android TV / Google TV | `ZeroPlay-1.6.1-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
-| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.6.1-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
+| 📱 Android phone / tablet | `ZeroPlay-1.7-Android.apk` | Android 6+. Install the signed mobile APK. |
+| 📺 Android TV / Google TV | `ZeroPlay-1.7-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
+| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.7-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
 | ✅ Integrity checks | `SHA256SUMS.txt` | Compare your downloaded files against the published SHA-256 checksums. |
 
 Android v0.4.5 uses a permanent production signing key. Moving from an earlier debug build may require uninstalling that build first, which clears its local library and history. Future production releases retain the same signing key.
 
 ## 📺 Playback & your library
 
-Android TV movie playback starts with **mouse mode enabled**: arrows move the cursor and OK clicks. Menu switches to D-pad focus and remembers your choice. Back hides visible controls first, and a second Back returns to browsing. See the [TV controls guide](docs/android-tv-controls.md).
+Android TV movie playback starts with **mouse mode enabled**: arrows move the cursor and OK clicks. Menu switches to D-pad focus and remembers your choice. Back closes an active player menu first; with no menu open, it returns to browsing immediately. See the [TV controls guide](docs/android-tv-controls.md).
 
 Your watchlist, collections, history, and preferences are stored locally on the device. Resume positions and progress depend on provider events; titles without progress remain marked Started. Clearing watch history also clears resume positions.
 
@@ -135,11 +137,13 @@ If a QR ad appears, press its **X** button or wait for it to close automatically
 
 ### Live Sports
 
-🏟️ **Live Sports is in Discover**, with ad filtering, blocked popups, blocked player file downloads, and fresh API refresh on every press. Anime, homepage panel settings, and LIVE TV favorites remain available.
+🏟️ **Live Sports is in Discover**, with ad filtering, blocked popups, blocked player file downloads, and fresh API refresh on every press. Anime, homepage panel settings, and Live TV favorites remain available.
 
-### 🐛 Downloads temporarily disabled
+### 📥 RawCast downloads
 
-Movie and torrent downloads are disabled because of bugs we have not been able to fix in the current implementation. The Downloads tab and download/save buttons are removed for now. We plan to reimplement them in a future version once a reliable fix is found. Existing downloaded files are not deleted by this update.
+RawCast is a download-only provider. Add your own key under **Settings → RawCast API**, press **Save Key**, then **Test API**. Open a movie's details or select a series episode and press **Download**. Direct files are checked against the local player; unsupported files are unavailable. Normal streaming and trailers never use RawCast.
+
+The Downloads tab tracks queue, progress, speed, size and ETA. Windows lets you choose the folder; Android uses app-specific Movies storage. **Delete Video** deletes the actual file after confirmation. **Remove from History** keeps the video. Downloads resume when the server supports byte ranges; otherwise the partial download starts again. Quota figures come from authoritative provider responses when supplied.
 
 The reported **Trojan:Win32/Suschil!rfn** alert identifies a file under the legacy Windows `Partitions/live-sports/Cache/Cache_Data` directory. v1.6.0 removes that old sports cache and stops persisting the sports browser session. This does not identify the supplying request, prove a false positive, or certify third-party streams. Keep Defender enabled and remove/quarantine detected items; do not restore them or add an exclusion. Your watchlists and settings are retained.
 

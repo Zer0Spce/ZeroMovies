@@ -17,7 +17,8 @@ if run['path'] != '.github/workflows/release.yml':
 jobs = get('/actions/runs/' + run_id + '/jobs')['jobs']
 windows = next((job for job in jobs if job['name'] == 'windows'), None)
 required = {'Windows app smoke test', 'Package portable ZIP',
-            'Scan packaged Windows files with Microsoft Defender'}
+            'Scan packaged Windows files with Microsoft Defender',
+            'Audit Windows release credentials', 'Verify downloaded video playback'}
 passed = {step['name'] for step in (windows or {}).get('steps', [])
           if step.get('conclusion') == 'success'}
 if not windows or windows['conclusion'] != 'success' or not required <= passed:

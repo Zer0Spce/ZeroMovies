@@ -1,5 +1,7 @@
 name: Release ZeroPlay
 on:
+  push:
+    branches: [release/v1.7]
   workflow_dispatch:
     inputs:
       publish:
@@ -24,6 +26,7 @@ jobs:
       signed: ${{ steps.signing.outputs.ready }}
     env:
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      RAWCAST_API_KEY: ''
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
@@ -66,6 +69,8 @@ jobs:
           node tests/tv-navigation.test.cjs
       - name: Test, build and lint production variants
         run: gradle :app:testMobileReleaseUnitTest :app:testTvReleaseUnitTest :app:assembleMobileRelease :app:assembleTvRelease :app:lintMobileRelease :app:lintTvRelease
+      - name: Audit Android release credentials
+        run: python scripts/audit-release-secrets.py app/build app/src
       - name: Verify APKs and prepare assets
         env:
           SIGNED: ${{ steps.signing.outputs.ready }}
@@ -75,7 +80,7 @@ jobs:
           for variant in mobile tv; do
             apk=$(find "app/build/outputs/apk/$variant/release" -name '*.apk' -print -quit)
             test -n "$apk"
-            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.6.1'" || { echo 'Unexpected APK version'; exit 1; }
+            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.7'" || { echo 'Unexpected APK version'; exit 1; }
             if "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | grep -q application-debuggable; then
               echo 'Refusing debuggable release APK'; exit 1
             fi
@@ -86,9 +91,9 @@ jobs:
               suffix='-unsigned'
             fi
             if [ "$variant" = mobile ]; then
-              cp "$apk" "release-assets/ZeroPlay-1.6.1-Android$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.7-Android$suffix.apk"
             else
-              cp "$apk" "release-assets/ZeroPlay-1.6.1-Android-TV$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.7-Android-TV$suffix.apk"
             fi
           done
       - uses: actions/upload-artifact@v4
@@ -108,6 +113,7 @@ jobs:
         working-directory: windows
     env:
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      RAWCAST_API_KEY: ''
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
     steps:
       - uses: actions/checkout@v4
@@ -123,6 +129,7 @@ jobs:
           npm install --prefix ../ui-test-deps --no-audit --no-fund jsdom@24.1.3
           $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
           node scripts/ui-check.cjs
+          node scripts/experience-check.cjs
           node scripts/live-compat-check.cjs
           node scripts/player-exit-check.cjs
       - name: Verify player controls and QR filtering
@@ -130,6 +137,8 @@ jobs:
           $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
           $env:ZERO_GUARD_PATH = "assets/player-guard.js"
           node ../tests/player-guard.test.cjs
+      - name: Verify downloaded video playback
+        run: npx electron scripts/media-check.cjs
       - name: Configure bundled TMDB key
         run: npm run prepare-config
       - name: Verify live TMDB discovery and search
@@ -138,6 +147,8 @@ jobs:
         run: npx electron . --smoke-test
       - name: Package portable ZIP
         run: npm run build
+      - name: Audit Windows release credentials
+        run: python ../scripts/audit-release-secrets.py dist generated-config.json
       - name: Scan packaged Windows files with Microsoft Defender
         shell: pwsh
         run: |
@@ -162,6 +173,11 @@ jobs:
   player-devices:
     env:
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      RAWCAST_API_KEY: ''
+      ZERO_TEST_BUILD_TYPE: release
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
@@ -181,6 +197,12 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Configure production signing key
+        run: |
+          test -n "$ANDROID_KEYSTORE_BASE64" && test -n "$ANDROID_KEYSTORE_PASSWORD" && test -n "$ANDROID_KEY_ALIAS"
+          umask 077
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/zeromovies-release.jks"
+          echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/zeromovies-release.jks" >> "$GITHUB_ENV"
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -195,7 +217,7 @@ jobs:
           disable-animations: true
           script: |
             adb shell wm density ${{ matrix.density }}
-            gradle :app:connected${{ matrix.variant }}DebugAndroidTest
+            gradle :app:connected${{ matrix.variant }}ReleaseAndroidTest
             mkdir -p ui-captures
             variant=$(echo '${{ matrix.variant }}' | tr '[:upper:]' '[:lower:]'); for name in home categories live-sports settings home-panels; do adb pull "/data/local/tmp/zeroplay-$name.png" "ui-captures/android-$variant-$name.png"; done
       - uses: actions/upload-artifact@v4
@@ -209,10 +231,14 @@ jobs:
           name: player-device-tests-${{ matrix.variant }}
           path: app/build/reports/androidTests
 
+      - name: Remove temporary signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/zeromovies-release.jks"
+
 
   publish:
     needs: [android, windows, player-devices]
-    if: always() && github.event_name == 'workflow_dispatch' && inputs.publish && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
+    if: always() && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && github.ref == 'refs/heads/release/v1.7')) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -241,6 +267,8 @@ jobs:
           run-id: ${{ inputs.reuse_windows_run }}
           github-token: ${{ github.token }}
           path: release-assets
+      - name: Final release credential audit
+        run: python scripts/audit-release-secrets.py release-assets
       - name: Publish verified release assets
         env:
           GH_TOKEN: ${{ github.token }}
