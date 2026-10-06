@@ -9,7 +9,7 @@ class RawCast {
     if(key!==this.getKey())throw Error('RawCast configuration changed. Try again.');
     const limit=Number(response.headers.get('X-RateLimit-Limit')),remaining=Number(response.headers.get('X-RateLimit-Remaining')),reset=Number(response.headers.get('X-RateLimit-Reset'));
     if(response.headers.has('X-RateLimit-Limit')&&response.headers.has('X-RateLimit-Remaining')&&Number.isFinite(limit)&&limit>0&&Number.isFinite(remaining)&&remaining>=0){this.usage={limit,remaining,used:Math.max(0,limit-remaining),percent:Math.max(0,Math.min(100,(limit-remaining)/limit*100)),...(reset>0?{reset:reset*1000}:{}),at:Date.now()};this.onUsage(this.usage);}
-    let data={};try{data=await response.json();}catch{}
+    let data={};try{data=await response.json();}catch{if(response.ok)throw Error('RawCast returned an unreadable response. Try again.');}
     if(!response.ok){const messages={401:'RawCast API key rejected.',403:'RawCast API key is unavailable or your account requires verification.',404:'Unavailable for Download.',429:'RawCast rate or monthly request limit reached. Try again later.',502:'RawCast could not resolve this download. Try again later.'};throw Object.assign(Error(messages[response.status]||'RawCast request failed. Try again.'),{status:response.status,retryAfter:Math.min(3600,Number(response.headers.get('Retry-After'))||0)});}
     return data;
   }
