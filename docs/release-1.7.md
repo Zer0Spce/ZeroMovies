@@ -75,6 +75,7 @@
 - Prevented an unfinished episode picker from falling back to episode 1.
 - Paused downloads safely when history storage is full or unwritable.
 - Fixed Cancel focus in download deletion dialogs for touch-mode and TV remote input.
+- Kept dialog titles, switches and temporary colorful mode readable during theme changes.
 
 RawCast offers a free API tier at release time; your account determines the actual limits.
 
