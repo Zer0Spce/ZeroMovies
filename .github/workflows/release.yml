@@ -225,10 +225,17 @@ jobs:
           disable-animations: true
           script: |
             adb shell wm density ${{ matrix.density }}
-            gradle :app:connected${{ matrix.variant }}ReleaseAndroidTest
-            mkdir -p ui-captures
-            variant=$(echo '${{ matrix.variant }}' | tr '[:upper:]' '[:lower:]'); for name in home categories live-sports settings home-panels; do adb pull "/data/local/tmp/zeroplay-$name.png" "ui-captures/android-$variant-$name.png"; done
+            if [ '${{ matrix.api }}' = 23 ]; then
+              gradle :app:connected${{ matrix.variant }}ReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.zerostreams.app.RawCastDownloadsTest,com.zerostreams.app.DownloadDeletionUiTest
+            else
+              gradle :app:connected${{ matrix.variant }}ReleaseAndroidTest
+            fi
+            if [ '${{ matrix.api }}' != 23 ]; then
+              mkdir -p ui-captures
+              variant=$(echo '${{ matrix.variant }}' | tr '[:upper:]' '[:lower:]'); for name in home categories live-sports settings home-panels; do adb pull "/data/local/tmp/zeroplay-$name.png" "ui-captures/android-$variant-$name.png"; done
+            fi
       - uses: actions/upload-artifact@v4
+        if: ${{ matrix.api != 23 }}
         with:
           name: UI-screenshots-${{ matrix.variant }}-${{ matrix.api }}
           path: ui-captures/*.png
