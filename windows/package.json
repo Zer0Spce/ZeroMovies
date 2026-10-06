@@ -1,6 +1,6 @@
 {
   "name": "zerostreams-windows",
-  "version": "1.7.1",
+  "version": "1.7.1-1",
   "description": "ZeroPlay movies, series, Live TV and Live Sports with sports ad filtering",
   "author": "ZeroPlay",
   "private": true,
@@ -37,12 +37,14 @@
       "target": [
         "zip"
       ],
-      "artifactName": "ZeroPlay-1.7.1-Windows-x64.${ext}",
+      "artifactName": "ZeroPlay-1.7.1.1-Windows-x64.${ext}",
       "icon": "assets/icon.ico"
     },
     "asar": true,
     "asarUnpack": [
       "node_modules/ffmpeg-static/**"
-    ]
-  }
+    ],
+    "buildVersion": "1.7.1.1"
+  },
+  "releaseVersion": "1.7.1.1"
 }
