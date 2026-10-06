@@ -1,7 +1,7 @@
 name: Release ZeroPlay
 on:
   push:
-    branches: [release/v1.7.3]
+    branches: [release/v1.7.5]
   workflow_dispatch:
     inputs:
       publish:
@@ -83,7 +83,7 @@ jobs:
           for variant in mobile tv; do
             apk=$(find "app/build/outputs/apk/$variant/release" -name '*.apk' -print -quit)
             test -n "$apk"
-            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.7.3'" || { echo 'Unexpected APK version'; exit 1; }
+            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.7.5'" || { echo 'Unexpected APK version'; exit 1; }
             if "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | grep -q application-debuggable; then
               echo 'Refusing debuggable release APK'; exit 1
             fi
@@ -94,9 +94,9 @@ jobs:
               suffix='-unsigned'
             fi
             if [ "$variant" = mobile ]; then
-              cp "$apk" "release-assets/ZeroPlay-1.7.3-Android$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.7.5-Android$suffix.apk"
             else
-              cp "$apk" "release-assets/ZeroPlay-1.7.3-Android-TV$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.7.5-Android-TV$suffix.apk"
             fi
           done
       - uses: actions/upload-artifact@v4
@@ -188,8 +188,13 @@ jobs:
       matrix:
         include:
           - variant: Mobile
+            api: 28
             density: 420
           - variant: Tv
+            api: 28
+            density: 240
+          - variant: Tv
+            api: 23
             density: 240
     steps:
       - uses: actions/checkout@v4
@@ -213,7 +218,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       - uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 28
+          api-level: ${{ matrix.api }}
           arch: x86_64
           target: google_apis
           profile: pixel_2
@@ -225,13 +230,13 @@ jobs:
             variant=$(echo '${{ matrix.variant }}' | tr '[:upper:]' '[:lower:]'); for name in home categories live-sports settings home-panels; do adb pull "/data/local/tmp/zeroplay-$name.png" "ui-captures/android-$variant-$name.png"; done
       - uses: actions/upload-artifact@v4
         with:
-          name: UI-screenshots-${{ matrix.variant }}
+          name: UI-screenshots-${{ matrix.variant }}-${{ matrix.api }}
           path: ui-captures/*.png
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: player-device-tests-${{ matrix.variant }}
+          name: player-device-tests-${{ matrix.variant }}-${{ matrix.api }}
           path: app/build/reports/androidTests
 
       - name: Remove temporary signing key
@@ -241,7 +246,7 @@ jobs:
 
   publish:
     needs: [android, windows, player-devices]
-    if: always() && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && github.ref == 'refs/heads/release/v1.7.3')) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
+    if: always() && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && github.ref == 'refs/heads/release/v1.7.5')) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
     runs-on: ubuntu-latest
     permissions:
       contents: write

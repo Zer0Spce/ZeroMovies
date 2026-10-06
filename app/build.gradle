@@ -7,8 +7,8 @@ android {
         minSdk 23
         targetSdk 35
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        versionCode 30
-        versionName '1.7.3'
+        versionCode 32
+        versionName '1.7.5'
         buildConfigField 'String', 'DEFAULT_TMDB_KEY', groovy.json.JsonOutput.toJson(System.getenv('TMDB_API_KEY') ?: '')
     }
     flavorDimensions += 'device'
@@ -38,6 +38,11 @@ android {
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
 dependencies {
+    implementation 'com.frostwire:jlibtorrent:1.2.19.0'
+    implementation 'com.frostwire:jlibtorrent-android-arm:1.2.19.0'
+    implementation 'com.frostwire:jlibtorrent-android-arm64:1.2.19.0'
+    implementation 'com.frostwire:jlibtorrent-android-x86:1.2.19.0'
+    implementation 'com.frostwire:jlibtorrent-android-x86_64:1.2.19.0'
     androidTestImplementation 'androidx.test:runner:1.6.2'
     androidTestImplementation 'androidx.test:core:1.6.1'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

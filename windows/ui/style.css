@@ -39,3 +39,5 @@ aside{background:var(--sidebar,#0d1019)}aside button{color:var(--muted);font-wei
 [data-egg="true"]{--bg:#18132b!important;--surface:#29203d!important;--sidebar:#20182f!important;--card:#352748!important;--button:#453257!important;--ink:#fff5fd!important;--muted:#cbbbda!important;--dialog:#29203d!important}
 
 #hero{overflow:hidden}#hero .trailer-preview{max-width:none;max-height:none}
+
+[hidden]{display:none!important}
