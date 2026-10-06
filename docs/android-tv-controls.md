@@ -12,7 +12,7 @@ QR ad scanning starts sooner and runs more often during the first 18 seconds. Co
 
 Automated checks cover the two-step Back state, focus movement, suppression of raw arrow seeking, OK activation, frame navigation, labelled player Back, and shadow DOM QR removal. Both Android flavors run their unit tests, build, and lint in GitHub Actions.
 
-Remote arrows and OK restore control bars hidden by the provider as well as the app's idle filter. Home includes Watchlist and a night/light mode toggle. Weather is removed. Source choices are VidStuck, VidSrc.to, VidSrc.sh and SuperEmbed.
+Remote arrows and OK restore control bars hidden by the provider as well as the app's idle filter. Home includes Watchlist and a night/light mode toggle. Weather is removed. Source choices are VidStuck and VidSrc.sh.
 
 ## Native PPV/Sports / LIVE TV player (v1.0)
 

@@ -1,5 +1,10 @@
 const {contextBridge,ipcRenderer}=require('electron');
 contextBridge.exposeInMainWorld('zero',{
+  downloads:()=>ipcRenderer.invoke('downloads'),
+  rawcast:(action,value)=>ipcRenderer.invoke('rawcast',action,value),
+  downloadAdd:(item,episode)=>ipcRenderer.invoke('download-add',item,episode),
+  downloadAction:(id,action)=>ipcRenderer.invoke('download-action',id,action),
+  onDownloads:callback=>{const handler=()=>callback();ipcRenderer.on('downloads-updated',handler);return()=>ipcRenderer.removeListener('downloads-updated',handler);},
   api:(path,params)=>ipcRenderer.invoke('api',path,params),
   sports:force=>ipcRenderer.invoke('sports',force),
   sportsPlay:(id,index)=>ipcRenderer.invoke('sports-play',id,index),

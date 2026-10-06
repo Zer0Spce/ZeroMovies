@@ -173,20 +173,27 @@
     }
     let backSequence = 0;
     const backWaiters = new Map();
-    function dismissControls(budget = 650) {
-      const local = hideControls();
-      const frames = Array.from(document.querySelectorAll('iframe')).filter(frame => {
-        const style=getComputedStyle(frame);
-        return style.display !== 'none' && style.visibility !== 'hidden';
-      });
-      return Promise.all(frames.map(frame => new Promise(resolve => {
-        const request = ++backSequence;
-        const timer = setTimeout(() => { backWaiters.delete(request); resolve(true); }, Math.max(30,budget));
-        backWaiters.set(request, {source:frame.contentWindow, resolve, timer});
-        try { frame.contentWindow.postMessage({type:'zerostreams-hide-controls', request, budget:Math.max(30,budget-200)}, '*'); }
-        catch (_) { clearTimeout(timer); backWaiters.delete(request); resolve(true); }
-      }))).then(results => local || results.some(Boolean));
+    function dismissLocalMenu(){
+      const selectors='dialog[open],[role="dialog"],[role="menu"],.vjs-menu,.plyr__menu__container,.shaka-settings-menu,.shaka-overflow-menu,[data-state="open"][role="listbox"]';
+      const menus=all(selectors).filter(node=>{const style=getComputedStyle(node),rect=node.getBoundingClientRect();return !node.querySelector('video,iframe')&&!node.hidden&&!node.classList.contains('shaka-hidden')&&style.display!=='none'&&style.visibility!=='hidden'&&Number(style.opacity||1)>0&&rect.width>0&&rect.height>0;});
+      if(!menus.length)return false;
+      const menu=menus[menus.length-1];
+      if(menu.tagName==='DIALOG'&&typeof menu.close==='function'){menu.close();return true;}
+      const close=menu.querySelector('[aria-label="Close"],[aria-label="Back"],.shaka-back-to-overflow-button,.vjs-menu-button');
+      if(close)close.click();
+      else {document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',bubbles:true}));document.dispatchEvent(new KeyboardEvent('keyup',{key:'Escape',code:'Escape',bubbles:true}));const toggle=all('[aria-expanded="true"]').find(node=>node.getAttribute('aria-controls')===menu.id);if(toggle)toggle.click();}
+      return true;
     }
+    function dismissControls(budget = 250) {
+      const local = dismissLocalMenu();
+      const frames = Array.from(document.querySelectorAll('iframe')).filter(frame => {const style=getComputedStyle(frame);return style.display!=='none'&&style.visibility!=='hidden';});
+      return Promise.all(frames.map(frame => new Promise(resolve => {
+        const request=++backSequence,timer=setTimeout(()=>{backWaiters.delete(request);resolve(false);},Math.max(30,budget));
+        backWaiters.set(request,{source:frame.contentWindow,resolve,timer});
+        try{frame.contentWindow.postMessage({type:'zerostreams-hide-controls',request,budget:Math.max(30,budget-50)},'*');}catch(_){clearTimeout(timer);backWaiters.delete(request);resolve(false);}
+      }))).then(results=>local||results.some(Boolean));
+    }
+    window.__zeroDismissMenus=dismissControls;
     window.__zeroBackRequest = token => {
       window.__zeroBackResult = null;
       dismissControls().then(handled => { window.__zeroBackResult = {token, handled}; });
@@ -195,7 +202,7 @@
       const data=event.data;
       if(!data || !Number.isInteger(data.request)) return;
       if(data.type==='zerostreams-hide-controls' && window.parent!==window && event.source===window.parent) {
-        dismissControls(Math.min(450,Number(data.budget)||450)).then(handled => event.source.postMessage({type:'zerostreams-controls-hidden',request:data.request,handled}, event.origin==='null'?'*':event.origin));
+        dismissControls(Math.min(200,Number(data.budget)||200)).then(handled => event.source.postMessage({type:'zerostreams-controls-hidden',request:data.request,handled}, event.origin==='null'?'*':event.origin));
       } else if(data.type==='zerostreams-controls-hidden') {
         const waiter=backWaiters.get(data.request);
         if(!waiter || waiter.source!==event.source) return;

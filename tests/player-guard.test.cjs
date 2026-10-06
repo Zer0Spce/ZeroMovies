@@ -98,25 +98,16 @@ async function run() {
   w.__zeroRemoteActivity();
   assert.ok(!w.document.documentElement.classList.contains('zero-player-idle'));
   dom.window.close();
-  for (const tv of [true,false]) {
-    dom=page('<video id="movie"></video><nav width="900" height="50"><button>Episodes</button></nav><div class="plyr__controls" width="900" height="60"><button>Pause</button></div>',tv);
-    const player=dom.window;
-    player.__zeroBackRequest(1);
-    await new Promise(resolve=>setTimeout(resolve,10));
-    assert.deepEqual(JSON.parse(JSON.stringify(player.__zeroBackResult)),{token:1,handled:true});
-    assert.equal(player.getComputedStyle(player.document.querySelector('nav')).visibility,'hidden');
-    assert.equal(player.getComputedStyle(player.document.querySelector('video')).visibility,'visible');
-    player.__zeroBackRequest(2);
-    await new Promise(resolve=>setTimeout(resolve,10));
-    assert.equal(player.__zeroBackResult.handled,false,'Second Back can return after controls are hidden');
-    player.__zeroRemoteActivity();
-    assert.equal(player.getComputedStyle(player.document.querySelector('nav')).visibility,'visible');
-    dom.window.close();
+  for(const tv of [true,false]){
+    dom=page('<video id="movie"></video><div class="plyr__controls" width="900" height="60"><button>Pause</button></div><div role="menu" id="settings" width="300" height="200"><button aria-label="Close">Close</button><button>1080p</button></div>',tv);
+    const player=dom.window;player.document.querySelector('[aria-label="Close"]').onclick=()=>player.document.getElementById('settings').hidden=true;
+    player.__zeroBackRequest(1);await new Promise(r=>setTimeout(r,10));assert.equal(player.__zeroBackResult.handled,true);assert.equal(player.document.getElementById('settings').hidden,true);assert.equal(player.getComputedStyle(player.document.querySelector('video')).visibility,'visible');
+    player.__zeroBackRequest(2);await new Promise(r=>setTimeout(r,10));assert.equal(player.__zeroBackResult.handled,false,'An ordinary control bar must not consume Back');dom.window.close();
   }
   dom=page('<iframe></iframe>');
   dom.window.__zeroBackRequest(3);
   await new Promise(resolve=>setTimeout(resolve,700));
-  assert.equal(dom.window.__zeroBackResult.handled,true,'Unknown child state must keep playback open');
+  assert.equal(dom.window.__zeroBackResult.handled,false,'An unresponsive child must not require repeated Back presses');
   dom.window.close();
   dom=page('<iframe id="child"></iframe>');
   const frame=dom.window.document.querySelector('iframe');

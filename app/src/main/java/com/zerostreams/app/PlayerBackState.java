@@ -1,8 +1,6 @@
 package com.zerostreams.app;
-
-/** App-owned two-step Back; an embedded frame cannot prevent the second exit. */
+/** Back consumes a submenu only when that submenu was actually dismissed. */
 final class PlayerBackState {
-    private boolean controlsDismissed;
-    boolean pressBack(){if(controlsDismissed)return true;controlsDismissed=true;return false;}
-    void userActivity(){controlsDismissed=false;}
+    boolean pressBack(boolean menuHandled){return !menuHandled;}
+    void userActivity(){}
 }

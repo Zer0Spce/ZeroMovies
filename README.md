@@ -22,7 +22,7 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | ⭐ **Favorite channels** | Star LIVE TV channels and browse your Favorites group. |
 | ⚙️ **Homepage panels** | Keep the default layout or enable extra Action, Comedy, Horror, Animation, and Anime rows in Settings. |
 | 🎞️ **Rich title details** | View artwork, ratings, synopsis, cast, genres, trailers, and related recommendations. |
-| ▶️ **Choose your source** | Switch beside Watch Now between **VidStuck · Recommended**, VidSrc.to, VidSrc.sh, and SuperEmbed. |
+| ▶️ **Choose your source** | Switch beside Watch Now between **VidStuck · Recommended**, VidSrc.sh. |
 | ❤️ **Your library** | Save a watchlist, organize collections and Plan to Watch, and revisit watch and search history. |
 | ⏯️ **Continue Watching** | Return to started titles and resume where supported by the playback provider. |
 | 🌗 **Make it yours** | Saved light/dark mode, a compact theme toggle, and subtle blurred backgrounds. |
@@ -120,7 +120,7 @@ Production signing uses `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, 
 
 ## 🙌 Credits
 
-Metadata and artwork: **TMDB** and their respective rights holders. This product uses the TMDB API but is not endorsed or certified by TMDB. Provider availability: **JustWatch through TMDB**. Embedded players: **VidStuck, VidSrc.to, VidSrc.sh, and SuperEmbed**. QR decoding: **ZXing** (Apache 2.0). Android media playback: **AndroidX Media3**.
+Metadata and artwork: **TMDB** and their respective rights holders. This product uses the TMDB API but is not endorsed or certified by TMDB. Provider availability: **JustWatch through TMDB**. Embedded players: **VidStuck and VidSrc.sh**. QR decoding: **ZXing** (Apache 2.0). Android media playback: **AndroidX Media3**.
 
 
 ### 🛡️ Known QR ad bug

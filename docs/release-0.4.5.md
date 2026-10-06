@@ -7,7 +7,7 @@ A cleaner movie and TV experience for Android, Android TV, and Windows.
 - **🎲 Surprise Me:** a red dice button beside the compact theme toggle. Discover released TMDB movies beyond the homepage recommendations.
 - **Categories:** browse movie and TV genres from the side navigation, with paginated results.
 - **Watch Now where you need it:** beside the movie poster and title, above the synopsis and cast.
-- **Choose your source:** a separate source picker beside Watch Now. **VidStuck is Recommended**, with VidSrc.to, VidSrc.sh, and SuperEmbed also available.
+- **Choose your source:** a separate source picker beside Watch Now. **VidStuck is Recommended**, with VidSrc.sh also available.
 - **Polished artwork:** subtle blurred backgrounds and saved light/night mode.
 - **Your library:** Home watchlist, Continue Watching, search and watch history, collections, and Plan to Watch.
 
@@ -40,4 +40,4 @@ TMDB supplies metadata and artwork; new catalog entries do not need an app rebui
 
 ## Credits
 
-This product uses the TMDB API but is not endorsed or certified by TMDB. Provider availability: JustWatch through TMDB. Embedded players: VidStuck, VidSrc.to, VidSrc.sh, and SuperEmbed. QR decoding: ZXing. Android media playback: AndroidX Media3.
+This product uses the TMDB API but is not endorsed or certified by TMDB. Provider availability: JustWatch through TMDB. Embedded players: VidStuck and VidSrc.sh. QR decoding: ZXing. Android media playback: AndroidX Media3.

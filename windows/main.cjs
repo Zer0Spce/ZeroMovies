@@ -5,6 +5,10 @@ const playlists=require('./playlist.cjs');let playlistStore,liveSelection;const 
 
 const liveURL=pathToFileURL(path.join(__dirname,'ui/live-player.html')).href;
 const sources=require('./playback-sources.cjs');
+const {themes}=require('./themes.cjs');
+const {RawCast}=require('./rawcast.cjs'),{DownloadManager}=require('./rawcast-downloads.cjs');let rawcast,downloads;
+function rawcastKey(){if(state.rawcastKey&&safeStorage.isEncryptionAvailable())try{return safeStorage.decryptString(Buffer.from(state.rawcastKey,'base64'));}catch{}return !app.isPackaged?process.env.RAWCAST_API_KEY||'':'';}
+
 const core=require('./core.cjs'),{Worker}=require('node:worker_threads');
 let config={};try{config=require('./generated-config.json');}catch{}
 let sportsSession;
@@ -16,10 +20,10 @@ const {cleanLegacySportsCache}=require('./sports-cache.cjs');
 const dataRoot=require('./data-directory.cjs').dataDirectory(app.getPath('appData'));fs.mkdirSync(dataRoot,{recursive:true});app.setPath('userData',dataRoot);const sportsCacheFailures=cleanLegacySportsCache(dataRoot);
 const homePanelIds=['clock','featured','continue','watchlist','upcoming','providers','recommended','trending','popular','series','now','action','comedy','horror','animation','anime','adventure','crime','documentary','drama','family','fantasy','history','music','mystery','romance','scifi','thriller','war','western','tvmovie'];
 const channelKey=(section,c)=>require('node:crypto').createHash('sha256').update(section+'|'+c.name+'|'+c.group).digest('hex');
-const defaults=()=>({liveFavorites:[],favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',source:'vidstuck',homePanels:homePanelIds.slice(0,11)},customKey:''});
+const defaults=()=>({liveFavorites:[],favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',source:'vidstuck',uiAnimations:true,focusInfo:true,focusTrailer:true,homepageTrailer:true,previewDelay:900,homePanels:homePanelIds.slice(0,11)},customKey:''});
 function persist(){const temp=file+'.tmp';fs.writeFileSync(temp,JSON.stringify(state));fs.renameSync(temp,file);}
 function key(){if(state.customKey&&safeStorage.isEncryptionAvailable())try{return safeStorage.decryptString(Buffer.from(state.customKey,'base64'));}catch{}return config.tmdbKey||process.env.TMDB_API_KEY||'';}
-function snapshot(){const {customKey,...publicState}=state;return {...publicState,hasKey:!!key(),version:app.getVersion()};}
+function snapshot(){const {customKey,rawcastKey:secret,...publicState}=state;return {...publicState,themes,rawcast:{hasKey:!!rawcastKey(),saved:!!secret,masked:secret?'rc_live_••••••••••••':''},hasKey:!!key(),version:app.getVersion()};}
 function trusted(event){if(event.sender!==main?.webContents||event.senderFrame?.url!==uiURL)throw Error('Untrusted request');}
 function playerOrigin(url){return sources.trusted(url);}
 async function api(route,params={}){
@@ -70,20 +74,19 @@ async function openPlayer(value,selected,fixture,prepare=false){
   qrWorker.on('message',confirmed=>{scanning=false;if(confirmed&&!contents.isDestroyed())for(const frame of contents.mainFrame.framesInSubtree)frame.executeJavaScript('if(window.__zeroDismissQrAd)window.__zeroDismissQrAd();').catch(()=>{});});
   qrWorker.on('error',()=>{scanning=false;});
   contents.setWindowOpenHandler(()=>({action:'deny'}));
-  const check=(event,url)=>{if(!playerOrigin(url))event.preventDefault();};contents.on('will-navigate',(event,url)=>{check(event,url);try{const u=new URL(url);if(['vidstuck.xyz','vidsrc.to','vidsrc.sh'].includes(u.hostname)&&!u.pathname.startsWith('/embed/')){event.preventDefault();if(player===view)closePlayer();}}catch{}});contents.on('will-redirect',check);
-  let controlsDismissed=false;
+  const check=(event,url)=>{if(!playerOrigin(url))event.preventDefault();};contents.on('will-navigate',(event,url)=>{check(event,url);try{const u=new URL(url);if(['vidstuck.xyz','vidsrc.sh'].includes(u.hostname)&&!u.pathname.startsWith('/embed/')){event.preventDefault();if(player===view)closePlayer();}}catch{}});contents.on('will-redirect',check);
+  let backPending=false;
   contents.on('before-input-event',async(event,input)=>{
     if(input.type!=='keyDown'||player!==view)return;
     if(input.key==='F11'){event.preventDefault();await playerHost.toggleFullscreen();return;}
     if(input.key==='Escape'||input.key==='BrowserBack'){
       event.preventDefault();if(input.isAutoRepeat)return;
-      if(controlsDismissed){closePlayer();return;}controlsDismissed=true;
-      playerHost.toolbarVisible=false;playerHost.layout();
-      if(main.isFullScreen()||playerHost.htmlFullscreen)await playerHost.exitFullscreen();
-      if(player===view)contents.executeJavaScript('if(window.__zeroBackRequest)window.__zeroBackRequest(1);').catch(()=>{});
+      if(backPending)return;backPending=true;
+      let handled=false;try{handled=await contents.executeJavaScript('window.__zeroDismissMenus ? window.__zeroDismissMenus() : false');}catch{}
+      backPending=false;if(player===view&&!handled)closePlayer();
       return;
     }
-    controlsDismissed=false;playerHost?.activity();
+    playerHost?.activity();
   });
   contents.on('render-process-gone',()=>{if(player===view)closePlayer();});
   cursorTimer=setInterval(()=>{if(!playerHost||main.isDestroyed()||!main.isFocused())return;const cursor=screen.getCursorScreenPoint(),bounds=main.getContentBounds();if(cursor.x>=bounds.x&&cursor.x<bounds.x+bounds.width&&cursor.y>=bounds.y&&cursor.y<bounds.y+12)playerHost.activity();},200);
@@ -108,7 +111,7 @@ async function openSports(id,index){
  toolbar.webContents.send('sports-mode',{sources:event.sources.map(s=>s.label),index});const update=text=>{if(player===view&&!toolbar.webContents.isDestroyed())toolbar.webContents.send('player-title',event.title+' · '+text);};update('Loading player…');
  contents.setWindowOpenHandler(()=>({action:'deny'}));
  contents.on('did-finish-load',()=>update(event.source.label));contents.on('did-fail-load',(_e,code)=>{if(code!==-3)update('Player unavailable · Retry or choose another source');});contents.on('render-process-gone',()=>update('Player stopped · Retry'));
- contents.on('before-input-event',async(e,input)=>{if(input.type!=='keyDown'||input.isAutoRepeat)return;playerHost?.activity();if(input.key==='F11'){e.preventDefault();await playerHost.toggleFullscreen();}if(input.key==='Escape'||input.key==='BrowserBack'){e.preventDefault();if(main.isFullScreen()||playerHost.htmlFullscreen)await playerHost.exitFullscreen();else if(contents.canGoBack())contents.goBack();else closePlayer();}});
+ contents.on('before-input-event',async(e,input)=>{if(input.type!=='keyDown'||input.isAutoRepeat)return;playerHost?.activity();if(input.key==='F11'){e.preventDefault();await playerHost.toggleFullscreen();}if(input.key==='Escape'||input.key==='BrowserBack'){e.preventDefault();let handled=false;try{handled=await contents.executeJavaScript('window.__zeroDismissMenus ? window.__zeroDismissMenus() : false');}catch{}if(player===view&&!handled)closePlayer();}});
  main.setTitle(event.title+' — Live Sports — ZeroPlay');try{if(event.source.embed.url)await contents.loadURL(event.source.embed.url);else {const token=require('node:crypto').randomBytes(24).toString('hex');const html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><base href="'+event.base+'/"><style>html,body{margin:0;height:100%;background:black}iframe{width:100%;height:100%;border:0}</style>'+event.source.embed.html;sportsHtmlServer=require('node:http').createServer((req,res)=>{if(req.url!=='/'+token){res.writeHead(404).end();return;}res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});res.end(html);});await new Promise(resolve=>sportsHtmlServer.listen(0,'127.0.0.1',resolve));sportsHtmlServer.unref();await contents.loadURL('http://127.0.0.1:'+sportsHtmlServer.address().port+'/'+token);}contents.focus();}catch{update('Player unavailable · Retry or choose another source');}
 }
 function liveTrusted(event){if(event.sender!==player?.webContents||event.senderFrame?.url!==liveURL||!liveSelection)throw Error('Untrusted live control');}
@@ -137,6 +140,14 @@ app.whenReady().then(async()=>{
   for(const name of ['favorites','planned','history','searches'])if(!Array.isArray(state[name]))state[name]=[];
   state.history=state.history.slice(0,100);state.searches=state.searches.slice(0,30);
   for(const name of ['positions','collections'])if(!state[name]||typeof state[name]!=='object'||Array.isArray(state[name]))state[name]={};
+  state.settings.source=sources.source(state.settings.source).id;
+  rawcast=new RawCast(rawcastKey,fetch,()=>main?.webContents.send('downloads-updated'));
+  downloads=new DownloadManager(path.join(dataRoot,'downloads'),(item,episode)=>rawcast.resolve(item,episode,'1080p',true),()=>main?.webContents.send('downloads-updated'));
+  ipcMain.handle('downloads',event=>{trusted(event);return {jobs:downloads.list(),usage:rawcast.usage,hasKey:!!rawcastKey(),folder:state.settings.downloadFolder||path.join(app.getPath('downloads'),'ZeroPlay')};});
+  ipcMain.handle('rawcast',async(event,action,value)=>{trusted(event);if(action==='save'){if(typeof value!=='string'||!/^rc_live_[A-Za-z0-9_-]{20,200}$/.test(value))throw Error('Enter a valid RawCast API key.');if(!safeStorage.isEncryptionAvailable())throw Error('Windows secure key storage is unavailable.');state.rawcastKey=safeStorage.encryptString(value).toString('base64');rawcast.clear();persist();return snapshot().rawcast;}if(action==='remove'){delete state.rawcastKey;rawcast.clear();persist();return snapshot().rawcast;}if(action==='test')return rawcast.test();if(action==='usage')return rawcast.refreshUsage();if(action==='folder'){const result=await dialog.showOpenDialog(main,{properties:['openDirectory','createDirectory']});if(!result.canceled){state.settings.downloadFolder=result.filePaths[0];persist();}return state.settings.downloadFolder||path.join(app.getPath('downloads'),'ZeroPlay');}throw Error('Unsupported RawCast action');});
+  ipcMain.handle('download-add',async(event,item,episode)=>{trusted(event);item=core.cleanItem(item);if(!rawcastKey())throw Error('RawCast API key required. Add your own key in Settings → RawCast API.');const ep=item.type==='tv'?core.episode(episode):{};const media=await rawcast.resolve(item,ep);if(!media)return {available:false};return {available:true,id:await downloads.add(item,ep,state.settings.downloadFolder||path.join(app.getPath('downloads'),'ZeroPlay'))};});
+  ipcMain.handle('download-action',async(event,id,action)=>{trusted(event);const result=await downloads.action(String(id),action);if(action==='open'){const error=await shell.openPath(result);if(error)throw Error('Could not open video file. Install an MP4 player.');}return true;});
+  app.on('before-quit',()=>downloads.close());
   const playerSession=session.fromPartition('persist:player');
   playerSession.setPermissionRequestHandler((contents,permission,callback)=>callback(permission==='fullscreen'&&contents===player?.webContents));playerSession.setPermissionCheckHandler((contents,permission)=>permission==='fullscreen'&&contents===player?.webContents);
   playerSession.webRequest.onBeforeRequest((details,callback)=>{let cancel=false;try{cancel=core.blocked(new URL(details.url).hostname);}catch{}callback({cancel});});
@@ -161,7 +172,7 @@ app.whenReady().then(async()=>{
   ipcMain.handle('sports-control',(event,action,index)=>{if(event.sender!==toolbar?.webContents||event.senderFrame?.url!==toolsURL||!sportsSelection)throw Error('Untrusted sports control');if(action==='retry'||action==='source')return openSports(sportsSelection.id,action==='source'?index:sportsSelection.index);throw Error('Unsupported sports control');});
   ipcMain.handle('player-fullscreen',event=>{if(event.sender!==toolbar?.webContents||event.senderFrame?.url!==toolsURL)throw Error('Untrusted player control');return playerHost.toggleFullscreen();});
   ipcMain.handle('state',event=>{trusted(event);return snapshot();});
-  ipcMain.handle('external',(event,url)=>{trusted(event);const u=new URL(url);if(u.protocol!=='https:'||!['www.youtube.com','www.themoviedb.org'].includes(u.hostname))throw Error('Unsupported link');return shell.openExternal(u.href);});
+  ipcMain.handle('external',(event,url)=>{trusted(event);const u=new URL(url);if(u.protocol!=='https:'||!['www.youtube.com','www.themoviedb.org','rawcast.space'].includes(u.hostname))throw Error('Unsupported link');return shell.openExternal(u.href);});
   ipcMain.handle('play',async(event,value,ep)=>{trusted(event);await openPlayer(value,ep);return true;});
   ipcMain.handle('change',(event,action,value)=>{
     trusted(event);
@@ -175,7 +186,7 @@ app.whenReady().then(async()=>{
       const name=String(value?.name||'').trim().slice(0,60);if(!name||['__proto__','constructor','prototype'].includes(name))throw Error('Invalid collection name');
       const title=core.cleanItem(value.item),rows=state.collections[name]||[];if(!Array.isArray(rows))throw Error('Invalid collection');state.collections[name]=rows.some(row=>core.key(row)===core.key(title))?rows.filter(row=>core.key(row)!==core.key(title)):[title,...rows].slice(0,300);
     }else if(action==='settings'){
-      if(!value||!['PH','US','GB','CA','AU','IN','JP'].includes(value.region)||![1,1.5,2].includes(Number(value.gain)))throw Error('Invalid settings');if(!['dark','light'].includes(value.theme)||!sources.sources.some(s=>s.id===value.source))throw Error('Invalid appearance or playback source');state.settings={region:value.region,gain:Number(value.gain),theme:value.theme,source:value.source,homePanels:Array.isArray(value.homePanels)?homePanelIds.filter(id=>value.homePanels.includes(id)):(state.settings.homePanels||homePanelIds.slice(0,11))};
+      if(!value||!['PH','US','GB','CA','AU','IN','JP'].includes(value.region)||![1,1.5,2].includes(Number(value.gain)))throw Error('Invalid settings');if(!Object.hasOwn(themes,value.theme)||!sources.sources.some(s=>s.id===value.source))throw Error('Invalid appearance or playback source');state.settings={...state.settings,uiAnimations:value.uiAnimations!==false,focusInfo:value.focusInfo!==false,focusTrailer:value.focusTrailer!==false,homepageTrailer:value.homepageTrailer!==false,previewDelay:Math.max(500,Math.min(3000,Number(value.previewDelay)||900)),region:value.region,gain:Number(value.gain),theme:value.theme,source:value.source,homePanels:Array.isArray(value.homePanels)?homePanelIds.filter(id=>value.homePanels.includes(id)):(state.settings.homePanels||homePanelIds.slice(0,11))};
       if(value.key===null)state.customKey='';else if(value.key){if(!/^[a-f\d]{32}$/i.test(value.key))throw Error('Enter a valid TMDB v3 API key');if(!safeStorage.isEncryptionAvailable())throw Error('Windows credential encryption unavailable');state.customKey=safeStorage.encryptString(value.key).toString('base64');}
     }else throw Error('Unsupported library action');
     persist();return snapshot();
@@ -186,6 +197,7 @@ app.whenReady().then(async()=>{
     const position=core.progress(sources.normalize(data),current);if(!position)return;lastProgress=Date.now();core.record(state,current,position);persist();
   });
   main=new BrowserWindow({width:1440,height:920,minWidth:900,minHeight:620,title:'ZeroPlay',backgroundColor:'#090a10',icon:path.join(__dirname,'assets/icon.png'),show:false,autoHideMenuBar:true,webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
+  main.webContents.session.webRequest.onBeforeSendHeaders({urls:['https://www.youtube-nocookie.com/*','https://www.youtube.com/*']},(details,callback)=>callback({requestHeaders:{...details.requestHeaders,Referer:'https://com.zerostreams.windows/'}}));
   main.webContents.setWindowOpenHandler(()=>({action:'deny'}));main.webContents.on('will-navigate',event=>event.preventDefault());main.webContents.on('will-attach-webview',event=>event.preventDefault());
   main.once('ready-to-show',()=>{main.show();if(sportsCacheFailures.length&&!smoke)dialog.showMessageBox(main,{type:'warning',title:'Old Live Sports cache',message:'Some retired sports cache files could not be removed. Keep Microsoft Defender enabled and remove or quarantine any detected item in Protection History. The new sports player uses a memory-only browser session.'});});main.on('closed',closePlayer);await main.loadFile(path.join(__dirname,'ui/index.html'));
   if(smoke){try{await main.webContents.executeJavaScript(`new Promise((resolve,reject)=>{const deadline=Date.now()+30000;const check=()=>{const cards=[...document.querySelectorAll('.cards .card:not(.landscape)')];if(cards.length){const sizes=cards.map(c=>({width:c.getBoundingClientRect().width,height:c.querySelector('img,.poster-empty').getBoundingClientRect().height}));if(sizes.some(s=>Math.abs(s.width-160)>1||Math.abs(s.height-240)>1))reject(Error('Nonuniform poster geometry: '+JSON.stringify(sizes)));else resolve(true);}else if(Date.now()>deadline)reject(Error('No posters rendered for geometry validation'));else setTimeout(check,200);};check();})`);const result=await main.webContents.executeJavaScript("({bridge:typeof window.zero?.api,brand:document.querySelector('.brand')?.textContent,tabs:Array.from(document.querySelectorAll('[data-nav]')).map(x=>x.dataset.nav)})");if(result.bridge!=='function'||!result.brand.includes('ZERO')||result.tabs.includes('Live')||result.tabs.includes('Manga'))throw Error('Desktop UI smoke failed');fs.mkdirSync('dist',{recursive:true});fs.writeFileSync('dist/desktop-preview.png',(await main.webContents.capturePage()).toPNG());for(const [section,name] of [['Categories','categories'],['Live Sports','sports']]){await main.webContents.executeJavaScript("document.querySelector('[data-nav=\""+section+"\"]').click()");await new Promise(r=>setTimeout(r,8000));fs.writeFileSync('dist/desktop-'+name+'.png',(await main.webContents.capturePage()).toPNG());}await main.webContents.executeJavaScript("document.querySelector('[data-action=\"settings\"]').click()");await new Promise(r=>setTimeout(r,500));fs.writeFileSync('dist/desktop-settings.png',(await main.webContents.capturePage()).toPNG());await main.webContents.executeJavaScript("document.querySelector('#home-panels').scrollIntoView({block:'center'})");await new Promise(r=>setTimeout(r,200));fs.writeFileSync('dist/desktop-home-panels.png',(await main.webContents.capturePage()).toPNG());await main.webContents.executeJavaScript("document.querySelector('[data-action=\"close-settings\"]').click();document.querySelector('[data-nav=\"Home\"]').click()");await new Promise(r=>setTimeout(r,1500));await main.webContents.executeJavaScript("document.querySelector('#query').value='preserved draft'");

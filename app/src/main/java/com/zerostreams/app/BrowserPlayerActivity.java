@@ -34,7 +34,7 @@ public class BrowserPlayerActivity extends Activity {
         web=new WebView(this);web.setBackgroundColor(Color.BLACK);web.setOnTouchListener((v,event)->{if(event.getActionMasked()==android.view.MotionEvent.ACTION_DOWN){backState.userActivity();lastPlayerGesture=android.os.SystemClock.elapsedRealtime();}return false;});CookieManager cookies=CookieManager.getInstance();cookies.setAcceptCookie(true);cookies.setAcceptThirdPartyCookies(web,PlaybackSources.trusted(address));WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setMediaPlaybackRequiresUserGesture(false);settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setSupportMultipleWindows(false);settings.setJavaScriptCanOpenWindowsAutomatically(false);
         // Origin-scoped playback messages only. Popups and top-level cross-site ad redirects stay closed.
         String host=Uri.parse(address).getHost();if(!reader&&PlaybackSources.trusted(address)){blockAds=true;installProgressListener();installPlayerExitListener();installPlayerGuard();adScan=new PlayerAdScan(this,web);}web.setWebViewClient(new WebViewClient(){
-            @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest request){if(tvPlayer&&request.isForMainFrame()&&request.hasGesture()&&java.util.Arrays.asList("vidstuck.xyz","vidsrc.to","vidsrc.sh").contains(request.getUrl().getHost())&&!String.valueOf(request.getUrl().getPath()).startsWith("/embed/")){finish();return true;}return (blockAds&&AdBlockRules.blocks(request.getUrl().getHost())) || !"https".equals(request.getUrl().getScheme()) || (request.isForMainFrame()&&!PlaybackSources.trusted(request.getUrl().toString()));}
+            @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest request){if(tvPlayer&&request.isForMainFrame()&&request.hasGesture()&&java.util.Arrays.asList("vidstuck.xyz","vidsrc.sh").contains(request.getUrl().getHost())&&!String.valueOf(request.getUrl().getPath()).startsWith("/embed/")){finish();return true;}return (blockAds&&AdBlockRules.blocks(request.getUrl().getHost())) || !"https".equals(request.getUrl().getScheme()) || (request.isForMainFrame()&&!PlaybackSources.trusted(request.getUrl().toString()));}
             @Override public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest request){if(blockAds&&!request.isForMainFrame()&&AdBlockRules.blocks(request.getUrl().getHost()))return new WebResourceResponse("text/plain","UTF-8",new java.io.ByteArrayInputStream(new byte[0]));return null;}
             @Override public void onPageFinished(WebView v,String url){CookieManager.getInstance().flush();if(playerGuard!=null)v.evaluateJavascript(playerGuard,null);status.setText(reader?"Publisher reader · use Back to return":"External player · use Back to return");}
             @Override public void onReceivedError(WebView v,WebResourceRequest request,WebResourceError error){if(request.isForMainFrame()){status.setText("Player unavailable. Reload or try again later.");if(!reader)Toast.makeText(BrowserPlayerActivity.this,"Player unavailable. Press Back and try again.",Toast.LENGTH_LONG).show();}}
@@ -96,12 +96,14 @@ public class BrowserPlayerActivity extends Activity {
             }
         }catch(java.io.IOException error){android.util.Log.e("ZeroPlay","Player guard could not load",error);}
     }
+    private boolean backPending;private int backToken;
     @Override public void onBackPressed(){
-        if(getIntent().getBooleanExtra("reader",false)||playerGuard==null){if(fullscreen!=null)closeFullscreen();else super.onBackPressed();return;}
-        if(backState.pressBack()){finish();return;}
+        if(getIntent().getBooleanExtra("reader",false)||playerGuard==null||web==null){finish();return;}
+        if(backPending)return;backPending=true;int token=++backToken;
         if(mouse!=null)mouse.stop();
-        if(web!=null)web.evaluateJavascript("if(window.__zeroBackRequest)window.__zeroBackRequest(1);",null);
+        web.evaluateJavascript("if(window.__zeroBackRequest)window.__zeroBackRequest("+token+");",ignored->pollBack(token,0));
     }
+    private void pollBack(int token,int attempt){if(isFinishing()||token!=backToken)return;web.evaluateJavascript("JSON.stringify(window.__zeroBackResult||null)",value->{boolean ready=false,handled=false;try{Object decoded=new org.json.JSONTokener(value).nextValue();if(decoded instanceof String){org.json.JSONObject result=new org.json.JSONObject((String)decoded);if(result.optInt("token")==token){ready=true;handled=result.optBoolean("handled");}}}catch(Exception ignored){}if(ready||attempt>=15){backPending=false;if(!handled)finish();}else new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(()->pollBack(token,attempt+1),20);});}
     @Override protected void onPause(){if(mouse!=null)mouse.stop();if(adScan!=null)adScan.stop();if(web!=null){CookieManager.getInstance().flush();web.onPause();}super.onPause();}
     @Override protected void onResume(){super.onResume();if(web!=null)web.onResume();if(adScan!=null)adScan.start();}
     @Override protected void onDestroy(){if(mouse!=null)mouse.stop();if(adScan!=null)adScan.destroy();if(web!=null){web.stopLoading();web.destroy();}super.onDestroy();}
