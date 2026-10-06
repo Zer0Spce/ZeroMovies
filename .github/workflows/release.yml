@@ -163,7 +163,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [Mobile, Tv]
+        include:
+          - variant: Mobile
+            density: 420
+          - variant: Tv
+            density: 240
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -186,9 +190,10 @@ jobs:
           profile: pixel_2
           disable-animations: true
           script: |
+            adb shell wm density ${{ matrix.density }}
             gradle :app:connected${{ matrix.variant }}DebugAndroidTest
             mkdir -p ui-captures
-            variant=$(echo '${{ matrix.variant }}' | tr '[:upper:]' '[:lower:]'); for name in home categories live-sports settings; do adb pull "/data/local/tmp/zeroplay-$name.png" "ui-captures/android-$variant-$name.png"; done
+            variant=$(echo '${{ matrix.variant }}' | tr '[:upper:]' '[:lower:]'); for name in home categories live-sports settings home-panels; do adb pull "/data/local/tmp/zeroplay-$name.png" "ui-captures/android-$variant-$name.png"; done
       - uses: actions/upload-artifact@v4
         with:
           name: UI-screenshots-${{ matrix.variant }}
