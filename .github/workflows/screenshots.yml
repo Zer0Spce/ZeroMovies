@@ -48,9 +48,9 @@ jobs:
           api-level: 28
           arch: x86_64
           target: google_apis
+          profile: pixel_2
           disable-animations: true
           script: |
-            adb shell wm size 1080x1920
             adb shell wm density ${{ matrix.density }}
             gradle :app:connected${{ matrix.variant }}DebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.zerostreams.app.GalleryTest
             mkdir -p ui-captures
