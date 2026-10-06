@@ -110,7 +110,7 @@ TMDB metadata refreshes as you browse and on refresh, so new catalog entries do 
 ## 🛠️ Build & development
 
 - **Android:** run **Build ZeroPlay APKs** manually in GitHub Actions for development APKs. The workflow tests both variants and uploads debug APKs plus APKs signed with the permanent Android key. Published production downloads remain in Releases.
-- **Production:** **Release ZeroPlay** runs regressions, unit tests, builds, lint, non-debug checks, and signature verification before publishing signed APKs and checksums. Publishing waits for signed Android APKs and a tested Windows portable ZIP from the same release run.
+- **Production:** **Release ZeroPlay** runs regressions, unit tests, builds, lint, non-debug checks, and signature verification before publishing signed APKs and checksums. Publishing waits for signed Android APKs, mobile/TV device tests, and a tested, Defender-scanned Windows portable ZIP. A previously tested Windows artifact is reusable only after its source identity and required checks are verified.
 - **Windows:** see the [Windows guide](windows/README.md). Windows builds run manually on explicit request.
 - **Website:** the responsive web version is prepared for Netlify. See [website setup](web/README.md).
 
