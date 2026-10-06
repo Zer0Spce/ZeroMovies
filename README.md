@@ -6,7 +6,7 @@
 
 Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surprise Me** dice when you cannot decide. Softly blurred artwork, light and dark themes, and dedicated TV controls make it comfortable on your phone, desktop, or big screen.
 
-**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.7 release notes](docs/release-1.6.1.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
+**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.7.2 release notes](docs/release-1.7.2.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
 
 Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations, Windows library data, and the permanent signing key.
 
@@ -21,13 +21,13 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | 🏟️ **Live Sports** | Event categories, posters, local schedules, labeled alternate sources, fullscreen playback, and a fresh API request every time you press Refresh sports. |
 | ⭐ **Favorite channels** | Star Live TV channels and browse your Favorites group. |
 | ⚙️ **Homepage panels** | Keep the default layout or enable extra Action, Comedy, Horror, Animation, and Anime rows in Settings. |
-| 🎞️ **Rich title details** | View artwork, ratings, synopsis, cast, genres, trailers, and related recommendations. |
-| ▶️ **Choose your source** | Switch beside Watch Now between **VidStuck · Recommended**, VidSrc.sh. |
+| 🎞️ **Rich title details** | View artwork, ratings, synopsis, cast, genres, trailers, and related recommendations; delayed hover/focus previews show details near the poster and title. |
+| ▶️ **Choose your source** | Use **VidStuck by default**, switch to VidSrc.sh, or choose **RawCast · Limited** with your own API key. RawCast streaming and downloads share your quota. |
 | ❤️ **Your library** | Save a watchlist, organize collections and Plan to Watch, and revisit watch and search history. |
 | ⏯️ **Continue Watching** | Return to started titles and resume where supported by the playback provider. |
 | 🎨 **Make it yours** | Default, Light and three numbered color palettes; immediate theme switching, optional animations and delayed focus/hover previews. |
 | 🎬 **Trailers** | Optional muted homepage trailers and delayed focus/hover trailers, with artwork fallback. |
-| 📥 **Offline downloads** | Download movies and selected episodes using your own securely stored RawCast API key. Queue, pause, resume where supported, retry, play, delete videos or remove history. |
+| 📥 **Offline downloads** | Manage your RawCast key and provider-reported usage in **Your Space → Downloads**. Download available movies and selected episodes in their original format; queue, pause, resume where supported, retry, play, or delete files. |
 | 🛡️ **Advertisement filtering** | Block known advertising requests and redirects, and remove explicit banner/ad slots, popups, and recognized timed QR overlays in supported app playback environments. |
 | 📺 **TV remote support** | D-pad navigation and optional player mouse mode; idle controls hide and wake on remote input. |
 | 🖥️ **Windows portable** | Browse and play in one window, use native fullscreen, and return with the player Back button. No installer. |
@@ -92,11 +92,11 @@ Choose your playback source, appearance, provider region, and optional audio boo
 
 Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroPlay/releases/latest)**.
 
-| Platform | v1.7 download | Getting started |
+| Platform | v1.7.2 download | Getting started |
 | --- | --- | --- |
-| 📱 Android phone / tablet | `ZeroPlay-1.7-Android.apk` | Android 6+. Install the signed mobile APK. |
-| 📺 Android TV / Google TV | `ZeroPlay-1.7-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
-| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.7-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
+| 📱 Android phone / tablet | `ZeroPlay-1.7.2-Android.apk` | Android 6+. Install the signed mobile APK. |
+| 📺 Android TV / Google TV | `ZeroPlay-1.7.2-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
+| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.7.2-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
 | ✅ Integrity checks | `SHA256SUMS.txt` | Compare your downloaded files against the published SHA-256 checksums. |
 
 Android v0.4.5 uses a permanent production signing key. Moving from an earlier debug build may require uninstalling that build first, which clears its local library and history. Future production releases retain the same signing key.
@@ -129,24 +129,26 @@ Metadata and artwork: **TMDB** and their respective rights holders. This product
 
 If a QR ad appears, press its **X** button or wait for it to close automatically. This is a known bug.
 
-## 🆕 Version 1.6.0
+## 🆕 Version 1.7.2
 
-🎮 Live Sports now uses compact bottom overlay controls that hide during playback. 🔤 Categories are alphabetical with six new language collections. ↕️ Sort loaded titles by popularity, rating, date or name, and sort channels and sports separately. 🏠 Fifteen more optional homepage genre panels keep the existing defaults. 🖼️ Fixed carousel geometry and portrait poster sizing, clearer settings colors, and uniform Windows navigation icons.
+📥 **Original-format downloads restored.** ZeroPlay accepts supported direct MP4, MKV and other video files supplied by RawCast, preserving the file and its correct extension. The MP4-only restriction from 1.7.1.1 is removed. There is no download format selector or post-download preparation/conversion phase.
 
-🛡️ Windows Live Sports uses a memory-only browser session with disk caching disabled and clears the retired sports browser cache at startup. Android sports playback bypasses and clears WebView cache.
+🔊 **Windows offline audio during playback.** Supported AC-3, E-AC-3 and DTS audio is decoded to AAC on demand while you watch. Your downloaded file stays unchanged; video codec compatibility still depends on the player.
 
-### Live Sports
+📺 **Native Android offline playback.** Downloaded files open through Media3/ExoPlayer with a local file source, native controls and saved playback position. Android codec support depends on your device.
 
-🏟️ **Live Sports is in Discover**, with ad filtering, blocked popups, blocked player file downloads, and fresh API refresh on every press. Anime, homepage panel settings, and Live TV favorites remain available.
+See the [complete 1.7.2 release notes](docs/release-1.7.2.md).
 
-### 📥 RawCast downloads
+### 📥 RawCast downloads & optional streaming
 
-RawCast supports downloads and optional streaming. **Streaming and downloads share your limited API quota.** VidStuck is the default source. Add your own key under **Your Space → Downloads** or **Settings → RawCast API**, press **Save Key**, then **Test API**. Open a movie's details or select a series episode and press **Download**. Direct files are checked against the local player; unsupported files are unavailable. VidStuck, VidSrc.sh, catalog browsing and trailers never use RawCast. Selecting RawCast explicitly resolves a stream using your personal API key. Windows offers MP4/MKV output and a quality selector; it prepares AAC audio locally for compatible offline playback.
+**VidStuck is the default playback source. RawCast is optional and limited:** streaming and downloads share your API quota. Add your own key under **Your Space → Downloads** or **Settings → RawCast API**, press **Save Key**, then **Test API**. The Downloads tab also shows usage when RawCast supplies authoritative quota information; no estimated quota is displayed. Public releases do not include a personal RawCast key.
 
-The Downloads tab tracks queue, progress, speed, size and ETA. Windows lets you choose the folder; Android uses app-specific Movies storage. **Delete Video** deletes the actual file after confirmation. **Remove from History** keeps the video. Downloads resume when the server supports byte ranges; otherwise the partial download starts again. Quota figures come from authoritative provider responses when supplied.
+Open a movie's details or select a series episode and press **Download**. Windows offers a quality selector and keeps the original container returned by RawCast. Available formats, file sizes and qualities depend on the provider; a 1080p label does not guarantee a small file. A catalogue listing does not guarantee a downloadable source or matching upstream video content.
 
-The reported **Trojan:Win32/Suschil!rfn** alert identifies a file under the legacy Windows `Partitions/live-sports/Cache/Cache_Data` directory. v1.6.0 removes that old sports cache and stops persisting the sports browser session. This does not identify the supplying request, prove a false positive, or certify third-party streams. Keep Defender enabled and remove/quarantine detected items; do not restore them or add an exclusion. Your watchlists and settings are retained.
+The Downloads tab tracks queue, progress, speed, size and ETA. Windows lets you choose the folder; Android uses app-specific Movies storage. **Delete Video** deletes the actual file after confirmation. **Remove from History** keeps the video. Downloads resume when the server supports byte ranges; otherwise the partial download starts again.
 
-### Version 1.6.1
+VidStuck, VidSrc.sh, catalogue browsing and trailers do not use RawCast. Selecting RawCast explicitly resolves a stream with your saved API key.
 
-Bug fixes.
+### 🏟️ Live Sports
+
+**Live Sports is in Discover**, with event categories, alternate sources, ad filtering, blocked popups and a fresh API request whenever you press Refresh sports. Its player uses a temporary browser session on Windows; the retired persistent sports cache is cleared at startup.
