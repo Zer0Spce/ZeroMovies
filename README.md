@@ -16,7 +16,7 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | --- | --- |
 | 🔎 **Discover & search** | Browse trending, popular, now-playing, recommended, and coming-soon titles, or search movies and TV series through TMDB. |
 | 🎲 **Surprise Me** | Discover released movies beyond the homepage rows with the red dice button beside the theme toggle. |
-| 🗂️ **Categories** | Explore movie and TV genres. v1.0 adds genre artwork and automatically loads more titles as you scroll. |
+| 🗂️ **Categories** | Explore movie and TV genres, including Anime cards in both grids. Artwork makes categories easy to browse, and more titles load as you scroll. |
 | 📡 **PPV/Sports & LIVE TV** | Two dedicated tabs using the ZeroStreams playlists, colored refresh buttons, channel groups, and in-app playback on Android, Android TV and Windows. |
 | 🏟️ **Live Sports** | Event categories, posters, local schedules, labeled alternate sources, fullscreen playback, and a fresh API request every time you press Refresh sports. |
 | ⭐ **Favorite channels** | Star LIVE TV channels and browse your Favorites group. |
@@ -31,29 +31,54 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | 🖥️ **Windows portable** | Browse and play in one window, use native fullscreen, and return with the player Back button. No installer. |
 | 🔊 **Optional audio boost** | Off, 1.5×, or 2× for compatible embedded audio. |
 
-v1.0 brings PPV/Sports and LIVE TV to Android, Android TV and Windows: search runs when you press **Search** (or the keyboard Search action), and movie, series, genre, provider, and search lists load more near the bottom without page buttons. The two live tabs include dedicated refresh controls and preserve saved channels when a refresh fails.
+Search runs when you press **Search** (or the keyboard Search action), and movie, series, genre, provider, and search lists load more near the bottom without page buttons. The two live tabs include dedicated refresh controls and preserve saved channels when a refresh fails.
 
-## 📸 A look inside
+## 📸 Android, Android TV & Windows
 
-Original PNG screenshots are included at their native **2048-pixel width**, without resizing or recompression. Click an image to open it and inspect the full-size original.
+These screenshots come from the running v1.5.1 apps: Android mobile/TV emulators and the Windows desktop build. Android is captured at **1080 × 1920** and Android TV at **1920 × 1080**. Original PNG files retain their native resolution with no resizing or recompression; phone previews are displayed smaller on this page. Click any image for the full-size original.
 
-### 🏠 Discover something great
+### 📱 Android · discovery and your homepage
 
-Trending picks, quick playback, your watchlist, and provider discovery in one place.
+Browse artwork, find a movie, change playback sources, and make the homepage your own.
 
-[![ZeroPlay home with trending picks, source selection, and watchlist](docs/zeromovies-home.png)](docs/zeromovies-home.png)
+<a href="docs/screenshots/android-mobile-home.png"><img src="docs/screenshots/android-mobile-home.png" alt="Android ZeroPlay home" width="360"></a>
 
-### 🍿 Find your next movie
+### 🖥️ Windows · one app for your next watch
 
-Browse a poster-rich catalog with title ratings and release years.
+Discover movies and series, switch to LIVE TV or Live Sports, and keep your library close.
 
-[![ZeroPlay movie catalog with posters, ratings, and release years](docs/zeromovies-movies.png)](docs/zeromovies-movies.png)
+[![Windows ZeroPlay home and Discover navigation](docs/screenshots/windows-home.png)](docs/screenshots/windows-home.png)
 
-### 🗂️ Find your kind of story
+### 🏟️ Android TV · compact Live Sports
 
-Explore genres across movies and TV series.
+Four-column cards match PPV/Sports. Browse sports categories, event schedules, posters, and alternate sources with a remote.
 
-[![ZeroPlay categories for movies and TV series](docs/zeromovies-categories.png)](docs/zeromovies-categories.png)
+[![Android TV compact Live Sports grid](docs/screenshots/android-tv-live-sports.png)](docs/screenshots/android-tv-live-sports.png)
+
+### 🗂️ Artwork-rich categories
+
+Browse movie and series genres through artwork cards. Anime uses this same grid layout.
+
+[![Windows movie categories](docs/screenshots/windows-categories.png)](docs/screenshots/windows-categories.png)
+
+### ⚙️ Your screen, your settings
+
+Choose your playback source, appearance, provider region, and optional audio boost. Homepage panel controls are also available in Settings.
+
+[![Windows playback and appearance settings](docs/screenshots/windows-settings.png)](docs/screenshots/windows-settings.png)
+
+<details>
+<summary>📸 More Android and Windows feature screenshots</summary>
+
+<a href="docs/screenshots/android-mobile-categories.png"><img src="docs/screenshots/android-mobile-categories.png" alt="Android movie categories" width="360"></a>
+
+<a href="docs/screenshots/android-mobile-live-sports.png"><img src="docs/screenshots/android-mobile-live-sports.png" alt="Android Live Sports catalogue" width="360"></a>
+
+[![Windows Live Sports events](docs/screenshots/windows-sports.png)](docs/screenshots/windows-sports.png)
+
+[![Android TV home](docs/screenshots/android-tv-home.png)](docs/screenshots/android-tv-home.png)
+
+</details>
 
 ## ⬇️ Download & get started
 
