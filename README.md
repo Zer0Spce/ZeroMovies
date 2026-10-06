@@ -141,7 +141,7 @@ If a QR ad appears, press its **X** button or wait for it to close automatically
 
 ### 📥 RawCast downloads
 
-RawCast is a download-only provider. Add your own key under **Settings → RawCast API**, press **Save Key**, then **Test API**. Open a movie's details or select a series episode and press **Download**. Direct files are checked against the local player; unsupported files are unavailable. Normal streaming and trailers never use RawCast.
+RawCast supports downloads and optional streaming. **Streaming and downloads share your limited API quota.** VidStuck is the default source. Add your own key under **Your Space → Downloads** or **Settings → RawCast API**, press **Save Key**, then **Test API**. Open a movie's details or select a series episode and press **Download**. Direct files are checked against the local player; unsupported files are unavailable. VidStuck, VidSrc.sh, catalog browsing and trailers never use RawCast. Selecting RawCast explicitly resolves a stream using your personal API key. Windows offers MP4/MKV output and a quality selector; it prepares AAC audio locally for compatible offline playback.
 
 The Downloads tab tracks queue, progress, speed, size and ETA. Windows lets you choose the folder; Android uses app-specific Movies storage. **Delete Video** deletes the actual file after confirmation. **Remove from History** keeps the video. Downloads resume when the server supports byte ranges; otherwise the partial download starts again. Quota figures come from authoritative provider responses when supplied.
 

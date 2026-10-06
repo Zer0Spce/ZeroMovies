@@ -117,7 +117,7 @@ final class ContentApi {
     }
     static JSONArray movieSources(String tmdb,String type,int season,int episode) throws JSONException {
         JSONArray result=new JSONArray();if(!tmdb.matches("[1-9][0-9]*"))return result;
-        for(int i=0;i<PlaybackSources.IDS.length;i++)result.put(new JSONObject().put("label",PlaybackSources.NAMES[i]).put("url",PlaybackSources.url(tmdb,type,season,episode,PlaybackSources.IDS[i])).put("embed",true));
+        for(int i=0;i<PlaybackSources.IDS.length;i++)if(PlaybackSources.IDS[i].equals("rawcast"))result.put(new JSONObject().put("label",PlaybackSources.NAMES[i]).put("provider","rawcast").put("type",type).put("tmdb",tmdb).put("season",season).put("episode",episode));else result.put(new JSONObject().put("label",PlaybackSources.NAMES[i]).put("url",PlaybackSources.url(tmdb,type,season,episode,PlaybackSources.IDS[i])).put("embed",true));
         return result;
     }
 }

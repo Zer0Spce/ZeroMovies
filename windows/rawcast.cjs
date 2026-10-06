@@ -1,10 +1,10 @@
 'use strict';
-// RawCast is intentionally isolated from catalog, trailers and playback providers.
+// RawCast is invoked only for explicit downloads or selected RawCast playback; never catalog or trailers.
 const BASE='https://api.rawcast.space/v1';
 class RawCast {
-  constructor(getKey,fetcher=fetch,onUsage=()=>{}){this.getKey=getKey;this.fetch=fetcher;this.onUsage=onUsage;this.cache=new Map();this.pending=new Map();this.usage=null;this.generation=0;}
+  constructor(getKey,fetcher=fetch,onUsage=()=>{}){this.getKey=getKey;this.fetch=fetcher;this.onUsage=onUsage;this.streamCache=new Map();this.cache=new Map();this.pending=new Map();this.usage=null;this.generation=0;}
   hasKey(){return !!this.getKey();}
-  clear(){this.generation++;this.cache.clear();this.pending.clear();this.usage=null;}
+  clear(){this.generation++;this.streamCache.clear();this.cache.clear();this.pending.clear();this.usage=null;}
   async request(route){const key=this.getKey();if(!key)throw Object.assign(Error('RawCast API key required. Add your own key in Settings → RawCast API.'),{code:'KEY_REQUIRED'});let response;try{response=await this.fetch(BASE+route,{headers:{'X-API-Key':key,Accept:'application/json'},signal:AbortSignal.timeout(30000),redirect:'error'});}catch{throw Error('RawCast connection failed. Try again.');}
     if(key!==this.getKey())throw Error('RawCast configuration changed. Try again.');
     const limit=Number(response.headers.get('X-RateLimit-Limit')),remaining=Number(response.headers.get('X-RateLimit-Remaining')),reset=Number(response.headers.get('X-RateLimit-Reset'));
@@ -19,6 +19,7 @@ class RawCast {
       const url=data.downloadUrl||data.url;let parsed;try{parsed=new URL(url);}catch{return null;}if(!['mp4','mkv','webm','mov','m4v','ts','mpeg','mpg','flv','avi'].includes(String(data.format).toLowerCase())||parsed.protocol!=='https:'||parsed.username||parsed.password||/\.m3u8(?:$|\?)/i.test(url))return null;
       if(epoch!==this.generation)throw Error('RawCast configuration changed. Try again.');const value={url:parsed.href,format:String(data.format).toLowerCase(),quality:data.quality||quality};this.cache.set(id,{until:Date.now()+120000,value});return value;})();this.pending.set(id,task);try{return await task;}finally{if(this.pending.get(id)===task)this.pending.delete(id);}
   }
+  async stream(item,episode={}){if(!['movie','tv'].includes(item?.type)||!Number.isSafeInteger(item.id)||item.id<1)throw Error('Invalid playback title');const ep=item.type==='tv'?{season:episode.season??1,episode:episode.episode??1}:{};if(item.type==='tv'&&(!Number.isSafeInteger(ep.season)||ep.season<0||ep.season>1000||!Number.isSafeInteger(ep.episode)||ep.episode<1||ep.episode>10000))throw Error('Select a season and episode first.');const route='/sources/'+item.type+'/'+item.id+(item.type==='tv'?'/'+ep.season+'/'+ep.episode:'');const cached=this.streamCache.get(route);if(cached?.until>Date.now())return cached.value;const epoch=this.generation;const data=await this.request(route);for(const server of data.servers||[])for(const stream of server.streams||[]){let url;try{url=new URL(stream.manifestUrl);}catch{continue;}if(url.protocol!=='https:'||url.username||url.password)continue;if(epoch!==this.generation)throw Error('RawCast configuration changed. Try again.');const value={url:url.href,mime:/\.mpd(?:$|\?)/i.test(url.href)||String(stream.type||stream.format||'').toLowerCase().includes('dash')?'application/dash+xml':'application/x-mpegURL'};this.streamCache.set(route,{value,until:Date.now()+120000});return value;}throw Error('RawCast stream unavailable. Choose another source.');}
   // No account endpoint is documented for API-key auth. A tiny documented metadata
   // request refreshes authoritative quota headers when the provider supplies them.
   async refreshUsage(){await this.request('/meta/movie/550?lang=en-US');return this.usage;}

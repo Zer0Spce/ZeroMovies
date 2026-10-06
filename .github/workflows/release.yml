@@ -1,7 +1,7 @@
 name: Release ZeroPlay
 on:
   push:
-    branches: [release/v1.7]
+    branches: [release/v1.7.1]
   workflow_dispatch:
     inputs:
       publish:
@@ -22,17 +22,6 @@ concurrency:
 permissions:
   contents: read
 jobs:
-  supersede:
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      contents: read
-    steps:
-      - name: Stop superseded v1.7 validation
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api --method POST repos/${{ github.repository }}/actions/runs/37420719923/cancel || true
   android:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -94,7 +83,7 @@ jobs:
           for variant in mobile tv; do
             apk=$(find "app/build/outputs/apk/$variant/release" -name '*.apk' -print -quit)
             test -n "$apk"
-            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.7'" || { echo 'Unexpected APK version'; exit 1; }
+            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.7.1'" || { echo 'Unexpected APK version'; exit 1; }
             if "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | grep -q application-debuggable; then
               echo 'Refusing debuggable release APK'; exit 1
             fi
@@ -105,9 +94,9 @@ jobs:
               suffix='-unsigned'
             fi
             if [ "$variant" = mobile ]; then
-              cp "$apk" "release-assets/ZeroPlay-1.7-Android$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.7.1-Android$suffix.apk"
             else
-              cp "$apk" "release-assets/ZeroPlay-1.7-Android-TV$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.7.1-Android-TV$suffix.apk"
             fi
           done
       - uses: actions/upload-artifact@v4
@@ -251,8 +240,8 @@ jobs:
 
 
   publish:
-    needs: [supersede, android, windows, player-devices]
-    if: always() && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && github.ref == 'refs/heads/release/v1.7')) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
+    needs: [android, windows, player-devices]
+    if: always() && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && github.ref == 'refs/heads/release/v1.7.1')) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
     runs-on: ubuntu-latest
     permissions:
       contents: write

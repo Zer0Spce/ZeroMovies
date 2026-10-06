@@ -18,16 +18,16 @@ def request(path, method='GET', data=None, binary=False):
     with opener.open(req, timeout=120) as response:
         return response.read() if binary else (json.load(response) if response.status != 204 else None)
 # A superseded commit can never publish even if its jobs completed.
-if os.environ.get('GITHUB_REF') == 'refs/heads/release/v1.7':
-    head=request('/git/ref/heads/release/v1.7')['object']['sha']
+if os.environ.get('GITHUB_REF') == 'refs/heads/release/v1.7.1':
+    head=request('/git/ref/heads/release/v1.7.1')['object']['sha']
     if head != os.environ['GITHUB_SHA']: raise RuntimeError('Release source superseded; publishing blocked')
 android_only = os.environ.get('ANDROID_ONLY') == 'true'
-release = request('/releases/tags/v1.7') if android_only else None
+release = request('/releases/tags/v1.7.1') if android_only else None
 assets = pathlib.Path('release-assets')
-files = [assets / name for name in ['ZeroPlay-1.7-Android.apk','ZeroPlay-1.7-Android-TV.apk','ZeroPlay-1.7-Windows-x64.zip']]
+files = [assets / name for name in ['ZeroPlay-1.7.1-Android.apk','ZeroPlay-1.7.1-Android-TV.apk','ZeroPlay-1.7.1-Windows-x64.zip']]
 if android_only:
     existing = {a['name']: a for a in release['assets']}
-    windows = existing['ZeroPlay-1.7-Windows-x64.zip']
+    windows = existing['ZeroPlay-1.7.1-Windows-x64.zip']
     previous = opener.open(existing['SHA256SUMS.txt']['browser_download_url'], timeout=120).read().decode()
     data = opener.open(windows['browser_download_url'], timeout=240).read()
     expected = next(line.split()[0] for line in previous.splitlines() if line.endswith(windows['name']))
@@ -40,7 +40,7 @@ subprocess.run(['python','scripts/audit-release-secrets.py',*[str(p) for p in fi
 checksums = assets / 'SHA256SUMS.txt'
 checksums.write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name + '\n' for p in files))
 # Start as a draft; only publish after all four assets upload successfully.
-release = release or request('/releases', 'POST', {'tag_name':'v1.7','target_commitish':os.environ['GITHUB_SHA'],'name':'ZeroPlay v1.7 🎬','body':pathlib.Path('docs/release-1.7.md').read_text(),'draft':True,'prerelease':False})
+release = release or request('/releases', 'POST', {'tag_name':'v1.7.1','target_commitish':os.environ['GITHUB_SHA'],'name':'ZeroPlay v1.7.1 🎬','body':pathlib.Path('docs/release-1.7.1.md').read_text(),'draft':True,'prerelease':False})
 upload_files = [*files[:2], checksums] if android_only else [*files, checksums]
 for file in upload_files:
     if android_only and file.name in existing:
@@ -50,5 +50,5 @@ for file in upload_files:
     with opener.open(req,timeout=240) as response:
         result=json.load(response)
         if result.get('state') != 'uploaded': raise RuntimeError('Release asset upload incomplete')
-request('/releases/'+str(release['id']),'PATCH',{'draft':False,'make_latest':'true','body':pathlib.Path('docs/release-1.7.md').read_text()})
-print('Published ZeroPlay v1.7 with verified signed APKs and Windows portable ZIP.')
+request('/releases/'+str(release['id']),'PATCH',{'draft':False,'make_latest':'true','body':pathlib.Path('docs/release-1.7.1.md').read_text()})
+print('Published ZeroPlay v1.7.1 with verified signed APKs and Windows portable ZIP.')
