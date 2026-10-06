@@ -1,8 +1,5 @@
 name: Release ZeroPlay
 on:
-  push:
-    branches: [main]
-    paths: [docs/release-1.6.1.md]
   workflow_dispatch:
     inputs:
       publish:
@@ -215,7 +212,7 @@ jobs:
 
   publish:
     needs: [android, windows, player-devices]
-    if: always() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.publish && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
