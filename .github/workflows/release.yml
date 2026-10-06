@@ -71,7 +71,7 @@ jobs:
           for variant in mobile tv; do
             apk=$(find "app/build/outputs/apk/$variant/release" -name '*.apk' -print -quit)
             test -n "$apk"
-            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.5.1'" || { echo 'Unexpected APK version'; exit 1; }
+            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.6.0'" || { echo 'Unexpected APK version'; exit 1; }
             if "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | grep -q application-debuggable; then
               echo 'Refusing debuggable release APK'; exit 1
             fi
@@ -82,9 +82,9 @@ jobs:
               suffix='-unsigned'
             fi
             if [ "$variant" = mobile ]; then
-              cp "$apk" "release-assets/ZeroPlay-1.5.1-Android$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.6.0-Android$suffix.apk"
             else
-              cp "$apk" "release-assets/ZeroPlay-1.5.1-Android-TV$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.6.0-Android-TV$suffix.apk"
             fi
           done
       - uses: actions/upload-artifact@v4
@@ -149,6 +149,12 @@ jobs:
             windows/dist/desktop-*.png
           if-no-files-found: error
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: UI-screenshots-Windows
+          path: windows/dist/desktop-*.png
+          if-no-files-found: error
+
   player-devices:
     env:
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
@@ -177,6 +183,7 @@ jobs:
           api-level: 28
           arch: x86_64
           target: google_apis
+          profile: pixel_2
           disable-animations: true
           script: |
             gradle :app:connected${{ matrix.variant }}DebugAndroidTest

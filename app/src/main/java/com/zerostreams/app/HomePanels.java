@@ -1,8 +1,8 @@
 package com.zerostreams.app;
 import java.util.*;
 final class HomePanels {
- static final String[] IDS={"clock","featured","continue","watchlist","upcoming","providers","recommended","trending","popular","series","now","action","comedy","horror","animation","anime"};
- static final String[] LABELS={"Clock","Featured carousel","Continue watching","Watchlist","Coming soon","Streaming providers","Recommended movies","Trending","Popular movies","Series worth watching","Now playing","Action movies","Comedy movies","Horror movies","Animation movies","Anime series"};
+ static final String[] IDS={"clock","featured","continue","watchlist","upcoming","providers","recommended","trending","popular","series","now","action","comedy","horror","animation","anime","adventure","crime","documentary","drama","family","fantasy","history","music","mystery","romance","scifi","thriller","war","western","tvmovie"};
+ static final String[] LABELS={"Clock","Featured carousel","Continue watching","Watchlist","Coming soon","Streaming providers","Recommended movies","Trending","Popular movies","Series worth watching","Now playing","Action movies","Comedy movies","Horror movies","Animation movies","Anime series","Adventure movies","Crime movies","Documentaries","Drama movies","Family movies","Fantasy movies","History movies","Music movies","Mystery movies","Romance movies","Science fiction movies","Thriller movies","War movies","Western movies","TV movies"};
  static Set<String> defaults(){return new HashSet<>(Arrays.asList(Arrays.copyOf(IDS,11)));}
- static int genre(String id){switch(id){case "action":return 28;case "comedy":return 35;case "horror":return 27;case "animation":case "anime":return 16;default:return 0;}}
+ static int genre(String id){switch(id){case "action":return 28;case "comedy":return 35;case "horror":return 27;case "animation":case "anime":return 16;case "adventure":return 12;case "crime":return 80;case "documentary":return 99;case "drama":return 18;case "family":return 10751;case "fantasy":return 14;case "history":return 36;case "music":return 10402;case "mystery":return 9648;case "romance":return 10749;case "scifi":return 878;case "thriller":return 53;case "war":return 10752;case "western":return 37;case "tvmovie":return 10770;default:return 0;}}
 }

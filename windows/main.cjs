@@ -7,12 +7,14 @@ const liveURL=pathToFileURL(path.join(__dirname,'ui/live-player.html')).href;
 const sources=require('./playback-sources.cjs');
 const core=require('./core.cjs'),{Worker}=require('node:worker_threads');
 let config={};try{config=require('./generated-config.json');}catch{}
+let sportsSession;
 let main,player,toolbar,playerHost,current,scanTimer,cursorTimer,qrWorker,scanning=false,state,file,guard,lastProgress=0;
 const uiURL=pathToFileURL(path.join(__dirname,'ui/index.html')).href;
 const toolsURL=pathToFileURL(path.join(__dirname,'ui/player-tools.html')).href;
 const smoke=process.argv.includes('--smoke-test');
-const dataRoot=require('./data-directory.cjs').dataDirectory(app.getPath('appData'));fs.mkdirSync(dataRoot,{recursive:true});app.setPath('userData',dataRoot);
-const homePanelIds=['clock','featured','continue','watchlist','upcoming','providers','recommended','trending','popular','series','now','action','comedy','horror','animation','anime'];
+const {cleanLegacySportsCache}=require('./sports-cache.cjs');
+const dataRoot=require('./data-directory.cjs').dataDirectory(app.getPath('appData'));fs.mkdirSync(dataRoot,{recursive:true});app.setPath('userData',dataRoot);const sportsCacheFailures=cleanLegacySportsCache(dataRoot);
+const homePanelIds=['clock','featured','continue','watchlist','upcoming','providers','recommended','trending','popular','series','now','action','comedy','horror','animation','anime','adventure','crime','documentary','drama','family','fantasy','history','music','mystery','romance','scifi','thriller','war','western','tvmovie'];
 const channelKey=(section,c)=>require('node:crypto').createHash('sha256').update(section+'|'+c.name+'|'+c.group).digest('hex');
 const defaults=()=>({liveFavorites:[],favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',source:'vidstuck',homePanels:homePanelIds.slice(0,11)},customKey:''});
 function persist(){const temp=file+'.tmp';fs.writeFileSync(temp,JSON.stringify(state));fs.renameSync(temp,file);}
@@ -46,6 +48,7 @@ async function scanAd(){
 }
 function closePlayer(){
   if(!player)return;const host=playerHost;player=null;toolbar=null;playerHost=null;current=null;liveSelection=null;sportsSelection=null;sportsHtmlServer?.close();sportsHtmlServer=null;
+  const endedSession=sportsSession;sportsSession=null;if(endedSession)Promise.allSettled([endedSession.clearCache(),endedSession.clearStorageData()]).catch(()=>{});
   clearInterval(scanTimer);clearInterval(cursorTimer);if(qrWorker)qrWorker.terminate();qrWorker=null;scanning=false;host.close();
   if(main&&!main.isDestroyed()){main.setTitle('ZeroPlay');main.webContents.focus();refresh();}
 }
@@ -89,15 +92,15 @@ async function openPlayer(value,selected,fixture,prepare=false){
 
 }
 async function openSports(id,index){
- const event=sportsStore.select(id,index);closePlayer();sportsSelection={id,index};const isolated=session.fromPartition('persist:live-sports');
+ const event=sportsStore.select(id,index);closePlayer();sportsSelection={id,index};const isolated=session.fromPartition('live-sports-'+require('node:crypto').randomUUID(),{cache:false});sportsSession=isolated;
  // Keep sports isolated while applying the same ad filtering as movie playback.
  isolated.webRequest.onBeforeRequest((details,callback)=>{let cancel=false;try{cancel=core.blocked(new URL(details.url).hostname);}catch{}callback({cancel});});
  isolated.on('will-download',event=>event.preventDefault());
  isolated.setPermissionRequestHandler((contents,permission,callback)=>callback(permission==='fullscreen'&&contents===player?.webContents));
  isolated.setPermissionCheckHandler((contents,permission)=>permission==='fullscreen'&&contents===player?.webContents);
- player=new WebContentsView({webPreferences:{session:isolated,contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
+ player=new WebContentsView({webPreferences:{session:isolated,preload:path.join(__dirname,'sports-preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
  toolbar=new WebContentsView({webPreferences:{preload:path.join(__dirname,'player-tools.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
- const view=player,contents=view.webContents;view.setBackgroundColor('#000000');playerHost=new PlayerHost(main,view,toolbar);
+ const view=player,contents=view.webContents;view.setBackgroundColor('#000000');playerHost=new PlayerHost(main,view,toolbar,{bottom:true});
  guard='window.__zeroTv=false;window.__zeroBlockAds=true;window.__zeroGain=1;'+fs.readFileSync(path.join(__dirname,'assets/player-guard.js'),'utf8');installPlayerScripts(contents);
  qrWorker=new Worker(path.join(__dirname,'qr-worker.cjs'));qrWorker.on('message',confirmed=>{scanning=false;if(confirmed&&!contents.isDestroyed())for(const frame of contents.mainFrame.framesInSubtree)frame.executeJavaScript('if(window.__zeroDismissQrAd)window.__zeroDismissQrAd();').catch(()=>{});});qrWorker.on('error',()=>{scanning=false;});scanTimer=setInterval(scanAd,3500);
  const stopAdNavigation=(event,url)=>{try{const u=new URL(url);if(!['http:','https:'].includes(u.protocol)||core.blocked(u.hostname))event.preventDefault();}catch{event.preventDefault();}};contents.on('will-navigate',stopAdNavigation);contents.on('will-redirect',stopAdNavigation);
@@ -141,6 +144,7 @@ app.whenReady().then(async()=>{
   playlistStore=playlists.createStore(path.join(dataRoot,smoke?'smoke-playlists':'playlists'),smoke?async()=>new Response('#EXTM3U\n#EXTINF:-1 group-title="Sports",Live smoke channel\nhttps://example.com/zero-smoke.m3u8'):fetch);
   sportsStore=sportsModule.createStore(path.join(dataRoot,'sports-catalogue.json'));
   ipcMain.handle('sports',async(event,force)=>{trusted(event);const snapshot=await sportsStore.get(force===true);return {...snapshot,categories:snapshot.categories.map(c=>({...c,events:c.events.map(e=>({...e,sources:e.sources.map(s=>({label:s.label}))}))}))};});
+  ipcMain.on('sports-activity',event=>{if(sportsSelection&&event.sender===player?.webContents)playerHost?.activity();});
   ipcMain.handle('sports-play',(event,id,index)=>{trusted(event);return openSports(id,index);});
   ipcMain.handle('playlist',async(event,section,force)=>{trusted(event);const snapshot=await playlistStore.get(section,force===true);return {...snapshot,channels:snapshot.channels.map((c,index)=>({index,name:c.name,group:c.group,logo:c.logo,favorite:(state.liveFavorites||[]).includes(channelKey(section,c))}))};});
   ipcMain.handle('live-play',async(event,section,index)=>{trusted(event);await openLive(section,index);return true;});
@@ -182,7 +186,7 @@ app.whenReady().then(async()=>{
   });
   main=new BrowserWindow({width:1440,height:920,minWidth:900,minHeight:620,title:'ZeroPlay',backgroundColor:'#090a10',icon:path.join(__dirname,'assets/icon.png'),show:false,autoHideMenuBar:true,webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
   main.webContents.setWindowOpenHandler(()=>({action:'deny'}));main.webContents.on('will-navigate',event=>event.preventDefault());main.webContents.on('will-attach-webview',event=>event.preventDefault());
-  main.once('ready-to-show',()=>main.show());main.on('closed',closePlayer);await main.loadFile(path.join(__dirname,'ui/index.html'));
+  main.once('ready-to-show',()=>{main.show();if(sportsCacheFailures.length&&!smoke)dialog.showMessageBox(main,{type:'warning',title:'Old Live Sports cache',message:'Some retired sports cache files could not be removed. Keep Microsoft Defender enabled and remove or quarantine any detected item in Protection History. The new sports player uses a memory-only browser session.'});});main.on('closed',closePlayer);await main.loadFile(path.join(__dirname,'ui/index.html'));
   if(smoke){try{await new Promise(r=>setTimeout(r,2500));const result=await main.webContents.executeJavaScript("({bridge:typeof window.zero?.api,brand:document.querySelector('.brand')?.textContent,tabs:Array.from(document.querySelectorAll('[data-nav]')).map(x=>x.dataset.nav)})");if(result.bridge!=='function'||!result.brand.includes('ZERO')||result.tabs.includes('Live')||result.tabs.includes('Manga'))throw Error('Desktop UI smoke failed');fs.mkdirSync('dist',{recursive:true});fs.writeFileSync('dist/desktop-preview.png',(await main.webContents.capturePage()).toPNG());for(const [section,name] of [['Categories','categories'],['Live Sports','sports']]){await main.webContents.executeJavaScript("document.querySelector('[data-nav=\""+section+"\"]').click()");await new Promise(r=>setTimeout(r,8000));fs.writeFileSync('dist/desktop-'+name+'.png',(await main.webContents.capturePage()).toPNG());}await main.webContents.executeJavaScript("document.querySelector('[data-action=\"settings\"]').click()");await new Promise(r=>setTimeout(r,500));fs.writeFileSync('dist/desktop-settings.png',(await main.webContents.capturePage()).toPNG());await main.webContents.executeJavaScript("document.querySelector('[data-action=\"close-settings\"]').click();document.querySelector('[data-nav=\"Home\"]').click()");await new Promise(r=>setTimeout(r,1500));await main.webContents.executeJavaScript("document.querySelector('#query').value='preserved draft'");
 await openPlayer({id:299534,type:'movie',title:'Fullscreen test'},undefined,path.join(__dirname,'test/fullscreen.html'));
 if(BrowserWindow.getAllWindows().length!==1)throw Error('Playback created another window');
@@ -214,7 +218,7 @@ try{
   }
   const sportsData={success:true,streams:[{category:'Football',streams:[{id:'fixture',name:'Sports fixture',source_tag:'Main fixture',iframe:fixture.base+'/sports',substreams:[{source_tag:'Alternate fixture',iframe:'<iframe src="'+fixture.base+'/sports" allow="autoplay; fullscreen" allowfullscreen></iframe>'}]}]}]};
   sportsStore=sportsModule.createStore(path.join(dataRoot,'sports-smoke-'+Date.now()+'.json'),async url=>new Response(JSON.stringify(url.endsWith('/ping')?{success:true,domains:[]}:sportsData)));await sportsStore.get(true);
-  for(let index=0;index<2;index++){await openSports('fixture',index);let decoded=false;for(let attempt=0;attempt<100&&!decoded;attempt++){for(const frame of player.webContents.mainFrame.framesInSubtree){const result=await frame.executeJavaScript("({time:document.querySelector('video')?.currentTime||0,ad:document.getElementById('provider-ad')?.style.display,guard:typeof window.__zeroBlockAds,integration:localStorage.getItem('sports-integration')})").catch(()=>null);if(result?.time>1){if(result.ad!=='none'||result.guard!=='boolean'||result.integration!=='kept')throw Error('Sports filtering or player integration failed');decoded=true;break;}}if(!decoded)await new Promise(r=>setTimeout(r,100));}if(!decoded)throw Error('Sports embedded video failed for source '+index);await toolbar.webContents.executeJavaScript("document.querySelector('#fullscreen').click()");for(let i=0;i<30&&!main.isFullScreen();i++)await new Promise(r=>setTimeout(r,100));if(!main.isFullScreen())throw Error('Sports fullscreen failed');closePlayer();if(main.isFullScreen())throw Error('Sports Back did not restore browsing');console.log('Sports URL/HTML source decoded with ad filtering and storage integration',index);}
+  for(let index=0;index<2;index++){await openSports('fixture',index);if(sportsSession.isPersistent())throw Error('Sports browser session must be memory-only');if(playerHost.bottom!==true)throw Error('Sports controls must be a bottom overlay');let decoded=false;for(let attempt=0;attempt<100&&!decoded;attempt++){for(const frame of player.webContents.mainFrame.framesInSubtree){const result=await frame.executeJavaScript("({time:document.querySelector('video')?.currentTime||0,ad:document.getElementById('provider-ad')?.style.display,guard:typeof window.__zeroBlockAds,integration:localStorage.getItem('sports-integration')})").catch(()=>null);if(result?.time>1){if(result.ad!=='none'||result.guard!=='boolean'||result.integration!=='kept')throw Error('Sports filtering or player integration failed');decoded=true;break;}}if(!decoded)await new Promise(r=>setTimeout(r,100));}if(!decoded)throw Error('Sports embedded video failed for source '+index);await toolbar.webContents.executeJavaScript("document.querySelector('#fullscreen').click()");for(let i=0;i<30&&!main.isFullScreen();i++)await new Promise(r=>setTimeout(r,100));if(!main.isFullScreen())throw Error('Sports fullscreen failed');closePlayer();if(main.isFullScreen())throw Error('Sports Back did not restore browsing');console.log('Sports URL/HTML source decoded with ad filtering and storage integration',index);}
 }finally{closePlayer();await fixture.close();}
 console.log('Single-window movie/live playback, actual fullscreen, Back and preserved browsing smoke checks passed');app.exit(0);}catch(error){console.error(error);app.exit(1);}}
 });

@@ -18,12 +18,12 @@ def request(path, method='GET', data=None, binary=False):
     with opener.open(req, timeout=120) as response:
         return response.read() if binary else (json.load(response) if response.status != 204 else None)
 android_only = os.environ.get('ANDROID_ONLY') == 'true'
-release = request('/releases/tags/v1.5.1') if android_only else None
+release = request('/releases/tags/v1.6.0') if android_only else None
 assets = pathlib.Path('release-assets')
-files = [assets / name for name in ['ZeroPlay-1.5.1-Android.apk','ZeroPlay-1.5.1-Android-TV.apk','ZeroPlay-1.5.1-Windows-x64.zip']]
+files = [assets / name for name in ['ZeroPlay-1.6.0-Android.apk','ZeroPlay-1.6.0-Android-TV.apk','ZeroPlay-1.6.0-Windows-x64.zip']]
 if android_only:
     existing = {a['name']: a for a in release['assets']}
-    windows = existing['ZeroPlay-1.5.1-Windows-x64.zip']
+    windows = existing['ZeroPlay-1.6.0-Windows-x64.zip']
     previous = opener.open(existing['SHA256SUMS.txt']['browser_download_url'], timeout=120).read().decode()
     data = opener.open(windows['browser_download_url'], timeout=240).read()
     expected = next(line.split()[0] for line in previous.splitlines() if line.endswith(windows['name']))
@@ -33,7 +33,7 @@ if not all(p.is_file() and p.stat().st_size > 0 for p in files): raise RuntimeEr
 checksums = assets / 'SHA256SUMS.txt'
 checksums.write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name + '\n' for p in files))
 # Start as a draft; only publish after all four assets upload successfully.
-release = release or request('/releases', 'POST', {'tag_name':'v1.5.1','target_commitish':os.environ['GITHUB_SHA'],'name':'ZeroPlay v1.5.1 🎬','body':pathlib.Path('docs/release-1.5.1.md').read_text(),'draft':True,'prerelease':False})
+release = release or request('/releases', 'POST', {'tag_name':'v1.6.0','target_commitish':os.environ['GITHUB_SHA'],'name':'ZeroPlay v1.6.0 🎬','body':pathlib.Path('docs/release-1.6.0.md').read_text(),'draft':True,'prerelease':False})
 upload_files = [*files[:2], checksums] if android_only else [*files, checksums]
 for file in upload_files:
     if android_only and file.name in existing:
@@ -43,5 +43,5 @@ for file in upload_files:
     with opener.open(req,timeout=240) as response:
         result=json.load(response)
         if result.get('state') != 'uploaded': raise RuntimeError('Release asset upload incomplete')
-request('/releases/'+str(release['id']),'PATCH',{'draft':False,'make_latest':'true','body':pathlib.Path('docs/release-1.5.1.md').read_text()})
-print('Published ZeroPlay v1.5.1 with verified signed APKs and Windows portable ZIP.')
+request('/releases/'+str(release['id']),'PATCH',{'draft':False,'make_latest':'true','body':pathlib.Path('docs/release-1.6.0.md').read_text()})
+print('Published ZeroPlay v1.6.0 with verified signed APKs and Windows portable ZIP.')

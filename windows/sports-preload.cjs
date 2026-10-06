@@ -1,0 +1,1 @@
+const {ipcRenderer}=require('electron');let last=0;for(const type of ['pointermove','pointerdown','keydown'])window.addEventListener(type,()=>{if(Date.now()-last>250){last=Date.now();ipcRenderer.send('sports-activity');}},true);

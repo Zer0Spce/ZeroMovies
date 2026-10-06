@@ -1,6 +1,6 @@
 {
   "name": "zerostreams-windows",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "ZeroPlay movies, series, Live TV and Live Sports with sports ad filtering",
   "author": "ZeroPlay",
   "private": true,
@@ -39,7 +39,7 @@
       "target": [
         "zip"
       ],
-      "artifactName": "ZeroPlay-1.5.1-Windows-x64.${ext}",
+      "artifactName": "ZeroPlay-1.6.0-Windows-x64.${ext}",
       "icon": "assets/icon.ico"
     },
     "asar": true

@@ -55,7 +55,7 @@ final class ContentApi {
             JSONObject raw=data.getJSONObject(i);String media=raw.optString("media_type",mediaDefault);if(!media.equals("movie")&&!media.equals("tv")||raw.optBoolean("adult"))continue;
             long id=raw.optLong("id");if(id<=0)continue;String type=media.equals("tv")?"series":"movie",name=raw.optString(media.equals("tv")?"name":"title");if(name.isEmpty())continue;
             String date=raw.optString(media.equals("tv")?"first_air_date":"release_date"),poster=raw.optString("poster_path"),backdrop=raw.optString("backdrop_path");int year=0;try{if(date.length()>=4)year=Integer.parseInt(date.substring(0,4));}catch(NumberFormatException ignored){}
-            JSONObject item=new JSONObject().put("id","tmdb-"+type+"-"+id).put("title",name).put("type",type).put("year",year).put("description",raw.optString("overview")).put("rating",raw.optDouble("vote_average",0))
+            JSONObject item=new JSONObject().put("id","tmdb-"+type+"-"+id).put("title",name).put("type",type).put("year",year).put("description",raw.optString("overview")).put("popularity",raw.optDouble("popularity",0)).put("rating",raw.optDouble("vote_average",0))
                 .put("poster",poster.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/w500"+poster:"")
                 .put("backdrop",backdrop.matches("/[A-Za-z0-9_.-]+")?"https://image.tmdb.org/t/p/w1280"+backdrop:"").put("releaseDate",date).put("genreIds",raw.optJSONArray("genre_ids")).put("onlineSearch",search);
             rows.add(new Catalog.Item(item));
@@ -109,6 +109,7 @@ final class ContentApi {
     }
     static JSONArray genres(String type,String key) throws Exception {return DiscoveryApi.genres((path,q)->tmdb(path,key,q),type);}
     static JSONObject animeData(String key,String type,int page)throws Exception {if(!type.equals("tv")&&!type.equals("movie")||page<1||page>500)throw new IllegalArgumentException("Invalid anime page");return tmdb("/discover/"+type,key,"&include_adult=false&with_genres=16&with_original_language=ja&sort_by=popularity.desc&page="+page);}
+    static JSONObject categoryData(String key,String type,int id,int page)throws Exception {if(id>0)return genreData(key,type,id,page);if(!type.equals("tv")&&!type.equals("movie")||page<1||page>500)throw new IllegalArgumentException("Invalid page");return tmdb("/discover/"+type,key,"&include_adult=false&with_original_language="+DiscoveryCollections.language(id)+"&sort_by=popularity.desc&page="+page);}
     static JSONObject genreData(String key,String type,int genre,int page) throws Exception {return DiscoveryApi.genrePage((path,q)->tmdb(path,key,q),type,genre,page);}
     static Catalog.Item randomMovie(String key,Random random,Set<Long> recent) throws Exception {
         String today=new java.text.SimpleDateFormat("yyyy-MM-dd",Locale.ROOT).format(new Date());
