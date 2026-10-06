@@ -74,6 +74,7 @@
 - Fixed quick theme switching requiring an Android activity restart.
 - Prevented an unfinished episode picker from falling back to episode 1.
 - Paused downloads safely when history storage is full or unwritable.
+- Fixed Cancel focus in download deletion dialogs for touch-mode and TV remote input.
 
 RawCast offers a free API tier at release time; your account determines the actual limits.
 
