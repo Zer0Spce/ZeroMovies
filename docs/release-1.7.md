@@ -72,6 +72,8 @@
 - Prevented stale API-key requests from restoring cached results after a key change.
 - Fixed missing downloaded videos remaining marked playable.
 - Fixed quick theme switching requiring an Android activity restart.
+- Prevented an unfinished episode picker from falling back to episode 1.
+- Paused downloads safely when history storage is full or unwritable.
 
 RawCast offers a free API tier at release time; your account determines the actual limits.
 
