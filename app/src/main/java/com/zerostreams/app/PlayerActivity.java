@@ -36,18 +36,21 @@ public class PlayerActivity extends Activity {
     }
     private void startPlayer() {
         if(player!=null)return;
+        final android.net.Uri mediaUri=android.net.Uri.parse(source.optString("url"));
+        final boolean localFile=source.optBoolean("offline")||"file".equals(mediaUri.getScheme());
+        if(localFile&&!"file".equals(mediaUri.getScheme())){error.setText("Offline playback requires a downloaded local file.");error.setVisibility(View.VISIBLE);return;}
         DefaultHttpDataSource.Factory http=new DefaultHttpDataSource.Factory().setUserAgent("ZeroPlay/"+BuildConfig.VERSION_NAME).setAllowCrossProtocolRedirects(false);
         Map<String,String> headers=new HashMap<>();JSONObject h=source.optJSONObject("headers");if(h!=null){Iterator<String> names=h.keys();while(names.hasNext()){String name=names.next();headers.put(name,h.optString(name));}}http.setDefaultRequestProperties(headers);
         String offline=getIntent().getStringExtra("offline");androidx.media3.exoplayer.offline.Download download=null;if(offline!=null)try{download=OfflineDownloads.manager(this).getDownloadIndex().getDownload(offline);}catch(java.io.IOException ignored){}if(offline!=null&&(download==null||download.state!=androidx.media3.exoplayer.offline.Download.STATE_COMPLETED)){error.setText("Download is not ready. Return to Downloads.");error.setVisibility(View.VISIBLE);return;}
-        androidx.media3.datasource.DataSource.Factory data=offline!=null?OfflineDownloads.factory(this,null,true):new androidx.media3.datasource.DefaultDataSource.Factory(this,http);player=new ExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(data)).build();view.setPlayer(player);
+        androidx.media3.datasource.DataSource.Factory data=offline!=null?OfflineDownloads.factory(this,null,true):localFile?()->new androidx.media3.datasource.FileDataSource():new androidx.media3.datasource.DefaultDataSource.Factory(this,http);player=new ExoPlayer.Builder(this).setMediaSourceFactory(new DefaultMediaSourceFactory(data)).build();view.setPlayer(player);
         player.addListener(new Player.Listener(){
-            @Override public void onPlayerError(PlaybackException exception){error.setText("Playback failed. Press Back and choose another source.\n"+exception.getErrorCodeName());error.setVisibility(View.VISIBLE);view.showController();}
+            @Override public void onPlayerError(PlaybackException exception){error.setText("Playback failed. This device may not support the file’s video or audio codec.\n"+exception.getErrorCodeName());error.setVisibility(View.VISIBLE);view.showController();}
             @Override public void onPlaybackStateChanged(int state){if(state==Player.STATE_ENDED&&!live)prefs.edit().remove("position:"+key).remove("position:"+parent).apply();}
         });
         MediaItem.Builder media=new MediaItem.Builder().setUri(source.optString("url")).setMediaMetadata(new MediaMetadata.Builder().setTitle(getIntent().getStringExtra("title")).build());
         if(!source.optString("mimeType").isEmpty())media.setMimeType(source.optString("mimeType"));
         JSONArray subtitles=source.optJSONArray("subtitles");List<MediaItem.SubtitleConfiguration> tracks=new ArrayList<>();
-        if(subtitles!=null)for(int i=0;i<subtitles.length();i++){JSONObject s=subtitles.optJSONObject(i);if(s!=null&&s.optString("url").startsWith("https://"))tracks.add(new MediaItem.SubtitleConfiguration.Builder(android.net.Uri.parse(s.optString("url"))).setMimeType(s.optString("mimeType","text/vtt")).setLanguage(s.optString("language","en")).setLabel(s.optString("label","Subtitles")).build());}
+        if(!localFile&&subtitles!=null)for(int i=0;i<subtitles.length();i++){JSONObject s=subtitles.optJSONObject(i);if(s!=null&&s.optString("url").startsWith("https://"))tracks.add(new MediaItem.SubtitleConfiguration.Builder(android.net.Uri.parse(s.optString("url"))).setMimeType(s.optString("mimeType","text/vtt")).setLanguage(s.optString("language","en")).setLabel(s.optString("label","Subtitles")).build());}
         media.setSubtitleConfigurations(tracks);player.setMediaItem(download==null?media.build():download.request.toMediaItem());if(!live)player.seekTo(position);player.prepare();player.setPlayWhenReady(playWhenReady);view.requestFocus();view.showController();
     }
     private void stopPlayer() {
