@@ -23,6 +23,7 @@ permissions:
   contents: read
 jobs:
   android:
+    if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip release]')
     runs-on: ubuntu-latest
     timeout-minutes: 25
     outputs:
@@ -108,7 +109,7 @@ jobs:
         if: always()
         run: rm -f "$RUNNER_TEMP/zeromovies-release.jks"
   windows:
-    if: ${{ !inputs.android_only && !inputs.reuse_windows_run }}
+    if: ${{ !inputs.android_only && !inputs.reuse_windows_run && !contains(github.event.head_commit.message, '[skip release]') }}
     runs-on: windows-latest
     timeout-minutes: 25
     defaults:
@@ -174,6 +175,7 @@ jobs:
           if-no-files-found: error
 
   player-devices:
+    if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip release]')
     env:
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
       RAWCAST_API_KEY: ''
@@ -241,7 +243,7 @@ jobs:
 
   publish:
     needs: [android, windows, player-devices]
-    if: always() && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && github.ref == 'refs/heads/release/v1.7.1.1')) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
+    if: always() && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && github.ref == 'refs/heads/release/v1.7.1.1')) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped')) && !contains(github.event.head_commit.message, '[skip release]')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -259,7 +261,7 @@ jobs:
           REUSE_WINDOWS_RUN: ${{ inputs.reuse_windows_run }}
         run: python scripts/verify-windows-reuse.py
       - uses: actions/download-artifact@v4
-        if: ${{ !inputs.android_only && !inputs.reuse_windows_run }}
+        if: ${{ !inputs.android_only && !inputs.reuse_windows_run && !contains(github.event.head_commit.message, '[skip release]') }}
         with:
           name: ZeroPlay-production-windows
           path: release-assets
