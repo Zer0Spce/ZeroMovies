@@ -6,7 +6,7 @@
 
 Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surprise Me** dice when you cannot decide. Softly blurred artwork, light and dark themes, and dedicated TV controls make it comfortable on your phone, desktop, or big screen.
 
-**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.7.2 release notes](docs/release-1.7.2.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
+**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.7.3 release notes](docs/release-1.7.3.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
 
 Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations, Windows library data, and the permanent signing key.
 
@@ -22,7 +22,7 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | ⭐ **Favorite channels** | Star Live TV channels and browse your Favorites group. |
 | ⚙️ **Homepage panels** | Keep the default layout or enable extra Action, Comedy, Horror, Animation, and Anime rows in Settings. |
 | 🎞️ **Rich title details** | View artwork, ratings, synopsis, cast, genres, trailers, and related recommendations; delayed hover/focus previews show details near the poster and title. |
-| ▶️ **Choose your source** | Use **VidStuck by default**, switch to VidSrc.sh, or choose **RawCast · Limited** with your own API key. RawCast streaming and downloads share your quota. |
+| ▶️ **Choose your source** | Use **VidStuck by default**, switch to VidSrc.sh, or enable **RawCast · Limited** in Settings with your own API key. RawCast playback is hidden by default. RawCast streaming and downloads share your quota. |
 | ❤️ **Your library** | Save a watchlist, organize collections and Plan to Watch, and revisit watch and search history. |
 | ⏯️ **Continue Watching** | Return to started titles and resume where supported by the playback provider. |
 | 🎨 **Make it yours** | Default, Light and three numbered color palettes; immediate theme switching, optional animations and delayed focus/hover previews. |
@@ -92,11 +92,11 @@ Choose your playback source, appearance, provider region, and optional audio boo
 
 Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroPlay/releases/latest)**.
 
-| Platform | v1.7.2 download | Getting started |
+| Platform | v1.7.3 download | Getting started |
 | --- | --- | --- |
-| 📱 Android phone / tablet | `ZeroPlay-1.7.2-Android.apk` | Android 6+. Install the signed mobile APK. |
-| 📺 Android TV / Google TV | `ZeroPlay-1.7.2-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
-| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.7.2-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
+| 📱 Android phone / tablet | `ZeroPlay-1.7.3-Android.apk` | Android 6+. Install the signed mobile APK. |
+| 📺 Android TV / Google TV | `ZeroPlay-1.7.3-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
+| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.7.3-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
 | ✅ Integrity checks | `SHA256SUMS.txt` | Compare your downloaded files against the published SHA-256 checksums. |
 
 Android v0.4.5 uses a permanent production signing key. Moving from an earlier debug build may require uninstalling that build first, which clears its local library and history. Future production releases retain the same signing key.
@@ -129,25 +129,23 @@ Metadata and artwork: **TMDB** and their respective rights holders. This product
 
 If a QR ad appears, press its **X** button or wait for it to close automatically. This is a known bug.
 
-## 🆕 Version 1.7.2
+## 🆕 Version 1.7.3
 
-📥 **Original-format downloads restored.** ZeroPlay accepts supported direct MP4, MKV and other video files supplied by RawCast, preserving the file and its correct extension. The MP4-only restriction from 1.7.1.1 is removed. There is no download format selector or post-download preparation/conversion phase.
+📥 **Back to the 1.7.1 baseline.** This release restores the 1.7.1 application and download implementation, replacing the changes introduced in 1.7.1.1 and 1.7.2. Windows again offers the 1.7.1 MP4/MKV output options and preparation behavior.
 
-🔊 **Windows offline audio during playback.** Supported AC-3, E-AC-3 and DTS audio is decoded to AAC on demand while you watch. Your downloaded file stays unchanged; video codec compatibility still depends on the player.
+⚙️ **RawCast playback is optional.** Hidden and disabled by default on Android, Android TV and Windows. Enable **RawCast playback source** in Settings to add it to the source picker. Disabling it returns RawCast selections to VidStuck. Downloads remain available separately using your own API key; streaming and downloads share your limited quota.
 
-📺 **Native Android offline playback.** Downloaded files open through Media3/ExoPlayer with a local file source, native controls and saved playback position. Android codec support depends on your device.
+🎬 **Windows carousel trailers fill the frame.** Muted trailers use a centered 16:9 cover crop that adapts to the carousel size without stretching. Cropping can trim the edges; black bars encoded into a trailer may remain.
 
-See the [complete 1.7.2 release notes](docs/release-1.7.2.md).
+See the [complete 1.7.3 release notes](docs/release-1.7.3.md).
 
-### 📥 RawCast downloads & optional streaming
+### 📥 RawCast downloads
 
-**VidStuck is the default playback source. RawCast is optional and limited:** streaming and downloads share your API quota. Add your own key under **Your Space → Downloads** or **Settings → RawCast API**, press **Save Key**, then **Test API**. The Downloads tab also shows usage when RawCast supplies authoritative quota information; no estimated quota is displayed. Public releases do not include a personal RawCast key.
+Add your key under **Your Space → Downloads** or **Settings → RawCast API**, press **Save Key**, then **Test API**. Provider-reported quota usage appears when supplied. Public releases contain no personal RawCast key.
 
-Open a movie's details or select a series episode and press **Download**. Windows offers a quality selector and keeps the original container returned by RawCast. Available formats, file sizes and qualities depend on the provider; a 1080p label does not guarantee a small file. A catalogue listing does not guarantee a downloadable source or matching upstream video content.
+Open movie details or choose a series episode and press **Download**. The Downloads tab tracks queue, progress, speed, size and ETA. Windows supports choosing a folder, output format and quality using the restored 1.7.1 flow. Android uses app-specific Movies storage. **Delete Video** removes the file after confirmation; **Remove from History** keeps it. Resuming requires server byte-range support.
 
-The Downloads tab tracks queue, progress, speed, size and ETA. Windows lets you choose the folder; Android uses app-specific Movies storage. **Delete Video** deletes the actual file after confirmation. **Remove from History** keeps the video. Downloads resume when the server supports byte ranges; otherwise the partial download starts again.
-
-VidStuck, VidSrc.sh, catalogue browsing and trailers do not use RawCast. Selecting RawCast explicitly resolves a stream with your saved API key.
+Download availability, file size, quality and upstream content depend on RawCast. Restoring the earlier client does not guarantee a source for every title. VidStuck, VidSrc.sh, catalogue browsing and trailers do not use RawCast.
 
 ### 🏟️ Live Sports
 
