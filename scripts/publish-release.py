@@ -17,6 +17,10 @@ def request(path, method='GET', data=None, binary=False):
     req = urllib.request.Request(base + path, data=data, headers=headers, method=method)
     with opener.open(req, timeout=120) as response:
         return response.read() if binary else (json.load(response) if response.status != 204 else None)
+# A superseded commit can never publish even if its jobs completed.
+if os.environ.get('GITHUB_REF') == 'refs/heads/release/v1.7':
+    head=request('/git/ref/heads/release/v1.7')['object']['sha']
+    if head != os.environ['GITHUB_SHA']: raise RuntimeError('Release source superseded; publishing blocked')
 android_only = os.environ.get('ANDROID_ONLY') == 'true'
 release = request('/releases/tags/v1.7') if android_only else None
 assets = pathlib.Path('release-assets')

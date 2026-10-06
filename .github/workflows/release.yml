@@ -16,9 +16,23 @@ on:
         description: Reuse a tested Windows artifact from a release run with identical Windows source
         type: string
         default: ''
+concurrency:
+  group: zeroplay-production-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
+  supersede:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Stop superseded v1.7 validation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST repos/${{ github.repository }}/actions/runs/37420719923/cancel || true
   android:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -237,7 +251,7 @@ jobs:
 
 
   publish:
-    needs: [android, windows, player-devices]
+    needs: [supersede, android, windows, player-devices]
     if: always() && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && github.ref == 'refs/heads/release/v1.7')) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
     runs-on: ubuntu-latest
     permissions:
