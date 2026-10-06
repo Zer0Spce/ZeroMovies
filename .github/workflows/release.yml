@@ -1,5 +1,8 @@
 name: Release ZeroPlay
 on:
+  push:
+    branches: [main]
+    paths: [docs/release-1.6.1.md]
   workflow_dispatch:
     inputs:
       publish:
@@ -75,7 +78,7 @@ jobs:
           for variant in mobile tv; do
             apk=$(find "app/build/outputs/apk/$variant/release" -name '*.apk' -print -quit)
             test -n "$apk"
-            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.6.0'" || { echo 'Unexpected APK version'; exit 1; }
+            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.6.1'" || { echo 'Unexpected APK version'; exit 1; }
             if "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | grep -q application-debuggable; then
               echo 'Refusing debuggable release APK'; exit 1
             fi
@@ -86,9 +89,9 @@ jobs:
               suffix='-unsigned'
             fi
             if [ "$variant" = mobile ]; then
-              cp "$apk" "release-assets/ZeroPlay-1.6.0-Android$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.6.1-Android$suffix.apk"
             else
-              cp "$apk" "release-assets/ZeroPlay-1.6.0-Android-TV$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.6.1-Android-TV$suffix.apk"
             fi
           done
       - uses: actions/upload-artifact@v4
@@ -100,7 +103,7 @@ jobs:
         if: always()
         run: rm -f "$RUNNER_TEMP/zeromovies-release.jks"
   windows:
-    if: ${{ !inputs.android_only && inputs.reuse_windows_run == '' }}
+    if: ${{ !inputs.android_only && !inputs.reuse_windows_run }}
     runs-on: windows-latest
     timeout-minutes: 25
     defaults:
@@ -212,7 +215,7 @@ jobs:
 
   publish:
     needs: [android, windows, player-devices]
-    if: always() && github.event_name == 'workflow_dispatch' && inputs.publish && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run != '') && needs.windows.result == 'skipped'))
+    if: always() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.publish)) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -224,18 +227,18 @@ jobs:
           name: ZeroPlay-production-validation-true
           path: release-assets
       - name: Validate reusable Windows build
-        if: ${{ inputs.reuse_windows_run != '' }}
+        if: ${{ inputs.reuse_windows_run }}
         env:
           GH_TOKEN: ${{ github.token }}
           REUSE_WINDOWS_RUN: ${{ inputs.reuse_windows_run }}
         run: python scripts/verify-windows-reuse.py
       - uses: actions/download-artifact@v4
-        if: ${{ !inputs.android_only && inputs.reuse_windows_run == '' }}
+        if: ${{ !inputs.android_only && !inputs.reuse_windows_run }}
         with:
           name: ZeroPlay-production-windows
           path: release-assets
       - uses: actions/download-artifact@v4
-        if: ${{ !inputs.android_only && inputs.reuse_windows_run != '' }}
+        if: ${{ !inputs.android_only && inputs.reuse_windows_run }}
         with:
           name: ZeroPlay-production-windows
           run-id: ${{ inputs.reuse_windows_run }}

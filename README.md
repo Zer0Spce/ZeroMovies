@@ -6,7 +6,7 @@
 
 Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surprise Me** dice when you cannot decide. Softly blurred artwork, light and dark themes, and dedicated TV controls make it comfortable on your phone, desktop, or big screen.
 
-**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.6.0 release notes](docs/release-1.6.0.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
+**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.6.1 release notes](docs/release-1.6.1.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
 
 Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations, Windows library data, and the permanent signing key.
 
@@ -17,7 +17,7 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | 🔎 **Discover & search** | Browse trending, popular, now-playing, recommended, and coming-soon titles, or search movies and TV series through TMDB. |
 | 🎲 **Surprise Me** | Discover released movies beyond the homepage rows with the red dice button beside the theme toggle. |
 | 🗂️ **Categories** | Explore movie and TV genres, including Anime cards in both grids. Artwork makes categories easy to browse, and more titles load as you scroll. |
-| 📡 **PPV/Sports & LIVE TV** | Two dedicated tabs using the ZeroStreams playlists, colored refresh buttons, channel groups, and in-app playback on Android, Android TV and Windows. |
+| 📡 **Live PPV & Live TV** | Two dedicated tabs using the ZeroStreams playlists, colored refresh buttons, channel groups, and in-app playback on Android, Android TV and Windows. |
 | 🏟️ **Live Sports** | Event categories, posters, local schedules, labeled alternate sources, fullscreen playback, and a fresh API request every time you press Refresh sports. |
 | ⭐ **Favorite channels** | Star LIVE TV channels and browse your Favorites group. |
 | ⚙️ **Homepage panels** | Keep the default layout or enable extra Action, Comedy, Horror, Animation, and Anime rows in Settings. |
@@ -90,11 +90,11 @@ Choose your playback source, appearance, provider region, and optional audio boo
 
 Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroPlay/releases/latest)**.
 
-| Platform | v1.6.0 download | Getting started |
+| Platform | v1.6.1 download | Getting started |
 | --- | --- | --- |
-| 📱 Android phone / tablet | `ZeroPlay-1.6.0-Android.apk` | Android 6+. Install the signed mobile APK. |
-| 📺 Android TV / Google TV | `ZeroPlay-1.6.0-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
-| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.6.0-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
+| 📱 Android phone / tablet | `ZeroPlay-1.6.1-Android.apk` | Android 6+. Install the signed mobile APK. |
+| 📺 Android TV / Google TV | `ZeroPlay-1.6.1-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
+| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.6.1-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
 | ✅ Integrity checks | `SHA256SUMS.txt` | Compare your downloaded files against the published SHA-256 checksums. |
 
 Android v0.4.5 uses a permanent production signing key. Moving from an earlier debug build may require uninstalling that build first, which clears its local library and history. Future production releases retain the same signing key.
@@ -142,3 +142,7 @@ If a QR ad appears, press its **X** button or wait for it to close automatically
 Movie and torrent downloads are disabled because of bugs we have not been able to fix in the current implementation. The Downloads tab and download/save buttons are removed for now. We plan to reimplement them in a future version once a reliable fix is found. Existing downloaded files are not deleted by this update.
 
 The reported **Trojan:Win32/Suschil!rfn** alert identifies a file under the legacy Windows `Partitions/live-sports/Cache/Cache_Data` directory. v1.6.0 removes that old sports cache and stops persisting the sports browser session. This does not identify the supplying request, prove a false positive, or certify third-party streams. Keep Defender enabled and remove/quarantine detected items; do not restore them or add an exclusion. Your watchlists and settings are retained.
+
+### Version 1.6.1
+
+Bug fixes.
