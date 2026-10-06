@@ -1,8 +1,0 @@
-'use strict';
-const {load}=require('cheerio');
-function extURL(query){return 'https://ext.to/browse/?q='+encodeURIComponent(String(query||'').trim().slice(0,160));}
-function allowed(url){const u=new URL(url);if(u.protocol!=='https:'||u.hostname!=='ext.to'||u.port||u.username||u.password)throw Error('Invalid EXT source');return u;}
-async function page(url,fetcher=fetch){const u=allowed(url),r=await fetcher(u.href,{signal:AbortSignal.timeout(20000),redirect:'error'});if(!r.ok)throw Error('EXT search is unavailable. Open EXT in your browser or paste a magnet link.');const text=await r.text();if(text.length>4*1024**2)throw Error('EXT page too large');if(/Just a moment|cf-chl-|Verify you are human/i.test(text))throw Error('EXT requires a browser check. Open EXT in your browser and paste a magnet link.');return load(text);}
-async function search(query,fetcher){const $=await page(extURL(query),fetcher),rows=[];const seen=new Set();$('a[href]').each((i,el)=>{const a=$(el),href=a.attr('href'),title=a.text().trim().replace(/\s+/g,' ');if(!title||title.length<8||!/^\/[a-z0-9][a-z0-9-]+-\d+\/?$/i.test(href||'')||/-m\d+\/?$/.test(href))return;const url=new URL(href,'https://ext.to').href;if(!seen.has(url)&&rows.length<25){seen.add(url);const detail=a.closest('tr').text().replace(/\s+/g,' ').trim().slice(0,450);rows.push({title:title.slice(0,300),url,detail});}});return rows;}
-async function resolve(url,fetcher){const $=await page(url,fetcher);const value=$('a[href^="magnet:"]').first().attr('href');if(!value)throw Error('No magnet found. Open the result in your browser and paste its magnet link.');return require('./downloads.cjs').magnet(value);}
-module.exports={extURL,allowed,search,resolve};

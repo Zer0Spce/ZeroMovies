@@ -1,0 +1,3 @@
+'use strict';
+const {app}=require('electron'),path=require('node:path'),assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os');const {playable}=require('../download-probe.cjs');app.on('window-all-closed',()=>{});
+app.whenReady().then(async()=>{try{for(const format of ['mp4','mkv','webm']){assert.equal(await playable(path.join(__dirname,'../test/video/fixture.'+format)),format),true,format+' must decode through the built-in Windows player');}const bad=path.join(os.tmpdir(),'zero-invalid-video.part');fs.writeFileSync(bad,'HTML pretending to be a video');assert.equal(await playable(bad),false);fs.unlinkSync(bad);console.log('Windows MP4, MKV and WebM decoded; invalid video rejected');app.exit(0);}catch(e){console.error(e.message);app.exit(1);}});
