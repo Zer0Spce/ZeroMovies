@@ -36,6 +36,16 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 
 Search runs when you press **Search** (or the keyboard Search action), and movie, series, genre, provider, and search lists load more near the bottom without page buttons. The two live tabs include dedicated refresh controls and preserve saved channels when a refresh fails.
 
+## 🎨 Three layouts in 1.8.0
+
+Choose your layout in **Settings → Appearance → UI layout**. YouTube TV is the default; your theme, library and playback preferences stay independent of the layout.
+
+| YouTube TV · default | Google TV | Classic · original |
+| --- | --- | --- |
+| [![YouTube TV layout with compact icon rail](docs/screenshots/1.8.0/windows-youtube.png)](docs/screenshots/1.8.0/windows-youtube.png) | [![Google TV layout with top navigation](docs/screenshots/1.8.0/windows-google.png)](docs/screenshots/1.8.0/windows-google.png) | [![Classic ZeroPlay layout](docs/screenshots/1.8.0/windows-classic.png)](docs/screenshots/1.8.0/windows-classic.png) |
+
+Actual 1.8.0 Windows captures, kept at their original resolution. Click a preview to open it full size. On Android TV, the YouTube rail expands when you return to navigation and collapses when you focus a movie. Phones adapt the same layouts to touch screens.
+
 ## 📸 Android, Android TV & Windows
 
 These screenshots come from the running v1.6.0 apps: Android mobile/TV emulators and the Windows desktop build. Android is captured at **1080 × 1920** and Android TV at **1920 × 1080**. Original PNG files retain their native resolution with no resizing or recompression; phone previews are displayed smaller on this page. Click any image for the full-size original.
