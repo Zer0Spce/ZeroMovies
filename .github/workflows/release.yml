@@ -10,6 +10,10 @@ on:
         description: Update Android assets and reuse the published Windows ZIP
         type: boolean
         default: false
+      reuse_windows_run:
+        description: Reuse a tested Windows artifact from a release run with identical Windows source
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -96,7 +100,7 @@ jobs:
         if: always()
         run: rm -f "$RUNNER_TEMP/zeromovies-release.jks"
   windows:
-    if: ${{ !inputs.android_only }}
+    if: ${{ !inputs.android_only && inputs.reuse_windows_run == '' }}
     runs-on: windows-latest
     timeout-minutes: 25
     defaults:
@@ -208,7 +212,7 @@ jobs:
 
   publish:
     needs: [android, windows, player-devices]
-    if: always() && github.event_name == 'workflow_dispatch' && inputs.publish && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || (inputs.android_only && needs.windows.result == 'skipped'))
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.publish && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run != '') && needs.windows.result == 'skipped'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -219,10 +223,23 @@ jobs:
         with:
           name: ZeroPlay-production-validation-true
           path: release-assets
+      - name: Validate reusable Windows build
+        if: ${{ inputs.reuse_windows_run != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REUSE_WINDOWS_RUN: ${{ inputs.reuse_windows_run }}
+        run: python scripts/verify-windows-reuse.py
       - uses: actions/download-artifact@v4
-        if: ${{ !inputs.android_only }}
+        if: ${{ !inputs.android_only && inputs.reuse_windows_run == '' }}
         with:
           name: ZeroPlay-production-windows
+          path: release-assets
+      - uses: actions/download-artifact@v4
+        if: ${{ !inputs.android_only && inputs.reuse_windows_run != '' }}
+        with:
+          name: ZeroPlay-production-windows
+          run-id: ${{ inputs.reuse_windows_run }}
+          github-token: ${{ github.token }}
           path: release-assets
       - name: Publish verified release assets
         env:
