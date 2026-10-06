@@ -35,7 +35,7 @@ Search runs when you press **Search** (or the keyboard Search action), and movie
 
 ## 📸 Android, Android TV & Windows
 
-These screenshots come from the running v1.5.1 apps: Android mobile/TV emulators and the Windows desktop build. Android is captured at **1080 × 1920** and Android TV at **1920 × 1080**. Original PNG files retain their native resolution with no resizing or recompression; phone previews are displayed smaller on this page. Click any image for the full-size original.
+These screenshots come from the running v1.6.0 apps: Android mobile/TV emulators and the Windows desktop build. Android is captured at **1080 × 1920** and Android TV at **1920 × 1080**. Original PNG files retain their native resolution with no resizing or recompression; phone previews are displayed smaller on this page. Click any image for the full-size original.
 
 ### 📱 Android · discovery and your homepage
 
@@ -57,15 +57,21 @@ Four-column cards match PPV/Sports. Browse sports categories, event schedules, p
 
 ### 🗂️ Artwork-rich categories
 
-Browse movie and series genres through artwork cards. Anime uses this same grid layout.
+Browse alphabetical movie and series categories through artwork cards. Anime and six language collections use this same grid layout.
 
 [![Windows movie categories](docs/screenshots/windows-categories.png)](docs/screenshots/windows-categories.png)
 
 ### ⚙️ Your screen, your settings
 
-Choose your playback source, appearance, provider region, and optional audio boost. Homepage panel controls are also available in Settings.
+Choose your playback source, appearance, provider region, and optional audio boost. Choose from 31 homepage panels, including all movie genres, with readable buttons and checkboxes in both themes.
 
 [![Windows playback and appearance settings](docs/screenshots/windows-settings.png)](docs/screenshots/windows-settings.png)
+
+[![Windows homepage panel options](docs/screenshots/windows-home-panels.png)](docs/screenshots/windows-home-panels.png)
+
+<a href="docs/screenshots/android-mobile-home-panels.png"><img src="docs/screenshots/android-mobile-home-panels.png" alt="Android homepage panel choices" width="360"></a>
+
+[![Android TV homepage panel choices](docs/screenshots/android-tv-home-panels.png)](docs/screenshots/android-tv-home-panels.png)
 
 <details>
 <summary>📸 More Android and Windows feature screenshots</summary>
