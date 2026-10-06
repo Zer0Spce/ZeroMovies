@@ -6,7 +6,7 @@
 
 Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surprise Me** dice when you cannot decide. Softly blurred artwork, light and dark themes, and dedicated TV controls make it comfortable on your phone, desktop, or big screen.
 
-**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.7.5 release notes](docs/release-1.7.5.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
+**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.8.0 release notes](docs/release-1.8.0.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
 
 Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations, Windows library data, and the permanent signing key.
 
@@ -25,6 +25,7 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | ▶️ **Choose your source** | Use **VidStuck by default**, switch to VidSrc.sh, or enable **RawCast · Limited** in Settings with your own API key. RawCast playback is hidden by default. RawCast streaming uses your limited quota. |
 | ❤️ **Your library** | Save a watchlist, organize collections and Plan to Watch, and revisit watch and search history. |
 | ⏯️ **Continue Watching** | Return to started titles and resume where supported by the playback provider. |
+| 🎨 **Three UI layouts** | YouTube TV (default), Google TV and Classic; choose a layout independently of your color theme. |
 | 🎨 **Make it yours** | Default, Light and three numbered color palettes; immediate theme switching, optional animations and delayed focus/hover previews. |
 | 🎬 **Trailers** | Optional muted homepage trailers and delayed focus/hover trailers, with artwork fallback. |
 | 📥 **Offline downloads** | Configure hosted **TSP Search** in Settings. Select a healthy matching result, confirm, and download with the integrated engine. Queue, pause, resume, play offline, or delete files. |
@@ -92,11 +93,11 @@ Choose your playback source, appearance, provider region, and optional audio boo
 
 Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroPlay/releases/latest)**.
 
-| Platform | v1.7.5 download | Getting started |
+| Platform | v1.8.0 download | Getting started |
 | --- | --- | --- |
-| 📱 Android phone / tablet | `ZeroPlay-1.7.5-Android.apk` | Android 6+. Install the signed mobile APK. |
-| 📺 Android TV / Google TV | `ZeroPlay-1.7.5-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
-| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.7.5-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
+| 📱 Android phone / tablet | `ZeroPlay-1.8.0-Android.apk` | Android 6+. Install the signed mobile APK. |
+| 📺 Android TV / Google TV | `ZeroPlay-1.8.0-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
+| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.8.0-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
 | ✅ Integrity checks | `SHA256SUMS.txt` | Compare your downloaded files against the published SHA-256 checksums. |
 
 Android v0.4.5 uses a permanent production signing key. Moving from an earlier debug build may require uninstalling that build first, which clears its local library and history. Future production releases retain the same signing key.
@@ -129,7 +130,15 @@ Metadata and artwork: **TMDB** and their respective rights holders. This product
 
 If a QR ad appears, press its **X** button or wait for it to close automatically. This is a known bug.
 
-## 🆕 Version 1.7.5
+## 🆕 Version 1.8.0
+
+🎨 Choose **YouTube TV**, **Google TV**, or **Classic** in **Settings → Appearance → UI layout**. YouTube TV is the default for new and upgraded installations without a saved layout preference.
+
+YouTube TV uses wide artwork cards and a compact icon rail that expands when you return to navigation and collapses when you focus movies. Google TV combines top navigation, a cinematic featured carousel and wide shelves. Classic preserves the original poster layout. Each design adapts to phones, desktops and TV remotes, independently of your color theme.
+
+Existing trailers, two-second previews, animation toggles, themes, watchlist, history, search, Live TV/Sports, TSP downloads and the optional RawCast toggle remain available in every layout.
+
+### Features carried forward
 
 🎬 Windows carousel trailers fill the frame with a proportional crop. All trailer previews default to a two-second focus delay. Controls and annotations are hidden, with cropping to reduce YouTube title overlays where possible.
 
@@ -141,4 +150,6 @@ Android supports app-scoped internal and available external/USB storage, a foreg
 
 Use downloads only for public-domain, Creative Commons, user-owned or otherwise authorized content. Reported torrent health does not guarantee speed or availability. Offline codec support depends on the native player. YouTube may still show branding or overlays. Public builds contain no personal API keys.
 
-See the [complete 1.7.5 release notes](docs/release-1.7.5.md).
+See the [complete 1.8.0 release notes](docs/release-1.8.0.md).
+
+TSP key setup: open [tspsearch.dev](https://tspsearch.dev/), expand **Advanced: copy and paste it yourself**, and use **Copy URL** and **Copy key**. Paste the full values in ZeroPlay’s Downloads Settings, save, then test the connection. The Downloads tab includes this guide; Android TV also offers a QR code for opening the site on your phone.

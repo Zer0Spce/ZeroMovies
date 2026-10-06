@@ -22,5 +22,8 @@ PPV/Sports uses the ZeroStreams event playlist and checks for updates every 30 m
 The local live player uses bundled Shaka Player (Apache 2.0), with HLS/DASH, playlist headers, and ClearKey support. Play/Pause, Live, Retry, Channels, Audio, Subtitles, Fit/Fill, volume and fullscreen controls stay in the same window. Back returns to browsing. Codec and stream availability vary.
 
 
-### 1.7.5 downloads and previews
+### 1.8.0 downloads and previews
 Configure hosted TSP Search under Settings → Downloads → Torrent Search. Select and confirm a result to download with the integrated engine. Completed files open in the native offline player without conversion. RawCast playback and its controls are hidden until enabled in Settings. Trailer previews default to two seconds and fill the carousel with proportional cropping; YouTube may retain some overlays.
+
+### Three UI layouts
+Choose YouTube TV (default), Google TV or Classic in Settings → Appearance → UI layout. The YouTube icon rail expands on navigation focus and collapses when you focus movie cards. Google TV uses top navigation and a cinematic hero. Classic keeps portrait posters. Themes, previews and your library remain independent of the layout.
