@@ -3,7 +3,7 @@ on:
   push:
     branches: [fix/windows-updater]
 permissions:
-  contents: write
+  contents: read
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -23,40 +23,6 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-      - name: Apply Fix 13 Android TV content focus
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('app/src/main/java/com/zerostreams/app/MainActivity.java')
-          s=p.read_text()
-          start=s.index('    @Override public boolean dispatchKeyEvent(KeyEvent event){')
-          end=s.index('    @Override protected void onResume()', start)
-          new='''    @Override public boolean dispatchKeyEvent(KeyEvent event){
-              if(BuildConfig.TV&&event.getAction()==KeyEvent.ACTION_DOWN&&content!=null&&sidebar!=null){
-                  int key=event.getKeyCode();
-                  if(key==KeyEvent.KEYCODE_DPAD_UP||key==KeyEvent.KEYCODE_DPAD_DOWN||key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT){
-                      View current=getCurrentFocus();
-                      if(current!=null&&!descendant(sidebar,current)&&descendant(content,current)){
-                          int direction=key==KeyEvent.KEYCODE_DPAD_UP?View.FOCUS_UP:key==KeyEvent.KEYCODE_DPAD_DOWN?View.FOCUS_DOWN:key==KeyEvent.KEYCODE_DPAD_LEFT?View.FOCUS_LEFT:View.FOCUS_RIGHT;
-                          View root=getWindow().getDecorView();
-                          View next=root instanceof ViewGroup?FocusFinder.getInstance().findNextFocus((ViewGroup)root,current,direction):null;
-                          if(next!=null&&descendant(sidebar,next)){
-                              if(direction==View.FOCUS_LEFT&&event.getRepeatCount()==0){
-                                  Rect here=new Rect();current.getGlobalVisibleRect(here);
-                                  if(here.left<=dp(youtubeLayout()?92:classicLayout()?180:80))return super.dispatchKeyEvent(event);
-                              }
-                              View contentNext=FocusFinder.getInstance().findNextFocus(content,current,direction);
-                              if(contentNext!=null&&contentNext!=current){contentNext.requestFocus();return true;}
-                              return true;
-                          }
-                      }
-                  }
-              }
-              return super.dispatchKeyEvent(event);
-          }
-          '''
-          p.write_text(s[:start]+new+s[end:])
-          PY
       - name: Protect Live Sports and PPV files
         run: |
           git fetch origin tag v1.9 --force
@@ -105,10 +71,3 @@ jobs:
         run: gradle :app:compileTvDebugJavaWithJavac --stacktrace
       - name: Android unit tests
         run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --stacktrace
-      - name: Commit Fix 13
-        run: |
-          git config user.name Zer0Spce
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add app/src/main/java/com/zerostreams/app/MainActivity.java
-          git commit -m 'Stabilize Android TV home content focus [skip ci]'
-          git push origin HEAD:fix/windows-updater
