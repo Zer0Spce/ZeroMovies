@@ -22,6 +22,8 @@ public class BrowserPlayerActivity extends Activity {
     private View fullscreen;
     private WebChromeClient.CustomViewCallback fullscreenCallback;
     private boolean tvBackArmed;
+    private boolean tvBackRequesting;
+    private int tvBackToken;
     private final android.os.Handler tvUi=new android.os.Handler(android.os.Looper.getMainLooper());
     private final Runnable armTvBack=()->{if(tvPlayer)tvBackArmed=true;};
 
@@ -101,7 +103,6 @@ public class BrowserPlayerActivity extends Activity {
                 if(!activate&&event.getAction()==KeyEvent.ACTION_DOWN){long now=android.os.SystemClock.elapsedRealtime();if(event.getRepeatCount()>0&&now-lastTvNavAt<180)return true;lastTvNavAt=now;}
                 boolean fire=(activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN);
                 if(fire&&direction!=null){if(activate)lastPlayerGesture=android.os.SystemClock.elapsedRealtime();sendTvNavigation(direction,0);}
-                // Consume every player navigation key here. VidStuck/VidSrc use raw LEFT/RIGHT as seek shortcuts.
                 return true;
             }
         }else if(event.getAction()==KeyEvent.ACTION_DOWN&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN){backState.userActivity();}
@@ -116,6 +117,39 @@ public class BrowserPlayerActivity extends Activity {
         tvUi.removeCallbacks(armTvBack);tvBackArmed=true;
         if(mouse!=null)mouse.stop();
         if(web!=null)web.evaluateJavascript("document.documentElement.classList.add('zero-back-hide','zero-player-idle');if(window.__zeroHidePlayerControls)window.__zeroHidePlayerControls();if(window.__zeroDismissMenus)window.__zeroDismissMenus();document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-back-hide'},'*')}catch(_){}});",null);
+    }
+    private String jsValue(String value){if(value==null)return "";return value.replace("\"","").trim();}
+    private void resolveTvBack(boolean providerHandled){
+        tvBackRequesting=false;
+        if(isFinishing()||web==null)return;
+        if(providerHandled){
+            tvBackArmed=false;
+            tvUi.removeCallbacks(armTvBack);
+            tvUi.postDelayed(armTvBack,3400);
+            return;
+        }
+        if(!tvBackArmed){forceHideTvControls();return;}
+        if(mouse!=null)mouse.stop();
+        finish();
+    }
+    private void pollTvBackResult(int token,int attempt){
+        if(web==null||isFinishing()){tvBackRequesting=false;return;}
+        String script="(function(){try{var r=window.__zeroBackResult;if(!r||r.token!=="+token+")return 'pending';return r.handled?'handled':'unhandled';}catch(e){return 'unhandled';}})();";
+        web.evaluateJavascript(script,value->{
+            String result=jsValue(value);
+            if("handled".equals(result)){resolveTvBack(true);return;}
+            if("unhandled".equals(result)||attempt>=6){resolveTvBack(false);return;}
+            tvUi.postDelayed(()->pollTvBackResult(token,attempt+1),70);
+        });
+    }
+    private void requestTvBackStep(){
+        if(tvBackRequesting||web==null)return;
+        tvBackRequesting=true;int token=++tvBackToken;
+        String script="(function(){try{window.__zeroBackResult=null;if(typeof window.__zeroBackRequest!=='function')return 'missing';window.__zeroBackRequest("+token+");return 'started';}catch(e){return 'missing';}})();";
+        web.evaluateJavascript(script,value->{
+            if("missing".equals(jsValue(value))){resolveTvBack(false);return;}
+            tvUi.postDelayed(()->pollTvBackResult(token,0),70);
+        });
     }
 
     private void installPlayerExitListener(){
@@ -140,12 +174,7 @@ public class BrowserPlayerActivity extends Activity {
 
     @Override public void onBackPressed(){
         if(getIntent().getBooleanExtra("reader",false)||playerGuard==null||web==null){finish();return;}
-        if(tvPlayer){
-            if(!tvBackArmed){forceHideTvControls();return;}
-            if(mouse!=null)mouse.stop();
-            finish();
-            return;
-        }
+        if(tvPlayer){requestTvBackStep();return;}
         if(mouse!=null)mouse.stop();
         web.evaluateJavascript("if(window.__zeroBackRequest)window.__zeroBackRequest(1);",ignored->finish());
     }
