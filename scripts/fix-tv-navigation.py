@@ -14,16 +14,19 @@ old='''.putBoolean("playerMouse",mouse.isChecked()).putFloat("audioBoost"'''
 new='''.putBoolean("playerMouse",!BuildConfig.TV||tvPlayerControl.getSelectedItemPosition()==0).putFloat("audioBoost"'''
 if old not in s and new not in s: raise SystemExit('player control save anchor missing')
 if new not in s:s=s.replace(old,new,1)
-anchor='''    @Override public void onWindowFocusChanged(boolean focused){'''
+anchor='''    @Override protected void onResume(){'''
 helper='''    @Override public boolean dispatchKeyEvent(KeyEvent event){
         if(BuildConfig.TV&&event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN&&event.getAction()==KeyEvent.ACTION_DOWN&&event.getRepeatCount()>0){
             View current=getCurrentFocus();
-            if(current!=null&&content!=null&&!descendant(sidebar,current)){
-                View next=FocusFinder.getInstance().findNextFocus((ViewGroup)getWindow().getDecorView(),current,View.FOCUS_DOWN);
-                if(next!=null&&sidebar!=null&&descendant(sidebar,next)){
-                    View contentNext=FocusFinder.getInstance().findNextFocus(content,current,View.FOCUS_DOWN);
-                    if(contentNext!=null&&contentNext!=current){contentNext.requestFocus();return true;}
-                    return true;
+            if(current!=null&&content!=null&&sidebar!=null&&!descendant(sidebar,current)){
+                View root=getWindow().getDecorView();
+                if(root instanceof ViewGroup){
+                    View next=FocusFinder.getInstance().findNextFocus((ViewGroup)root,current,View.FOCUS_DOWN);
+                    if(next!=null&&descendant(sidebar,next)){
+                        View contentNext=FocusFinder.getInstance().findNextFocus(content,current,View.FOCUS_DOWN);
+                        if(contentNext!=null&&contentNext!=current){contentNext.requestFocus();return true;}
+                        return true;
+                    }
                 }
             }
         }
@@ -42,9 +45,7 @@ old='''    private long lastPlayerGesture;\n''';new='''    private long lastPlay
 if old not in s and new not in s: raise SystemExit('player field anchor missing')
 if new not in s:s=s.replace(old,new,1)
 old='''        if(mouse!=null&&mouse.handle(event))return true;\n        if(tvPlayer){String direction=null;switch(event.getKeyCode()){'''
-new='''        if(mouse!=null&&mouse.handle(event))return true;\n        if(tvPlayer){String direction=null;switch(event.getKeyCode()){'''
 if old not in s: raise SystemExit('player dispatch anchor missing')
-# Leave anchor itself unchanged, inject throttle just before JS nav invocation.
 old2='''        }if(direction!=null){boolean activate=direction.equals("ok");if((activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN))web.evaluateJavascript("if(window.__zeroTvNavigate)window.__zeroTvNavigate('"+direction+"');",null);return true;}}'''
 new2='''        }if(direction!=null){boolean activate=direction.equals("ok");if(!activate&&event.getAction()==KeyEvent.ACTION_DOWN){long now=android.os.SystemClock.elapsedRealtime();if(event.getRepeatCount()>0&&now-lastTvNavAt<165)return true;lastTvNavAt=now;}if((activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN))web.evaluateJavascript("if(window.__zeroTvNavigate)window.__zeroTvNavigate('"+direction+"');",null);return true;}}'''
 if old2 not in s and new2 not in s: raise SystemExit('player nav invocation anchor missing')
