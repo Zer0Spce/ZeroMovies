@@ -528,7 +528,42 @@ public class MainActivity extends Activity {
     void easterEgg(){if(eggMode){exitEgg();return;}if(++logoPresses!=10)return;eggMode=true;switchPalette("goldenegg");eggExit=button("Exit Golden Mode",this::exitEgg);FrameLayout root=(FrameLayout)getWindow().getDecorView().findViewById(android.R.id.content);addGoldenSparkles(root);FrameLayout.LayoutParams layout=new FrameLayout.LayoutParams(-2,dp(44),Gravity.BOTTOM|Gravity.LEFT);layout.setMargins(dp(12),0,0,dp(BuildConfig.TV?12:64));root.addView(eggExit,layout);eggAnimation=android.animation.ValueAnimator.ofFloat(0f,1f);eggAnimation.setDuration(3200);eggAnimation.setRepeatCount(android.animation.ValueAnimator.INFINITE);eggAnimation.setRepeatMode(android.animation.ValueAnimator.REVERSE);eggAnimation.addUpdateListener(a->{if(SystemClock.elapsedRealtime()-eggPaint<90)return;eggPaint=SystemClock.elapsedRealtime();float f=(float)a.getAnimatedValue();ACCENT=(int)new android.animation.ArgbEvaluator().evaluate(f,0xFFFFC94D,0xFFFFE9A6);if(eggExit!=null){eggExit.setAlpha(.86f+.14f*f);eggExit.setBackground(shape(0xFFFFD76A,0xFFFFF0A8));eggExit.setTextColor(0xFF1B1202);}if(eggLogo!=null){eggLogo.setTextColor(ACCENT);eggLogo.setShadowLayer(dp(6),0,0,0x66FFD76A);}if(sidebar!=null){if(eggSidebar==null){eggSidebar=new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{0xFF120D03,0xFF2A1D06,0xFF171005});sidebar.setBackground(eggSidebar);}eggSidebar.setStroke(dp(2),ACCENT);}long now=SystemClock.elapsedRealtime();for(int i=0;i<eggSparkles.size();i++){TextView sparkle=eggSparkles.get(i);float wave=(float)(.25+.75*Math.abs(Math.sin(now/650.0+i*.73)));sparkle.setAlpha(wave);sparkle.setScaleX(.72f+.38f*wave);sparkle.setScaleY(.72f+.38f*wave);sparkle.setRotation((now/38f+i*19)%360);}View focus=getCurrentFocus();if(focus instanceof Button)focus.setBackground(shape(SURFACE,ACCENT));});if(prefs.getBoolean("uiAnimations",true))eggAnimation.start();else for(TextView sparkle:eggSparkles)sparkle.setAlpha(.75f);message("Golden mode activated ✦");}
     void exitEgg(){eggMode=false;logoPresses=0;if(eggAnimation!=null){eggAnimation.cancel();eggAnimation=null;}if(eggExit!=null&&eggExit.getParent() instanceof ViewGroup)((ViewGroup)eggExit.getParent()).removeView(eggExit);eggExit=null;for(TextView sparkle:eggSparkles)if(sparkle.getParent() instanceof ViewGroup)((ViewGroup)sparkle.getParent()).removeView(sparkle);eggSparkles.clear();eggSidebar=null;if(eggLogo!=null)eggLogo.setShadowLayer(0,0,0,Color.TRANSPARENT);switchPalette(prefs.getString("theme","dark"));if(sidebar!=null)sidebar.setBackground(shape(SURFACE,0));if(eggLogo!=null)eggLogo.setTextColor(INK);}
 
-    ArrayAdapter<String> spinnerAdapter(String[] labels){return new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,labels){@Override public View getView(int position,View recycled,ViewGroup parent){TextView view=(TextView)super.getView(position,recycled,parent);view.setTextColor(INK);view.setBackgroundColor(SURFACE);return view;}@Override public View getDropDownView(int position,View recycled,ViewGroup parent){TextView view=(TextView)super.getDropDownView(position,recycled,parent);view.setTextColor(INK);view.setBackgroundColor(SURFACE);return view;}};}
+    void styleSettingsSpinner(Spinner spinner){
+        spinner.setFocusable(true);
+        spinner.setFocusableInTouchMode(false);
+        spinner.setPadding(dp(14),dp(6),dp(14),dp(6));
+        spinner.setBackground(shape(SURFACE,0));
+        spinner.setOnFocusChangeListener((v,focused)->{
+            int fill=focused?(lightTheme?Color.rgb(212,235,229):Color.rgb(34,57,58)):SURFACE;
+            v.setBackground(shape(fill,focused?ACCENT:0));
+            if(BuildConfig.TV&&prefs.getBoolean("uiAnimations",true))v.animate().scaleX(focused?1.02f:1f).scaleY(focused?1.02f:1f).setDuration(90).start();
+            else{v.setScaleX(1f);v.setScaleY(1f);}
+        });
+    }
+    ArrayAdapter<String> spinnerAdapter(String[] labels){return new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,labels){
+        int selectedPosition;
+        @Override public View getView(int position,View recycled,ViewGroup parent){
+            selectedPosition=position;
+            TextView view=(TextView)super.getView(position,recycled,parent);
+            view.setTextColor(INK);
+            view.setBackgroundColor(Color.TRANSPARENT);
+            view.setPadding(dp(8),dp(6),dp(8),dp(6));
+            if(parent instanceof Spinner)styleSettingsSpinner((Spinner)parent);
+            return view;
+        }
+        @Override public View getDropDownView(int position,View recycled,ViewGroup parent){
+            TextView view=(TextView)super.getDropDownView(position,recycled,parent);
+            view.setTextColor(INK);
+            // Keep rows transparent so Android TV's ListView selector remains visible while D-pad focus moves.
+            view.setBackgroundColor(Color.TRANSPARENT);
+            view.setPadding(dp(18),dp(12),dp(18),dp(12));
+            view.setMinHeight(dp(BuildConfig.TV?54:48));
+            view.setTypeface(null,position==selectedPosition?Typeface.BOLD:Typeface.NORMAL);
+            if(position==selectedPosition)view.setText("✓  "+labels[position]);
+            else view.setText("   "+labels[position]);
+            return view;
+        }
+    };}
     @Override public void onTrimMemory(int level){super.onTrimMemory(level);if(level>=android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW){pictures.trimToSize(4*1024*1024);synchronized(previewMetadata){previewMetadata.clear();}}if(level>=android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL)stopPreview();}
 
 }
