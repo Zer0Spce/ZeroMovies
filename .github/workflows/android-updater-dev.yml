@@ -16,6 +16,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
       - name: Apply guarded updater UI hooks
         run: python3 scripts/apply-android-updater.py
       - name: Protect Live TV Sports and PPV files
@@ -43,11 +50,11 @@ jobs:
           grep -q 'updater.check(false)' app/src/main/java/com/zerostreams/app/MainActivity.java
           grep -q 'Check for ZeroPlay updates' app/src/main/java/com/zerostreams/app/MainActivity.java
       - name: Compile Android Mobile
-        run: ./gradlew :app:compileMobileDebugJavaWithJavac --stacktrace
+        run: gradle :app:compileMobileDebugJavaWithJavac --stacktrace
       - name: Compile Android TV
-        run: ./gradlew :app:compileTvDebugJavaWithJavac --stacktrace
+        run: gradle :app:compileTvDebugJavaWithJavac --stacktrace
       - name: Android unit tests
-        run: ./gradlew :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --stacktrace
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --stacktrace
       - name: Commit validated UI hooks
         run: |
           if git diff --quiet -- app/src/main/java/com/zerostreams/app/MainActivity.java; then
