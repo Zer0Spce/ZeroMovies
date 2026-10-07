@@ -35,19 +35,25 @@ jobs:
           $offline = Get-Content ui/offline-player.js -Raw
           $offlineHtml = Get-Content ui/offline-player.html -Raw
           $updater = Get-Content updater.cjs -Raw
+          $live = Get-Content ui/live-player.js -Raw
           if ($updater -notmatch 'releases/latest' -or $updater -notmatch 'sha256|SHA-256') { throw 'Fix 1 updater contract missing' }
           if ($offline -notmatch 'disableTracks' -or $offline -notmatch 'srt|vtt|ass|ssa' -or $offlineHtml -notmatch 'tool-icon') { throw 'Fix 2/9 offline player contract missing' }
           if ($index -notmatch '<option value="flix">Flix UI</option>' -or $layouts -notmatch 'data-layout="flix"') { throw 'Fix 8 Flix UI is not selectable and styled' }
           foreach ($name in @('General','Home','Appearance','Experience','Playback & Downloads','Player','About')) { if ($settings -notmatch [regex]::Escape($name)) { throw "Fix 4 settings section missing: $name" } }
           if ($main -notmatch "uiLayout:'youtube'") { throw 'Fix 14 Windows Clean UI default missing' }
           if ($main -notmatch 'liveCignal:false' -or $main -notmatch 'liveConverge:false') { throw 'Fix 23 Windows provider defaults missing' }
-          if ($main -notmatch 'reconnect' -or (Get-Content ui/live-player.js -Raw) -notmatch 'retry|reconnect') { throw 'Fix 11 Windows Live TV retry contract missing' }
+          if ($live -notmatch 'MAX_RETRIES=4' -or $live -notmatch 'maxAttempts:5' -or $live -notmatch 'scheduleRuntimeReconnect' -or $live -notmatch 'connectionTimeout:15000') { throw 'Fix 11 Windows Live TV retry contract missing' }
           if ($index -notmatch 'settings-layout.js' -or $index -notmatch 'settings-layout.css') { throw 'Fix 4 settings organizer is not wired' }
+      - name: Verify reorganized Settings DOM
+        shell: pwsh
+        run: |
+          npm install --prefix ../ui-test-deps --no-audit --no-fund jsdom@24.1.3
+          $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
+          node -e "const fs=require('fs'),{JSDOM}=require('jsdom');let html=fs.readFileSync('ui/index.html','utf8').replace(/<script[^>]*>[\s\S]*?<\/script>/g,'');const dom=new JSDOM(html,{runScripts:'outside-only'});dom.window.eval(fs.readFileSync('ui/settings-layout.js','utf8'));const names=[...dom.window.document.querySelectorAll('.settings-section>h3')].map(x=>x.textContent);for(const n of ['General','Home','Appearance','Experience','Playback & Downloads','Player','About'])if(!names.includes(n))throw Error('Missing settings section '+n);if(!dom.window.document.querySelector('#liveCignal')||!dom.window.document.querySelector('#liveConverge'))throw Error('Live TV provider toggles missing');if(!dom.window.document.querySelector('#torrentSearchSettings-enabled')?.closest('fieldset'))throw Error('TSP controls escaped their fieldset');if(dom.window.document.querySelector('#ui-layout option[value=flix]')?.textContent!=='Flix UI')throw Error('Flix selector missing');console.log('Settings DOM audit passed');"
       - run: npm test
       - name: Desktop regression checks
         shell: pwsh
         run: |
-          npm install --prefix ../ui-test-deps --no-audit --no-fund jsdom@24.1.3
           $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
           node scripts/ui-check.cjs
           node scripts/live-compat-check.cjs
