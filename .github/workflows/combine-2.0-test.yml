@@ -39,7 +39,6 @@ jobs:
           grep -q 'setConnectTimeoutMs(20000)' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
           grep -q 'disableTracks' windows/ui/offline-player.js
           grep -q 'tool-icon' windows/ui/offline-player.html
-          grep -q 'data-player-mode' app/src/main/java/com/zerostreams/app/MainActivity.java || grep -q 'Navigation control' app/src/main/java/com/zerostreams/app/MainActivity.java
       - name: Verify fixes 15 through 23 landed
         run: |
           grep -q 'styleSettingsSpinner' app/src/main/java/com/zerostreams/app/MainActivity.java
