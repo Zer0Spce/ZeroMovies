@@ -21,9 +21,7 @@ public class BrowserPlayerActivity extends Activity {
     private FrameLayout screen;
     private View fullscreen;
     private WebChromeClient.CustomViewCallback fullscreenCallback;
-    private final android.os.Handler tvUi=new android.os.Handler(android.os.Looper.getMainLooper());
-    private boolean playerControlsVisible=true;
-    private final Runnable controlsIdle=this::hidePlayerControls;
+    private boolean backPending;private int backToken;
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
@@ -34,7 +32,6 @@ public class BrowserPlayerActivity extends Activity {
         tvPlayer=BuildConfig.TV&&!reader;
         if(tvPlayer){
             android.content.SharedPreferences prefs=getSharedPreferences("zero",MODE_PRIVATE);
-            // Restore the v1.9 behavior the TV build originally shipped with: mouse mode starts enabled.
             if(!prefs.getBoolean("playerMouseDefaultV4",false))prefs.edit().putBoolean("playerMouse",true).putBoolean("playerMouseDefaultV4",true).apply();
         }
         blockAds=!reader&&getSharedPreferences("zero",MODE_PRIVATE).getBoolean("blockAds",true);
@@ -52,8 +49,7 @@ public class BrowserPlayerActivity extends Activity {
         }
         status=new TextView(this);status.setText(reader?"Loading reader…":"Loading player…");status.setTextColor(Color.WHITE);status.setTextSize(14);controls.addView(status,new LinearLayout.LayoutParams(0,-2,1));if(reader)root.addView(controls);
 
-        web=new WebView(this);web.setBackgroundColor(Color.BLACK);
-        web.setFocusable(true);web.setFocusableInTouchMode(true);
+        web=new WebView(this);web.setBackgroundColor(Color.BLACK);web.setFocusable(true);web.setFocusableInTouchMode(true);
         web.setOnTouchListener((v,event)->{if(event.getActionMasked()==android.view.MotionEvent.ACTION_DOWN){backState.userActivity();lastPlayerGesture=android.os.SystemClock.elapsedRealtime();wakeControls();}return false;});
         CookieManager cookies=CookieManager.getInstance();cookies.setAcceptCookie(true);cookies.setAcceptThirdPartyCookies(web,PlaybackSources.trusted(address));
         WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setMediaPlaybackRequiresUserGesture(false);settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setSupportMultipleWindows(false);settings.setJavaScriptCanOpenWindowsAutomatically(false);
@@ -81,7 +77,14 @@ public class BrowserPlayerActivity extends Activity {
     private boolean isBackKey(int key){return key==KeyEvent.KEYCODE_BACK||key==KeyEvent.KEYCODE_ESCAPE||key==KeyEvent.KEYCODE_BUTTON_B;}
     private boolean tvNavKey(int key){return key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT||key==KeyEvent.KEYCODE_DPAD_UP||key==KeyEvent.KEYCODE_DPAD_DOWN||key==KeyEvent.KEYCODE_DPAD_CENTER||key==KeyEvent.KEYCODE_ENTER;}
     private String tvDirection(int key){switch(key){case KeyEvent.KEYCODE_DPAD_LEFT:return "left";case KeyEvent.KEYCODE_DPAD_RIGHT:return "right";case KeyEvent.KEYCODE_DPAD_UP:return "up";case KeyEvent.KEYCODE_DPAD_DOWN:return "down";case KeyEvent.KEYCODE_DPAD_CENTER:case KeyEvent.KEYCODE_ENTER:return "ok";default:return null;}}
-    private void nativeTvFallback(KeyEvent event){if(web==null)return;KeyEvent copy=new KeyEvent(event);web.post(()->{if(web==null)return;int key=copy.getKeyCode();if((key==KeyEvent.KEYCODE_DPAD_CENTER||key==KeyEvent.KEYCODE_ENTER)&&copy.getAction()==KeyEvent.ACTION_UP){long now=android.os.SystemClock.uptimeMillis();web.dispatchKeyEvent(new KeyEvent(now,now,KeyEvent.ACTION_DOWN,key,0));web.dispatchKeyEvent(new KeyEvent(now,now+30,KeyEvent.ACTION_UP,key,0));}else web.dispatchKeyEvent(copy);});}
+    private void sendTvNavigation(String direction,int attempt){
+        if(web==null||direction==null)return;
+        String script="(function(){try{var a=document.activeElement;if(a&&((a.tagName==='INPUT'&&a.type==='range')||a.getAttribute('role')==='slider'))a.blur();if(typeof window.__zeroTvNavigate==='function'){window.__zeroTvNavigate('"+direction+"');return true;}return false;}catch(e){return false;}})();";
+        web.evaluateJavascript(script,value->{
+            if("true".equals(value)||attempt>=2||web==null)return;
+            web.postDelayed(()->sendTvNavigation(direction,attempt+1),90L*(attempt+1));
+        });
+    }
     @Override public boolean dispatchKeyEvent(KeyEvent event){
         int key=event.getKeyCode();
         if(isBackKey(key)&&!getIntent().getBooleanExtra("reader",false)){
@@ -90,28 +93,20 @@ public class BrowserPlayerActivity extends Activity {
         }
         if(tvPlayer){
             if(event.getAction()==KeyEvent.ACTION_DOWN&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN){backState.userActivity();wakeControls();}
-            // Mouse mode owns the D-pad completely when enabled. This must run before the focus navigator.
             if(mouse!=null&&mouse.handle(event))return true;
             if(tvNavKey(key)){
                 String direction=tvDirection(key);boolean activate="ok".equals(direction);
-                if(!activate&&event.getAction()==KeyEvent.ACTION_DOWN){long now=android.os.SystemClock.elapsedRealtime();if(event.getRepeatCount()>0&&now-lastTvNavAt<165)return true;lastTvNavAt=now;}
+                if(!activate&&event.getAction()==KeyEvent.ACTION_DOWN){long now=android.os.SystemClock.elapsedRealtime();if(event.getRepeatCount()>0&&now-lastTvNavAt<180)return true;lastTvNavAt=now;}
                 boolean fire=(activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN);
-                if(fire&&direction!=null){
-                    if(activate)lastPlayerGesture=android.os.SystemClock.elapsedRealtime();
-                    final KeyEvent fallbackEvent=new KeyEvent(event);
-                    // __zeroTvNavigate intentionally has no return value. Treat its existence as handled so the key is not sent twice.
-                    String script="(function(){try{if(typeof window.__zeroTvNavigate==='function'){window.__zeroTvNavigate('"+direction+"');return true;}return false;}catch(e){return false;}})();";
-                    web.evaluateJavascript(script,value->{if(!"true".equals(value))nativeTvFallback(fallbackEvent);});
-                }
+                if(fire&&direction!=null){if(activate)lastPlayerGesture=android.os.SystemClock.elapsedRealtime();sendTvNavigation(direction,0);}
+                // Never pass raw D-pad keys to the embedded movie. Providers use LEFT/RIGHT as seek shortcuts.
                 return true;
             }
         }else if(event.getAction()==KeyEvent.ACTION_DOWN&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN){backState.userActivity();}
         return super.dispatchKeyEvent(event);
     }
 
-    private void markPlayerControlsVisible(){if(!tvPlayer)return;playerControlsVisible=true;tvUi.removeCallbacks(controlsIdle);tvUi.postDelayed(controlsIdle,3300);}
-    private void hidePlayerControls(){if(!tvPlayer)return;playerControlsVisible=false;tvUi.removeCallbacks(controlsIdle);if(mouse!=null)mouse.stop();if(web!=null)web.evaluateJavascript("document.documentElement.classList.add('zero-player-idle');if(window.__zeroDismissMenus)window.__zeroDismissMenus();if(window.__zeroHidePlayerControls)window.__zeroHidePlayerControls();document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-hide-controls'},'*');f.contentWindow.postMessage({type:'zerostreams-back-hide'},'*')}catch(_){}});",null);}
-    private void wakeControls(){markPlayerControlsVisible();if(web!=null){web.requestFocus();web.evaluateJavascript("document.documentElement.classList.remove('zero-back-hide','zero-player-idle');if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();window.postMessage({type:'zerostreams-remote-active'},'*');document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-remote-active'},'*')}catch(_){}});",null);}}
+    private void wakeControls(){if(web!=null){web.requestFocus();web.evaluateJavascript("document.documentElement.classList.remove('zero-back-hide','zero-player-idle');if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();window.postMessage({type:'zerostreams-remote-active'},'*');document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-remote-active'},'*')}catch(_){}});",null);}}
 
     private void installPlayerExitListener(){
         if(!androidx.webkit.WebViewFeature.isFeatureSupported(androidx.webkit.WebViewFeature.WEB_MESSAGE_LISTENER))return;
@@ -135,17 +130,23 @@ public class BrowserPlayerActivity extends Activity {
 
     @Override public void onBackPressed(){
         if(getIntent().getBooleanExtra("reader",false)||playerGuard==null||web==null){finish();return;}
-        if(tvPlayer){
-            if(playerControlsVisible){hidePlayerControls();return;}
-            if(mouse!=null)mouse.stop();
-            finish();
-            return;
-        }
+        if(backPending)return;
+        backPending=true;int token=++backToken;
         if(mouse!=null)mouse.stop();
-        web.evaluateJavascript("if(window.__zeroBackRequest)window.__zeroBackRequest(1);",ignored->finish());
+        // Use the real player/menu state, as v1.9 did. First Back hides visible controls/menus; a Back with nothing left visible exits.
+        web.evaluateJavascript("if(window.__zeroBackRequest)window.__zeroBackRequest("+token+");else window.__zeroBackResult={token:"+token+",handled:false};",ignored->pollBack(token,0));
+    }
+    private void pollBack(int token,int attempt){
+        if(isFinishing()||token!=backToken)return;
+        web.evaluateJavascript("JSON.stringify(window.__zeroBackResult||null)",value->{
+            boolean ready=false,handled=false;
+            try{Object decoded=new org.json.JSONTokener(value).nextValue();if(decoded instanceof String){org.json.JSONObject result=new org.json.JSONObject((String)decoded);if(result.optInt("token")==token){ready=true;handled=result.optBoolean("handled");}}}catch(Exception ignored){}
+            if(ready||attempt>=18){backPending=false;if(!handled)finish();}
+            else new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(()->pollBack(token,attempt+1),20);
+        });
     }
 
-    @Override protected void onPause(){tvUi.removeCallbacks(controlsIdle);if(mouse!=null)mouse.stop();if(adScan!=null)adScan.stop();if(web!=null){CookieManager.getInstance().flush();web.onPause();}super.onPause();}
+    @Override protected void onPause(){if(mouse!=null)mouse.stop();if(adScan!=null)adScan.stop();if(web!=null){CookieManager.getInstance().flush();web.onPause();}super.onPause();}
     @Override protected void onResume(){super.onResume();if(web!=null)web.onResume();if(adScan!=null)adScan.start();if(tvPlayer)wakeControls();}
-    @Override protected void onDestroy(){tvUi.removeCallbacksAndMessages(null);if(mouse!=null)mouse.stop();if(adScan!=null)adScan.destroy();if(web!=null){web.stopLoading();web.destroy();}super.onDestroy();}
+    @Override protected void onDestroy(){if(mouse!=null)mouse.stop();if(adScan!=null)adScan.destroy();if(web!=null){web.stopLoading();web.destroy();}super.onDestroy();}
 }
