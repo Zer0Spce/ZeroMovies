@@ -1,7 +1,7 @@
 name: Release ZeroPlay
 on:
   push:
-    branches: [release/v1.8.1]
+    branches: [release/v1.9]
   workflow_dispatch:
     inputs:
       publish:
@@ -83,7 +83,7 @@ jobs:
           for variant in mobile tv; do
             apk=$(find "app/build/outputs/apk/$variant/release" -name '*.apk' -print -quit)
             test -n "$apk"
-            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.8.1'" || { echo 'Unexpected APK version'; exit 1; }
+            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='1.9'" || { echo 'Unexpected APK version'; exit 1; }
             if "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | grep -q application-debuggable; then
               echo 'Refusing debuggable release APK'; exit 1
             fi
@@ -94,9 +94,9 @@ jobs:
               suffix='-unsigned'
             fi
             if [ "$variant" = mobile ]; then
-              cp "$apk" "release-assets/ZeroPlay-1.8.1-Android$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.9-Android$suffix.apk"
             else
-              cp "$apk" "release-assets/ZeroPlay-1.8.1-Android-TV$suffix.apk"
+              cp "$apk" "release-assets/ZeroPlay-1.9-Android-TV$suffix.apk"
             fi
           done
       - uses: actions/upload-artifact@v4
@@ -107,6 +107,7 @@ jobs:
       - name: Remove temporary signing key
         if: always()
         run: rm -f "$RUNNER_TEMP/zeromovies-release.jks"
+
   windows:
     if: ${{ !inputs.android_only && !inputs.reuse_windows_run }}
     runs-on: windows-latest
@@ -120,11 +121,16 @@ jobs:
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
           cache-dependency-path: windows/package-lock.json
+      - name: Prove Live TV / Sports / PPV player stack is unchanged
+        shell: bash
+        run: git diff --exit-code v1.8.2 -- ui/live-player.html ui/live-player.js ui/live-player.css live-preload.cjs
       - run: npm ci --no-audit --no-fund
       - run: npm test
       - name: Desktop interface regressions
@@ -136,6 +142,7 @@ jobs:
           node scripts/experience-check.cjs
           node scripts/live-compat-check.cjs
           node scripts/player-exit-check.cjs
+          node --check ui/offline-player.js
       - name: Verify player controls and QR filtering
         run: |
           $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
@@ -143,8 +150,11 @@ jobs:
           node ../tests/player-guard.test.cjs
       - name: Verify downloaded video playback
         run: npx electron scripts/media-check.cjs
-      - name: Configure bundled TMDB key
-        run: npm run prepare-config
+      - name: Configure bundled TMDB key and local player vendors
+        run: |
+          npm run prepare-config
+          if (-not (Test-Path "ui/vendor/video.min.js")) { throw 'Video.js offline player vendor missing' }
+          if (-not (Test-Path "ui/vendor/video-js.min.css")) { throw 'Video.js offline player stylesheet missing' }
       - name: Verify live TMDB discovery and search
         run: node scripts/tmdb-check.cjs
       - name: Windows app smoke test
@@ -167,7 +177,6 @@ jobs:
             windows/dist/ZeroPlay-*.zip
             windows/dist/desktop-*.png
           if-no-files-found: error
-
       - uses: actions/upload-artifact@v4
         with:
           name: UI-screenshots-Windows
@@ -239,15 +248,13 @@ jobs:
         with:
           name: player-device-tests-${{ matrix.variant }}-${{ matrix.api }}
           path: app/build/reports/androidTests
-
       - name: Remove temporary signing key
         if: always()
         run: rm -f "$RUNNER_TEMP/zeromovies-release.jks"
 
-
   publish:
     needs: [android, windows, player-devices]
-    if: always() && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && github.ref == 'refs/heads/release/v1.8.1')) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
+    if: always() && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && github.ref == 'refs/heads/release/v1.9')) && needs.player-devices.result == 'success' && needs.android.result == 'success' && needs.android.outputs.signed == 'true' && (needs.windows.result == 'success' || ((inputs.android_only || inputs.reuse_windows_run) && needs.windows.result == 'skipped'))
     runs-on: ubuntu-latest
     permissions:
       contents: write

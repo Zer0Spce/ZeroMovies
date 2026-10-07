@@ -1,6 +1,6 @@
 {
   "name": "zerostreams-windows",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "description": "ZeroPlay movies, series, Live TV and Live Sports with sports ad filtering",
   "author": "ZeroPlay",
   "private": true,
@@ -8,15 +8,15 @@
   "scripts": {
     "start": "electron .",
     "test": "node --test test/*.test.cjs",
-    "prepare-config": "node scripts/config.cjs && node scripts/live-vendor.cjs",
-    "build": "npm run prepare-config && electron-builder --win --x64",
-    "postinstall": "node scripts/torrent-compat.cjs"
+    "prepare-config": "node scripts/config.cjs && node scripts/live-vendor.cjs && node scripts/offline-vendor.cjs",
+    "build": "npm run prepare-config && electron-builder --win --x64"
   },
   "dependencies": {
     "cheerio": "1.0.0",
     "jsqr": "1.4.0",
     "shaka-player": "5.2.12",
-    "webtorrent": "2.5.19"
+    "webtorrent": "3.0.21",
+    "video.js": "8.24.1"
   },
   "devDependencies": {
     "electron": "44.5.1",
@@ -38,7 +38,7 @@
       "target": [
         "zip"
       ],
-      "artifactName": "ZeroPlay-1.8.1-Windows-x64.${ext}",
+      "artifactName": "ZeroPlay-1.9-Windows-x64.${ext}",
       "icon": "assets/icon.ico"
     },
     "asar": true

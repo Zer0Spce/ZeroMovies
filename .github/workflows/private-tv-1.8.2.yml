@@ -1,6 +1,10 @@
-name: Build ZeroPlay 1.8.1 Private Android TV
+name: Build ZeroPlay 1.8.2 Private Android TV
 
 on:
+  push:
+    branches: [release/v1.8.2]
+    paths:
+      - .github/workflows/private-tv-1.8.2.yml
   workflow_dispatch:
 
 permissions:
@@ -50,13 +54,14 @@ jobs:
           gradle :app:assemblePrivateTvRelease --no-daemon
           APK='app/build/outputs/apk/privateTv/release/app-privateTv-release.apk'
           test -s "$APK"
+          "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$APK" | head -n 1 | grep -q "versionName='1.8.2'"
           "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose "$APK"
           mkdir -p private-output
-          cp "$APK" private-output/ZeroPlay-1.8.1-Android-TV-PRIVATE.apk
+          cp "$APK" private-output/ZeroPlay-1.8.2-Android-TV-PRIVATE.apk
       - name: Upload private APK only
         uses: actions/upload-artifact@v4
         with:
-          name: ZeroPlay-1.8.1-Android-TV-PRIVATE
-          path: private-output/ZeroPlay-1.8.1-Android-TV-PRIVATE.apk
+          name: ZeroPlay-1.8.2-Android-TV-PRIVATE
+          path: private-output/ZeroPlay-1.8.2-Android-TV-PRIVATE.apk
           if-no-files-found: error
           retention-days: 3
