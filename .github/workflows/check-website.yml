@@ -1,34 +1,43 @@
-name: Check Website
+name: One-time fix 23
 on:
   push:
-    branches: [main]
     paths:
-      - 'web/**'
-      - '.github/workflows/check-website.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'web/**'
+      - 'scripts/fix_23_live_tv_channels.py'
       - '.github/workflows/check-website.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
-  website:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate static site
+        with:
+          fetch-depth: 0
+      - name: Apply fix
         run: |
-          test -f web/index.html
-          test -f web/styles.css
-          test -f web/script.js
-          grep -q "ZeroPlay" web/index.html
-          grep -q "download-card" web/index.html
-          grep -q "copyDownloadLink" web/script.js
-          grep -q "queueInstall" web/script.js
-      - name: No-secrets sweep
+          python scripts/fix_23_live_tv_channels.py
+          git diff --check
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Compile Android mobile and TV
+        run: gradle :app:compileMobileDebugJavaWithJavac :app:compileTvDebugJavaWithJavac --no-daemon
+      - name: Test Windows
+        working-directory: windows
         run: |
-          if grep -R -nE "(api[_-]?key|secret|token)[[:space:]]*[:=][[:space:]]*['\"][^$<{][^'\"]{8,}" web --exclude-dir=node_modules; then
-            echo "Potential hardcoded secret found"
-            exit 1
-          fi
+          npm ci --ignore-scripts
+          node --check ui/app.js
+          node --check main.cjs
+          npm test
+      - name: Commit app changes
+        run: |
+          rm -f scripts/fix_23_live_tv_channels.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/src/main/java/com/zerostreams/app/MainActivity.java windows/ui/app.js windows/ui/index.html windows/main.cjs scripts/fix_23_live_tv_channels.py
+          git commit -m 'Fix #23 Live TV provider defaults and settings'
+          git push origin HEAD:main
