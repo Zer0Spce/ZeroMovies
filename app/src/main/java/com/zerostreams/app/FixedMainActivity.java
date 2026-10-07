@@ -43,7 +43,8 @@ public class FixedMainActivity extends MainActivity {
 
     @Override void titleExtras(LinearLayout target,JSONObject data,Catalog.Item item,int token){
         super.titleExtras(target,data,item,token);
-        if(item.id.equals(surpriseDetailId))fixUi.post(()->placeSurpriseAgainInActionRow());
+        if(item.type.equals("movie")){String imdb=data.optString("imdb_id");if(!imdb.isEmpty())loadRotten(target,imdb,token);}
+        if(item.id.equals(surpriseDetailId))fixUi.post(this::placeSurpriseAgainInActionRow);
         JSONObject credits=data.optJSONObject("credits");JSONArray cast=credits==null?null:credits.optJSONArray("cast");if(cast==null)return;
         HorizontalScrollView rail=null;for(int i=target.getChildCount()-1;i>=0;i--)if(target.getChildAt(i) instanceof HorizontalScrollView){rail=(HorizontalScrollView)target.getChildAt(i);break;}
         if(rail==null||rail.getChildCount()==0||!(rail.getChildAt(0) instanceof LinearLayout))return;
@@ -54,6 +55,12 @@ public class FixedMainActivity extends MainActivity {
             person.setOnClickListener(v->showPersonTitles(personId,personName));
             person.setOnFocusChangeListener((v,f)->v.setBackground(shape(f?alphaColor(SURFACE,0xD8):Color.TRANSPARENT,f?ACCENT:0)));
         }
+    }
+
+    private void loadRotten(LinearLayout target,String imdb,int token){
+        if(BuildConfig.DEFAULT_OMDB_KEY==null||BuildConfig.DEFAULT_OMDB_KEY.trim().isEmpty())return;
+        TextView score=text("Rotten Tomatoes · loading…",13,MUTED);score.setTag("zero-rotten-score");target.addView(score,Math.min(2,target.getChildCount()));
+        fixIo.execute(()->{try{String rating=OmdbRatings.rotten(imdb);fixUi.post(()->{if(isDestroyed()||!score.isAttachedToWindow())return;if(rating.isEmpty())target.removeView(score);else{score.setText("🍅 Rotten Tomatoes · "+rating);score.setTextColor(ACCENT);bold(score);}});}catch(Exception ignored){fixUi.post(()->{if(score.isAttachedToWindow())target.removeView(score);});}});
     }
 
     private void placeSurpriseAgainInActionRow(){
