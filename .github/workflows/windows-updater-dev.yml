@@ -32,10 +32,20 @@ jobs:
           if (!(Select-String -Path preload.cjs -Pattern 'checkForUpdates' -Quiet)) { throw 'manual update bridge missing' }
           if (!(Select-String -Path updater.cjs -Pattern 'releases/latest' -Quiet)) { throw 'GitHub latest release check missing' }
           if (!(Select-String -Path updater.cjs -Pattern 'sha256:' -Quiet)) { throw 'SHA-256 release verification missing' }
+          if (!(Select-String -Path ui/offline-player.html -Pattern 'tool-icon' -Quiet)) { throw 'Offline toolbar icons missing' }
+          if (!(Select-String -Path ui/offline-player.js -Pattern 'function disableTracks' -Quiet)) { throw 'Subtitle track handling fix missing' }
+          if (Select-String -Path ui/offline-player.js -Pattern 'for\(const t of player\.textTracks\(\)\)' -Quiet) { throw 'Broken TextTrackList iterator returned' }
           git fetch --depth=1 origin tag v1.9
           git diff v1.9 -- ui/live-player.html ui/live-player.js ui/live-player.css live-preload.cjs | Out-String | ForEach-Object { if ($_.Trim()) { throw 'Live player files changed' } }
       - name: Configure bundled TMDB key and local vendors
         run: npm run prepare-config
+      - name: Verify offline player vendor assets
+        shell: pwsh
+        run: |
+          if (!(Test-Path ui/vendor/video.min.js)) { throw 'Video.js runtime missing' }
+          if (!(Test-Path ui/vendor/video-js.min.css)) { throw 'Video.js CSS missing' }
+          $font = Get-ChildItem ui/vendor/font -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (!$font) { throw 'Video.js icon font assets missing' }
       - name: Windows app smoke test
         run: npx electron . --smoke-test
       - name: Package portable ZIP
