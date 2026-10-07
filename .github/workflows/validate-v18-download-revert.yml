@@ -6,7 +6,7 @@ on:
       - app/src/main/java/com/zerostreams/app/TspSearchProvider.java
       - .github/workflows/validate-v18-download-revert.yml
 permissions:
-  contents: read
+  contents: write
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -30,7 +30,28 @@ jobs:
         run: |
           git show v1.8.0:app/src/main/java/com/zerostreams/app/TspSearchProvider.java > /tmp/TspSearchProvider.java
           cmp /tmp/TspSearchProvider.java app/src/main/java/com/zerostreams/app/TspSearchProvider.java
+      - name: Restore v1.8 download settings behavior
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('app/src/main/java/com/zerostreams/app/MainActivity.java')
+          s=p.read_text(encoding='utf-8')
+          old='api.prefs.contains("key")?"API key saved":api.bundled()?"Private TV key bundled":"Not configured"'
+          new='api.prefs.contains("key")?"API key saved":"Not configured"'
+          if s.count(old) != 1:
+              raise SystemExit(f'Expected one bundled-key settings reference, found {s.count(old)}')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          git diff --check
       - name: Compile Android Mobile and TV
         run: gradle :app:compileMobileDebugJavaWithJavac :app:compileTvDebugJavaWithJavac --no-daemon
       - name: Android unit tests
         run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --no-daemon
+      - name: Commit compatible v1.8 download rollback
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/src/main/java/com/zerostreams/app/MainActivity.java
+          git diff --cached --quiet && exit 0
+          git commit -m "Restore v1.8 torrent download behavior"
+          git push origin HEAD:release/v1.8.2
