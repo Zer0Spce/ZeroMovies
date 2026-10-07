@@ -113,22 +113,28 @@ public class MainActivity extends Activity {
     Button nav(String tab){Button b=button(tab.equals("LiveTV")?"Live PPV":tab.equals("IPTV")?"Live TV":tab,()->open(tab));b.setTypeface(android.graphics.Typeface.create("sans-serif-medium",android.graphics.Typeface.NORMAL));navigation.put(tab,b);return b;}
     void open(String tab){stopPreview();++surpriseVersion;++searchVersion;++loadVersion;ui.removeCallbacks(liveRefresh);ui.removeCallbacks(sportsRefresh);resetPaging();submittedQuery="";channelGroup="All";query="";search.setText("");category=tab;if((googleLayout()||flixLayout())&&BuildConfig.TV&&search!=null&&search.getParent() instanceof View)((View)search.getParent()).setVisibility(View.GONE);browsePage=1;search.setHint(tab.equals("Live Sports")?"Search sports events":tab.equals("Manga")?"Search manga":(tab.equals("LiveTV")||tab.equals("IPTV"))?"Search channels":"Search movies and series");collection="";mangaOffset=0;scroll.scrollTo(0,0);catalog=new ArrayList<>(browse);render();load();}
     @Override public boolean dispatchKeyEvent(KeyEvent event){
-        if(BuildConfig.TV&&event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN&&event.getAction()==KeyEvent.ACTION_DOWN&&event.getRepeatCount()>0){
+    if(BuildConfig.TV&&event.getAction()==KeyEvent.ACTION_DOWN&&content!=null&&sidebar!=null){
+        int key=event.getKeyCode();
+        if(key==KeyEvent.KEYCODE_DPAD_UP||key==KeyEvent.KEYCODE_DPAD_DOWN||key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT){
             View current=getCurrentFocus();
-            if(current!=null&&content!=null&&sidebar!=null&&!descendant(sidebar,current)){
+            if(current!=null&&!descendant(sidebar,current)&&descendant(content,current)){
+                int direction=key==KeyEvent.KEYCODE_DPAD_UP?View.FOCUS_UP:key==KeyEvent.KEYCODE_DPAD_DOWN?View.FOCUS_DOWN:key==KeyEvent.KEYCODE_DPAD_LEFT?View.FOCUS_LEFT:View.FOCUS_RIGHT;
                 View root=getWindow().getDecorView();
-                if(root instanceof ViewGroup){
-                    View next=FocusFinder.getInstance().findNextFocus((ViewGroup)root,current,View.FOCUS_DOWN);
-                    if(next!=null&&descendant(sidebar,next)){
-                        View contentNext=FocusFinder.getInstance().findNextFocus(content,current,View.FOCUS_DOWN);
-                        if(contentNext!=null&&contentNext!=current){contentNext.requestFocus();return true;}
-                        return true;
+                View next=root instanceof ViewGroup?FocusFinder.getInstance().findNextFocus((ViewGroup)root,current,direction):null;
+                if(next!=null&&descendant(sidebar,next)){
+                    if(direction==View.FOCUS_LEFT&&event.getRepeatCount()==0){
+                        Rect here=new Rect();current.getGlobalVisibleRect(here);
+                        if(here.left<=dp(youtubeLayout()?92:classicLayout()?180:80))return super.dispatchKeyEvent(event);
                     }
+                    View contentNext=FocusFinder.getInstance().findNextFocus(content,current,direction);
+                    if(contentNext!=null&&contentNext!=current){contentNext.requestFocus();return true;}
+                    return true;
                 }
             }
         }
-        return super.dispatchKeyEvent(event);
     }
+    return super.dispatchKeyEvent(event);
+}
     @Override protected void onResume(){super.onResume();foreground=true;if(ready){if(TspSearchProvider.get(this).configured()){DirectDownloads manager=DirectDownloads.get(this);for(JSONObject j:manager.jobs)if(j.optString("state").equals("queued")){manager.start();break;}}render();if(category.equals("Live Sports"))loadSports(false);else if(playlistTab())loadPlaylist(false);else if(SystemClock.elapsedRealtime()-lastRequested>300_000&&!pageLoading&&(!pageable()||catalog.isEmpty()))load();}}
     @Override protected void onPause(){foreground=false;stopPreview();++surpriseVersion;ui.removeCallbacks(liveRefresh);ui.removeCallbacks(sportsRefresh);if(heroTick!=null)ui.removeCallbacks(heroTick);super.onPause();}
     @Override protected void onSaveInstanceState(Bundle state){super.onSaveInstanceState(state);state.putString("submittedQuery",submittedQuery);state.putString("channelGroup",channelGroup);state.putString("category",category);state.putString("query",query);state.putString("collection",collection);state.putString("genreType",genreType);state.putString("genreName",genreName);state.putInt("genreId",genreId);state.putInt("browsePage",browsePage);}
