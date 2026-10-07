@@ -44,6 +44,8 @@ function organizeSettings(){
   move(appearance,'ui-layout');move(appearance,'theme');
   move(experience,'preview-settings');
   move(playback,'playback-source');move(playback,'rawcastPlayback');move(playback,'rawcast-controls');move(playback,'torrentSearchSettings-enabled');
+  const providers=document.createElement('fieldset');providers.id='live-provider-settings';providers.innerHTML='<legend>Live TV channel providers</legend><p>Cignal and Converge are disabled by default on Windows. Other Live TV channels remain available.</p><label class="panel-toggle"><input type="checkbox" id="live-cignal"> Enable Cignal channels</label><label class="panel-toggle"><input type="checkbox" id="live-converge"> Enable Converge channels</label>';
+  const cignal=providers.querySelector('#live-cignal'),converge=providers.querySelector('#live-converge');cignal.checked=localStorage.getItem('zero-live-cignal')==='1';converge.checked=localStorage.getItem('zero-live-converge')==='1';const saveProviders=()=>{localStorage.setItem('zero-live-cignal',cignal.checked?'1':'0');localStorage.setItem('zero-live-converge',converge.checked?'1':'0');filterLiveProviders();};cignal.addEventListener('change',saveProviders);converge.addEventListener('change',saveProviders);playback.appendChild(providers);
   move(player,'gain');
   if(aboutStart){let cursor=aboutStart.nextSibling;while(cursor){const next=cursor.nextSibling;if(cursor!==saveActions)about.appendChild(cursor);cursor=next;}aboutStart.remove();}
   const oldAppearance=[...body.children].find(el=>el.tagName==='H3'&&el.textContent.trim()==='Appearance');if(oldAppearance)oldAppearance.remove();
@@ -51,7 +53,12 @@ function organizeSettings(){
   body.insertBefore(groups,saveActions||null);
   if(saveActions){saveActions.classList.add('settings-save-actions');body.appendChild(saveActions);}
 }
+function filterLiveProviders(){
+  if(document.documentElement.dataset.section!=='IPTV')return;
+  const cignal=localStorage.getItem('zero-live-cignal')==='1',converge=localStorage.getItem('zero-live-converge')==='1';
+  for(const card of document.querySelectorAll('.channel-card')){const article=card.closest('article');if(!article)continue;const text=(card.textContent||'').toLowerCase();article.hidden=(text.includes('cignal')&&!cignal)||(text.includes('converge')&&!converge);}
+}
 window.addEventListener('DOMContentLoaded',()=>{
-  loadSettingsStyles();organizeSettings();
+  loadSettingsStyles();organizeSettings();filterLiveProviders();new MutationObserver(()=>filterLiveProviders()).observe(document.getElementById('content'),{childList:true,subtree:true});
   const surprise=document.querySelector('[data-action="surprise"]');if(!surprise||document.querySelector('[data-action="check-updates"]'))return;const button=document.createElement('button');button.className='icon';button.dataset.action='check-updates';button.type='button';button.title='Check for updates';button.setAttribute('aria-label','Check for updates');button.textContent='⇩';surprise.insertAdjacentElement('afterend',button);button.addEventListener('click',async()=>{const old=button.textContent;button.disabled=true;button.textContent='…';try{const result=await ipcRenderer.invoke('update-check');if(result?.status==='current'){button.textContent='✓';button.title='ZeroPlay is up to date';setTimeout(()=>{if(button.isConnected){button.textContent=old;button.title='Check for updates';}},2200);}else button.textContent=old;}catch{button.textContent='!';button.title='Could not check for updates';setTimeout(()=>{if(button.isConnected){button.textContent=old;button.title='Check for updates';}},2500);}finally{button.disabled=false;}});
 });
