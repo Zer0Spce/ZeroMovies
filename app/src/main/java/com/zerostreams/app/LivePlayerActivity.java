@@ -120,7 +120,7 @@ public class LivePlayerActivity extends Activity {
     @Override protected void onStop(){started=false;cancelReconnect();if(player!=null)playWhenReady=player.getPlayWhenReady();releasePlayer();ui.removeCallbacks(hideControls);super.onStop();}
     @Override protected void onDestroy(){destroyed=true;cancelReconnect();ui.removeCallbacksAndMessages(null);io.shutdownNow();releasePlayer();super.onDestroy();}
     @Override protected void onSaveInstanceState(Bundle state){if(!channels.isEmpty())state.putString("channelUrl",channels.get(index).url);state.putBoolean("playing",player==null?playWhenReady:player.getPlayWhenReady());super.onSaveInstanceState(state);}
-    @Override public void onBackPressed(){finish();}
+    @Override public void onBackPressed(){if(controlsContainer!=null&&controlsContainer.getVisibility()==View.VISIBLE){setControls(false);ui.removeCallbacks(hideControls);return;}finish();}
     @Override public boolean dispatchKeyEvent(KeyEvent event){
         int key=event.getKeyCode();if(key==KeyEvent.KEYCODE_BACK)return super.dispatchKeyEvent(event);
         if(event.getAction()==KeyEvent.ACTION_DOWN){
