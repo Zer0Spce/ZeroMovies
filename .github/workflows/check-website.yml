@@ -5,7 +5,7 @@ on:
       - 'scripts/fix_theme_names.py'
       - '.github/workflows/check-website.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
   generate:
     runs-on: ubuntu-latest
