@@ -1,36 +1,34 @@
-name: One-time fixes #19-#22
+name: Check Website
 on:
   push:
+    branches: [main]
     paths:
-      - 'scripts/fix_19_22.py'
+      - 'web/**'
+      - '.github/workflows/check-website.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/**'
       - '.github/workflows/check-website.yml'
 permissions:
-  contents: write
+  contents: read
 jobs:
-  apply:
+  website:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Apply fixes
+      - name: Validate static site
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('scripts/fix_19_22.py')
-          s=p.read_text().replace('def replace_once(text, old, new, label):','def replace_once(text, old, new, label="patch"):' )
-          p.write_text(s)
-          PY
-          python scripts/fix_19_22.py
-          git diff --check
-      - name: Compile Android
+          test -f web/index.html
+          test -f web/styles.css
+          test -f web/script.js
+          grep -q "ZeroPlay" web/index.html
+          grep -q "download-card" web/index.html
+          grep -q "copyDownloadLink" web/script.js
+          grep -q "queueInstall" web/script.js
+      - name: No-secrets sweep
         run: |
-          gradle :app:compileMobileDebugJavaWithJavac :app:compileTvDebugJavaWithJavac
-      - name: Commit app changes
-        run: |
-          rm -f scripts/fix_19_22.py
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add app/src/main/java/com/zerostreams/app/MainActivity.java app/src/main/java/com/zerostreams/app/ContentApi.java app/src/main/java/com/zerostreams/app/DiscoveryCollections.java scripts/fix_19_22.py
-          git commit -m 'Fix #19-#22 cast categories surprise and branding'
-          git push origin HEAD:main
+          if grep -R -nE "(api[_-]?key|secret|token)[[:space:]]*[:=][[:space:]]*['\"][^$<{][^'\"]{8,}" web --exclude-dir=node_modules; then
+            echo "Potential hardcoded secret found"
+            exit 1
+          fi
