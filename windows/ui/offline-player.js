@@ -19,18 +19,21 @@ const wakeSurface=document.getElementById('wake-surface');
 let cues=[],cueIndex=-1,dragging=false,idleTimer,fill=false;
 const CUE_TIME=/^\s*((?:\d{1,2}:)?\d{2}:\d{2}(?:[.,]\d{1,3})?)\s*-->\s*((?:\d{1,2}:)?\d{2}:\d{2}(?:[.,]\d{1,3})?)(?:\s+.*)?\s*$/;
 
+// Reliability-first: the Offline Player control bar must never become unreachable.
+// Auto-hide is intentionally disabled here until it can be made codec/fullscreen safe.
 function hideUi(){
-  if(video.paused||dragging||!speedMenu.hidden)return;
-  document.body.classList.add('hidden-ui');
-  document.documentElement.style.cursor='none';
+  document.body.classList.remove('hidden-ui');
+  document.documentElement.style.cursor='';
+  if(controls)controls.style.pointerEvents='auto';
+  if(topbar)topbar.style.pointerEvents='auto';
 }
 function wake(){
   document.body.classList.remove('hidden-ui');
   document.documentElement.style.cursor='';
   if(controls)controls.style.pointerEvents='auto';
   if(topbar)topbar.style.pointerEvents='auto';
+  if(wakeSurface)wakeSurface.style.pointerEvents='none';
   clearTimeout(idleTimer);
-  if(!video.paused&&!dragging&&speedMenu.hidden)idleTimer=setTimeout(hideUi,4200);
 }
 function recoverControls(){
   dragging=false;
@@ -102,13 +105,7 @@ document.addEventListener('pointercancel',()=>{if(dragging){dragging=false;wake(
 document.addEventListener('keydown',globalWake,{capture:true});
 window.addEventListener('focus',recoverControls);window.addEventListener('pageshow',recoverControls);window.addEventListener('resize',recoverControls);window.addEventListener('blur',()=>{dragging=false;clearTimeout(idleTimer);});document.addEventListener('visibilitychange',()=>{if(!document.hidden)recoverControls();});document.addEventListener('fullscreenchange',recoverControls);
 for(const node of [controls,topbar])if(node){node.addEventListener('mouseenter',wake);node.addEventListener('focusin',wake);node.addEventListener('pointerdown',wake,{capture:true});}
-if(wakeSurface){
-  wakeSurface.addEventListener('pointermove',wake,{passive:true});
-  wakeSurface.addEventListener('pointerdown',event=>{event.preventDefault();event.stopPropagation();recoverControls();});
-  wakeSurface.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();recoverControls();});
-  wakeSurface.addEventListener('wheel',event=>{event.preventDefault();recoverControls();},{passive:false});
-  wakeSurface.addEventListener('touchstart',event=>{event.preventDefault();recoverControls();},{passive:false});
-}
+if(wakeSurface){wakeSurface.style.pointerEvents='none';}
 
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();window.offline.close();return;}if(event.key==='F11'){event.preventDefault();toggleFullscreen();return;}if(event.code==='Space'&&!/^(INPUT|BUTTON|SELECT)$/.test(event.target?.tagName||'')){event.preventDefault();togglePlay();return;}if(event.key==='ArrowRight'&&!/^(INPUT|BUTTON|SELECT)$/.test(event.target?.tagName||'')){event.preventDefault();video.currentTime=Math.min(video.duration||Infinity,(video.currentTime||0)+10);cueIndex=-1;updateTime();return;}if(event.key==='ArrowLeft'&&!/^(INPUT|BUTTON|SELECT)$/.test(event.target?.tagName||'')){event.preventDefault();video.currentTime=Math.max(0,(video.currentTime||0)-10);cueIndex=-1;updateTime();return;}if(event.key==='ArrowUp'&&!/^(INPUT|BUTTON|SELECT)$/.test(event.target?.tagName||'')){event.preventDefault();video.muted=false;video.volume=Math.min(1,video.volume+.05);return;}if(event.key==='ArrowDown'&&!/^(INPUT|BUTTON|SELECT)$/.test(event.target?.tagName||'')){event.preventDefault();video.volume=Math.max(0,video.volume-.05);return;}});
 
