@@ -1,7 +1,6 @@
 package com.zerostreams.app;
 
 import android.graphics.Rect;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
@@ -9,8 +8,6 @@ import java.util.*;
 
 /** Final card presentation layer shared by Android phone, tablet and TV. */
 public class PresentationMainActivity extends CategoryMainActivity {
-    private long presentationSurpriseUntil;
-    private String presentationSurpriseId="";
 
     /**
      * Android TV home navigation must behave like the v1.9 Activity path.
@@ -27,38 +24,30 @@ public class PresentationMainActivity extends CategoryMainActivity {
         return event.dispatch(this,state,this);
     }
 
-    @Override void surpriseMovie(){presentationSurpriseUntil=SystemClock.elapsedRealtime()+30000;super.surpriseMovie();}
-
-    @Override void details(Catalog.Item item){
-        boolean fromSurprise=SystemClock.elapsedRealtime()<presentationSurpriseUntil;
-        if(fromSurprise){presentationSurpriseId=item.id;presentationSurpriseUntil=0;}
-        else if(!item.id.equals(presentationSurpriseId))presentationSurpriseId="";
-        super.details(item);
-        if(item.id.equals(presentationSurpriseId)){
-            View decor=getWindow().getDecorView();
-            decor.post(this::placeSurpriseAgain);
-            decor.postDelayed(this::placeSurpriseAgain,180);
-            decor.postDelayed(this::placeSurpriseAgain,650);
-            decor.postDelayed(this::placeSurpriseAgain,1400);
-            decor.postDelayed(this::placeSurpriseAgain,3000);
+    /** Modern UI Movies/Shows use the same compact TV scale as the fixed home rows. */
+    @Override void grid(List<Catalog.Item> rows,int token){
+        if(!BuildConfig.TV||!googleLayout()){super.grid(rows,token);return;}
+        LinearLayout host=contentHost();
+        if(host==null){super.grid(rows,token);return;}
+        final int columns=5;
+        for(int i=0;i<rows.size();i+=columns){
+            LinearLayout line=new LinearLayout(this);
+            for(int c=0;c<columns;c++){
+                LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,-2,1);
+                p.setMargins(0,0,dp(c==columns-1?0:12),dp(18));
+                line.addView(i+c<rows.size()?card(rows.get(i+c),token):new View(this),p);
+            }
+            host.addView(line);
         }
     }
 
-    private void placeSurpriseAgain(){
-        if(presentationSurpriseId.isEmpty())return;
-        View root=getWindow().getDecorView();
-        Button anchor=findAction(root,"download");if(anchor==null)anchor=findAction(root,"watch now");if(anchor==null)anchor=findAction(root,"resume");if(anchor==null)anchor=findAction(root,"source");if(anchor==null)return;
-        ViewParent parent=anchor.getParent();if(!(parent instanceof LinearLayout))return;LinearLayout actions=(LinearLayout)parent;
-        for(int i=0;i<actions.getChildCount();i++){View child=actions.getChildAt(i);if(child instanceof Button&&String.valueOf(((Button)child).getText()).toLowerCase(Locale.ROOT).contains("surprise me again"))return;}
-        Button again=button("🎲 Surprise me again",this::surpriseMovie);again.setTextColor(android.graphics.Color.WHITE);again.setBackground(shape(android.graphics.Color.rgb(183,59,80),0));again.setOnFocusChangeListener((v,f)->v.setBackground(shape(f?android.graphics.Color.rgb(133,35,53):android.graphics.Color.rgb(183,59,80),f?INK:0)));
-        if(actions.getOrientation()==LinearLayout.HORIZONTAL){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-2,dp(48));p.setMargins(dp(8),0,0,0);actions.addView(again,p);}
-        else{LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(48));p.setMargins(0,dp(8),0,0);actions.addView(again,p);}
-    }
-
-    private Button findAction(View root,String needle){
-        if(root instanceof Button&&String.valueOf(((Button)root).getText()).toLowerCase(Locale.ROOT).contains(needle))return (Button)root;
-        if(root instanceof ViewGroup){ViewGroup group=(ViewGroup)root;for(int i=0;i<group.getChildCount();i++){Button found=findAction(group.getChildAt(i),needle);if(found!=null)return found;}}
-        return null;
+    private LinearLayout contentHost(){
+        try{
+            java.lang.reflect.Field field=MainActivity.class.getDeclaredField("content");
+            field.setAccessible(true);
+            Object value=field.get(this);
+            return value instanceof LinearLayout?(LinearLayout)value:null;
+        }catch(Exception ignored){return null;}
     }
 
     @Override void carousel(List<Catalog.Item> all,int token){
