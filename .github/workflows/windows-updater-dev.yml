@@ -23,7 +23,7 @@ jobs:
           cache-dependency-path: windows/package-lock.json
       - run: npm ci --no-audit --no-fund
       - run: npm test
-      - name: Verify updater files and shell isolation
+      - name: Verify updater files shell isolation and protected player assets
         shell: pwsh
         run: |
           if (!(Test-Path updater.cjs)) { throw 'updater.cjs missing' }
@@ -36,7 +36,15 @@ jobs:
           if (!(Select-String -Path ui/offline-player.js -Pattern 'function disableTracks' -Quiet)) { throw 'Subtitle track handling fix missing' }
           if (Select-String -Path ui/offline-player.js -Pattern 'for\(const t of player\.textTracks\(\)\)' -Quiet) { throw 'Broken TextTrackList iterator returned' }
           git fetch --depth=1 origin tag v1.9
-          git diff v1.9 -- ui/live-player.html ui/live-player.js ui/live-player.css live-preload.cjs | Out-String | ForEach-Object { if ($_.Trim()) { throw 'Live player files changed' } }
+          git diff v1.9 -- ui/live-player.html ui/live-player.css live-preload.cjs | Out-String | ForEach-Object { if ($_.Trim()) { throw 'Protected Live player shell assets changed' } }
+      - name: Verify Live TV reliability contract
+        shell: pwsh
+        run: |
+          node --check ui/live-player.js
+          if (!(Select-String -Path ui/live-player.js -Pattern 'MAX_RETRIES=4' -Quiet)) { throw 'Live TV auto-retry limit missing' }
+          if (!(Select-String -Path ui/live-player.js -Pattern 'backoffFactor:2' -Quiet)) { throw 'Live TV retry backoff missing' }
+          if (!(Select-String -Path ui/live-player.js -Pattern 'maxAttempts:5' -Quiet)) { throw 'Live TV Shaka retry policy missing' }
+          if (!(Select-String -Path ui/live-player.js -Pattern 'scheduleRuntimeReconnect' -Quiet)) { throw 'Live TV runtime reconnect missing' }
       - name: Configure bundled TMDB key and local vendors
         run: npm run prepare-config
       - name: Verify offline player vendor assets
