@@ -53,9 +53,14 @@ public class FixedMainActivity extends MainActivity {
         top.addView(row);LinearLayout.LayoutParams tp=new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?54:58));tp.setMargins(dp(BuildConfig.TV?18:14),dp(8),dp(BuildConfig.TV?18:14),dp(BuildConfig.TV?5:8));body.addView(top,tp);refreshModernTabs();
     }
 
+    private LinearLayout mainContent(){
+        try{java.lang.reflect.Field field=MainActivity.class.getDeclaredField("content");field.setAccessible(true);Object value=field.get(this);return value instanceof LinearLayout?(LinearLayout)value:null;}catch(Exception ignored){return null;}
+    }
+
     @Override void posterRow(String title,List<Catalog.Item> rows,int token){
         if(!BuildConfig.TV||!googleLayout()){super.posterRow(title,rows,token);return;}
-        if(rows.isEmpty())return;sectionLabel(content,title);HorizontalScrollView rail=new HorizontalScrollView(this);rail.setHorizontalScrollBarEnabled(false);LinearLayout cards=new LinearLayout(this);for(int i=0;i<Math.min(rows.size(),18);i++){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(170),-2);p.setMargins(0,0,dp(12),0);Catalog.Item item=rows.get(i);LinearLayout tile=card(item,token);if(title.equals("Continue watching"))tile.setOnClickListener(v->resume(item));cards.addView(tile,p);}rail.addView(cards);content.addView(rail);space(content,22);
+        LinearLayout host=mainContent();if(host==null){super.posterRow(title,rows,token);return;}
+        if(rows.isEmpty())return;sectionLabel(host,title);HorizontalScrollView rail=new HorizontalScrollView(this);rail.setHorizontalScrollBarEnabled(false);LinearLayout cards=new LinearLayout(this);for(int i=0;i<Math.min(rows.size(),18);i++){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(170),-2);p.setMargins(0,0,dp(12),0);Catalog.Item item=rows.get(i);LinearLayout tile=card(item,token);if(title.equals("Continue watching"))tile.setOnClickListener(v->resume(item));cards.addView(tile,p);}rail.addView(cards);host.addView(rail);space(host,22);
     }
 
     @Override LinearLayout card(Catalog.Item item,int token){
