@@ -58,7 +58,11 @@ function filterLiveProviders(){
   const cignal=localStorage.getItem('zero-live-cignal')==='1',converge=localStorage.getItem('zero-live-converge')==='1';
   for(const card of document.querySelectorAll('.channel-card')){const article=card.closest('article');if(!article)continue;const text=(card.textContent||'').toLowerCase();article.hidden=(text.includes('cignal')&&!cignal)||(text.includes('converge')&&!converge);}
 }
+function installSurpriseScope(){
+  const root=document.documentElement;root.dataset.zeroSurpriseOrigin='0';const style=document.createElement('style');style.textContent=':root:not([data-zero-surprise-origin="1"]) [data-zero-surprise-again]{display:none!important}';document.head.appendChild(style);
+  document.addEventListener('click',event=>{if(event.target.closest?.('[data-action="surprise"],[data-zero-surprise-again]'))root.dataset.zeroSurpriseOrigin='1';else if(event.target.closest?.('[data-detail]'))root.dataset.zeroSurpriseOrigin='0';},true);
+}
 window.addEventListener('DOMContentLoaded',()=>{
-  loadSettingsStyles();organizeSettings();filterLiveProviders();new MutationObserver(()=>filterLiveProviders()).observe(document.getElementById('content'),{childList:true,subtree:true});
+  loadSettingsStyles();organizeSettings();filterLiveProviders();installSurpriseScope();new MutationObserver(()=>filterLiveProviders()).observe(document.getElementById('content'),{childList:true,subtree:true});
   const surprise=document.querySelector('[data-action="surprise"]');if(!surprise||document.querySelector('[data-action="check-updates"]'))return;const button=document.createElement('button');button.className='icon';button.dataset.action='check-updates';button.type='button';button.title='Check for updates';button.setAttribute('aria-label','Check for updates');button.textContent='⇩';surprise.insertAdjacentElement('afterend',button);button.addEventListener('click',async()=>{const old=button.textContent;button.disabled=true;button.textContent='…';try{const result=await ipcRenderer.invoke('update-check');if(result?.status==='current'){button.textContent='✓';button.title='ZeroPlay is up to date';setTimeout(()=>{if(button.isConnected){button.textContent=old;button.title='Check for updates';}},2200);}else button.textContent=old;}catch{button.textContent='!';button.title='Could not check for updates';setTimeout(()=>{if(button.isConnected){button.textContent=old;button.title='Check for updates';}},2500);}finally{button.disabled=false;}});
 });
