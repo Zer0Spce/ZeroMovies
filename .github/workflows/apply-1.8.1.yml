@@ -58,4 +58,6 @@ jobs:
           git add app windows README.md docs scripts/publish-release.py
           git diff --cached --quiet && exit 0
           git commit -m "Implement ZeroPlay 1.8.1 playback and mobile updates"
+          git restore .github/workflows/release.yml scripts/apply-1.8.1-source-patch.py
+          git pull --rebase origin release/v1.8.1
           git push origin HEAD:release/v1.8.1
