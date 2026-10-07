@@ -33,7 +33,18 @@ jobs:
         with:
           node-version: '22'
       - name: Apply guarded 1.8.2 patch
-        run: python scripts/apply-1.8.2-platform-ui-torrents.py
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/apply-1.8.2-platform-ui-torrents.py')
+          s=p.read_text(encoding='utf-8')
+          old="between(main,'    void torrentResults(Catalog.Item item,int season,int episode,boolean fresh){','    void tspKeyGuide(){',new_torrent_methods+'    void tspKeyGuide(){')"
+          new="between(main,'    void torrentResults(Catalog.Item item,int season,int episode,boolean fresh){','    void tspKeyGuide(){',new_torrent_methods)"
+          if s.count(old)!=1:
+              raise SystemExit(f'Expected one torrent replacement marker, found {s.count(old)}')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          python scripts/apply-1.8.2-platform-ui-torrents.py
       - name: Source sanity
         run: |
           git diff --check
