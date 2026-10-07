@@ -23,7 +23,6 @@ public class BrowserPlayerActivity extends Activity {
     private WebChromeClient.CustomViewCallback fullscreenCallback;
     private final android.os.Handler tvUi=new android.os.Handler(android.os.Looper.getMainLooper());
     private boolean playerControlsVisible=true;
-    private int wakeConsumedKey=-1;
     private final Runnable controlsIdle=()->playerControlsVisible=false;
 
     @Override public void onCreate(Bundle saved) {
@@ -34,8 +33,9 @@ public class BrowserPlayerActivity extends Activity {
         if(address==null||!address.startsWith("https://")){finish();return;}
         tvPlayer=BuildConfig.TV&&!reader;
         if(tvPlayer){
-            // D-pad focus must be the reliable default. Menu can still enable the optional mouse for this session.
-            getSharedPreferences("zero",MODE_PRIVATE).edit().putBoolean("playerMouse",false).putBoolean("playerMouseDefaultV2",true).apply();
+            android.content.SharedPreferences prefs=getSharedPreferences("zero",MODE_PRIVATE);
+            // Migrate once to D-pad-first. After this, respect the user's Menu toggle instead of resetting it every launch.
+            if(!prefs.getBoolean("playerMouseDefaultV3",false))prefs.edit().putBoolean("playerMouse",false).putBoolean("playerMouseDefaultV3",true).apply();
         }
         blockAds=!reader&&getSharedPreferences("zero",MODE_PRIVATE).getBoolean("blockAds",true);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -78,31 +78,35 @@ public class BrowserPlayerActivity extends Activity {
     private void closeFullscreen(){if(fullscreen==null)return;screen.removeView(fullscreen);fullscreen=null;screen.getChildAt(0).setVisibility(View.VISIBLE);if(fullscreenCallback!=null){fullscreenCallback.onCustomViewHidden();fullscreenCallback=null;}}
 
     private boolean tvNavKey(int key){return key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT||key==KeyEvent.KEYCODE_DPAD_UP||key==KeyEvent.KEYCODE_DPAD_DOWN||key==KeyEvent.KEYCODE_DPAD_CENTER||key==KeyEvent.KEYCODE_ENTER;}
+    private String tvDirection(int key){switch(key){case KeyEvent.KEYCODE_DPAD_LEFT:return "left";case KeyEvent.KEYCODE_DPAD_RIGHT:return "right";case KeyEvent.KEYCODE_DPAD_UP:return "up";case KeyEvent.KEYCODE_DPAD_DOWN:return "down";case KeyEvent.KEYCODE_DPAD_CENTER:case KeyEvent.KEYCODE_ENTER:return "ok";default:return null;}}
+    private void nativeTvFallback(KeyEvent event){if(web==null)return;KeyEvent copy=new KeyEvent(event);web.post(()->{if(web!=null)web.dispatchKeyEvent(copy);});}
     @Override public boolean dispatchKeyEvent(KeyEvent event){
         int key=event.getKeyCode();
         if(key==KeyEvent.KEYCODE_BACK&&!getIntent().getBooleanExtra("reader",false)){
             if(event.getAction()==KeyEvent.ACTION_UP&&!event.isCanceled())onBackPressed();
             return true;
         }
-        if(tvPlayer&&tvNavKey(key)){
-            if(event.getAction()==KeyEvent.ACTION_DOWN){
-                backState.userActivity();
-                if(key==KeyEvent.KEYCODE_DPAD_CENTER||key==KeyEvent.KEYCODE_ENTER)lastPlayerGesture=android.os.SystemClock.elapsedRealtime();
-                boolean wasHidden=!playerControlsVisible;
-                wakeControls();
-                if(wasHidden){wakeConsumedKey=key;return true;}
-            }else if(event.getAction()==KeyEvent.ACTION_UP&&wakeConsumedKey==key){wakeConsumedKey=-1;return true;}
-        }else if(event.getAction()==KeyEvent.ACTION_DOWN&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN){backState.userActivity();}
-        if(mouse!=null&&mouse.handle(event))return true;
         if(tvPlayer){
-            String direction=null;switch(key){case KeyEvent.KEYCODE_DPAD_LEFT:direction="left";break;case KeyEvent.KEYCODE_DPAD_RIGHT:direction="right";break;case KeyEvent.KEYCODE_DPAD_UP:direction="up";break;case KeyEvent.KEYCODE_DPAD_DOWN:direction="down";break;case KeyEvent.KEYCODE_DPAD_CENTER:case KeyEvent.KEYCODE_ENTER:direction="ok";break;}
-            if(direction!=null){boolean activate=direction.equals("ok");if(!activate&&event.getAction()==KeyEvent.ACTION_DOWN){long now=android.os.SystemClock.elapsedRealtime();if(event.getRepeatCount()>0&&now-lastTvNavAt<165)return true;lastTvNavAt=now;}if((activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN))web.evaluateJavascript("if(window.__zeroTvNavigate)window.__zeroTvNavigate('"+direction+"');",null);return true;}
-        }
+            if(event.getAction()==KeyEvent.ACTION_DOWN&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN){backState.userActivity();wakeControls();}
+            // When pointer mode is enabled it owns arrows/OK. Do this before any D-pad focus handling.
+            if(mouse!=null&&mouse.handle(event))return true;
+            if(tvNavKey(key)){
+                String direction=tvDirection(key);boolean activate="ok".equals(direction);
+                if(!activate&&event.getAction()==KeyEvent.ACTION_DOWN){long now=android.os.SystemClock.elapsedRealtime();if(event.getRepeatCount()>0&&now-lastTvNavAt<165)return true;lastTvNavAt=now;}
+                boolean fire=(activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN);
+                if(fire&&direction!=null){
+                    if(activate)lastPlayerGesture=android.os.SystemClock.elapsedRealtime();
+                    final KeyEvent fallbackEvent=new KeyEvent(event);
+                    web.evaluateJavascript("(function(){try{return !!(window.__zeroTvNavigate&&window.__zeroTvNavigate('"+direction+"'));}catch(e){return false;}})();",value->{if(!"true".equals(value))nativeTvFallback(fallbackEvent);});
+                }
+                return true;
+            }
+        }else if(event.getAction()==KeyEvent.ACTION_DOWN&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN){backState.userActivity();}
         return super.dispatchKeyEvent(event);
     }
 
     private void markPlayerControlsVisible(){if(!tvPlayer)return;playerControlsVisible=true;tvUi.removeCallbacks(controlsIdle);tvUi.postDelayed(controlsIdle,3600);}
-    private void hidePlayerControls(){playerControlsVisible=false;tvUi.removeCallbacks(controlsIdle);wakeConsumedKey=-1;if(mouse!=null)mouse.stop();if(web!=null)web.evaluateJavascript("document.documentElement.classList.add('zero-player-idle');if(window.__zeroHidePlayerControls)window.__zeroHidePlayerControls();document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-back-hide'},'*')}catch(_){}});",null);}
+    private void hidePlayerControls(){playerControlsVisible=false;tvUi.removeCallbacks(controlsIdle);if(mouse!=null)mouse.stop();if(web!=null)web.evaluateJavascript("document.documentElement.classList.add('zero-player-idle');if(window.__zeroHidePlayerControls)window.__zeroHidePlayerControls();document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-back-hide'},'*')}catch(_){}});",null);}
     private void wakeControls(){markPlayerControlsVisible();if(web!=null){web.requestFocus();web.evaluateJavascript("document.documentElement.classList.remove('zero-back-hide','zero-player-idle');if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();window.postMessage({type:'zerostreams-remote-active'},'*');document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-remote-active'},'*')}catch(_){}});",null);}}
 
     private void installPlayerExitListener(){
@@ -127,7 +131,12 @@ public class BrowserPlayerActivity extends Activity {
 
     @Override public void onBackPressed(){
         if(getIntent().getBooleanExtra("reader",false)||playerGuard==null||web==null){finish();return;}
-        if(tvPlayer){if(playerControlsVisible){hidePlayerControls();return;}finish();return;}
+        if(tvPlayer){
+            if(playerControlsVisible){hidePlayerControls();return;}
+            if(mouse!=null)mouse.stop();
+            finish();
+            return;
+        }
         if(mouse!=null)mouse.stop();
         web.evaluateJavascript("if(window.__zeroBackRequest)window.__zeroBackRequest(1);",ignored->finish());
     }
