@@ -16,11 +16,13 @@ async function run(){
   const activity=fs.readFileSync(activityPath,'utf8');
   assert.match(activity,/sendTvNavigation\(direction,0\)/,'TV Activity must route D-pad through the focus navigator');
   assert.doesNotMatch(activity,/nativeTvFallback/,'Raw Android D-pad fallback must stay removed because providers treat LEFT\/RIGHT as seek');
-  assert.match(activity,/__zeroBackRequest/,'TV Back must query the real player controls\/menu state before exiting');
-  assert.match(activity,/if\(backPending\)return/,'Repeated Back presses must not race the player-state request');
+  assert.match(activity,/controlsWakeAt=android\.os\.SystemClock\.elapsedRealtime\(\)/,'Remote activity must mark player controls as recently visible');
+  assert.match(activity,/if\(!controlsHiddenByBack&&age<3400\)\{forceHideTvControls\(\);return;\}/,'First Back during the visible-control window must hide controls only');
+  assert.match(activity,/forceHideTvControls/,'TV Back must have a native force-hide path');
+  assert.match(activity,/finish\(\);\s*return;\s*\}/,'A Back after controls are hidden or idle must exit playback');
 
   console.log('Idle/provider-hidden controls recover on arrows and OK');
   console.log('TV focus navigation, no arrow seeking, OK activation, embedded navigation, player Back and shadow QR checks passed');
-  console.log('Native TV activity routing keeps raw seek fallback removed and Back state-driven');
+  console.log('Native TV activity routing keeps raw seek fallback removed and Back deterministic');
 }
 run().catch(error=>{console.error(error);process.exitCode=1;});
