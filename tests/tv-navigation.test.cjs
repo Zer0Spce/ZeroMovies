@@ -16,15 +16,17 @@ async function run(){
   const activity=fs.readFileSync(activityPath,'utf8');
   assert.match(activity,/sendTvNavigation\(direction,0\)/,'TV Activity must route D-pad through the focus navigator');
   assert.doesNotMatch(activity,/nativeTvFallback/,'Raw Android D-pad fallback must stay removed because providers treat LEFT\/RIGHT as seek');
+  assert.match(activity,/querySelectorAll\('iframe'\)/,'Embed navigation must discover visible provider iframes');
+  assert.match(activity,/zerostreams-tv-nav/,'Embed navigation must forward D-pad commands into the provider iframe instead of raw Android seek keys');
   assert.match(activity,/tvBackArmed=false;tvUi\.removeCallbacks\(armTvBack\);tvUi\.postDelayed\(armTvBack,3400\)/,'Remote activity must mark controls visible and arm exit only after the provider idle window');
-  assert.match(activity,/if\(!tvBackArmed\)\{forceHideTvControls\(\);return;\}/,'First Back while controls are considered visible must hide controls only');
+  assert.match(activity,/__zeroBackRequest/,'TV Back must ask the provider to dismiss its own menu or resolution popup before hiding ZeroPlay controls');
+  assert.match(activity,/if\(!tvBackArmed\)\{forceHideTvControls\(\);return;\}/,'First Back while controls are considered visible must hide controls only after provider menus are dismissed');
   assert.match(activity,/forceHideTvControls/,'TV Back must have a native force-hide path');
   assert.match(activity,/tvBackArmed=true/,'Hidden or idle controls must arm the next Back to exit');
   assert.match(activity,/finish\(\);\s*return;\s*\}/,'A Back after controls are hidden or idle must exit playback');
-  assert.match(activity,/VidStuck\/VidSrc use raw LEFT\/RIGHT as seek shortcuts/,'Embed player path must explicitly consume provider seek hotkeys');
 
   console.log('Idle/provider-hidden controls recover on arrows and OK');
   console.log('TV focus navigation, no arrow seeking, OK activation, embedded navigation, player Back and shadow QR checks passed');
-  console.log('Native TV activity routing keeps raw seek fallback removed and Back deterministic');
+  console.log('Native TV activity routes directly into provider iframe and preserves provider-popup → controls → exit Back order');
 }
 run().catch(error=>{console.error(error);process.exitCode=1;});
