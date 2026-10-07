@@ -1,0 +1,67 @@
+name: Build ZeroPlay 1.8.2 Private Android TV
+
+on:
+  push:
+    branches: [release/v1.8.2]
+    paths:
+      - .github/workflows/private-tv-1.8.2.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  private-tv:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      TSP_API_KEY: ${{ secrets.TSP_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Require private TSP key
+        run: |
+          set -euo pipefail
+          test -n "$TSP_API_KEY" || { echo "Missing repository Actions secret: TSP_API_KEY"; exit 1; }
+          echo "Private TSP key is configured for this build."
+      - name: Test private TV variant
+        run: gradle :app:testPrivateTvDebugUnitTest --no-daemon
+      - name: Build and verify signed private TV APK
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          test -n "$ANDROID_KEYSTORE_PASSWORD"
+          test -n "$ANDROID_KEY_ALIAS"
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/zeroplay-release.jks"
+          trap 'rm -f "$ANDROID_KEYSTORE_FILE"' EXIT
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_FILE"
+          chmod 600 "$ANDROID_KEYSTORE_FILE"
+          gradle :app:assemblePrivateTvRelease --no-daemon
+          APK='app/build/outputs/apk/privateTv/release/app-privateTv-release.apk'
+          test -s "$APK"
+          "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$APK" | head -n 1 | grep -q "versionName='1.8.2'"
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose "$APK"
+          mkdir -p private-output
+          cp "$APK" private-output/ZeroPlay-1.8.2-Android-TV-PRIVATE.apk
+      - name: Upload private APK only
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-1.8.2-Android-TV-PRIVATE
+          path: private-output/ZeroPlay-1.8.2-Android-TV-PRIVATE.apk
+          if-no-files-found: error
+          retention-days: 3
