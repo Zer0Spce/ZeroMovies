@@ -40,15 +40,54 @@ public class FixedMainActivity extends MainActivity {
 
     @Override void titleExtras(LinearLayout target,JSONObject data,Catalog.Item item,int token){
         super.titleExtras(target,data,item,token);
-        if(item.id.equals(surpriseDetailId)){space(target,10);Button again=button("🎲 Surprise me again",this::surpriseMovie);again.setTextColor(BG);again.setBackground(shape(ACCENT,0));target.addView(again,new LinearLayout.LayoutParams(-1,dp(48)));}
-        JSONObject credits=data.optJSONObject("credits");JSONArray cast=credits==null?null:credits.optJSONArray("cast");if(cast==null)return;HorizontalScrollView rail=null;for(int i=target.getChildCount()-1;i>=0;i--)if(target.getChildAt(i) instanceof HorizontalScrollView){rail=(HorizontalScrollView)target.getChildAt(i);break;}if(rail==null||rail.getChildCount()==0||!(rail.getChildAt(0) instanceof LinearLayout))return;LinearLayout people=(LinearLayout)rail.getChildAt(0);int child=0;for(int i=0;i<Math.min(10,cast.length())&&child<people.getChildCount();i++){JSONObject actor=cast.optJSONObject(i);if(actor==null)continue;View person=people.getChildAt(child++);int personId=actor.optInt("id");String personName=actor.optString("name");if(personId<=0)continue;person.setFocusable(true);person.setClickable(true);person.setContentDescription("See titles starring "+personName);person.setOnClickListener(v->showPersonTitles(personId,personName));person.setOnFocusChangeListener((v,f)->v.setBackground(shape(f?alphaColor(SURFACE,0xD8):Color.TRANSPARENT,f?ACCENT:0)));}
+        if(item.id.equals(surpriseDetailId))fixUi.post(()->placeSurpriseAgainInActionRow());
+        JSONObject credits=data.optJSONObject("credits");JSONArray cast=credits==null?null:credits.optJSONArray("cast");if(cast==null)return;
+        HorizontalScrollView rail=null;for(int i=target.getChildCount()-1;i>=0;i--)if(target.getChildAt(i) instanceof HorizontalScrollView){rail=(HorizontalScrollView)target.getChildAt(i);break;}
+        if(rail==null||rail.getChildCount()==0||!(rail.getChildAt(0) instanceof LinearLayout))return;
+        LinearLayout people=(LinearLayout)rail.getChildAt(0);int child=0;
+        for(int i=0;i<Math.min(10,cast.length())&&child<people.getChildCount();i++){
+            JSONObject actor=cast.optJSONObject(i);if(actor==null)continue;View person=people.getChildAt(child++);int personId=actor.optInt("id");String personName=actor.optString("name");if(personId<=0)continue;
+            person.setFocusable(true);person.setClickable(true);person.setContentDescription("See titles starring "+personName);
+            person.setOnClickListener(v->showPersonTitles(personId,personName));
+            person.setOnFocusChangeListener((v,f)->v.setBackground(shape(f?alphaColor(SURFACE,0xD8):Color.TRANSPARENT,f?ACCENT:0)));
+        }
     }
 
-    private void showPersonTitles(int personId,String personName){message("Loading titles starring "+personName+"…");String key=tmdbKey();fixIo.execute(()->{try{List<Catalog.Item> titles=ContentApi.personCredits(personId,key);fixUi.post(()->{if(isDestroyed())return;if(titles.isEmpty()){message("No movie or series credits found for "+personName);return;}LinearLayout panel=column();panel.setPadding(dp(16),dp(12),dp(16),dp(16));for(Catalog.Item title:titles.subList(0,Math.min(40,titles.size()))){Button row=button((title.type.equals("series")?"TV · ":"Movie · ")+title.title+(title.year>0?" · "+title.year:""),()->details(title));row.setGravity(Gravity.CENTER_VERTICAL|Gravity.START);panel.addView(row,new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?52:48)));space(panel,6);}ScrollView scroll=new ScrollView(this);scroll.addView(panel);AlertDialog dialog=new AlertDialog.Builder(this).setTitle(personName).setView(scroll).setNegativeButton("Close",null).create();dialog.show();if(dialog.getWindow()!=null)dialog.getWindow().setBackgroundDrawable(shape(BG,0));});}catch(Exception e){fixUi.post(()->message("Could not load "+personName+"'s titles right now."));}});}
+    private void placeSurpriseAgainInActionRow(){
+        View root=getWindow().getDecorView();Button watch=findButton(root,"Watch now");if(watch==null)watch=findButton(root,"Resume");if(watch==null)return;
+        ViewParent parent=watch.getParent();if(!(parent instanceof LinearLayout))return;LinearLayout actions=(LinearLayout)parent;
+        for(int i=0;i<actions.getChildCount();i++){View child=actions.getChildAt(i);if(child instanceof Button&&String.valueOf(((Button)child).getText()).contains("Surprise me again"))return;}
+        Button again=button("🎲 Surprise me again",this::surpriseMovie);again.setTextColor(BG);again.setBackground(shape(ACCENT,0));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(48));if(actions.getOrientation()==LinearLayout.HORIZONTAL){p=new LinearLayout.LayoutParams(-2,dp(48));p.setMargins(dp(8),0,0,0);}else p.setMargins(0,dp(8),0,0);actions.addView(again,p);
+    }
+
+    private Button findButton(View root,String prefix){if(root instanceof Button&&String.valueOf(((Button)root).getText()).startsWith(prefix))return(Button)root;if(root instanceof ViewGroup){ViewGroup g=(ViewGroup)root;for(int i=0;i<g.getChildCount();i++){Button found=findButton(g.getChildAt(i),prefix);if(found!=null)return found;}}return null;}
+
+    private void showPersonTitles(int personId,String personName){startActivity(new Intent(this,PersonFilmographyActivity.class).putExtra("personId",personId).putExtra("personName",personName));}
 
     private void manualUpdateCheck(){try{java.lang.reflect.Field field=MainActivity.class.getDeclaredField("updater");field.setAccessible(true);AppUpdater appUpdater=(AppUpdater)field.get(this);if(appUpdater!=null)appUpdater.check(true);else message("Updater is not ready yet.");}catch(Exception e){message("Could not start update check.");}}
-    @Override void settings(){new AlertDialog.Builder(this).setTitle("Settings").setItems(new String[]{"All ZeroPlay settings","Live TV channel providers","Check for updates"},(d,which)->{if(which==0)FixedMainActivity.super.settings();else if(which==1)providerSettings();else manualUpdateCheck();}).setNegativeButton("Close",null).show();}
-    private void providerSettings(){SharedPreferences prefs=getSharedPreferences("zero",MODE_PRIVATE);LinearLayout panel=column();panel.setPadding(dp(20),dp(16),dp(20),dp(16));Switch cignal=new Switch(this);cignal.setText("Enable Cignal channels");cignal.setTextColor(INK);cignal.setChecked(prefs.getBoolean("liveCignal",false));panel.addView(cignal);Switch converge=new Switch(this);converge.setText("Enable Converge channels");converge.setTextColor(INK);converge.setChecked(prefs.getBoolean("liveConverge",true));panel.addView(converge);panel.addView(text("Cignal is disabled by default on Android. Other Live TV channels remain available.",12,MUTED));new AlertDialog.Builder(this).setTitle("Live TV channel providers").setView(panel).setPositiveButton("Save",(d,n)->{prefs.edit().putBoolean("liveCignal",cignal.isChecked()).putBoolean("liveConverge",converge.isChecked()).apply();load();}).setNegativeButton("Cancel",null).show();}
+
+    @Override void settings(){
+        FixedMainActivity.super.settings();
+        fixUi.postDelayed(this::injectSettingsExtras,80);
+    }
+
+    private void injectSettingsExtras(){
+        try{
+            java.lang.reflect.Field field=MainActivity.class.getDeclaredField("appearanceDialog");field.setAccessible(true);AlertDialog dialog=(AlertDialog)field.get(this);if(dialog==null||!dialog.isShowing())return;
+            View panelRoot=dialog.findViewById(android.R.id.content);LinearLayout panel=findSettingsPanel(panelRoot);if(panel==null||panel.findViewWithTag("zero-integrated-live-settings")!=null)return;
+            View marker=new View(this);marker.setTag("zero-integrated-live-settings");panel.addView(marker,new LinearLayout.LayoutParams(1,dp(1)));
+            space(panel,20);settingsHeading(panel,"LIVE TV","Channel providers");
+            SharedPreferences prefs=getSharedPreferences("zero",MODE_PRIVATE);
+            Switch cignal=new Switch(this);cignal.setText("Enable Cignal channels");cignal.setTextColor(INK);cignal.setChecked(prefs.getBoolean("liveCignal",false));cignal.setOnCheckedChangeListener((v,enabled)->prefs.edit().putBoolean("liveCignal",enabled).apply());panel.addView(cignal);
+            Switch converge=new Switch(this);converge.setText("Enable Converge channels");converge.setTextColor(INK);converge.setChecked(prefs.getBoolean("liveConverge",true));converge.setOnCheckedChangeListener((v,enabled)->prefs.edit().putBoolean("liveConverge",enabled).apply());panel.addView(converge);
+            panel.addView(text("Provider changes apply on the next Live TV refresh.",12,MUTED));
+            space(panel,20);settingsHeading(panel,"UPDATE","App update");Button update=button("Check for updates",this::manualUpdateCheck);update.setTextColor(BG);update.setBackground(shape(ACCENT,0));panel.addView(update,new LinearLayout.LayoutParams(-1,dp(48)));
+            replaceText(panel,"Mouse remains the default. Press Menu during movie playback to switch modes instantly.","D-pad navigation is the default on Android TV. Press Menu during movie playback to toggle optional mouse mode.");
+        }catch(Exception ignored){}
+    }
+
+    private LinearLayout findSettingsPanel(View root){if(root instanceof LinearLayout){LinearLayout l=(LinearLayout)root;if(l.getChildCount()>8)return l;}if(root instanceof ViewGroup){ViewGroup g=(ViewGroup)root;for(int i=0;i<g.getChildCount();i++){LinearLayout found=findSettingsPanel(g.getChildAt(i));if(found!=null)return found;}}return null;}
+    private void replaceText(View root,String from,String to){if(root instanceof TextView&&String.valueOf(((TextView)root).getText()).equals(from))((TextView)root).setText(to);if(root instanceof ViewGroup){ViewGroup g=(ViewGroup)root;for(int i=0;i<g.getChildCount();i++)replaceText(g.getChildAt(i),from,to);}}
 
     @Override protected void onDestroy(){fixUi.removeCallbacksAndMessages(null);fixIo.shutdownNow();super.onDestroy();}
 }
