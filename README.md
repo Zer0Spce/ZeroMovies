@@ -6,7 +6,7 @@
 
 Browse trending picks, explore genres, save a watchlist, or roll the 🎲 **Surprise Me** dice when you cannot decide. Softly blurred artwork, light and dark themes, and dedicated TV controls make it comfortable on your phone, desktop, or big screen.
 
-**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.8.0 release notes](docs/release-1.8.0.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
+**[⬇️ Download the latest release](https://github.com/Zer0Spce/ZeroPlay/releases/latest)** · **[📋 v1.8.1 release notes](docs/release-1.8.1.md)** · **[📺 TV controls](docs/android-tv-controls.md)**
 
 Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations, Windows library data, and the permanent signing key.
 
@@ -28,7 +28,8 @@ Previously **ZeroMovies**. ZeroPlay updates keep existing Android installations,
 | 🎨 **Three UI layouts** | YouTube TV (default), Google TV and Classic; choose a layout independently of your color theme. |
 | 🎨 **Make it yours** | Default, Light and three numbered color palettes; immediate theme switching, optional animations and delayed focus/hover previews. |
 | 🎬 **Trailers** | Optional muted homepage trailers and delayed focus/hover trailers, with artwork fallback. |
-| 📥 **Offline downloads** | Configure hosted **TSP Search** in Settings. Select a healthy matching result, confirm, and download with the integrated engine. Queue, pause, resume, play offline, or delete files. |
+| 📥 **Offline downloads** | Configure hosted **TSP Search** in Settings. Select a healthy matching result, confirm, and download with the integrated engine. Queue, pause, resume, play offline, open the completed file in an external video player, or delete files. |
+| 💬 **Automatic subtitles** | Downloaded movies and episodes automatically use matching local SRT/VTT/ASS/SSA files. Add your own free SubDL key for automatic online fallback when a local subtitle is not available. |
 | 🛡️ **Advertisement filtering** | Block known advertising requests and redirects, and remove explicit banner/ad slots, popups, and recognized timed QR overlays in supported app playback environments. |
 | 📺 **TV remote support** | D-pad navigation and optional player mouse mode; idle controls hide and wake on remote input. |
 | 🖥️ **Windows portable** | Browse and play in one window, use native fullscreen, and return with the player Back button. No installer. |
@@ -103,11 +104,11 @@ Choose your playback source, appearance, provider region, and optional audio boo
 
 Get the files from **[GitHub Releases](https://github.com/Zer0Spce/ZeroPlay/releases/latest)**.
 
-| Platform | v1.8.0 download | Getting started |
+| Platform | v1.8.1 download | Getting started |
 | --- | --- | --- |
-| 📱 Android phone / tablet | `ZeroPlay-1.8.0-Android.apk` | Android 6+. Install the signed mobile APK. |
-| 📺 Android TV / Google TV | `ZeroPlay-1.8.0-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
-| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.8.0-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
+| 📱 Android phone / tablet | `ZeroPlay-1.8.1-Android.apk` | Android 6+. Install the signed mobile APK. |
+| 📺 Android TV / Google TV | `ZeroPlay-1.8.1-Android-TV.apk` | Android 6+. Install the signed TV APK and navigate with your remote. |
+| 🖥️ Windows 10 / 11 · x64 | `ZeroPlay-1.8.1-Windows-x64.zip` | Extract the ZIP and launch `ZeroPlay.exe`. |
 | ✅ Integrity checks | `SHA256SUMS.txt` | Compare your downloaded files against the published SHA-256 checksums. |
 
 Android v0.4.5 uses a permanent production signing key. Moving from an earlier debug build may require uninstalling that build first, which clears its local library and history. Future production releases retain the same signing key.
@@ -140,7 +141,17 @@ Metadata and artwork: **TMDB** and their respective rights holders. This product
 
 If a QR ad appears, press its **X** button or wait for it to close automatically. This is a known bug.
 
-## 🆕 Version 1.8.0
+## 🆕 Version 1.8.1
+
+💬 **Automatic subtitles:** downloaded torrent sidecar subtitles are detected locally first. When none are present, Android can use a user-supplied free SubDL API key to look up the matching title/season/episode automatically. The key is stored with Android Keystore.
+
+▶️ **External playback:** completed downloads keep ZeroPlay’s native offline player as the default and now include **Open in external player** on Android and Windows.
+
+📱 **Phone/tablet UI:** compact Android screens now place Watch, Source and Download actions below the title/poster block instead of squeezing them into a narrow column. Wider tablets retain the TV-style side action panel.
+
+🔐 **Private Android TV build:** CI can build a same-package private TV APK with a TSP key supplied only through the `TSP_API_KEY` Actions secret. It is not included in public release assets.
+
+### UI layouts carried forward from 1.8.0
 
 🎨 Choose **YouTube TV**, **Google TV**, or **Classic** in **Settings → Appearance → UI layout**. YouTube TV is the default for new and upgraded installations without a saved layout preference.
 
@@ -160,6 +171,6 @@ Android supports app-scoped internal and available external/USB storage, a foreg
 
 Use downloads only for public-domain, Creative Commons, user-owned or otherwise authorized content. Reported torrent health does not guarantee speed or availability. Offline codec support depends on the native player. YouTube may still show branding or overlays. Public builds contain no personal API keys.
 
-See the [complete 1.8.0 release notes](docs/release-1.8.0.md).
+See the [complete 1.8.1 release notes](docs/release-1.8.1.md).
 
 TSP key setup: open [tspsearch.dev](https://tspsearch.dev/), expand **Advanced: copy and paste it yourself**, and use **Copy URL** and **Copy key**. Paste the full values in ZeroPlay’s Downloads Settings, save, then test the connection. The Downloads tab includes this guide; Android TV also offers a QR code for opening the site on your phone.

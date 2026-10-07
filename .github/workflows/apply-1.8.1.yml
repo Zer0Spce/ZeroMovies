@@ -1,0 +1,63 @@
+name: Apply ZeroPlay 1.8.1
+
+on:
+  push:
+    branches: [release/v1.8.1]
+    paths:
+      - scripts/apply-1.8.1-source-patch.py
+      - scripts/apply-1.8.1-readme.py
+      - .github/workflows/apply-1.8.1.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply guarded source changes
+        run: |
+          sed -i "s/release.yml','1.8.0','1.8.1',minimum=6/release.yml','1.8.0','1.8.1',minimum=5/" scripts/apply-1.8.1-source-patch.py
+          python scripts/apply-1.8.1-source-patch.py
+          python scripts/apply-1.8.1-readme.py
+      - name: Sync Windows lockfile
+        working-directory: windows
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Check patch formatting
+        run: git diff --check
+      - name: Compile Android phone and TV
+        run: gradle :app:compileMobileDebugJavaWithJavac :app:compileTvDebugJavaWithJavac --no-daemon
+      - name: Android unit tests
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --no-daemon
+      - name: Windows unit tests
+        working-directory: windows
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm test
+      - name: Commit validated 1.8.1 patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app windows README.md docs scripts/publish-release.py
+          git diff --cached --quiet && exit 0
+          git commit -m "Implement ZeroPlay 1.8.1 playback and mobile updates"
+          git restore .github/workflows/release.yml scripts/apply-1.8.1-source-patch.py
+          git pull --rebase origin release/v1.8.1
+          git push origin HEAD:release/v1.8.1
