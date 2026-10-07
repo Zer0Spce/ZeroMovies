@@ -41,3 +41,16 @@ aside{background:var(--sidebar,#0d1019)}aside button{color:var(--muted);font-wei
 #hero{overflow:hidden}#hero .trailer-preview{max-width:none;max-height:none}
 
 [hidden]{display:none!important}
+
+
+/* 1.9 Golden ZeroPlay easter egg */
+[data-egg="true"]{--bg:#100c03!important;--surface:#211807!important;--sidebar:#171005!important;--card:#2b200a!important;--button:#37290d!important;--ink:#fff8dc!important;--muted:#d7c58d!important;--dialog:#211807!important;--mint:#ffd76a!important;--focus:#ffe9a6!important;--selected:#4a3510!important;--highlight:#fff0a8!important}
+[data-egg="true"] aside{background:linear-gradient(160deg,#120d03,#2a1d06 48%,#171005)!important;animation:golden-shimmer 3.8s ease-in-out infinite alternate!important;box-shadow:inset -2px 0 0 #ffd76a66,10px 0 45px #b6780018}
+[data-egg="true"] .brand,[data-egg="true"] .brand span{background:linear-gradient(100deg,#b77a16,#ffd76a 38%,#fff4b5 52%,#d99a27 74%,#ffd76a);background-size:220% auto;background-clip:text;-webkit-background-clip:text;color:transparent!important;animation:gold-logo 3.2s linear infinite!important;text-shadow:0 0 20px #ffd76a24}
+[data-egg="true"] button:focus-visible,[data-egg="true"] .card:focus-visible{border-color:#ffe9a6!important;box-shadow:0 0 0 2px #ffd76a55,0 0 26px #ffd76a44!important}
+[data-egg="true"] button.primary{background:linear-gradient(135deg,#b97916,#ffd76a 52%,#f1b93f)!important;color:#1b1202!important;border-color:#ffe9a6!important}
+[data-egg="true"] #egg-exit{background:linear-gradient(135deg,#b97916,#ffd76a)!important;color:#1b1202!important;border-color:#fff0a8!important;box-shadow:0 6px 30px #ffd76a35}
+#egg-sparkles{position:fixed;inset:0;z-index:55;pointer-events:none;overflow:hidden}.egg-sparkle{position:absolute;left:var(--x);top:var(--y);font-size:var(--size);color:#ffd76a;text-shadow:0 0 7px #fff0a8,0 0 18px #d98d16;opacity:.35;animation:gold-sparkle var(--duration) ease-in-out var(--delay) infinite;transform-origin:center}
+@keyframes gold-sparkle{0%,100%{opacity:.16;transform:translateY(5px) scale(.65) rotate(-12deg)}45%{opacity:1;transform:translateY(-8px) scale(1.18) rotate(12deg)}70%{opacity:.48;transform:translateY(-3px) scale(.85) rotate(4deg)}}
+@keyframes golden-shimmer{from{box-shadow:inset -2px 0 0 #b9791666,10px 0 38px #b6780012}to{box-shadow:inset -3px 0 0 #ffe9a6aa,12px 0 55px #ffd76a24}}
+@keyframes gold-logo{0%{background-position:0% center}100%{background-position:220% center}}
