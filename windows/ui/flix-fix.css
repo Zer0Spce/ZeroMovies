@@ -1,1 +1,5 @@
 :root[data-layout="flix"] .zero-wordmark{display:none!important}
+:root[data-layout="flix"] main>header{top:78px!important;right:28px!important;z-index:18!important;margin:0!important;gap:8px!important;background:transparent!important}
+:root[data-layout="flix"] main>header>div:first-child,:root[data-layout="flix"] main>header #search-form{display:none!important}
+:root[data-layout="flix"] main>header button{min-height:38px!important;padding:7px 11px!important;border-radius:8px!important;background:#141414d9!important;border-color:#ffffff24!important;box-shadow:0 6px 20px #0006!important}
+@media(max-width:900px){:root[data-layout="flix"] main>header{display:none!important}}
