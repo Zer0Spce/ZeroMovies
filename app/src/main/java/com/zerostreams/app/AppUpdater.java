@@ -2,7 +2,6 @@ package com.zerostreams.app;
 
 import android.app.*;
 import android.content.*;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -19,17 +18,24 @@ import java.security.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-final class AppUpdater {
+final class AppUpdater implements Application.ActivityLifecycleCallbacks {
     private static final String API="https://api.github.com/repos/Zer0Spce/ZeroPlay/releases/latest";
     private final Activity activity;
     private final android.content.SharedPreferences prefs;
     private final ExecutorService io=Executors.newSingleThreadExecutor();
     private final Handler ui=new Handler(Looper.getMainLooper());
     private volatile boolean checking,downloading;
+    private boolean waitingInstallPermission;
     private Release pending;
     private AlertDialog dialog;
+    private ProgressBar pendingProgress;
+    private TextView pendingState;
+    private Button pendingButton;
 
-    AppUpdater(Activity activity,android.content.SharedPreferences prefs){this.activity=activity;this.prefs=prefs;}
+    AppUpdater(Activity activity,android.content.SharedPreferences prefs){
+        this.activity=activity;this.prefs=prefs;
+        activity.getApplication().registerActivityLifecycleCallbacks(this);
+    }
 
     static boolean newer(String remote,String local){
         int[] a=parts(remote),b=parts(local);int n=Math.max(3,Math.max(a.length,b.length));
@@ -75,22 +81,29 @@ final class AppUpdater {
         int pad=dp(20);LinearLayout box=new LinearLayout(activity);box.setOrientation(LinearLayout.VERTICAL);box.setPadding(pad,pad,pad,pad);
         TextView eyebrow=text("ZEROPLAY UPDATE",11,Color.rgb(101,230,204));eyebrow.setLetterSpacing(.12f);box.addView(eyebrow);
         TextView title=text("Update available",24,Color.WHITE);title.setTypeface(null,Typeface.BOLD);box.addView(title);
-        TextView versions=text("v"+BuildConfig.VERSION_NAME+"  →  v"+r.version,14,Color.rgb(190,198,215));versions.setPadding(0,dp(4),0,dp(14));box.addView(versions);
-        TextView ch=text(r.changelog,13,Color.rgb(225,229,238));ch.setTextIsSelectable(true);ScrollView sc=new ScrollView(activity);sc.addView(ch);box.addView(sc,new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?220:260)));
+        TextView versions=text("v"+BuildConfig.VERSION_NAME+"  →  v"+r.version,14,Color.rgb(190,198,215));versions.setPadding(0,dp(4),0,dp(10));box.addView(versions);
+        TextView warning=text("⚠ Android may require permission to install updates from ZeroPlay. If needed, Update will open the exact ‘Install unknown apps’ page for ZeroPlay. Enable it once, return here, and the update will continue automatically.",12,Color.rgb(255,201,77));warning.setPadding(0,0,0,dp(12));box.addView(warning);
+        TextView ch=text(r.changelog,13,Color.rgb(225,229,238));ch.setTextIsSelectable(true);ScrollView sc=new ScrollView(activity);sc.addView(ch);box.addView(sc,new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?205:240)));
         ProgressBar progress=new ProgressBar(activity,null,android.R.attr.progressBarStyleHorizontal);progress.setMax(100);progress.setVisibility(View.GONE);box.addView(progress,new LinearLayout.LayoutParams(-1,dp(10)));
         TextView state=text("",12,Color.rgb(190,198,215));state.setPadding(0,dp(8),0,0);box.addView(state);
         dialog=new AlertDialog.Builder(activity).setView(box).setNegativeButton("Cancel",null).setNeutralButton("Skip this update",(d,w)->prefs.edit().putString("skippedUpdateVersion",r.version).apply()).setPositiveButton("Update",null).create();
         dialog.setOnShowListener(x->{Button update=dialog.getButton(AlertDialog.BUTTON_POSITIVE);update.setOnClickListener(v->begin(r,progress,state,update));if(BuildConfig.TV)update.requestFocus();});
-        dialog.getWindow();dialog.show();Window w=dialog.getWindow();if(w!=null){w.setBackgroundDrawableResource(android.R.color.transparent);w.setLayout(dp(BuildConfig.TV?620:Math.min(560,(int)(activity.getResources().getDisplayMetrics().widthPixels/activity.getResources().getDisplayMetrics().density)-28)),-2);}
+        dialog.show();Window w=dialog.getWindow();if(w!=null){w.setBackgroundDrawableResource(android.R.color.transparent);w.setLayout(dp(BuildConfig.TV?620:Math.min(560,(int)(activity.getResources().getDisplayMetrics().widthPixels/activity.getResources().getDisplayMetrics().density)-28)),-2);}
     }
 
     private void begin(Release r,ProgressBar progress,TextView state,Button button){
         if(downloading)return;
         if(Build.VERSION.SDK_INT>=26&&!activity.getPackageManager().canRequestPackageInstalls()){
-            toast("Allow ZeroPlay to install updates, then press Update again.");
-            Intent settings=new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,Uri.parse("package:"+activity.getPackageName()));activity.startActivity(settings);return;
+            waitingInstallPermission=true;pending=r;pendingProgress=progress;pendingState=state;pendingButton=button;
+            state.setText("Permission required · enable ‘Allow from this source’ for ZeroPlay.");
+            Intent settings=new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,Uri.parse("package:"+activity.getPackageName()));
+            activity.startActivity(settings);return;
         }
-        downloading=true;progress.setVisibility(View.VISIBLE);state.setText("Downloading update…");button.setEnabled(false);
+        waitingInstallPermission=false;downloadAndInstall(r,progress,state,button);
+    }
+
+    private void downloadAndInstall(Release r,ProgressBar progress,TextView state,Button button){
+        if(downloading)return;downloading=true;progress.setVisibility(View.VISIBLE);state.setText("Downloading update…");button.setEnabled(false);
         io.execute(()->{File apk=null;try{
             File dir=new File(activity.getFilesDir(),"updates");if(!dir.exists()&&!dir.mkdirs())throw new IOException("Could not create update folder");
             apk=new File(dir,"ZeroPlay-"+r.version+".apk");download(r.url,apk,(done,total)->ui.post(()->{int p=total>0?(int)Math.min(100,done*100/total):0;progress.setProgress(p);state.setText(total>0?"Downloading · "+p+"%":"Downloading update…");}));
@@ -122,4 +135,20 @@ final class AppUpdater {
     private static String safe(String s){return TextUtils.isEmpty(s)?"Unknown error":s.replaceAll("https?://\\S+","network request");}
     private interface Progress{void on(long done,long total);}
     private static final class Release{final String version,tag,name,changelog,url,assetName,digest,sumsUrl;Release(String version,String tag,String name,String changelog,String url,String assetName,String digest,String sumsUrl){this.version=version;this.tag=tag;this.name=name;this.changelog=changelog;this.url=url;this.assetName=assetName;this.digest=digest;this.sumsUrl=sumsUrl;}}
+
+    @Override public void onActivityResumed(Activity a){
+        if(a!=activity||!waitingInstallPermission||Build.VERSION.SDK_INT<26)return;
+        if(activity.getPackageManager().canRequestPackageInstalls()&&pending!=null&&pendingProgress!=null&&pendingState!=null&&pendingButton!=null){
+            waitingInstallPermission=false;
+            Release r=pending;ProgressBar p=pendingProgress;TextView s=pendingState;Button b=pendingButton;
+            pendingProgress=null;pendingState=null;pendingButton=null;
+            ui.postDelayed(()->downloadAndInstall(r,p,s,b),250);
+        }
+    }
+    @Override public void onActivityDestroyed(Activity a){if(a==activity){try{activity.getApplication().unregisterActivityLifecycleCallbacks(this);}catch(Exception ignored){}io.shutdownNow();}}
+    @Override public void onActivityCreated(Activity a,Bundle b){}
+    @Override public void onActivityStarted(Activity a){}
+    @Override public void onActivityPaused(Activity a){}
+    @Override public void onActivityStopped(Activity a){}
+    @Override public void onActivitySaveInstanceState(Activity a,Bundle b){}
 }
