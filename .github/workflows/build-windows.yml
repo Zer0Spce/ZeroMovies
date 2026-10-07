@@ -15,6 +15,7 @@ jobs:
         working-directory: windows
     env:
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +38,7 @@ jobs:
           $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
           $env:ZERO_GUARD_PATH = "assets/player-guard.js"
           node ../tests/player-guard.test.cjs
-      - name: Configure bundled TMDB key
+      - name: Configure bundled keys
         run: npm run prepare-config
       - name: Verify live TMDB discovery and search
         run: node scripts/tmdb-check.cjs
