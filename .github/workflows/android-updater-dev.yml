@@ -1,0 +1,61 @@
+name: Android Updater Development
+on:
+  push:
+    branches: [fix/windows-updater]
+permissions:
+  contents: write
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Apply guarded updater UI hooks
+        run: python3 scripts/apply-android-updater.py
+      - name: Protect Live TV Sports and PPV files
+        run: |
+          git fetch origin tag v1.9 --force
+          if git diff --quiet v1.9 -- \
+            app/src/main/java/com/zerostreams/app/LivePlayerActivity.java \
+            app/src/main/java/com/zerostreams/app/SportsPlayerActivity.java \
+            app/src/main/java/com/zerostreams/app/PlaylistStore.java \
+            app/src/main/java/com/zerostreams/app/SportsStore.java \
+            app/src/main/java/com/zerostreams/app/LiveSportsStore.java; then
+            echo 'Protected Live TV / Sports / PPV files unchanged.'
+          else
+            echo 'Protected Live TV / Sports / PPV file changed.' >&2
+            git diff v1.9 -- app/src/main/java/com/zerostreams/app/LivePlayerActivity.java app/src/main/java/com/zerostreams/app/SportsPlayerActivity.java app/src/main/java/com/zerostreams/app/PlaylistStore.java app/src/main/java/com/zerostreams/app/SportsStore.java app/src/main/java/com/zerostreams/app/LiveSportsStore.java
+            exit 1
+          fi
+      - name: Verify updater source contracts
+        run: |
+          grep -q 'REQUEST_INSTALL_PACKAGES' app/src/main/AndroidManifest.xml
+          grep -q 'releases/latest' app/src/main/java/com/zerostreams/app/AppUpdater.java
+          grep -q 'SHA-256 verification failed' app/src/main/java/com/zerostreams/app/AppUpdater.java
+          grep -q 'ACTION_MANAGE_UNKNOWN_APP_SOURCES' app/src/main/java/com/zerostreams/app/AppUpdater.java
+          grep -q 'BuildConfig.TV' app/src/main/java/com/zerostreams/app/AppUpdater.java
+          grep -q 'updater.check(false)' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'Check for ZeroPlay updates' app/src/main/java/com/zerostreams/app/MainActivity.java
+      - name: Compile Android Mobile
+        run: ./gradlew :app:compileMobileDebugJavaWithJavac --stacktrace
+      - name: Compile Android TV
+        run: ./gradlew :app:compileTvDebugJavaWithJavac --stacktrace
+      - name: Android unit tests
+        run: ./gradlew :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --stacktrace
+      - name: Commit validated UI hooks
+        run: |
+          if git diff --quiet -- app/src/main/java/com/zerostreams/app/MainActivity.java; then
+            echo 'MainActivity already wired.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/src/main/java/com/zerostreams/app/MainActivity.java
+          git commit -m 'Wire Android updater UI hooks [skip ci]'
+          git push origin HEAD:fix/windows-updater
