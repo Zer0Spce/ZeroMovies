@@ -14,6 +14,7 @@ public class BrowserPlayerActivity extends Activity {
     private String playerGuard;
     private TvMouse mouse;private PlayerAdScan adScan;private long lastProgressSaved;
     private long lastPlayerGesture;
+    private long lastTvNavAt;
     private final PlayerBackState backState=new PlayerBackState();
     private volatile boolean blockAds;
     private TextView status;
@@ -65,7 +66,7 @@ public class BrowserPlayerActivity extends Activity {
             case KeyEvent.KEYCODE_DPAD_LEFT:direction="left";break;case KeyEvent.KEYCODE_DPAD_RIGHT:direction="right";break;
             case KeyEvent.KEYCODE_DPAD_UP:direction="up";break;case KeyEvent.KEYCODE_DPAD_DOWN:direction="down";break;
             case KeyEvent.KEYCODE_DPAD_CENTER:case KeyEvent.KEYCODE_ENTER:direction="ok";break;
-        }if(direction!=null){boolean activate=direction.equals("ok");if((activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN))web.evaluateJavascript("if(window.__zeroTvNavigate)window.__zeroTvNavigate('"+direction+"');",null);return true;}}
+        }if(direction!=null){boolean activate=direction.equals("ok");if(!activate&&event.getAction()==KeyEvent.ACTION_DOWN){long now=android.os.SystemClock.elapsedRealtime();if(event.getRepeatCount()>0&&now-lastTvNavAt<165)return true;lastTvNavAt=now;}if((activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN))web.evaluateJavascript("if(window.__zeroTvNavigate)window.__zeroTvNavigate('"+direction+"');",null);return true;}}
         return super.dispatchKeyEvent(event);
     }
     private void wakeControls(){if(web!=null)web.evaluateJavascript("if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();",null);}
