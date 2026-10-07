@@ -27,7 +27,7 @@ public class FixedMainActivity extends MainActivity {
     }
 
     @Override String layoutDisplay(String id){return id.equals("youtube")?"Clean UI":id.equals("google")?"Modern UI":id.equals("flix")?"Flix UI - Beta":"Native / Original UI";}
-    @Override void layoutPicker(Button field){String[] ids={"youtube","google","flix","classic"};String[] labels={"Clean UI","Modern UI","Flix UI - Beta","Native / Original UI"};showChoicePicker("Choose UI layout",ids,labels,layoutStyle(),value->{if(value.equals(layoutStyle()))return;prefs.edit().putString("uiLayout",value).commit();field.setText(layoutDisplay(value)+"  ▾");stopPreview();if(appearanceDialog!=null)appearanceDialog.dismiss();recreate();});}
+    @Override void layoutPicker(Button field){String[] ids={"youtube","google","flix","classic"};String[] labels={"Clean UI","Modern UI","Flix UI - Beta","Native / Original UI"};showChoicePicker("Choose UI layout",ids,labels,layoutStyle(),value->{if(value.equals(layoutStyle()))return;getSharedPreferences("zero",MODE_PRIVATE).edit().putString("uiLayout",value).commit();field.setText(layoutDisplay(value)+"  ▾");stopPreview();recreate();});}
 
     @Override String themeDisplay(String id){Map<String,String> n=new HashMap<>();n.put("dark","Zero Dark");n.put("light","Zero Light");n.put("ocean","Ocean");n.put("orchid","Orchid");n.put("sunset","Sunset");n.put("midnight","Midnight Blue");n.put("ember","Ember Glow");n.put("forest","Forest Moss");n.put("rose","Rose Noir");n.put("amethyst","Amethyst");n.put("cyber","Cyber Mint");n.put("cobalt","Cobalt Sky");n.put("gold","Golden Hour");n.put("coral","Coral Night");n.put("aurora","Aurora");n.put("slate","Slate Ice");n.put("mocha","Mocha");return n.containsKey(id)?n.get(id):"Zero Dark";}
 
