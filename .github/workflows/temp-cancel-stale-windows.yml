@@ -1,0 +1,23 @@
+name: Clear stale Windows validation runs
+on:
+  push:
+    branches:
+      - fix/2.0-from-v1.9
+    paths:
+      - .github/workflows/temp-cancel-stale-windows.yml
+permissions:
+  actions: write
+  contents: read
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel superseded Windows runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          for run in 37610830219 37611080462 37612281427 37612334162; do
+            gh api -X POST "repos/$GH_REPO/actions/runs/$run/cancel" >/dev/null 2>&1 || true
+          done
+          echo "Superseded Windows runs cleared"
