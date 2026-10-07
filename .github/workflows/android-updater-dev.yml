@@ -43,7 +43,7 @@ jobs:
           grep -q 'scheduleReconnect' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
           grep -q 'setConnectTimeoutMs(20000)' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
           grep -q 'setReadTimeoutMs(30000)' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
-      - name: Verify updater settings TV navigation compact rail Modern UI and Fix 13 contracts
+      - name: Verify updater settings TV navigation compact rail Modern UI Fix 13 and Fix 14 contracts
         run: |
           grep -q 'REQUEST_INSTALL_PACKAGES' app/src/main/AndroidManifest.xml
           grep -q 'releases/latest' app/src/main/java/com/zerostreams/app/AppUpdater.java
@@ -59,6 +59,7 @@ jobs:
           grep -q 'brand.setGravity(Gravity.CENTER)' app/src/main/java/com/zerostreams/app/MainActivity.java
           grep -q 'BuildConfig.TV?168:140' app/src/main/java/com/zerostreams/app/MainActivity.java
           grep -q '"Search","Home","Movies","Series","IPTV","LiveTV","Live Sports","Downloads"' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'String fallback=BuildConfig.TV?"classic":"google"' app/src/main/java/com/zerostreams/app/MainActivity.java
       - name: TV navigation regression test
         run: |
           rm -rf /tmp/zero-tv-test
