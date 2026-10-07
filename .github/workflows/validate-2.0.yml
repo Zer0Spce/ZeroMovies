@@ -28,10 +28,10 @@ jobs:
           gradle-version: '8.9'
       - name: Android unit tests
         run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest
-      - name: Compile mobile and TV debug APKs
-        run: gradle :app:assembleMobileDebug :app:assembleTvDebug
+      - name: Compile mobile, TV and private TV debug APKs
+        run: gradle :app:assembleMobileDebug :app:assembleTvDebug :app:assemblePrivateTvDebug
       - name: Android lint
-        run: gradle --continue :app:lintMobileDebug :app:lintTvDebug
+        run: gradle --continue :app:lintMobileDebug :app:lintTvDebug :app:lintPrivateTvDebug
 
   windows:
     runs-on: windows-latest
