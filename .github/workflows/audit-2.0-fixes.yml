@@ -1,4 +1,4 @@
-name: Audit ZeroPlay 2.0 Fixes 1-23
+name: Audit and Build ZeroPlay 2.0 Test
 on:
   push:
     branches: ['test/2.0-audited-1-23']
@@ -8,7 +8,7 @@ permissions:
 jobs:
   windows:
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     defaults:
       run:
         working-directory: windows
@@ -25,25 +25,34 @@ jobs:
           cache: npm
           cache-dependency-path: windows/package-lock.json
       - run: npm ci --no-audit --no-fund
-      - name: Audit Windows fixes
+      - name: Audit Windows fixes 1-23
         shell: pwsh
         run: |
           $index = Get-Content ui/index.html -Raw
           $layouts = Get-Content ui/layouts.css -Raw
+          $style = Get-Content ui/style.css -Raw
           $settings = Get-Content ui/settings-layout.js -Raw
+          $appUi = Get-Content ui/app.js -Raw
+          $core = Get-Content core.cjs -Raw
           $main = Get-Content main.cjs -Raw
           $offline = Get-Content ui/offline-player.js -Raw
           $offlineHtml = Get-Content ui/offline-player.html -Raw
           $updater = Get-Content updater.cjs -Raw
           $live = Get-Content ui/live-player.js -Raw
+          $package = Get-Content package.json -Raw
           if ($updater -notmatch 'releases/latest' -or $updater -notmatch 'sha256|SHA-256') { throw 'Fix 1 updater contract missing' }
           if ($offline -notmatch 'disableTracks' -or $offline -notmatch 'srt|vtt|ass|ssa' -or $offlineHtml -notmatch 'tool-icon') { throw 'Fix 2/9 offline player contract missing' }
-          if ($index -notmatch '<option value="flix">Flix UI</option>' -or $layouts -notmatch 'data-layout="flix"') { throw 'Fix 8 Flix UI is not selectable and styled' }
           foreach ($name in @('General','Home','Appearance','Experience','Playback & Downloads','Player','About')) { if ($settings -notmatch [regex]::Escape($name)) { throw "Fix 4 settings section missing: $name" } }
-          if ($main -notmatch "uiLayout:'youtube'") { throw 'Fix 14 Windows Clean UI default missing' }
-          if ($main -notmatch 'liveCignal:false' -or $main -notmatch 'liveConverge:false') { throw 'Fix 23 Windows provider defaults missing' }
+          if ($index -notmatch '<option value="flix">Flix UI</option>' -or $layouts -notmatch 'data-layout="flix"') { throw 'Fix 8 Flix UI is not selectable and styled' }
           if ($live -notmatch 'MAX_RETRIES=4' -or $live -notmatch 'maxAttempts:5' -or $live -notmatch 'scheduleRuntimeReconnect' -or $live -notmatch 'connectionTimeout:15000') { throw 'Fix 11 Windows Live TV retry contract missing' }
+          if ($main -notmatch "uiLayout:'youtube'") { throw 'Fix 14 Windows Clean UI default missing' }
+          if ($appUi -notmatch 'combined_credits' -or $core -notmatch 'combined_credits' -or $appUi -notmatch 'data-person') { throw 'Fix 19 cast filmography missing on Windows' }
+          if ($appUi -notmatch 'categoryArtworkUsed' -or $appUi -notmatch 'Chinese titles' -or $appUi -notmatch 'Turkish titles' -or $style -notmatch 'genre-art') { throw 'Fix 20 category redesign/expansion missing on Windows' }
+          if ($appUi -notmatch 'Surprise me again' -or $appUi -notmatch 'surpriseDetail') { throw 'Fix 21 Surprise Me Again missing on Windows' }
+          if ($index -notmatch 'header-wordmark' -or $style -notmatch 'header-wordmark' -or $style -notmatch '\.brand\{color:var\(--ink\)') { throw 'Fix 22 theme-aware ZeroPlay branding missing on Windows' }
+          if ($main -notmatch 'liveCignal:false' -or $main -notmatch 'liveConverge:false') { throw 'Fix 23 Windows provider defaults missing' }
           if ($index -notmatch 'settings-layout.js' -or $index -notmatch 'settings-layout.css') { throw 'Fix 4 settings organizer is not wired' }
+          if ($package -notmatch '"version": "2.0.0-test"') { throw 'Windows test build is not labeled 2.0.0-test' }
       - name: Verify reorganized Settings DOM
         shell: pwsh
         run: |
@@ -64,10 +73,23 @@ jobs:
       - run: node scripts/tmdb-check.cjs
       - name: Electron smoke test including Flix
         run: npx electron . --smoke-test
+      - name: Build Windows portable ZIP
+        run: npm run build
+      - name: Prepare audited Windows artifact
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem dist\ZeroPlay-2.0.0-test-Windows-x64.zip | Select-Object -First 1
+          if (-not $zip) { throw 'Audited Windows ZIP not found' }
+          Copy-Item $zip.FullName dist\ZeroPlay-2.0.0-test-Audited-Fixes-1-23-Windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.0.0-test-Audited-Windows
+          path: windows/dist/ZeroPlay-2.0.0-test-Audited-Fixes-1-23-Windows-x64.zip
+          if-no-files-found: error
 
   android:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
     env:
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
     steps:
@@ -88,7 +110,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Audit Android fixes
+      - name: Audit Android fixes 1-23
         run: |
           set -euo pipefail
           A=app/src/main/java/com/zerostreams/app/MainActivity.java
@@ -118,6 +140,8 @@ jobs:
           grep -q 'liveCignal' "$A"
           grep -q 'liveConverge' "$A"
           grep -q 'prefs.getBoolean("liveConverge",true)' "$A"
+          grep -q "versionCode 37" app/build.gradle
+          grep -q "versionName '2.0.0-test'" app/build.gradle
       - name: Player and TV navigation regression tests
         env:
           NODE_PATH: /tmp/zero-qr-tests/node_modules
@@ -134,3 +158,27 @@ jobs:
         run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --no-daemon
       - name: Android Mobile and TV lint
         run: gradle --continue :app:lintMobileDebug :app:lintTvDebug --no-daemon
+      - name: Build and verify signed audited APKs
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/zeroplay-release.jks"
+          trap 'rm -f "$ANDROID_KEYSTORE_FILE"' EXIT
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_FILE"
+          chmod 600 "$ANDROID_KEYSTORE_FILE"
+          gradle :app:assembleMobileRelease :app:assembleTvRelease --no-daemon
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/mobile/release/app-mobile-release.apk
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/tv/release/app-tv-release.apk
+          cp app/build/outputs/apk/mobile/release/app-mobile-release.apk ZeroPlay-2.0.0-test-Audited-Fixes-1-23-Android.apk
+          cp app/build/outputs/apk/tv/release/app-tv-release.apk ZeroPlay-2.0.0-test-Audited-Fixes-1-23-AndroidTV.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.0.0-test-Audited-Android
+          path: |
+            ZeroPlay-2.0.0-test-Audited-Fixes-1-23-Android.apk
+            ZeroPlay-2.0.0-test-Audited-Fixes-1-23-AndroidTV.apk
+          if-no-files-found: error
