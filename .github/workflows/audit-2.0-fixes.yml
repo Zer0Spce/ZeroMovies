@@ -1,0 +1,130 @@
+name: Audit ZeroPlay 2.0 Fixes 1-23
+on:
+  push:
+    branches: ['test/2.0-audited-1-23']
+    paths: ['.github/workflows/audit-2.0-fixes.yml']
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test/2.0-audited-1-23
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - name: Audit Windows fixes
+        shell: pwsh
+        run: |
+          $index = Get-Content ui/index.html -Raw
+          $layouts = Get-Content ui/layouts.css -Raw
+          $settings = Get-Content ui/settings-layout.js -Raw
+          $main = Get-Content main.cjs -Raw
+          $offline = Get-Content ui/offline-player.js -Raw
+          $offlineHtml = Get-Content ui/offline-player.html -Raw
+          $updater = Get-Content updater.cjs -Raw
+          if ($updater -notmatch 'releases/latest' -or $updater -notmatch 'sha256|SHA-256') { throw 'Fix 1 updater contract missing' }
+          if ($offline -notmatch 'disableTracks' -or $offline -notmatch 'srt|vtt|ass|ssa' -or $offlineHtml -notmatch 'tool-icon') { throw 'Fix 2/9 offline player contract missing' }
+          if ($index -notmatch '<option value="flix">Flix UI</option>' -or $layouts -notmatch 'data-layout="flix"') { throw 'Fix 8 Flix UI is not selectable and styled' }
+          foreach ($name in @('General','Home','Appearance','Experience','Playback & Downloads','Player','About')) { if ($settings -notmatch [regex]::Escape($name)) { throw "Fix 4 settings section missing: $name" } }
+          if ($main -notmatch "uiLayout:'youtube'") { throw 'Fix 14 Windows Clean UI default missing' }
+          if ($main -notmatch 'liveCignal:false' -or $main -notmatch 'liveConverge:false') { throw 'Fix 23 Windows provider defaults missing' }
+          if ($main -notmatch 'reconnect' -or (Get-Content ui/live-player.js -Raw) -notmatch 'retry|reconnect') { throw 'Fix 11 Windows Live TV retry contract missing' }
+          if ($index -notmatch 'settings-layout.js' -or $index -notmatch 'settings-layout.css') { throw 'Fix 4 settings organizer is not wired' }
+      - run: npm test
+      - name: Desktop regression checks
+        shell: pwsh
+        run: |
+          npm install --prefix ../ui-test-deps --no-audit --no-fund jsdom@24.1.3
+          $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
+          node scripts/ui-check.cjs
+          node scripts/live-compat-check.cjs
+          node scripts/player-exit-check.cjs
+          $env:ZERO_GUARD_PATH = "assets/player-guard.js"
+          node ../tests/player-guard.test.cjs
+      - run: npm run prepare-config
+      - run: node scripts/tmdb-check.cjs
+      - name: Electron smoke test including Flix
+        run: npx electron . --smoke-test
+
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test/2.0-audited-1-23
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Audit Android fixes
+        run: |
+          set -euo pipefail
+          A=app/src/main/java/com/zerostreams/app/MainActivity.java
+          U=app/src/main/java/com/zerostreams/app/AppUpdater.java
+          B=app/src/main/java/com/zerostreams/app/BrowserPlayerActivity.java
+          M=app/src/main/java/com/zerostreams/app/TvMouse.java
+          L=app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
+          C=app/src/main/java/com/zerostreams/app/ContentApi.java
+          grep -q 'releases/latest' "$U"
+          grep -q 'REQUEST_INSTALL_PACKAGES' app/src/main/AndroidManifest.xml
+          grep -q 'playerMouseDefaultV1' "$B"
+          grep -q 'KEYCODE_MENU' "$M"
+          grep -q 'postDelayed(hide,5000)' "$M"
+          grep -q 'playerControlsVisible' "$B"
+          grep -q 'scheduleReconnect' "$L"
+          grep -q 'setConnectTimeoutMs(20000)' "$L"
+          grep -q 'flixLayout' "$A"
+          grep -q 'String fallback=BuildConfig.TV?"classic":"google"' "$A"
+          grep -q 'styleSettingsSpinner' "$A"
+          grep -q 'classicLayout()||googleLayout()' "$A"
+          grep -q '15000' "$A"
+          grep -q 'Zero Dark' "$A"
+          grep -q 'combined_credits' "$C"
+          grep -q 'Chinese titles' app/src/main/java/com/zerostreams/app/DiscoveryCollections.java
+          grep -q 'surpriseDetailId' "$A"
+          grep -q 'brandText' "$A"
+          grep -q 'liveCignal' "$A"
+          grep -q 'liveConverge' "$A"
+          grep -q 'prefs.getBoolean("liveConverge",true)' "$A"
+      - name: Player and TV navigation regression tests
+        env:
+          NODE_PATH: /tmp/zero-qr-tests/node_modules
+          ZERO_GUARD_PATH: app/src/main/assets/player-guard.js
+        run: |
+          mkdir -p /tmp/zero-rule-tests
+          javac -d /tmp/zero-rule-tests app/src/main/java/com/zerostreams/app/AdBlockRules.java app/src/main/java/com/zerostreams/app/TitleSearch.java app/src/main/java/com/zerostreams/app/ProgressRules.java tests/PlayerRulesTest.java tests/ProgressRulesTest.java
+          java -cp /tmp/zero-rule-tests com.zerostreams.app.PlayerRulesTest
+          java -cp /tmp/zero-rule-tests com.zerostreams.app.ProgressRulesTest
+          npm install --prefix /tmp/zero-qr-tests --no-audit --no-fund jsdom@24.1.3
+          node tests/player-guard.test.cjs
+          node tests/tv-navigation.test.cjs
+      - name: Android Mobile and TV unit tests
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --no-daemon
+      - name: Android Mobile and TV lint
+        run: gradle --continue :app:lintMobileDebug :app:lintTvDebug --no-daemon
