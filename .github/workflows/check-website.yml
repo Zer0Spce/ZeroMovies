@@ -1,27 +1,34 @@
-name: One-time theme-name source generator
+name: Check Website
 on:
   push:
+    branches: [main]
     paths:
-      - 'scripts/fix_theme_names.py'
+      - 'web/**'
+      - '.github/workflows/check-website.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/**'
       - '.github/workflows/check-website.yml'
 permissions:
-  contents: write
+  contents: read
 jobs:
-  generate:
+  website:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Apply #18 theme naming cleanup
+      - name: Validate static site
         run: |
-          python scripts/fix_theme_names.py
-          git diff --check
-      - name: Commit app fix
+          test -f web/index.html
+          test -f web/styles.css
+          test -f web/script.js
+          grep -q "ZeroPlay" web/index.html
+          grep -q "download-card" web/index.html
+          grep -q "copyDownloadLink" web/script.js
+          grep -q "queueInstall" web/script.js
+      - name: No-secrets sweep
         run: |
-          rm -f scripts/fix_theme_names.py
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add app/src/main/java/com/zerostreams/app/MainActivity.java scripts/fix_theme_names.py
-          git commit -m 'Fix #18 clean theme names in Settings'
-          git push origin HEAD:main
+          if grep -R -nE "(api[_-]?key|secret|token)[[:space:]]*[:=][[:space:]]*['\"][^$<{][^'\"]{8,}" web --exclude-dir=node_modules; then
+            echo "Potential hardcoded secret found"
+            exit 1
+          fi
