@@ -13,6 +13,7 @@ android {
         versionCode 36
         versionName '1.9'
         buildConfigField 'String', 'DEFAULT_TMDB_KEY', groovy.json.JsonOutput.toJson(System.getenv('TMDB_API_KEY') ?: '')
+        buildConfigField 'String', 'DEFAULT_OMDB_KEY', groovy.json.JsonOutput.toJson(System.getenv('OMDB_API_KEY') ?: '')
         buildConfigField 'String', 'DEFAULT_TSP_KEY', groovy.json.JsonOutput.toJson('')
     }
     flavorDimensions += 'device'
