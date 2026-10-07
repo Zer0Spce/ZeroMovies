@@ -19,5 +19,7 @@ contextBridge.exposeInMainWorld('zero',{
   change:(action,value)=>ipcRenderer.invoke('change',action,value),
   play:(item,episode)=>ipcRenderer.invoke('play',item,episode),
   external:url=>ipcRenderer.invoke('external',url),
+  checkForUpdates:()=>ipcRenderer.invoke('update-check'),
   onRefresh:callback=>{const handler=()=>callback();ipcRenderer.on('refresh',handler);return()=>ipcRenderer.removeListener('refresh',handler);}
 });
+window.addEventListener('DOMContentLoaded',()=>{const surprise=document.querySelector('[data-action="surprise"]');if(!surprise||document.querySelector('[data-action="check-updates"]'))return;const button=document.createElement('button');button.className='icon';button.dataset.action='check-updates';button.type='button';button.title='Check for updates';button.setAttribute('aria-label','Check for updates');button.textContent='⇩';surprise.insertAdjacentElement('afterend',button);button.addEventListener('click',async()=>{const old=button.textContent;button.disabled=true;button.textContent='…';try{const result=await ipcRenderer.invoke('update-check');if(result?.status==='current'){button.textContent='✓';button.title='ZeroPlay is up to date';setTimeout(()=>{if(button.isConnected){button.textContent=old;button.title='Check for updates';}},2200);}else button.textContent=old;}catch{button.textContent='!';button.title='Could not check for updates';setTimeout(()=>{if(button.isConnected){button.textContent=old;button.title='Check for updates';}},2500);}finally{button.disabled=false;}});});
