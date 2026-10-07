@@ -63,8 +63,10 @@ jobs:
           grep -q 'box-shadow:0 0 0 2px rgba(101,230,204,.12)' app/src/main/assets/player-guard.js
       - name: TV navigation regression test
         run: |
-          npm --prefix tests ci --no-audit --no-fund
-          ZERO_GUARD_PATH=../app/src/main/assets/player-guard.js node tests/tv-navigation.test.cjs
+          rm -rf /tmp/zero-tv-test
+          mkdir -p /tmp/zero-tv-test
+          npm install --prefix /tmp/zero-tv-test --no-audit --no-fund --ignore-scripts jsdom@24.1.3
+          NODE_PATH=/tmp/zero-tv-test/node_modules ZERO_GUARD_PATH=../app/src/main/assets/player-guard.js node tests/tv-navigation.test.cjs
       - name: Compile Android Mobile
         run: gradle :app:compileMobileDebugJavaWithJavac --stacktrace
       - name: Compile Android TV
