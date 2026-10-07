@@ -30,8 +30,8 @@ jobs:
           cache-dependency-path: windows/package-lock.json
       - name: Refresh lockfile for WebTorrent 3
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
-      - name: Install exact dependency set
-        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install exact dependency set including native torrent runtime
+        run: npm ci --no-audit --no-fund
       - name: Verify WebTorrent 3 loads and starts
         shell: pwsh
         run: |
