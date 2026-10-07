@@ -9,25 +9,16 @@ import java.util.*;
 
 /** Final card presentation layer shared by Android phone, tablet and TV. */
 public class PresentationMainActivity extends CategoryMainActivity {
-    private long lastTvRepeatAt;
-    private int lastTvRepeatKey=-1;
     private long presentationSurpriseUntil;
     private String presentationSurpriseId="";
 
     /**
-     * Dispatch through Android's normal Activity/Window focus path. Only collapse
-     * extremely fast hardware-repeat bursts so one physical D-pad hold cannot
-     * jump through several homepage cards at once.
+     * Android TV home navigation must behave like the v1.9 Activity path.
+     * Do not add repeat throttling, row confinement or custom spatial jumps here;
+     * let Android/Window focus dispatch choose the next view exactly once.
      */
     @Override public boolean dispatchKeyEvent(KeyEvent event){
         if(!BuildConfig.TV)return super.dispatchKeyEvent(event);
-        int key=event.getKeyCode();
-        boolean arrow=key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT||key==KeyEvent.KEYCODE_DPAD_UP||key==KeyEvent.KEYCODE_DPAD_DOWN;
-        if(arrow&&event.getAction()==KeyEvent.ACTION_DOWN&&event.getRepeatCount()>0){
-            long now=SystemClock.elapsedRealtime();
-            if(lastTvRepeatKey==key&&now-lastTvRepeatAt<135)return true;
-            lastTvRepeatKey=key;lastTvRepeatAt=now;
-        }else if(event.getAction()==KeyEvent.ACTION_UP&&arrow){lastTvRepeatKey=-1;}
         onUserInteraction();
         Window window=getWindow();
         if(window!=null&&window.superDispatchKeyEvent(event))return true;
@@ -48,6 +39,8 @@ public class PresentationMainActivity extends CategoryMainActivity {
             decor.post(this::placeSurpriseAgain);
             decor.postDelayed(this::placeSurpriseAgain,180);
             decor.postDelayed(this::placeSurpriseAgain,650);
+            decor.postDelayed(this::placeSurpriseAgain,1400);
+            decor.postDelayed(this::placeSurpriseAgain,3000);
         }
     }
 
