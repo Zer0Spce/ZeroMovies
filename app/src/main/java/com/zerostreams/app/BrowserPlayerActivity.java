@@ -23,7 +23,7 @@ public class BrowserPlayerActivity extends Activity {
     private WebChromeClient.CustomViewCallback fullscreenCallback;
     private final android.os.Handler tvUi=new android.os.Handler(android.os.Looper.getMainLooper());
     private boolean playerControlsVisible=true;
-    private final Runnable controlsIdle=()->playerControlsVisible=false;
+    private final Runnable controlsIdle=this::hidePlayerControls;
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
@@ -34,7 +34,6 @@ public class BrowserPlayerActivity extends Activity {
         tvPlayer=BuildConfig.TV&&!reader;
         if(tvPlayer){
             android.content.SharedPreferences prefs=getSharedPreferences("zero",MODE_PRIVATE);
-            // Migrate once to D-pad-first. After this, respect the user's Menu toggle instead of resetting it every launch.
             if(!prefs.getBoolean("playerMouseDefaultV3",false))prefs.edit().putBoolean("playerMouse",false).putBoolean("playerMouseDefaultV3",true).apply();
         }
         blockAds=!reader&&getSharedPreferences("zero",MODE_PRIVATE).getBoolean("blockAds",true);
@@ -79,7 +78,7 @@ public class BrowserPlayerActivity extends Activity {
 
     private boolean tvNavKey(int key){return key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT||key==KeyEvent.KEYCODE_DPAD_UP||key==KeyEvent.KEYCODE_DPAD_DOWN||key==KeyEvent.KEYCODE_DPAD_CENTER||key==KeyEvent.KEYCODE_ENTER;}
     private String tvDirection(int key){switch(key){case KeyEvent.KEYCODE_DPAD_LEFT:return "left";case KeyEvent.KEYCODE_DPAD_RIGHT:return "right";case KeyEvent.KEYCODE_DPAD_UP:return "up";case KeyEvent.KEYCODE_DPAD_DOWN:return "down";case KeyEvent.KEYCODE_DPAD_CENTER:case KeyEvent.KEYCODE_ENTER:return "ok";default:return null;}}
-    private void nativeTvFallback(KeyEvent event){if(web==null)return;KeyEvent copy=new KeyEvent(event);web.post(()->{if(web!=null)web.dispatchKeyEvent(copy);});}
+    private void nativeTvFallback(KeyEvent event){if(web==null)return;KeyEvent copy=new KeyEvent(event);web.post(()->{if(web==null)return;int key=copy.getKeyCode();if((key==KeyEvent.KEYCODE_DPAD_CENTER||key==KeyEvent.KEYCODE_ENTER)&&copy.getAction()==KeyEvent.ACTION_UP){long now=android.os.SystemClock.uptimeMillis();web.dispatchKeyEvent(new KeyEvent(now,now,KeyEvent.ACTION_DOWN,key,0));web.dispatchKeyEvent(new KeyEvent(now,now+30,KeyEvent.ACTION_UP,key,0));}else web.dispatchKeyEvent(copy);});}
     @Override public boolean dispatchKeyEvent(KeyEvent event){
         int key=event.getKeyCode();
         if(key==KeyEvent.KEYCODE_BACK&&!getIntent().getBooleanExtra("reader",false)){
@@ -88,7 +87,6 @@ public class BrowserPlayerActivity extends Activity {
         }
         if(tvPlayer){
             if(event.getAction()==KeyEvent.ACTION_DOWN&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN){backState.userActivity();wakeControls();}
-            // When pointer mode is enabled it owns arrows/OK. Do this before any D-pad focus handling.
             if(mouse!=null&&mouse.handle(event))return true;
             if(tvNavKey(key)){
                 String direction=tvDirection(key);boolean activate="ok".equals(direction);
@@ -106,7 +104,7 @@ public class BrowserPlayerActivity extends Activity {
     }
 
     private void markPlayerControlsVisible(){if(!tvPlayer)return;playerControlsVisible=true;tvUi.removeCallbacks(controlsIdle);tvUi.postDelayed(controlsIdle,3600);}
-    private void hidePlayerControls(){playerControlsVisible=false;tvUi.removeCallbacks(controlsIdle);if(mouse!=null)mouse.stop();if(web!=null)web.evaluateJavascript("document.documentElement.classList.add('zero-player-idle');if(window.__zeroHidePlayerControls)window.__zeroHidePlayerControls();document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-back-hide'},'*')}catch(_){}});",null);}
+    private void hidePlayerControls(){if(!tvPlayer)return;playerControlsVisible=false;tvUi.removeCallbacks(controlsIdle);if(mouse!=null)mouse.stop();if(web!=null)web.evaluateJavascript("document.documentElement.classList.add('zero-player-idle');if(window.__zeroHidePlayerControls)window.__zeroHidePlayerControls();document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-back-hide'},'*')}catch(_){}});",null);}
     private void wakeControls(){markPlayerControlsVisible();if(web!=null){web.requestFocus();web.evaluateJavascript("document.documentElement.classList.remove('zero-back-hide','zero-player-idle');if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();window.postMessage({type:'zerostreams-remote-active'},'*');document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-remote-active'},'*')}catch(_){}});",null);}}
 
     private void installPlayerExitListener(){
