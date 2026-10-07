@@ -1,4 +1,4 @@
-name: Wire audited Windows settings
+name: Apply audited Windows parity patch
 on:
   push:
     branches: ['test/2.0-audited-1-23']
@@ -6,34 +6,31 @@ on:
 permissions:
   contents: write
 jobs:
-  wire:
+  patch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: test/2.0-audited-1-23
-      - name: Wire settings assets without replacing Flix UI
+      - name: Apply Windows fixes 19-22
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('windows/ui/index.html')
-          s=p.read_text()
-          if 'settings-layout.css' not in s:
-              s=s.replace('<link rel="stylesheet" href="layouts.css">','<link rel="stylesheet" href="layouts.css"><link rel="stylesheet" href="settings-layout.css">',1)
-          if 'settings-layout.js' not in s:
-              s=s.replace('<script src="layouts.js"></script><script src="app.js"></script>','<script src="layouts.js"></script><script src="settings-layout.js"></script><script src="app.js"></script>',1)
-          if '<option value="flix">Flix UI</option>' not in s:
-              raise SystemExit('Flix UI option missing before settings wiring')
-          p.write_text(s)
-          PY
+          python scripts/patch_windows_19_22.py
+          node --check windows/ui/app.js
+          node --check windows/core.cjs
+          grep -q 'combined_credits' windows/ui/app.js
+          grep -q 'combined_credits' windows/core.cjs
+          grep -q 'Surprise me again' windows/ui/app.js
+          grep -q 'Chinese titles' windows/ui/app.js
+          grep -q 'Turkish titles' windows/ui/app.js
+          grep -q 'data-person' windows/ui/app.js
+          grep -q 'header-wordmark' windows/ui/index.html
           grep -q 'data-layout="flix"' windows/ui/layouts.css
-          grep -q 'settings-layout.css' windows/ui/index.html
-          grep -q 'settings-layout.js' windows/ui/index.html
           git diff --check
-      - name: Commit wiring
+      - name: Commit Windows parity fixes
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add windows/ui/index.html
-          git commit -m 'Wire audited Windows settings sections'
+          git add windows/core.cjs windows/ui/app.js windows/ui/index.html windows/ui/style.css
+          git rm scripts/patch_windows_19_22.py
+          git commit -m 'Complete Windows parity for fixes 19-22'
           git push origin HEAD:test/2.0-audited-1-23
