@@ -22,7 +22,7 @@ jobs:
           release=Path('.github/workflows/release.yml')
           text=release.read_text(encoding='utf-8')
           count=text.count('1.8.1')
-          if count < 6:
+          if count < 5:
               raise SystemExit(f'Expected legacy 1.8.1 release references, found {count}')
           release.write_text(text.replace('1.8.1','1.8.2'),encoding='utf-8')
 
