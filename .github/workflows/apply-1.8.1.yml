@@ -27,6 +27,7 @@ jobs:
           node-version: '22'
       - name: Apply guarded source changes
         run: |
+          sed -i "s/release.yml','1.8.0','1.8.1',minimum=6/release.yml','1.8.0','1.8.1',minimum=5/" scripts/apply-1.8.1-source-patch.py
           python scripts/apply-1.8.1-source-patch.py
           python scripts/apply-1.8.1-readme.py
       - name: Sync Windows lockfile
