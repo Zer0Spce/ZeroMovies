@@ -2,6 +2,10 @@ name: Build ZeroPlay 1.8.1 Private Android TV
 
 on:
   workflow_dispatch:
+  push:
+    branches: [private/v1.8.1]
+    paths:
+      - .github/workflows/private-tv-1.8.1.yml
 
 permissions:
   contents: read
