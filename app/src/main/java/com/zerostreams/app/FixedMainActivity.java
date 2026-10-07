@@ -22,7 +22,7 @@ public class FixedMainActivity extends MainActivity {
 
     private void styleBranding(){styleBranding(getWindow().getDecorView());}
     private void styleBranding(View view){
-        if(view instanceof TextView){TextView label=(TextView)view;String value=String.valueOf(label.getText());if(value.equalsIgnoreCase("ZEROPLAY")||value.equals("ZeroPlay")){SpannableString styled=new SpannableString("ZeroPlay");styled.setSpan(new android.text.style.ForegroundColorSpan(INK),0,4,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);styled.setSpan(new android.text.style.ForegroundColorSpan(ACCENT),4,8,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);label.setText(styled);}}
+        if(view instanceof TextView){TextView label=(TextView)view;String value=String.valueOf(label.getText());if((value.equalsIgnoreCase("ZEROPLAY")||value.equals("ZeroPlay"))&&!"zero-brand-styled".equals(label.getTag())){SpannableString styled=new SpannableString("ZeroPlay");styled.setSpan(new android.text.style.ForegroundColorSpan(INK),0,4,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);styled.setSpan(new android.text.style.ForegroundColorSpan(ACCENT),4,8,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);label.setTag("zero-brand-styled");label.setText(styled);}}
         if(view instanceof ViewGroup){ViewGroup group=(ViewGroup)view;for(int i=0;i<group.getChildCount();i++)styleBranding(group.getChildAt(i));}
     }
 
