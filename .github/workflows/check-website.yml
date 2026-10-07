@@ -15,6 +15,14 @@ jobs:
           fetch-depth: 0
       - name: Apply fixes
         run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/fix_19_22.py')
+          s=p.read_text()
+          s=s.replace("main=replace_once(main,'private int genreId,surpriseVersion;private boolean surpriseLoading,genreHasMore;','private int genreId,surpriseVersion;private boolean surpriseLoading,genreHasMore;private String surpriseDetailId=\"\";')", "main=replace_once(main,'private int genreId,surpriseVersion;private boolean surpriseLoading,genreHasMore;','private int genreId,surpriseVersion;private boolean surpriseLoading,genreHasMore;private String surpriseDetailId=\"\";','surprise detail state')")
+          s=s.replace("main=replace_once(main,'private final Set<String> genreArtworkLoading=new HashSet<>();','private final Set<String> genreArtworkLoading=new HashSet<>();private final Set<String> categoryArtworkUsed=new HashSet<>();')", "main=replace_once(main,'private final Set<String> genreArtworkLoading=new HashSet<>();','private final Set<String> genreArtworkLoading=new HashSet<>();private final Set<String> categoryArtworkUsed=new HashSet<>();','category artwork state')")
+          p.write_text(s)
+          PY
           python scripts/fix_19_22.py
           git diff --check
       - name: Compile Android
