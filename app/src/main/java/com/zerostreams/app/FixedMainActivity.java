@@ -53,12 +53,12 @@ public class FixedMainActivity extends MainActivity {
         if(view instanceof HorizontalScrollView&&"Modern UI top navigation".contentEquals(view.getContentDescription())){
             activeRail=(HorizontalScrollView)view;
             ViewGroup.LayoutParams raw=view.getLayoutParams();
-            if(raw instanceof ViewGroup.MarginLayoutParams){ViewGroup.MarginLayoutParams p=(ViewGroup.MarginLayoutParams)raw;p.height=dp(54);p.leftMargin=dp(18);p.rightMargin=dp(18);p.topMargin=dp(8);p.bottomMargin=dp(5);view.setLayoutParams(p);}else if(raw!=null){raw.height=dp(54);view.setLayoutParams(raw);}
-            view.setPadding(dp(3),0,dp(3),0);
+            if(raw instanceof ViewGroup.MarginLayoutParams){ViewGroup.MarginLayoutParams p=(ViewGroup.MarginLayoutParams)raw;if(p.height!=dp(54)||p.leftMargin!=dp(18)||p.rightMargin!=dp(18)||p.topMargin!=dp(8)||p.bottomMargin!=dp(5)){p.height=dp(54);p.leftMargin=dp(18);p.rightMargin=dp(18);p.topMargin=dp(8);p.bottomMargin=dp(5);view.setLayoutParams(p);}}else if(raw!=null&&raw.height!=dp(54)){raw.height=dp(54);view.setLayoutParams(raw);}
+            if(view.getPaddingLeft()!=dp(3))view.setPadding(dp(3),0,dp(3),0);
         }
         if(activeRail!=null){
-            if(view instanceof TextView){TextView t=(TextView)view;String text=String.valueOf(t.getText());if(text.equalsIgnoreCase("ZeroPlay")||text.equalsIgnoreCase("ZEROPLAY")){ViewGroup.LayoutParams lp=t.getLayoutParams();if(lp!=null){lp.width=dp(132);lp.height=dp(40);t.setLayoutParams(lp);}t.setTextSize(20);}}
-            if(view instanceof Button){Button b=(Button)view;ViewGroup.LayoutParams lp=b.getLayoutParams();if(lp!=null){lp.height=dp(40);b.setLayoutParams(lp);}b.setTextSize(13);b.setPadding(dp(10),0,dp(10),0);String label=String.valueOf(b.getText()).trim();if((label.equalsIgnoreCase("Search")||label.equalsIgnoreCase("For you"))&&activeRail!=null)b.setOnFocusChangeListener(new View.OnFocusChangeListener(){public void onFocusChange(View v,boolean focused){if(focused)activeRail.post(()->activeRail.smoothScrollTo(0,0));}});}
+            if(view instanceof TextView){TextView t=(TextView)view;String text=String.valueOf(t.getText());if(text.equalsIgnoreCase("ZeroPlay")||text.equalsIgnoreCase("ZEROPLAY")){ViewGroup.LayoutParams lp=t.getLayoutParams();if(lp!=null&&(lp.width!=dp(132)||lp.height!=dp(40))){lp.width=dp(132);lp.height=dp(40);t.setLayoutParams(lp);}if(t.getTextSize()/getResources().getDisplayMetrics().scaledDensity>20.5f)t.setTextSize(20);}}
+            if(view instanceof Button){Button b=(Button)view;ViewGroup.LayoutParams lp=b.getLayoutParams();if(lp!=null&&lp.height!=dp(40)){lp.height=dp(40);b.setLayoutParams(lp);}if(b.getTextSize()/getResources().getDisplayMetrics().scaledDensity>13.5f)b.setTextSize(13);if(b.getPaddingLeft()!=dp(10))b.setPadding(dp(10),0,dp(10),0);}
         }
         if(view instanceof LinearLayout&&view.isFocusable()&&view.isClickable()){
             CharSequence cd=view.getContentDescription();ViewParent parent=view.getParent();
