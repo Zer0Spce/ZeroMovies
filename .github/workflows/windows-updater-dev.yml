@@ -23,7 +23,7 @@ jobs:
           cache-dependency-path: windows/package-lock.json
       - run: npm ci --no-audit --no-fund
       - run: npm test
-      - name: Verify updater files shell isolation and protected player assets
+      - name: Verify updater files shell isolation protected player assets and Fix 14 default
         shell: pwsh
         run: |
           if (!(Test-Path updater.cjs)) { throw 'updater.cjs missing' }
@@ -35,6 +35,7 @@ jobs:
           if (!(Select-String -Path ui/offline-player.html -Pattern 'tool-icon' -Quiet)) { throw 'Offline toolbar icons missing' }
           if (!(Select-String -Path ui/offline-player.js -Pattern 'function disableTracks' -Quiet)) { throw 'Subtitle track handling fix missing' }
           if (Select-String -Path ui/offline-player.js -Pattern 'for\(const t of player\.textTracks\(\)\)' -Quiet) { throw 'Broken TextTrackList iterator returned' }
+          if (!(Select-String -Path main.cjs -SimpleMatch "uiLayout:'youtube'" -Quiet)) { throw 'Windows Clean UI default missing' }
           git fetch --depth=1 origin tag v1.9
           git diff v1.9 -- ui/live-player.html ui/live-player.css live-preload.cjs | Out-String | ForEach-Object { if ($_.Trim()) { throw 'Protected Live player shell assets changed' } }
       - name: Verify Live TV reliability contract
