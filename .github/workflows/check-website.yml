@@ -18,9 +18,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           p=Path('scripts/fix_19_22.py')
-          s=p.read_text()
-          s=s.replace("main=replace_once(main,'private int genreId,surpriseVersion;private boolean surpriseLoading,genreHasMore;','private int genreId,surpriseVersion;private boolean surpriseLoading,genreHasMore;private String surpriseDetailId=\"\";')", "main=replace_once(main,'private int genreId,surpriseVersion;private boolean surpriseLoading,genreHasMore;','private int genreId,surpriseVersion;private boolean surpriseLoading,genreHasMore;private String surpriseDetailId=\"\";','surprise detail state')")
-          s=s.replace("main=replace_once(main,'private final Set<String> genreArtworkLoading=new HashSet<>();','private final Set<String> genreArtworkLoading=new HashSet<>();private final Set<String> categoryArtworkUsed=new HashSet<>();')", "main=replace_once(main,'private final Set<String> genreArtworkLoading=new HashSet<>();','private final Set<String> genreArtworkLoading=new HashSet<>();private final Set<String> categoryArtworkUsed=new HashSet<>();','category artwork state')")
+          s=p.read_text().replace('def replace_once(text, old, new, label):','def replace_once(text, old, new, label="patch"):' )
           p.write_text(s)
           PY
           python scripts/fix_19_22.py
