@@ -3,4 +3,8 @@ fs.mkdirSync('ui/vendor',{recursive:true});
 const root=path.dirname(require.resolve('video.js/package.json'));
 fs.copyFileSync(path.join(root,'dist/video.min.js'),'ui/vendor/video.min.js');
 fs.copyFileSync(path.join(root,'dist/video-js.min.css'),'ui/vendor/video-js.min.css');
+const fontSource=path.join(root,'dist','font'),fontTarget=path.join('ui','vendor','font');
+if(!fs.existsSync(fontSource))throw Error('Video.js icon font assets are missing from the installed package.');
+fs.rmSync(fontTarget,{recursive:true,force:true});
+fs.cpSync(fontSource,fontTarget,{recursive:true});
 fs.copyFileSync(path.join(root,'LICENSE'),'ui/vendor/VIDEOJS-LICENSE');
