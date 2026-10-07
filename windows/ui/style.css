@@ -54,3 +54,27 @@ aside{background:var(--sidebar,#0d1019)}aside button{color:var(--muted);font-wei
 @keyframes gold-sparkle{0%,100%{opacity:.16;transform:translateY(5px) scale(.65) rotate(-12deg)}45%{opacity:1;transform:translateY(-8px) scale(1.18) rotate(12deg)}70%{opacity:.48;transform:translateY(-3px) scale(.85) rotate(4deg)}}
 @keyframes golden-shimmer{from{box-shadow:inset -2px 0 0 #b9791666,10px 0 38px #b6780012}to{box-shadow:inset -3px 0 0 #ffe9a6aa,12px 0 55px #ffd76a24}}
 @keyframes gold-logo{0%{background-position:0% center}100%{background-position:220% center}}
+
+/* Fix #4: cleaner settings surface */
+#settings{width:min(820px,92vw);max-height:88vh;overflow:hidden}
+#settings .settings-body{padding:30px 32px 36px;max-height:88vh;overflow:auto;scrollbar-width:thin;scrollbar-color:#3b465d transparent}
+#settings .settings-body>h2{font-size:30px;margin:8px 0 20px}
+#settings .settings-body>h3{margin:30px 0 10px;padding-top:18px;border-top:1px solid #293245;color:var(--ink);font-size:15px;letter-spacing:.02em}
+#settings .settings-body>label,#settings fieldset,#settings .rawcast-controls{background:var(--surface);border:1px solid #293245;border-radius:14px;padding:14px 16px;margin:10px 0}
+#settings .settings-body>label{font-weight:650;color:var(--ink)}
+#settings .settings-body>label input,#settings .settings-body>label select{margin-top:8px;font-weight:400}
+#settings fieldset{padding:15px 16px 16px}
+#settings fieldset legend{padding:0 7px;color:var(--mint);font-size:12px;font-weight:800;letter-spacing:.06em}
+#settings fieldset label{margin:10px 0;padding:0;background:transparent;border:0;font-weight:500}
+#settings fieldset p,#settings .settings-body>p{margin:7px 2px;color:var(--muted);line-height:1.5}
+#settings .panel-toggle{display:flex;align-items:center;gap:10px;min-height:32px}
+#settings .panel-toggle input,#settings label>input[type="checkbox"]{width:auto;margin:0;accent-color:var(--mint)}
+#settings .rawcast-controls{margin-top:10px}
+#settings .rawcast-controls h3{margin:0 0 8px;font-size:15px}
+#settings .actions{margin-top:18px;padding-top:16px;border-top:1px solid #293245}
+#settings #settings-status{min-height:18px;margin:6px 0 0}
+#settings hr{margin:26px 0 18px}
+#settings .tmdb-logo{margin-top:0}
+[data-theme="light"] #settings .settings-body>label,[data-theme="light"] #settings fieldset,[data-theme="light"] #settings .rawcast-controls{background:#f8fafc;border-color:#d8e0ea}
+[data-theme="light"] #settings .settings-body>h3,[data-theme="light"] #settings .actions{border-color:#d8e0ea}
+@media(max-width:700px){#settings{width:94vw}#settings .settings-body{padding:24px 18px 28px}}
