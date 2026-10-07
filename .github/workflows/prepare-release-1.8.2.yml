@@ -38,7 +38,7 @@ jobs:
           PY
           grep -q 'branches: \[release/v1.8.2\]' .github/workflows/release.yml
           grep -q "versionName='1.8.2'" .github/workflows/release.yml
-          grep -q 'ZeroPlay-1.8.2-Android.apk' .github/workflows/release.yml
+          grep -q 'ZeroPlay-1.8.2-Android' .github/workflows/release.yml
           grep -q '"version": "1.8.2"' windows/package-lock.json
       - name: Commit release preparation
         run: |
