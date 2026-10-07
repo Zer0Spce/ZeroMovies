@@ -70,7 +70,7 @@ seek.addEventListener('pointerdown',()=>{dragging=true;wake();});seek.addEventLi
 
 document.getElementById('back').addEventListener('click',()=>window.offline.close());
 document.getElementById('full').addEventListener('click',()=>{wake();window.offline.fullscreen();setTimeout(wake,120);});
-document.getElementById('fit').addEventListener('click',()=>{fill=!fill;stage.classList.toggle('fill',fill);document.getElementById('fit').title=fill?'Fill screen':'Fit video';wake();});
+document.getElementById('fit').addEventListener('click',()=>{fill=!fill;stage.classList.toggle('fill',fill);document.getElementById('fit').title=fill?'Fit video':'Fill screen';wake();});
 subtitleButton.addEventListener('click',async()=>{try{status.textContent='Choose an SRT, VTT, ASS or SSA subtitle…';const row=await window.offline.loadSubtitle();if(!row){status.textContent='Subtitle selection cancelled';wake();return;}useTrack(row,true);}catch(error){status.textContent=error.message||'Could not load subtitles';wake();}});
 
 const rates=[0.75,1,1.25,1.5,2];speedMenu.innerHTML=rates.map(rate=>`<button type="button" data-rate="${rate}">${rate}×</button>`).join('');
