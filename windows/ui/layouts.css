@@ -112,3 +112,50 @@
   :root[data-layout="google"] .hero h2{font-size:38px}
   :root[data-layout="google"] .hero+.row-section{margin-top:-28px}
 }
+
+
+/* 1.8.2 Clean UI YouTube-inspired pass */
+:root[data-layout="youtube"][data-theme="dark"]{--bg:#0f0f0f;--surface:#212121;--muted:#aaa;--ink:#f1f1f1;--mint:#f1f1f1}
+:root[data-layout="youtube"] aside{background:#0f0f0f;border:0}
+:root[data-layout="youtube"] aside button{color:#aaa;border-radius:10px;background:transparent}
+:root[data-layout="youtube"] aside button:hover,:root[data-layout="youtube"] aside button:focus-visible{background:#272727;color:#fff}
+:root[data-layout="youtube"] aside button.active{background:#272727;color:#fff}
+:root[data-layout="youtube"] .brand span{color:#ff0033}
+:root[data-layout="youtube"] main{background:#0f0f0f}
+:root[data-layout="youtube"] main>header{min-height:48px;gap:10px}
+:root[data-layout="youtube"] main>header:before{content:"ZEROPLAY";color:#f1f1f1;font-size:13px;font-weight:800;letter-spacing:.04em;min-width:92px}
+:root[data-layout="youtube"] #search-form{height:42px;max-width:560px;margin:0 auto;background:#272727;border:1px solid #3f3f3f;border-radius:24px;padding:3px 5px 3px 14px;box-shadow:none}
+:root[data-layout="youtube"] #search-form:focus-within{border-color:#f1f1f1;box-shadow:0 0 0 1px #f1f1f133}
+:root[data-layout="youtube"] #search-form>span{font-size:21px;color:#aaa}
+:root[data-layout="youtube"] #query{color:#f1f1f1;font-size:14px;padding:7px 8px}
+:root[data-layout="youtube"] #query::placeholder{color:#aaa}
+:root[data-layout="youtube"] #search-form button{height:32px;padding:5px 14px;border-radius:18px;background:#3a3a3a;color:#f1f1f1;font-weight:600}
+:root[data-layout="youtube"] #search-form button:hover{background:#4a4a4a}
+:root[data-layout="youtube"] .surprise-button{background:#272727;border-color:#3f3f3f;color:#f1f1f1}
+:root[data-layout="youtube"] .surprise-button:hover{background:#3a3a3a}
+:root[data-layout="youtube"] .hero{background:#181818;border-radius:14px}
+:root[data-layout="youtube"] .hero-shade{background:linear-gradient(90deg,#0f0f0ff2,#0f0f0f75 58%,#0f0f0f24),linear-gradient(0deg,#0f0f0f,transparent 62%)}
+:root[data-layout="youtube"] .card{border-radius:12px}
+:root[data-layout="youtube"] .card:focus-visible{outline:3px solid #fff;outline-offset:3px}
+:root[data-layout="youtube"] .card-title{color:#f1f1f1;font-weight:650}
+:root[data-layout="youtube"] .card small{color:#aaa}
+:root[data-layout="youtube"] .row-section h3{font-size:16px;font-weight:700;color:#f1f1f1}
+:root[data-layout="youtube"] #status{color:#aaa}
+@media(max-width:760px){:root[data-layout="youtube"] #search-form{max-width:none;margin:0}:root[data-layout="youtube"] main>header:before{display:none}}
+
+/* The torrent picker and confirmation follow the active ZeroPlay UI instead of stock browser prompts. */
+#torrent-results{width:min(980px,94vw);max-height:90vh;padding:0;background:color-mix(in srgb,var(--bg) 94%,#000);border:1px solid color-mix(in srgb,var(--ink) 15%,transparent);border-radius:22px;overflow:auto}
+.torrent-results-shell{padding:26px}
+.torrent-results-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;position:sticky;top:0;z-index:3;padding:2px 0 18px;background:linear-gradient(color-mix(in srgb,var(--bg) 98%,transparent) 72%,transparent);backdrop-filter:blur(16px)}
+.torrent-results-head h2{margin:6px 0 4px;font-size:25px}.torrent-results-head p{margin:0;color:var(--muted)}.torrent-head-actions{display:flex;gap:8px}.torrent-kicker{font-size:10px;letter-spacing:.18em;font-weight:800;color:var(--mint)}
+.torrent-result-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.torrent-result-card{position:relative;padding:18px;border:1px solid color-mix(in srgb,var(--ink) 12%,transparent);border-radius:16px;background:color-mix(in srgb,var(--surface) 88%,transparent);box-shadow:0 8px 28px #0002}
+.torrent-result-card.recommended{border-color:color-mix(in srgb,var(--mint) 70%,transparent);box-shadow:0 10px 32px #0003,inset 0 0 0 1px color-mix(in srgb,var(--mint) 24%,transparent)}
+.torrent-result-card h3{font-size:15px;line-height:1.35;margin:8px 0 12px;min-height:40px}.torrent-recommended{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--mint)}
+.torrent-chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}.torrent-chips span{font-size:11px;padding:5px 8px;border-radius:999px;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)}
+.torrent-stat-row,.torrent-confirm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.torrent-stat-row>span,.torrent-confirm-stats>span{padding:9px;border-radius:10px;background:color-mix(in srgb,var(--ink) 5%,transparent)}.torrent-stat-row b,.torrent-confirm-stats b{display:block;font-size:15px;color:var(--ink)}.torrent-stat-row small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.health.excellent{color:#6ed69a}.health.good{color:#e5b64f}.health.fair{color:#df7379}.health-track{height:5px;border-radius:999px;background:color-mix(in srgb,var(--ink) 9%,transparent);overflow:hidden;margin:10px 0}.health-track i{display:block;height:100%;border-radius:999px}.health-track i.excellent{background:#6ed69a}.health-track i.good{background:#e5b64f}.health-track i.fair{background:#df7379}
+.torrent-sources{display:block;min-height:18px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.torrent-download{width:100%;margin-top:14px}.torrent-empty{grid-column:1/-1;padding:50px;text-align:center;color:var(--muted);border:1px dashed color-mix(in srgb,var(--ink) 14%,transparent);border-radius:16px}
+#torrent-confirm{width:min(560px,92vw);padding:0;border-radius:22px;background:color-mix(in srgb,var(--bg) 96%,#000);border:1px solid color-mix(in srgb,var(--ink) 14%,transparent)}.torrent-confirm-card{padding:28px}.torrent-confirm-card h2{font-size:21px;line-height:1.35;margin:8px 0 16px}.torrent-confirm-card p{margin:16px 0 0}.torrent-confirm-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:22px}
+:root[data-layout="youtube"] #torrent-results,:root[data-layout="youtube"] #torrent-confirm{background:#181818;border-color:#3f3f3f}:root[data-layout="youtube"] .torrent-result-card{background:#212121;border-color:#353535}:root[data-layout="youtube"] .torrent-result-card.recommended{border-color:#f1f1f1}:root[data-layout="youtube"] .torrent-kicker,:root[data-layout="youtube"] .torrent-recommended{color:#f1f1f1}:root[data-layout="youtube"] .torrent-result-card .primary,:root[data-layout="youtube"] .torrent-confirm-card .primary{background:#f1f1f1;color:#0f0f0f;border-color:#f1f1f1}
+@media(max-width:700px){.torrent-results-shell{padding:18px}.torrent-results-head{flex-direction:column}.torrent-result-list{grid-template-columns:1fr}.torrent-stat-row,.torrent-confirm-stats{grid-template-columns:1fr 1fr 1fr}}
