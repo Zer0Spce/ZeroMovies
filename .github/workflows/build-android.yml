@@ -1,6 +1,9 @@
 name: Build ZeroPlay APKs
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - fix/2.0-from-v1.9
 permissions:
   contents: read
 jobs:
