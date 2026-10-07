@@ -1,0 +1,49 @@
+name: Windows Updater Development
+on:
+  push:
+    branches: [fix/windows-updater]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - name: Verify updater files and shell isolation
+        shell: pwsh
+        run: |
+          if (!(Test-Path updater.cjs)) { throw 'updater.cjs missing' }
+          if (!(Test-Path updater-preload.cjs)) { throw 'updater preload missing' }
+          if (!(Test-Path ui/updater.html)) { throw 'updater window missing' }
+          if (!(Select-String -Path preload.cjs -Pattern 'checkForUpdates' -Quiet)) { throw 'manual update bridge missing' }
+          if (!(Select-String -Path updater.cjs -Pattern 'releases/latest' -Quiet)) { throw 'GitHub latest release check missing' }
+          if (!(Select-String -Path updater.cjs -Pattern 'sha256:' -Quiet)) { throw 'SHA-256 release verification missing' }
+          git diff v1.9 -- ui/live-player.html ui/live-player.js ui/live-player.css live-preload.cjs | Out-String | ForEach-Object { if ($_.Trim()) { throw 'Live player files changed' } }
+      - name: Configure bundled TMDB key and local vendors
+        run: npm run prepare-config
+      - name: Windows app smoke test
+        run: npx electron . --smoke-test
+      - name: Package portable ZIP
+        run: npm run build
+      - name: Verify updater packaged
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem dist/ZeroPlay-*.zip | Select-Object -First 1
+          if (!$zip) { throw 'Portable ZIP missing' }
+          Expand-Archive -LiteralPath $zip.FullName -DestinationPath dist/unpacked -Force
+          if (!(Get-ChildItem dist/unpacked -Recurse -Filter ZeroPlay.exe)) { throw 'ZeroPlay.exe missing from packaged ZIP' }
+          Write-Host "Updater development package validated: $($zip.Name)"
