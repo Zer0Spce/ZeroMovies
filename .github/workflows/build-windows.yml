@@ -43,12 +43,39 @@ jobs:
           node ../tests/player-guard.test.cjs
       - name: Configure bundled keys
         run: npm run prepare-config
+      - name: Verify Offline Player source
+        shell: pwsh
+        run: |
+          $html = Get-Content ui/offline-player.html -Raw
+          $js = Get-Content ui/offline-player.js -Raw
+          $css = Get-Content ui/offline-player.css -Raw
+          if ($html -notmatch 'subtitle-overlay') { throw 'New Offline Player HTML is missing.' }
+          if ($html -match 'video-js') { throw 'Legacy Video.js Offline Player HTML returned before packaging.' }
+          if ($js -notmatch 'subtitleOverlay') { throw 'Overlay subtitle renderer is missing before packaging.' }
+          if ($js -match 'videojs\(') { throw 'Legacy Video.js Offline Player JS returned before packaging.' }
+          if ($css -match '\.video-js') { throw 'Legacy Video.js Offline Player CSS returned before packaging.' }
+          Write-Host 'Offline Player 2.0 source verified before packaging.'
       - name: Verify live TMDB discovery and search
         run: node scripts/tmdb-check.cjs
       - name: Windows app smoke test
         run: npx electron . --smoke-test
       - name: Package portable ZIP
         run: npm run build
+      - name: Verify packaged Offline Player 2.0
+        shell: pwsh
+        run: |
+          $root = 'dist/win-unpacked/resources/app.asar.unpacked/ui'
+          $htmlPath = Join-Path $root 'offline-player.html'
+          $jsPath = Join-Path $root 'offline-player.js'
+          $cssPath = Join-Path $root 'offline-player.css'
+          foreach ($path in @($htmlPath,$jsPath,$cssPath)) { if (!(Test-Path $path)) { throw "Offline Player unpacked asset missing: $path" } }
+          $html = Get-Content $htmlPath -Raw
+          $js = Get-Content $jsPath -Raw
+          $css = Get-Content $cssPath -Raw
+          if ($html -notmatch 'subtitle-overlay' -or $html -match 'video-js') { throw 'Packaged HTML is not the Offline Player 2.0 UI.' }
+          if ($js -notmatch 'subtitleOverlay' -or $js -match 'videojs\(') { throw 'Packaged JS is not the overlay subtitle player.' }
+          if ($css -match '\.video-js') { throw 'Packaged CSS still contains the legacy Video.js player.' }
+          Write-Host 'Packaged Offline Player 2.0 assets verified.'
       - uses: actions/upload-artifact@v4
         with:
           name: ZeroPlay-Windows-x64
