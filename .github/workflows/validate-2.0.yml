@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
 
+# Validation only: this workflow never tags, releases, uploads release assets, or publishes builds.
 jobs:
   android:
     runs-on: ubuntu-latest
