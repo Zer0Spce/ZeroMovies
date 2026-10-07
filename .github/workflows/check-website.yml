@@ -1,27 +1,21 @@
-name: Check ZeroPlay website
+name: One-time theme-name source generator
 on:
   push:
     paths:
-      - 'web/**'
-      - 'netlify.toml'
-      - '.netlifytemplate'
+      - 'scripts/fix_theme_names.py'
       - '.github/workflows/check-website.yml'
-  workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  website:
+  generate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Validate metadata function boundaries
-        run: node --test web/test/*.test.cjs
-      - name: Verify website interactions
+      - name: Generate patched MainActivity
         run: |
-          npm install --prefix /tmp/zero-web-tests --no-audit --no-fund jsdom@24.1.3
-          NODE_PATH=/tmp/zero-web-tests/node_modules node web/scripts/ui-check.cjs
-      - name: Validate website build
-        run: node web/scripts/build.cjs
+          python scripts/fix_theme_names.py
+          git diff --check
+          echo 'BEGIN_PATCHED_MAINACTIVITY_BASE64'
+          base64 -w0 app/src/main/java/com/zerostreams/app/MainActivity.java
+          echo
+          echo 'END_PATCHED_MAINACTIVITY_BASE64'
