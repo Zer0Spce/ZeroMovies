@@ -89,6 +89,9 @@ final class ContentApi {
         if(!item.id.matches("tmdb-(movie|series)-[0-9]+"))throw new IOException("Not a TMDB title");
         return tmdb("/"+media(item)+"/"+item.id.substring(item.id.lastIndexOf('-')+1),key,"&append_to_response=credits,videos,recommendations");
     }
+    static List<Catalog.Item> personCredits(int personId,String key) throws Exception {
+        if(personId<=0)throw new IOException("Invalid person ID");JSONArray cast=tmdb("/person/"+personId+"/combined_credits",key,"").optJSONArray("cast");if(cast==null)return new ArrayList<>();List<JSONObject> raw=new ArrayList<>();for(int i=0;i<cast.length();i++){JSONObject credit=cast.optJSONObject(i);if(credit!=null&&!credit.optBoolean("adult")&&(credit.optString("media_type").equals("movie")||credit.optString("media_type").equals("tv")))raw.add(credit);}Collections.sort(raw,(a,b)->Double.compare(b.optDouble("popularity",0),a.optDouble("popularity",0)));JSONArray ordered=new JSONArray();HashSet<String> seen=new HashSet<>();for(JSONObject credit:raw){String id=credit.optString("media_type")+":"+credit.optLong("id");if(seen.add(id))ordered.put(credit);if(ordered.length()>=40)break;}return tmdbRows(ordered,"movie",false);
+    }
     static JSONArray providers(String key,String type,String region) throws Exception {
         if(!type.equals("movie")&&!type.equals("tv")||!region.matches("[A-Z]{2}"))throw new IOException("Invalid provider filter");
         return tmdb("/watch/providers/"+type,key,"&watch_region="+region).getJSONArray("results");
