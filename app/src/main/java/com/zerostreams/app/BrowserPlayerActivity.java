@@ -21,7 +21,8 @@ public class BrowserPlayerActivity extends Activity {
     private FrameLayout screen;
     private View fullscreen;
     private WebChromeClient.CustomViewCallback fullscreenCallback;
-    private boolean backPending;private int backToken;
+    private long controlsWakeAt;
+    private boolean controlsHiddenByBack;
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
@@ -106,7 +107,15 @@ public class BrowserPlayerActivity extends Activity {
         return super.dispatchKeyEvent(event);
     }
 
-    private void wakeControls(){if(web!=null){web.requestFocus();web.evaluateJavascript("document.documentElement.classList.remove('zero-back-hide','zero-player-idle');if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();window.postMessage({type:'zerostreams-remote-active'},'*');document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-remote-active'},'*')}catch(_){}});",null);}}
+    private void wakeControls(){
+        if(tvPlayer){controlsWakeAt=android.os.SystemClock.elapsedRealtime();controlsHiddenByBack=false;}
+        if(web!=null){web.requestFocus();web.evaluateJavascript("document.documentElement.classList.remove('zero-back-hide','zero-player-idle');if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();window.postMessage({type:'zerostreams-remote-active'},'*');document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-remote-active'},'*')}catch(_){}});",null);}
+    }
+    private void forceHideTvControls(){
+        controlsHiddenByBack=true;controlsWakeAt=0;
+        if(mouse!=null)mouse.stop();
+        if(web!=null)web.evaluateJavascript("document.documentElement.classList.add('zero-back-hide','zero-player-idle');if(window.__zeroHidePlayerControls)window.__zeroHidePlayerControls();if(window.__zeroDismissMenus)window.__zeroDismissMenus();document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-back-hide'},'*')}catch(_){}});",null);
+    }
 
     private void installPlayerExitListener(){
         if(!androidx.webkit.WebViewFeature.isFeatureSupported(androidx.webkit.WebViewFeature.WEB_MESSAGE_LISTENER))return;
@@ -130,20 +139,15 @@ public class BrowserPlayerActivity extends Activity {
 
     @Override public void onBackPressed(){
         if(getIntent().getBooleanExtra("reader",false)||playerGuard==null||web==null){finish();return;}
-        if(backPending)return;
-        backPending=true;int token=++backToken;
+        if(tvPlayer){
+            long age=controlsWakeAt==0?Long.MAX_VALUE:android.os.SystemClock.elapsedRealtime()-controlsWakeAt;
+            if(!controlsHiddenByBack&&age<3400){forceHideTvControls();return;}
+            if(mouse!=null)mouse.stop();
+            finish();
+            return;
+        }
         if(mouse!=null)mouse.stop();
-        // Use the real player/menu state, as v1.9 did. First Back hides visible controls/menus; a Back with nothing left visible exits.
-        web.evaluateJavascript("if(window.__zeroBackRequest)window.__zeroBackRequest("+token+");else window.__zeroBackResult={token:"+token+",handled:false};",ignored->pollBack(token,0));
-    }
-    private void pollBack(int token,int attempt){
-        if(isFinishing()||token!=backToken)return;
-        web.evaluateJavascript("JSON.stringify(window.__zeroBackResult||null)",value->{
-            boolean ready=false,handled=false;
-            try{Object decoded=new org.json.JSONTokener(value).nextValue();if(decoded instanceof String){org.json.JSONObject result=new org.json.JSONObject((String)decoded);if(result.optInt("token")==token){ready=true;handled=result.optBoolean("handled");}}}catch(Exception ignored){}
-            if(ready||attempt>=18){backPending=false;if(!handled)finish();}
-            else new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(()->pollBack(token,attempt+1),20);
-        });
+        web.evaluateJavascript("if(window.__zeroBackRequest)window.__zeroBackRequest(1);",ignored->finish());
     }
 
     @Override protected void onPause(){if(mouse!=null)mouse.stop();if(adScan!=null)adScan.stop();if(web!=null){CookieManager.getInstance().flush();web.onPause();}super.onPause();}
