@@ -13,7 +13,7 @@ move(appearance,'#ui-layout','#theme');
 const experience=section('Experience','Control motion, previews, and browsing behavior.');
 move(experience,'#preview-settings');
 const playback=section('Playback & Downloads','Streaming sources, downloads, and torrent search controls.');
-move(playback,'#playback-source','#rawcastPlayback','#rawcast-controls','#torrentSearchSettings-enabled');
+move(playback,'#playback-source','#rawcastPlayback','#rawcast-controls');
 const tsp=q('#torrentSearchSettings-enabled')?.closest('fieldset');if(tsp&&tsp.parentElement===settings)playback.append(tsp);
 const player=section('Player','Playback sound and Live TV provider visibility.');
 move(player,'#gain');
