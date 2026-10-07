@@ -8,13 +8,17 @@ import android.os.*;
 import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
+import java.io.*;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
 
 /** Dedicated filmography screen opened from a cast member. */
 public class PersonFilmographyActivity extends Activity {
     private final ExecutorService io=Executors.newSingleThreadExecutor();
+    private final ExecutorService imageIo=Executors.newFixedThreadPool(3);
     private final Handler ui=new Handler(Looper.getMainLooper());
+    private final android.util.LruCache<String,Bitmap> images=new android.util.LruCache<String,Bitmap>(12*1024*1024){@Override protected int sizeOf(String key,Bitmap value){return value.getByteCount();}};
     private int bg=Color.rgb(9,10,16),surface=Color.rgb(22,24,34),ink=Color.rgb(244,245,250),muted=Color.rgb(157,162,181),accent=Color.rgb(101,230,204);
     private LinearLayout content;
     private int dp(float n){return(int)(getResources().getDisplayMetrics().density*n+.5f);}
@@ -43,12 +47,26 @@ public class PersonFilmographyActivity extends Activity {
         io.execute(()->{try{List<Catalog.Item> rows=ContentApi.personCredits(personId,key);ui.post(()->render(rows,personName));}catch(Exception e){ui.post(()->{content.removeAllViews();content.addView(text("Could not load filmography right now.",15,muted));});}});
     }
 
+    private void loadPoster(String url,ImageView image){
+        if(url==null||!url.startsWith("https://"))return;Bitmap cached=images.get(url);if(cached!=null){image.setImageBitmap(cached);return;}
+        imageIo.execute(()->{HttpURLConnection c=null;try{c=(HttpURLConnection)new URL(url).openConnection();c.setConnectTimeout(10000);c.setReadTimeout(15000);c.setInstanceFollowRedirects(true);c.setRequestProperty("Accept","image/*");if(c.getResponseCode()!=200)return;try(InputStream in=c.getInputStream()){Bitmap bitmap=BitmapFactory.decodeStream(in);if(bitmap==null)return;images.put(url,bitmap);ui.post(()->{if(!isDestroyed()&&image.isAttachedToWindow())image.setImageBitmap(bitmap);});}}catch(Exception ignored){}finally{if(c!=null)c.disconnect();}});
+    }
+
+    private LinearLayout creditCard(Catalog.Item item){
+        LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);card.setPadding(dp(6),dp(6),dp(6),dp(10));card.setBackground(shape(surface,0));card.setFocusable(true);card.setClickable(true);card.setContentDescription(item.title+" · "+(item.type.equals("series")?"TV series":"Movie"));
+        card.setOnFocusChangeListener((v,f)->v.setBackground(shape(surface,f?accent:0)));
+        ImageView poster=new ImageView(this);poster.setScaleType(ImageView.ScaleType.CENTER_CROP);poster.setBackgroundColor(bg);poster.setImageResource(R.drawable.ic_zero);card.addView(poster,new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?230:210)));if(!item.poster.isEmpty())loadPoster(item.poster,poster);
+        TextView title=text(item.title,BuildConfig.TV?16:14,ink);title.setTypeface(null,Typeface.BOLD);title.setMaxLines(2);title.setEllipsize(TextUtils.TruncateAt.END);LinearLayout.LayoutParams titleLp=new LinearLayout.LayoutParams(-1,-2);titleLp.setMargins(dp(4),dp(9),dp(4),0);card.addView(title,titleLp);
+        String meta=(item.type.equals("series")?"TV SERIES":"MOVIE")+(item.year>0?" · "+item.year:"");TextView details=text(meta,12,muted);LinearLayout.LayoutParams metaLp=new LinearLayout.LayoutParams(-1,-2);metaLp.setMargins(dp(4),dp(4),dp(4),0);card.addView(details,metaLp);
+        return card;
+    }
+
     private void render(List<Catalog.Item> rows,String personName){
         if(isDestroyed())return;content.removeAllViews();if(rows.isEmpty()){content.addView(text("No movie or TV credits found for "+personName+".",15,muted));return;}
         TextView count=text(rows.size()+" titles",13,muted);content.addView(count);View gap=new View(this);content.addView(gap,new LinearLayout.LayoutParams(1,dp(12)));
         int columns=BuildConfig.TV?5:(getResources().getConfiguration().screenWidthDp>=600?4:2);
-        for(int i=0;i<rows.size();i+=columns){LinearLayout line=new LinearLayout(this);for(int c=0;c<columns;c++){LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,-2,1);lp.setMargins(0,0,dp(c==columns-1?0:12),dp(14));if(i+c>=rows.size()){line.addView(new View(this),lp);continue;}Catalog.Item item=rows.get(i+c);Button card=button((item.type.equals("series")?"TV SERIES":"MOVIE")+"\n"+item.title+(item.year>0?"\n"+item.year:""));card.setGravity(Gravity.BOTTOM|Gravity.START);card.setPadding(dp(12),dp(12),dp(12),dp(12));card.setMinHeight(dp(BuildConfig.TV?150:120));card.setMaxLines(4);card.setEllipsize(TextUtils.TruncateAt.END);line.addView(card,lp);}content.addView(line);}
+        for(int i=0;i<rows.size();i+=columns){LinearLayout line=new LinearLayout(this);for(int c=0;c<columns;c++){LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,-2,1);lp.setMargins(0,0,dp(c==columns-1?0:12),dp(16));if(i+c>=rows.size()){line.addView(new View(this),lp);continue;}line.addView(creditCard(rows.get(i+c)),lp);}content.addView(line);}
     }
 
-    @Override protected void onDestroy(){ui.removeCallbacksAndMessages(null);io.shutdownNow();super.onDestroy();}
+    @Override protected void onDestroy(){ui.removeCallbacksAndMessages(null);io.shutdownNow();imageIo.shutdownNow();super.onDestroy();}
 }
