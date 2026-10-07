@@ -1,0 +1,65 @@
+name: Apply ZeroPlay 1.9 Download UI
+on:
+  push:
+    branches: [release/v1.9]
+    paths:
+      - scripts/apply-1.9-download-ui.py
+      - .github/workflows/apply-1.9-download-ui.yml
+permissions:
+  contents: write
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+      - name: Apply guarded download UI patch
+        run: python scripts/apply-1.9-download-ui.py
+      - name: Prove live playback files remain untouched
+        run: |
+          git fetch --tags --force
+          git diff --exit-code v1.8.2 -- windows/ui/live-player.html windows/ui/live-player.js windows/ui/live-player.css windows/live-preload.cjs
+      - name: Windows install and tests
+        working-directory: windows
+        run: |
+          npm ci --no-audit --no-fund
+          npm test
+          node --check ui/downloads.js
+      - name: Android mobile and TV compile
+        run: gradle :app:compileMobileDebugJavaWithJavac :app:compileTvDebugJavaWithJavac
+      - name: Android unit tests
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest
+      - name: Guard download-card metadata and UI
+        run: |
+          grep -q 'put("description",item.description)' app/src/main/java/com/zerostreams/app/DirectDownloads.java
+          grep -q 'downloadCard(JSONObject j)' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'class="download-media-card' windows/ui/downloads.js
+          grep -q 'healthScore:Number(result.healthScore)' windows/torrent-downloads.cjs
+          grep -q '.download-media-card{' windows/ui/layouts.css
+      - name: Commit validated changes
+        run: |
+          git config user.name 'ZeroPlay CI'
+          git config user.email 'actions@users.noreply.github.com'
+          git add app windows
+          git diff --cached --check
+          git commit -m 'Polish 1.9 download queue cards'
+          git pull --rebase origin release/v1.9
+          git push origin HEAD:release/v1.9
