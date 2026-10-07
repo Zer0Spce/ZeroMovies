@@ -1,0 +1,16 @@
+#settings{width:min(760px,92vw)}
+#settings .settings-body{padding:34px 36px 28px}
+.settings-groups{display:grid;gap:16px;margin-top:22px}
+.settings-section{border:1px solid #2c3445;border-radius:14px;background:#121722;padding:20px 22px}
+.settings-section h3{margin:0 0 4px;font-size:17px;letter-spacing:-.01em}
+.settings-section-description{margin:0 0 14px!important;color:var(--muted)}
+.settings-section>label:first-of-type{margin-top:14px}
+.settings-section label{margin:16px 0!important}
+.settings-section fieldset{margin:16px 0 0;border:1px solid #30394b;border-radius:12px;padding:16px}
+.settings-section fieldset legend{padding:0 8px;color:var(--ink);font-weight:650}
+.settings-section .actions{margin-top:14px}
+.settings-save-actions{position:sticky;bottom:0;z-index:4;margin:18px -36px -28px!important;padding:16px 36px;background:linear-gradient(180deg,transparent,#101420 26%);border-top:1px solid #293142}
+[data-theme="light"] .settings-section{background:#f8fafc;border-color:#d4dde8}
+[data-theme="light"] .settings-section fieldset{border-color:#d4dde8}
+[data-theme="light"] .settings-save-actions{background:linear-gradient(180deg,transparent,#fff 26%);border-color:#d4dde8}
+@media(max-width:760px){#settings .settings-body{padding:28px 22px}.settings-save-actions{margin:18px -22px -28px!important;padding:16px 22px}.settings-section{padding:18px}}
