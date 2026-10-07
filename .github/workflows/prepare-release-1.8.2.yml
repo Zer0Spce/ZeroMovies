@@ -1,0 +1,49 @@
+name: Prepare ZeroPlay 1.8.2 Release
+
+on:
+  push:
+    branches: [release/v1.8.2]
+    paths:
+      - .github/workflows/prepare-release-1.8.2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update production release metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          release=Path('.github/workflows/release.yml')
+          text=release.read_text(encoding='utf-8')
+          count=text.count('1.8.1')
+          if count < 6:
+              raise SystemExit(f'Expected legacy 1.8.1 release references, found {count}')
+          release.write_text(text.replace('1.8.1','1.8.2'),encoding='utf-8')
+
+          lock=Path('windows/package-lock.json')
+          text=lock.read_text(encoding='utf-8')
+          old='"version": "1.8.1"'
+          if text.count(old) < 2:
+              raise SystemExit('Windows package-lock root version markers not found')
+          text=text.replace(old,'"version": "1.8.2"',2)
+          lock.write_text(text,encoding='utf-8')
+
+          Path('.github/workflows/prepare-release-1.8.2.yml').unlink()
+          PY
+          grep -q 'branches: \[release/v1.8.2\]' .github/workflows/release.yml
+          grep -q "versionName='1.8.2'" .github/workflows/release.yml
+          grep -q 'ZeroPlay-1.8.2-Android.apk' .github/workflows/release.yml
+          grep -q '"version": "1.8.2"' windows/package-lock.json
+      - name: Commit release preparation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A .github/workflows windows/package-lock.json
+          git commit -m "Prepare ZeroPlay 1.8.2 production release"
+          git push origin HEAD:release/v1.8.2
