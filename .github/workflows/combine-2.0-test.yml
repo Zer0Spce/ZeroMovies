@@ -1,0 +1,30 @@
+name: Combine ZeroPlay 2.0 Test Fixes
+on:
+  push:
+    branches: ['test/2.0-fixes-1-23']
+    paths: ['.github/workflows/combine-2.0-test.yml']
+permissions:
+  contents: write
+jobs:
+  combine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test/2.0-fixes-1-23
+          fetch-depth: 0
+      - name: Apply fixes 15 through 23
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for sha in \
+            f7794e2ef0fc1a49fa66ba48ebbd1e356cf90e71 \
+            9241f85a0014c7428e9b75462cc1ff3ed13df27f \
+            caea6cdc4383d3ba77c1ae4744e92488b055115a \
+            55f172bf5fb2f6b95823d0405da0c1935e0a28f8 \
+            9483238894206a2a55e0d748cde65263adf199a4 \
+            fc65d05d9b2b427c21b9f94c869b9ceaa745c5a4; do
+            git cherry-pick "$sha"
+          done
+          git push origin HEAD:test/2.0-fixes-1-23
