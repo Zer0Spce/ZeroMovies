@@ -16,7 +16,7 @@
         </provider>
         <service android:name=".TorrentDownloadService" android:exported="false" android:foregroundServiceType="dataSync" />
         <activity android:name=".MainActivity" android:exported="false" />
-        <activity android:name=".FixedMainActivity" android:exported="true" />
+        <activity android:name=".FixedMainActivity" android:exported="false" />
         <activity android:name=".BrowserPlayerActivity" android:exported="false" android:screenOrientation="landscape" />
         <activity android:name=".MangaReaderActivity" android:exported="false" />
         <activity android:name=".SportsPlayerActivity" android:exported="false" android:screenOrientation="landscape" android:configChanges="orientation|screenSize|keyboardHidden" />
