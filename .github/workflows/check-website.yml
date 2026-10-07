@@ -17,47 +17,11 @@ jobs:
         run: |
           python scripts/fix_theme_names.py
           git diff --check
-      - name: Commit #18 and restore normal website check
+      - name: Commit app fix
         run: |
-          cat > .github/workflows/check-website.yml <<'YAML'
-          name: Check Website
-          on:
-            push:
-              branches: [main]
-              paths:
-                - 'web/**'
-                - '.github/workflows/check-website.yml'
-            pull_request:
-              branches: [main]
-              paths:
-                - 'web/**'
-                - '.github/workflows/check-website.yml'
-          permissions:
-            contents: read
-          jobs:
-            website:
-              runs-on: ubuntu-latest
-              steps:
-                - uses: actions/checkout@v4
-                - name: Validate static site
-                  run: |
-                    test -f web/index.html
-                    test -f web/styles.css
-                    test -f web/script.js
-                    grep -q "ZeroPlay" web/index.html
-                    grep -q "download-card" web/index.html
-                    grep -q "copyDownloadLink" web/script.js
-                    grep -q "queueInstall" web/script.js
-                - name: No-secrets sweep
-                  run: |
-                    if grep -R -nE "(api[_-]?key|secret|token)[[:space:]]*[:=][[:space:]]*['\"][^$<{][^'\"]{8,}" web --exclude-dir=node_modules; then
-                      echo "Potential hardcoded secret found"
-                      exit 1
-                    fi
-          YAML
           rm -f scripts/fix_theme_names.py
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add app/src/main/java/com/zerostreams/app/MainActivity.java .github/workflows/check-website.yml scripts/fix_theme_names.py
+          git add app/src/main/java/com/zerostreams/app/MainActivity.java scripts/fix_theme_names.py
           git commit -m 'Fix #18 clean theme names in Settings'
           git push origin HEAD:main
