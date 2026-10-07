@@ -1,0 +1,46 @@
+name: Temporary Updater Demo
+on:
+  push:
+    branches: [fix/windows-updater]
+    paths: ['.github/workflows/updater-demo-temp.yml']
+permissions:
+  contents: write
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare temporary updater assets from v1.9
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p demo-assets original
+          gh release download v1.9 -D original -p 'ZeroPlay-1.9-Android.apk' -p 'ZeroPlay-1.9-Android-TV.apk' -p 'ZeroPlay-1.9-Windows-x64.zip'
+          cp original/ZeroPlay-1.9-Android.apk demo-assets/ZeroPlay-9.9.9-TEST-Android.apk
+          cp original/ZeroPlay-1.9-Android-TV.apk demo-assets/ZeroPlay-9.9.9-TEST-Android-TV.apk
+          cp original/ZeroPlay-1.9-Windows-x64.zip demo-assets/ZeroPlay-9.9.9-TEST-Windows-x64.zip
+          cd demo-assets
+          sha256sum ZeroPlay-9.9.9-TEST-Android.apk ZeroPlay-9.9.9-TEST-Android-TV.apk ZeroPlay-9.9.9-TEST-Windows-x64.zip > SHA256SUMS.txt
+      - name: Publish temporary updater demo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > notes.md <<'EOF'
+          # 🧪 ZeroPlay Updater Test
+
+          **PLACEHOLDER TEST UPDATE — NOT A REAL RELEASE.**
+
+          This temporary release exists only to test the ZeroPlay updater interface.
+
+          ### Test changelog
+          - Compact update window
+          - Current and available version display
+          - Changelog display
+          - Update / Cancel / Skip this update buttons
+          - Download progress and checksum verification
+          - Android unknown-sources permission flow
+
+          No new ZeroPlay feature release is being shipped by this placeholder.
+          EOF
+          gh release delete v9.9.9-TEST --yes --cleanup-tag 2>/dev/null || true
+          gh release create v9.9.9-TEST demo-assets/* --target "$GITHUB_SHA" --title 'ZeroPlay v9.9.9-TEST · Updater Demo' --notes-file notes.md
