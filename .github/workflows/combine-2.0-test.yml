@@ -13,18 +13,44 @@ jobs:
         with:
           ref: test/2.0-fixes-1-23
           fetch-depth: 0
-      - name: Apply fixes 15 through 23
+      - name: Apply fixes 15 through 23 onto the 2.0 line
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git cherry-pick f7794e2ef0fc1a49fa66ba48ebbd1e356cf90e71
           for sha in \
-            f7794e2ef0fc1a49fa66ba48ebbd1e356cf90e71 \
             9241f85a0014c7428e9b75462cc1ff3ed13df27f \
             caea6cdc4383d3ba77c1ae4744e92488b055115a \
             55f172bf5fb2f6b95823d0405da0c1935e0a28f8 \
             9483238894206a2a55e0d748cde65263adf199a4 \
             fc65d05d9b2b427c21b9f94c869b9ceaa745c5a4; do
-            git cherry-pick "$sha"
+            git cherry-pick -X theirs "$sha"
           done
-          git push origin HEAD:test/2.0-fixes-1-23
+      - name: Verify 2.0 fixes 1 through 14 survived
+        run: |
+          test -f windows/updater.cjs
+          grep -q 'releases/latest' app/src/main/java/com/zerostreams/app/AppUpdater.java
+          grep -q 'REQUEST_INSTALL_PACKAGES' app/src/main/AndroidManifest.xml
+          grep -q 'flixLayout' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'String fallback=BuildConfig.TV?"classic":"google"' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q "uiLayout:'youtube'" windows/main.cjs
+          grep -q 'scheduleReconnect' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
+          grep -q 'setConnectTimeoutMs(20000)' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
+          grep -q 'disableTracks' windows/ui/offline-player.js
+          grep -q 'tool-icon' windows/ui/offline-player.html
+          grep -q 'data-player-mode' app/src/main/java/com/zerostreams/app/MainActivity.java || grep -q 'Navigation control' app/src/main/java/com/zerostreams/app/MainActivity.java
+      - name: Verify fixes 15 through 23 landed
+        run: |
+          grep -q 'styleSettingsSpinner' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'classicLayout()||googleLayout()' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q '15000' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'liveCignal' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'liveConverge' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'liveCignal' windows/main.cjs
+          grep -q 'liveConverge' windows/main.cjs
+          grep -q 'Surprise' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'person' app/src/main/java/com/zerostreams/app/ContentApi.java
+          git diff --check HEAD~6..HEAD
+      - name: Push combined test branch
+        run: git push origin HEAD:test/2.0-fixes-1-23
