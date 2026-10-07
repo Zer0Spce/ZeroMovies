@@ -1,0 +1,47 @@
+name: Temporary updater placeholder release
+on:
+  push:
+    branches: [fix/2.0-from-v1.9]
+    paths: [.github/workflows/temp-updater-placeholder.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download signed Android test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ZeroPlay-mobile-and-tv-signed
+          run-id: 37604829188
+          github-token: ${{ github.token }}
+          path: android-artifact
+      - name: Download tested Windows portable artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ZeroPlay-Windows-x64
+          run-id: 37604829327
+          github-token: ${{ github.token }}
+          path: windows-artifact
+      - name: Prepare identical placeholder packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          cp android-artifact/mobile/release/app-mobile-release.apk release-assets/ZeroPlay-1.9.99-Android.apk
+          cp android-artifact/tv/release/app-tv-release.apk release-assets/ZeroPlay-1.9.99-Android-TV.apk
+          cp windows-artifact/ZeroPlay-1.9-Windows-x64.zip release-assets/ZeroPlay-1.9.99-Windows-x64.zip
+          (cd release-assets && sha256sum ZeroPlay-1.9.99-Android.apk ZeroPlay-1.9.99-Android-TV.apk ZeroPlay-1.9.99-Windows-x64.zip > SHA256SUMS.txt)
+      - name: Create temporary updater test release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release delete v1.9.99 --repo Zer0Spce/ZeroPlay --cleanup-tag -y 2>/dev/null || true
+          gh release create v1.9.99 release-assets/* \
+            --repo Zer0Spce/ZeroPlay \
+            --target 4197092aaf6ae5f65a623602c59ce0011c6ec5e4 \
+            --title 'ZeroPlay v1.9.99 — Updater UI Test' \
+            --notes $'TEMPORARY UPDATER TEST ONLY — no new app code.\n\nThis release exists only to demonstrate the new in-app updater flow. The Android, Android TV, and Windows packages are byte-for-byte copies of the already-built test binaries; only their release asset filenames were changed so the updater can detect a newer version.\n\nExpected flow: update available → changelog → download progress → SHA-256 verification → install/relaunch.\n\nThis temporary release will be deleted after testing.'
