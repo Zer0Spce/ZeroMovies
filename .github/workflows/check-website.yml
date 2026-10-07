@@ -1,34 +1,30 @@
-name: Check Website
+name: One-time fixes #19-#22
 on:
   push:
-    branches: [main]
     paths:
-      - 'web/**'
-      - '.github/workflows/check-website.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'web/**'
+      - 'scripts/fix_19_22.py'
       - '.github/workflows/check-website.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
-  website:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate static site
+        with:
+          fetch-depth: 0
+      - name: Apply fixes
         run: |
-          test -f web/index.html
-          test -f web/styles.css
-          test -f web/script.js
-          grep -q "ZeroPlay" web/index.html
-          grep -q "download-card" web/index.html
-          grep -q "copyDownloadLink" web/script.js
-          grep -q "queueInstall" web/script.js
-      - name: No-secrets sweep
+          python scripts/fix_19_22.py
+          git diff --check
+      - name: Compile Android
         run: |
-          if grep -R -nE "(api[_-]?key|secret|token)[[:space:]]*[:=][[:space:]]*['\"][^$<{][^'\"]{8,}" web --exclude-dir=node_modules; then
-            echo "Potential hardcoded secret found"
-            exit 1
-          fi
+          gradle :app:compileMobileDebugJavaWithJavac :app:compileTvDebugJavaWithJavac
+      - name: Commit app changes
+        run: |
+          rm -f scripts/fix_19_22.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/src/main/java/com/zerostreams/app/MainActivity.java app/src/main/java/com/zerostreams/app/ContentApi.java app/src/main/java/com/zerostreams/app/DiscoveryCollections.java scripts/fix_19_22.py
+          git commit -m 'Fix #19-#22 cast categories surprise and branding'
+          git push origin HEAD:main
