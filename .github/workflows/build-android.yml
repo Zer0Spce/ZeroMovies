@@ -12,6 +12,7 @@ jobs:
     timeout-minutes: 20
     env:
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -42,13 +43,10 @@ jobs:
           npm install --prefix /tmp/zero-qr-tests --no-audit --no-fund jsdom@24.1.3
           node tests/player-guard.test.cjs
           node tests/tv-navigation.test.cjs
-      - name: Check TMDB key configuration
+      - name: Check metadata key configuration
         run: |
-          if [ -n "$TMDB_API_KEY" ]; then
-            echo "Bundled TMDB key configured"
-          else
-            echo "No bundled TMDB key; enter your key in app Settings"
-          fi
+          if [ -n "$TMDB_API_KEY" ]; then echo "Bundled TMDB key configured"; else echo "No bundled TMDB key; enter your key in app Settings"; fi
+          if [ -n "$OMDB_API_KEY" ]; then echo "OMDb ratings configured"; else echo "No bundled OMDb key; Rotten Tomatoes ratings disabled"; fi
       - name: Test catalog, playlists, paging, history and QR scanning
         run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest
       - name: Compile both APKs
@@ -59,9 +57,7 @@ jobs:
         if: always()
         run: |
           for report in app/build/intermediates/lint_intermediate_text_report/*/lintReport*/lint-results-*.txt; do
-            if [ -f "$report" ]; then
-              cat "$report"
-            fi
+            if [ -f "$report" ]; then cat "$report"; fi
           done
       - name: Upload lint reports
         if: always()
