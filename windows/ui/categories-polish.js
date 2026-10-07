@@ -12,6 +12,15 @@
   .genre-grid>button:hover,.zero-category-extra:hover{transform:none!important;border-color:var(--mint)!important;background:var(--surface)!important}
   .genre-grid>button:focus-visible,.zero-category-extra:focus-visible{outline:none!important;border-color:var(--mint)!important;transform:none!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--mint) 22%,transparent)!important}
   [data-theme="light"] .genre-grid>button::after,[data-theme="light"] .zero-category-extra::after{background:linear-gradient(180deg,rgba(16,24,36,.08) 0%,rgba(12,16,25,.78) 100%)!important}
+
+  /* Flix header copy: keep the right-side heading compact and uniform so it never runs into navigation/actions. */
+  :root[data-layout="flix"] main>header{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:8px!important;max-width:min(620px,48vw)!important}
+  :root[data-layout="flix"] main>header>div:first-child{display:flex!important;flex-direction:column!important;justify-content:center!important;width:200px!important;min-width:200px!important;max-width:200px!important;margin:0 4px 0 0!important;overflow:hidden!important}
+  :root[data-layout="flix"] main>header #eyebrow{display:block!important;margin:0!important;font-size:9px!important;line-height:1.05!important;font-weight:800!important;letter-spacing:.13em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  :root[data-layout="flix"] main>header #heading{display:block!important;margin:3px 0 0!important;max-width:200px!important;font-size:17px!important;line-height:1.05!important;font-weight:700!important;letter-spacing:-.02em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  @media(max-width:1500px){:root[data-layout="flix"] main>header>div:first-child{width:160px!important;min-width:160px!important;max-width:160px!important}:root[data-layout="flix"] main>header #heading{max-width:160px!important;font-size:15px!important}:root[data-layout="flix"] main>header #eyebrow{font-size:8px!important}}
+  @media(max-width:1150px){:root[data-layout="flix"] main>header>div:first-child{display:none!important}}
+
   @media(max-width:1050px){.genre-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
   @media(max-width:650px){.genre-grid{grid-template-columns:1fr!important}.genre-grid>button,.zero-category-extra{height:120px!important;min-height:120px!important}.genre-grid .genre-caption,.zero-category-extra .genre-caption{font-size:16px!important}}
   `;document.head.appendChild(style);
