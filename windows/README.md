@@ -27,3 +27,8 @@ Configure hosted TSP Search under Settings → Downloads → Torrent Search. Sel
 
 ### Three UI layouts
 Choose YouTube TV (default), Google TV or Classic in Settings → Appearance → UI layout. The YouTube icon rail expands on navigation focus and collapses when you focus movie cards. Google TV uses top navigation and a cinematic hero. Classic keeps portrait posters. Themes, previews and your library remain independent of the layout.
+
+
+## Offline downloads in 1.9
+
+Downloaded movies use a dedicated **Video.js 8.24.1** offline player with native seek/volume/fullscreen/Picture-in-Picture controls, playback speed, automatic matching local SRT/VTT/ASS/SSA subtitles, and a manual **Load subtitles** action. Live TV, Live Sports, PPV and web streaming players remain separate and unchanged.

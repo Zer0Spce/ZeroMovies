@@ -1,9 +1,12 @@
 const {app,BrowserWindow,WebContentsView,screen,ipcMain,session,shell,safeStorage,Menu,dialog}=require('electron');
 const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
 const {PlayerHost}=require('./player-host.cjs');
+const {OfflineHost}=require('./offline-host.cjs');
+const offlineMedia=require('./offline-media.cjs');
 const playlists=require('./playlist.cjs');let playlistStore,liveSelection;const sportsModule=require('./sports.cjs');let sportsStore,sportsSelection,sportsHtmlServer;
 
 const liveURL=pathToFileURL(path.join(__dirname,'ui/live-player.html')).href;
+const offlineURL=pathToFileURL(path.join(__dirname,'ui/offline-player.html')).href;
 const sources=require('./playback-sources.cjs');
 const {themes}=require('./themes.cjs');
 const {RawCast}=require('./rawcast.cjs');let rawcast,downloads,torrentSearchSettings;
@@ -12,7 +15,7 @@ function rawcastKey(){if(state.rawcastKey&&safeStorage.isEncryptionAvailable())t
 const core=require('./core.cjs'),{Worker}=require('node:worker_threads');
 let config={};try{config=require('./generated-config.json');}catch{}
 let sportsSession;
-let main,player,toolbar,playerHost,current,scanTimer,cursorTimer,qrWorker,scanning=false,state,file,guard,lastProgress=0;
+let main,player,toolbar,playerHost,current,scanTimer,cursorTimer,qrWorker,scanning=false,state,file,guard,lastProgress=0,offlineSelection;
 let uiURL,uiServer;
 const toolsURL=pathToFileURL(path.join(__dirname,'ui/player-tools.html')).href;
 const smoke=process.argv.includes('--smoke-test');
@@ -52,7 +55,7 @@ async function scanAd(){
   }catch{scanning=false;}
 }
 function closePlayer(){
-  if(!player)return;const host=playerHost;player=null;toolbar=null;playerHost=null;current=null;liveSelection=null;sportsSelection=null;sportsHtmlServer?.close();sportsHtmlServer=null;
+  if(!player)return;const host=playerHost;player=null;toolbar=null;playerHost=null;current=null;liveSelection=null;offlineSelection=null;sportsSelection=null;sportsHtmlServer?.close();sportsHtmlServer=null;
   const endedSession=sportsSession;sportsSession=null;if(endedSession)Promise.allSettled([endedSession.clearCache(),endedSession.clearStorageData()]).catch(()=>{});
   clearInterval(scanTimer);clearInterval(cursorTimer);if(qrWorker)qrWorker.terminate();qrWorker=null;scanning=false;host.close();
   if(main&&!main.isDestroyed()){main.setTitle('ZeroPlay');main.webContents.focus();refresh();}
@@ -116,6 +119,13 @@ async function openSports(id,index){
  contents.on('before-input-event',async(e,input)=>{if(input.type!=='keyDown'||input.isAutoRepeat)return;playerHost?.activity();if(input.key==='F11'){e.preventDefault();await playerHost.toggleFullscreen();}if(input.key==='Escape'||input.key==='BrowserBack'){e.preventDefault();let handled=false;try{handled=await contents.executeJavaScript('window.__zeroDismissMenus ? window.__zeroDismissMenus() : false');}catch{}if(player===view&&!handled)closePlayer();}});
  main.setTitle(event.title+' — Live Sports — ZeroPlay');try{if(event.source.embed.url)await contents.loadURL(event.source.embed.url);else {const token=require('node:crypto').randomBytes(24).toString('hex');const html='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><base href="'+event.base+'/"><style>html,body{margin:0;height:100%;background:black}iframe{width:100%;height:100%;border:0}</style>'+event.source.embed.html;sportsHtmlServer=require('node:http').createServer((req,res)=>{if(req.url!=='/'+token){res.writeHead(404).end();return;}res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});res.end(html);});await new Promise(resolve=>sportsHtmlServer.listen(0,'127.0.0.1',resolve));sportsHtmlServer.unref();await contents.loadURL('http://127.0.0.1:'+sportsHtmlServer.address().port+'/'+token);}contents.focus();}catch{update('Player unavailable · Retry or choose another source');}
 }
+async function openOffline(job,filePath){
+ const resolved=path.resolve(filePath);if(!fs.existsSync(resolved))throw Error('Downloaded video is missing.');closePlayer();
+ const title=job?.item?.title||job?.title||path.basename(resolved),root=job?.dir&&fs.existsSync(job.dir)?job.dir:path.dirname(resolved);offlineSelection={title,file:resolved,subtitles:offlineMedia.findTracks(resolved,root)};
+ const isolated=session.fromPartition('offline-'+require('node:crypto').randomUUID(),{cache:false});isolated.webRequest.onBeforeRequest((details,callback)=>{let allowed=false;try{allowed=['file:','data:','blob:'].includes(new URL(details.url).protocol);}catch{}callback({cancel:!allowed});});isolated.setPermissionRequestHandler((contents,permission,callback)=>callback(permission==='fullscreen'&&contents===player?.webContents));isolated.setPermissionCheckHandler((contents,permission)=>permission==='fullscreen'&&contents===player?.webContents);
+ player=new WebContentsView({webPreferences:{session:isolated,preload:path.join(__dirname,'offline-preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});toolbar=null;player.setBackgroundColor('#000000');const view=player,contents=view.webContents;playerHost=new OfflineHost(main,view);contents.setWindowOpenHandler(()=>({action:'deny'}));contents.on('will-navigate',(event,url)=>{if(url!==offlineURL)event.preventDefault();});contents.on('render-process-gone',()=>{if(player===view)closePlayer();});contents.on('before-input-event',async(event,input)=>{if(input.type!=='keyDown'||input.isAutoRepeat||player!==view)return;if(input.key==='F11'){event.preventDefault();await playerHost.toggleFullscreen();}else if(input.key==='Escape'||input.key==='BrowserBack'){event.preventDefault();closePlayer();}});main.setTitle(title+' — Offline — ZeroPlay');try{await contents.loadFile(path.join(__dirname,'ui/offline-player.html'));contents.focus();}catch(error){if(player===view)closePlayer();throw error;}
+}
+function offlineTrusted(event){if(event.sender!==player?.webContents||event.senderFrame?.url!==offlineURL||!offlineSelection)throw Error('Untrusted offline control');}
 function liveTrusted(event){if(event.sender!==player?.webContents||event.senderFrame?.url!==liveURL||!liveSelection)throw Error('Untrusted live control');}
 function selectedLive(index){if(liveSelection?.channel.offline||liveSelection?.channel.vod){if(index!==0)throw Error('Invalid download');return {...liveSelection.channel,clearKeys:{}};}if(!Number.isSafeInteger(index)||index<0)throw Error('Invalid channel');const channel=playlistStore.select(liveSelection.section,index);liveSelection.index=index;liveSelection.channel=channel;return {name:channel.name,url:channel.url,mime:channel.mime,clearKeys:channel.drmType?playlists.clearKeys(channel.drmKey):{}};}
 async function openLive(section,index,offline){
@@ -152,7 +162,7 @@ app.whenReady().then(async()=>{
   ipcMain.handle('download-folder',async(event)=>{trusted(event);const result=await dialog.showOpenDialog(main,{properties:['openDirectory','createDirectory']});if(!result.canceled){state.settings.downloadFolder=result.filePaths[0];persist();}return state.settings.downloadFolder||path.join(app.getPath('downloads'),'ZeroPlay');});
   ipcMain.handle('rawcast',async(event,action,value)=>{trusted(event);if(action==='save'){if(typeof value!=='string'||!/^rc_live_[A-Za-z0-9_-]{20,200}$/.test(value))throw Error('Enter a valid RawCast API key.');if(!safeStorage.isEncryptionAvailable())throw Error('Windows secure key storage is unavailable.');state.rawcastKey=safeStorage.encryptString(value).toString('base64');rawcast.clear();delete state.rawcastUsage;persist();return snapshot().rawcast;}if(action==='remove'){delete state.rawcastKey;rawcast.clear();delete state.rawcastUsage;persist();return snapshot().rawcast;}if(state.settings.rawcastPlayback!==true)throw Error('Enable RawCast in Settings first.');if(action==='test')return rawcast.test();if(action==='usage')return rawcast.refreshUsage();throw Error('Unsupported RawCast action');});
   ipcMain.handle('download-add',async(event,item,episode,options={})=>{trusted(event);item=core.cleanItem(item);const torrent=await torrentSearchSettings.torrent(String(options.resultId));const result=torrentSearchSettings.selected.get(String(options.resultId));const id=await downloads.add(item,episode||{},state.settings.downloadFolder||path.join(app.getPath('downloads'),'ZeroPlay'),result,torrent);return {available:true,id};});
-  ipcMain.handle('download-action',async(event,id,action,value)=>{trusted(event);if(action==='external'){const file=await downloads.action(String(id),'open',value);const failure=await shell.openPath(file);if(failure)throw Error(failure);return true;}const result=await downloads.action(String(id),action,value);if(action==='open'){const job=downloads.jobs.find(j=>j.id===String(id));await openLive('Downloads',0,{name:job.item.title,url:pathToFileURL(result).href,headers:{},offline:true});}return true;});
+  ipcMain.handle('download-action',async(event,id,action,value)=>{trusted(event);if(action==='external'){const file=await downloads.action(String(id),'open',value);const failure=await shell.openPath(file);if(failure)throw Error(failure);return true;}const result=await downloads.action(String(id),action,value);if(action==='open'){const job=downloads.jobs.find(j=>j.id===String(id));await openOffline(job,result);}return true;});
   app.on('before-quit',()=>downloads.close());
   const playerSession=session.fromPartition('persist:player');
   playerSession.setPermissionRequestHandler((contents,permission,callback)=>callback(permission==='fullscreen'&&contents===player?.webContents));playerSession.setPermissionCheckHandler((contents,permission)=>permission==='fullscreen'&&contents===player?.webContents);
@@ -168,6 +178,10 @@ app.whenReady().then(async()=>{
   ipcMain.handle('live-play',async(event,section,index)=>{trusted(event);await openLive(section,index);return true;});
   ipcMain.handle('channel-favorite',(event,section,index)=>{trusted(event);const id=channelKey(section,playlistStore.select(section,index));const saved=new Set(state.liveFavorites||[]);if(!saved.add(id)|| (state.liveFavorites||[]).includes(id))saved.delete(id);state.liveFavorites=[...saved];persist();return saved.has(id);});
   ipcMain.on('live-progress',(event,data)=>{try{liveTrusted(event);}catch{return;}if(!liveSelection?.channel.vod||!current||Date.now()-lastProgress<2500)return;const position=core.progress({...data,id:current.id,type:current.type,...liveSelection.channel.rawcastEpisode},current);if(position){lastProgress=Date.now();core.record(state,current,position);persist();}});
+  ipcMain.handle('offline-context',event=>{offlineTrusted(event);return {title:offlineSelection.title,url:pathToFileURL(offlineSelection.file).href,subtitles:offlineSelection.subtitles};});
+  ipcMain.handle('offline-subtitle',async event=>{offlineTrusted(event);const result=await dialog.showOpenDialog(main,{properties:['openFile'],filters:[{name:'Subtitle files',extensions:['srt','vtt','ass','ssa']}]});if(result.canceled||!result.filePaths[0])return null;return offlineMedia.readTrack(result.filePaths[0]);});
+  ipcMain.handle('offline-close',event=>{offlineTrusted(event);closePlayer();return true;});
+  ipcMain.handle('offline-fullscreen',event=>{offlineTrusted(event);return playerHost.toggleFullscreen();});
   ipcMain.handle('live-context',event=>{liveTrusted(event);return {offline:!!liveSelection.channel.offline,vod:!!liveSelection.channel.vod,index:liveSelection.index,names:liveSelection.channel.offline||liveSelection.channel.vod?[liveSelection.channel.name]:playlistStore.get?Array.from({length:3000},(_,i)=>{try{return playlistStore.select(liveSelection.section,i).name;}catch{return null;}}).filter(Boolean):[]};});
   ipcMain.handle('live-select',(event,index)=>{liveTrusted(event);return selectedLive(index);});
   ipcMain.handle('live-close',event=>{liveTrusted(event);closePlayer();return true;});
