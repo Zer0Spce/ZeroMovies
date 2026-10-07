@@ -23,20 +23,26 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-      - name: Protect Live TV Sports and PPV files
+      - name: Protect Live Sports and PPV files
         run: |
           git fetch origin tag v1.9 --force
           if git diff --quiet v1.9 -- \
-            app/src/main/java/com/zerostreams/app/LivePlayerActivity.java \
             app/src/main/java/com/zerostreams/app/SportsPlayerActivity.java \
             app/src/main/java/com/zerostreams/app/PlaylistStore.java \
             app/src/main/java/com/zerostreams/app/SportsStore.java \
             app/src/main/java/com/zerostreams/app/LiveSportsStore.java; then
-            echo 'Protected Live TV / Sports / PPV files unchanged.'
+            echo 'Protected Live Sports / PPV files unchanged.'
           else
-            echo 'Protected Live TV / Sports / PPV file changed.' >&2
+            echo 'Protected Live Sports / PPV file changed.' >&2
             exit 1
           fi
+      - name: Verify Live TV reliability contract
+        run: |
+          grep -q 'MAX_AUTO_RETRIES=4' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
+          grep -q 'setAllowCrossProtocolRedirects(true)' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
+          grep -q 'scheduleReconnect' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
+          grep -q 'setConnectTimeoutMs(20000)' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
+          grep -q 'setReadTimeoutMs(30000)' app/src/main/java/com/zerostreams/app/LivePlayerActivity.java
       - name: Verify updater settings TV navigation compact rail and Modern UI contracts
         run: |
           grep -q 'REQUEST_INSTALL_PACKAGES' app/src/main/AndroidManifest.xml
