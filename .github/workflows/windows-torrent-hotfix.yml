@@ -15,7 +15,7 @@ permissions:
 jobs:
   windows-torrent:
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     defaults:
       run:
         working-directory: windows
@@ -40,6 +40,15 @@ jobs:
         run: npm test
       - name: Package portable Windows build
         run: npm run build
+      - name: Audit packaged credentials
+        run: python ../scripts/audit-release-secrets.py dist generated-config.json
+      - name: Microsoft Defender scan
+        shell: pwsh
+        run: |
+          $scanner = (Get-ChildItem "$env:ProgramData\Microsoft\Windows Defender\Platform\*\MpCmdRun.exe" | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          if (-not $scanner) { throw 'Microsoft Defender scanner unavailable; hotfix blocked.' }
+          & $scanner -Scan -ScanType 3 -File "$pwd\dist\win-unpacked" -DisableRemediation
+          if ($LASTEXITCODE -ne 0) { throw "Microsoft Defender scan failed or detected a threat (exit $LASTEXITCODE); hotfix blocked." }
       - name: Commit refreshed dependency lock
         shell: pwsh
         working-directory: ${{ github.workspace }}
