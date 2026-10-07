@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 final class AppUpdater implements Application.ActivityLifecycleCallbacks {
-    private static final String API="https://api.github.com/repos/Zer0Spce/ZeroPlay/releases/latest";
+    private static final String API="https://api.github.com/repos/Zer0Spce/ZeroPlay/releases?per_page=20";
     private final Activity activity;
     private final android.content.SharedPreferences prefs;
     private final ExecutorService io=Executors.newSingleThreadExecutor();
@@ -48,6 +48,7 @@ final class AppUpdater implements Application.ActivityLifecycleCallbacks {
         for(int i=0;i<raw.length;i++)try{out[i]=Integer.parseInt(raw[i].replaceAll("[^0-9].*$",""));}catch(Exception ignored){out[i]=0;}
         return out;
     }
+    static boolean testRelease(String tag){return String.valueOf(tag).matches("(?i).*(^|[-_.])(test|demo|placeholder)($|[-_.]).*");}
 
     void check(boolean manual){
         if(checking){if(manual)toast("Already checking for updates…");return;}checking=true;
@@ -65,13 +66,14 @@ final class AppUpdater implements Application.ActivityLifecycleCallbacks {
     private Release latest() throws Exception{
         HttpURLConnection c=open(API);c.setConnectTimeout(15000);c.setReadTimeout(15000);
         if(c.getResponseCode()!=200)throw new IOException("GitHub returned "+c.getResponseCode());
-        JSONObject root=new JSONObject(read(c.getInputStream(),2*1024*1024));
-        if(root.optBoolean("draft")||root.optBoolean("prerelease"))throw new IOException("Latest release is not stable");
+        JSONArray releases=new JSONArray(read(c.getInputStream(),3*1024*1024));JSONObject root=null;
+        for(int i=0;i<releases.length();i++){JSONObject candidate=releases.optJSONObject(i);if(candidate==null||candidate.optBoolean("draft")||candidate.optBoolean("prerelease")||testRelease(candidate.optString("tag_name","")))continue;root=candidate;break;}
+        if(root==null)throw new IOException("No stable ZeroPlay release is available");
         String tag=root.optString("tag_name","");String version=tag.replaceFirst("^[vV]","");
         JSONArray assets=root.optJSONArray("assets");JSONObject apk=null,sums=null;
         String expected=BuildConfig.TV?"ZeroPlay-"+version+"-Android-TV.apk":"ZeroPlay-"+version+"-Android.apk";
         if(assets!=null)for(int i=0;i<assets.length();i++){JSONObject a=assets.getJSONObject(i);String n=a.optString("name","");if(expected.equals(n))apk=a;if("SHA256SUMS.txt".equals(n))sums=a;}
-        if(apk==null)throw new IOException("No "+(BuildConfig.TV?"Android TV":"Android")+" APK in the latest release");
+        if(apk==null)throw new IOException("No "+(BuildConfig.TV?"Android TV":"Android")+" APK in the latest stable release");
         String digest=apk.optString("digest","");
         return new Release(version,tag,root.optString("name",tag),root.optString("body","No changelog was provided."),apk.optString("browser_download_url"),apk.optString("name"),digest,sums==null?null:sums.optString("browser_download_url",null));
     }
