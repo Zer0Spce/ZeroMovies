@@ -1,0 +1,34 @@
+name: Prepare ZeroPlay 1.9 Release
+on:
+  push:
+    branches: [release/v1.9]
+    paths:
+      - scripts/prepare-1.9-release.py
+      - .github/workflows/prepare-1.9-release.yml
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare README and publisher
+        run: python scripts/prepare-1.9-release.py
+      - name: Guard 1.9 release metadata
+        run: |
+          grep -q 'v1.9 release notes' README.md
+          grep -q 'ZeroPlay-1.9-Android.apk' README.md
+          grep -q 'WebTorrent 3.0.21' README.md
+          grep -q 'Golden ZeroPlay easter egg' README.md
+          grep -q "release/v1.9" scripts/publish-release.py
+          grep -q "docs/release-1.9.md" scripts/publish-release.py
+          ! grep -q '1.8.2' scripts/publish-release.py
+      - name: Commit release metadata
+        run: |
+          git config user.name 'ZeroPlay CI'
+          git config user.email 'actions@users.noreply.github.com'
+          git add README.md scripts/publish-release.py
+          git diff --cached --check
+          git commit -m 'Prepare ZeroPlay 1.9 release metadata'
+          git pull --rebase origin release/v1.9
+          git push origin HEAD:release/v1.9
