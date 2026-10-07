@@ -25,7 +25,7 @@ contextBridge.exposeInMainWorld('zero',{
 function loadSettingsStyles(){if(document.querySelector('link[data-zero-settings]'))return;const link=document.createElement('link');link.rel='stylesheet';link.href='settings-groups.css';link.dataset.zeroSettings='1';document.head.appendChild(link);}
 function organizeSettings(){
   const body=document.querySelector('#settings .settings-body');if(!body||body.dataset.organized==='1')return;body.dataset.organized='1';
-  const saveActions=body.querySelector('.actions');
+  const saveActions=body.querySelector('[data-action="save-settings"]')?.closest('.actions')||null;
   const aboutStart=body.querySelector('hr');
   const groups=document.createElement('div');groups.className='settings-groups';
   const make=(title,description)=>{const section=document.createElement('section');section.className='settings-section';const h=document.createElement('h3');h.textContent=title;section.appendChild(h);if(description){const p=document.createElement('p');p.className='settings-section-description';p.textContent=description;section.appendChild(p);}groups.appendChild(section);return section;};
