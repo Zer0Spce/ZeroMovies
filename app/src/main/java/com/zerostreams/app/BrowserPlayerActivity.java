@@ -33,7 +33,6 @@ public class BrowserPlayerActivity extends Activity {
         if(!reader){Button ads=new Button(this);ads.setText(blockAds?"Ads blocked":"Blocking off");ads.setOnClickListener(v->{blockAds=!blockAds;getSharedPreferences("zero",MODE_PRIVATE).edit().putBoolean("blockAds",blockAds).apply();ads.setText(blockAds?"Ads blocked":"Blocking off");web.reload();});controls.addView(ads);}
         status=new TextView(this);status.setText(reader?"Loading reader…":"Loading player…");status.setTextColor(Color.WHITE);status.setTextSize(14);controls.addView(status,new LinearLayout.LayoutParams(0,-2,1));if(reader)root.addView(controls);
         web=new WebView(this);web.setBackgroundColor(Color.BLACK);web.setOnTouchListener((v,event)->{if(event.getActionMasked()==android.view.MotionEvent.ACTION_DOWN){backState.userActivity();lastPlayerGesture=android.os.SystemClock.elapsedRealtime();}return false;});CookieManager cookies=CookieManager.getInstance();cookies.setAcceptCookie(true);cookies.setAcceptThirdPartyCookies(web,PlaybackSources.trusted(address));WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setMediaPlaybackRequiresUserGesture(false);settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setSupportMultipleWindows(false);settings.setJavaScriptCanOpenWindowsAutomatically(false);
-        // Origin-scoped playback messages only. Popups and top-level cross-site ad redirects stay closed.
         String host=Uri.parse(address).getHost();if(!reader&&PlaybackSources.trusted(address)){blockAds=true;installProgressListener();installPlayerExitListener();installPlayerGuard();adScan=new PlayerAdScan(this,web);}web.setWebViewClient(new WebViewClient(){
             @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest request){if(tvPlayer&&request.isForMainFrame()&&request.hasGesture()&&java.util.Arrays.asList("vidstuck.xyz","vidsrc.sh").contains(request.getUrl().getHost())&&!String.valueOf(request.getUrl().getPath()).startsWith("/embed/")){finish();return true;}return (blockAds&&AdBlockRules.blocks(request.getUrl().getHost())) || !"https".equals(request.getUrl().getScheme()) || (request.isForMainFrame()&&!PlaybackSources.trusted(request.getUrl().toString()));}
             @Override public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest request){if(blockAds&&!request.isForMainFrame()&&AdBlockRules.blocks(request.getUrl().getHost()))return new WebResourceResponse("text/plain","UTF-8",new java.io.ByteArrayInputStream(new byte[0]));return null;}
@@ -58,8 +57,9 @@ public class BrowserPlayerActivity extends Activity {
             int key=event.getKeyCode();
             if(key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN)backState.userActivity();
             if(key==KeyEvent.KEYCODE_DPAD_CENTER||key==KeyEvent.KEYCODE_ENTER)lastPlayerGesture=android.os.SystemClock.elapsedRealtime();
-            if(tvPlayer&&key!=KeyEvent.KEYCODE_BACK&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN)
-                wakeControls();
+            if(tvPlayer&&key!=KeyEvent.KEYCODE_BACK&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN){
+                boolean nativeWake=mouse!=null&&mouse.wakeNow();if(!nativeWake)wakeControls();
+            }
         }
         if(mouse!=null&&mouse.handle(event))return true;
         if(tvPlayer){String direction=null;switch(event.getKeyCode()){
@@ -69,7 +69,7 @@ public class BrowserPlayerActivity extends Activity {
         }if(direction!=null){boolean activate=direction.equals("ok");if(!activate&&event.getAction()==KeyEvent.ACTION_DOWN){long now=android.os.SystemClock.elapsedRealtime();if(event.getRepeatCount()>0&&now-lastTvNavAt<165)return true;lastTvNavAt=now;}if((activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN))web.evaluateJavascript("if(window.__zeroTvNavigate)window.__zeroTvNavigate('"+direction+"');",null);return true;}}
         return super.dispatchKeyEvent(event);
     }
-    private void wakeControls(){if(web!=null)web.evaluateJavascript("if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();",null);}
+    private void wakeControls(){if(web!=null){web.requestFocus();web.evaluateJavascript("if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();window.postMessage({type:'zerostreams-native-wake'},'*');",null);}}
     private void installPlayerExitListener(){
         if(!androidx.webkit.WebViewFeature.isFeatureSupported(androidx.webkit.WebViewFeature.WEB_MESSAGE_LISTENER))return;
         androidx.webkit.WebViewCompat.addWebMessageListener(web,"ZeroPlayer",new java.util.HashSet<>(java.util.Arrays.asList(PlaybackSources.ORIGINS)),(view,message,origin,mainFrame,reply)->{
@@ -109,4 +109,3 @@ public class BrowserPlayerActivity extends Activity {
     @Override protected void onResume(){super.onResume();if(web!=null)web.onResume();if(adScan!=null)adScan.start();}
     @Override protected void onDestroy(){if(mouse!=null)mouse.stop();if(adScan!=null)adScan.destroy();if(web!=null){web.stopLoading();web.destroy();}super.onDestroy();}
 }
-
