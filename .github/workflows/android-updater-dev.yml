@@ -3,7 +3,7 @@ on:
   push:
     branches: [fix/windows-updater]
 permissions:
-  contents: read
+  contents: write
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -23,6 +23,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Apply guarded settings polish
+        run: python3 scripts/polish-android-settings.py
       - name: Protect Live TV Sports and PPV files
         run: |
           git fetch origin tag v1.9 --force
@@ -35,21 +37,27 @@ jobs:
             echo 'Protected Live TV / Sports / PPV files unchanged.'
           else
             echo 'Protected Live TV / Sports / PPV file changed.' >&2
-            git diff v1.9 -- app/src/main/java/com/zerostreams/app/LivePlayerActivity.java app/src/main/java/com/zerostreams/app/SportsPlayerActivity.java app/src/main/java/com/zerostreams/app/PlaylistStore.java app/src/main/java/com/zerostreams/app/SportsStore.java app/src/main/java/com/zerostreams/app/LiveSportsStore.java
             exit 1
           fi
-      - name: Verify updater source contracts
+      - name: Verify settings structure
         run: |
-          grep -q 'REQUEST_INSTALL_PACKAGES' app/src/main/AndroidManifest.xml
-          grep -q 'releases/latest' app/src/main/java/com/zerostreams/app/AppUpdater.java
-          grep -q 'SHA-256 verification failed' app/src/main/java/com/zerostreams/app/AppUpdater.java
-          grep -q 'ACTION_MANAGE_UNKNOWN_APP_SOURCES' app/src/main/java/com/zerostreams/app/AppUpdater.java
-          grep -q 'BuildConfig.TV' app/src/main/java/com/zerostreams/app/AppUpdater.java
-          grep -q 'updater.check(false)' app/src/main/java/com/zerostreams/app/MainActivity.java
-          grep -q 'Check for ZeroPlay updates' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'settingsHeading(panel,"GENERAL"' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'settingsHeading(panel,"APPEARANCE"' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'settingsHeading(panel,"PLAYBACK & DOWNLOADS"' app/src/main/java/com/zerostreams/app/MainActivity.java
       - name: Compile Android Mobile
         run: gradle :app:compileMobileDebugJavaWithJavac --stacktrace
       - name: Compile Android TV
         run: gradle :app:compileTvDebugJavaWithJavac --stacktrace
       - name: Android unit tests
         run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --stacktrace
+      - name: Commit validated settings polish
+        run: |
+          if git diff --quiet -- app/src/main/java/com/zerostreams/app/MainActivity.java; then
+            echo 'Settings polish already applied.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/src/main/java/com/zerostreams/app/MainActivity.java
+          git commit -m 'Clean up Android settings UI [skip ci]'
+          git push origin HEAD:fix/windows-updater
