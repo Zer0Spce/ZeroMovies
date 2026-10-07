@@ -6,6 +6,9 @@ on:
       - fix/2.0-from-v1.9
 permissions:
   contents: read
+concurrency:
+  group: zeroplay-windows-fix-2-0
+  cancel-in-progress: true
 jobs:
   windows:
     runs-on: windows-latest
