@@ -22,6 +22,8 @@ public class BrowserPlayerActivity extends Activity {
     private View fullscreen;
     private WebChromeClient.CustomViewCallback fullscreenCallback;
     private boolean tvBackArmed;
+    private final android.os.Handler tvUi=new android.os.Handler(android.os.Looper.getMainLooper());
+    private final Runnable armTvBack=()->{if(tvPlayer)tvBackArmed=true;};
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
@@ -79,10 +81,10 @@ public class BrowserPlayerActivity extends Activity {
     private String tvDirection(int key){switch(key){case KeyEvent.KEYCODE_DPAD_LEFT:return "left";case KeyEvent.KEYCODE_DPAD_RIGHT:return "right";case KeyEvent.KEYCODE_DPAD_UP:return "up";case KeyEvent.KEYCODE_DPAD_DOWN:return "down";case KeyEvent.KEYCODE_DPAD_CENTER:case KeyEvent.KEYCODE_ENTER:return "ok";default:return null;}}
     private void sendTvNavigation(String direction,int attempt){
         if(web==null||direction==null)return;
-        String script="(function(){try{var a=document.activeElement;if(a&&((a.tagName==='INPUT'&&a.type==='range')||a.getAttribute('role')==='slider'))a.blur();if(typeof window.__zeroTvNavigate==='function'){window.__zeroTvNavigate('"+direction+"');document.querySelectorAll('iframe').forEach(function(f){try{f.contentWindow.postMessage({type:'zerostreams-tv-nav',direction:'"+direction+"'},'*')}catch(_){}});return true;}return false;}catch(e){return false;}})();";
+        String script="(function(){try{var a=document.activeElement;if(a&&((a.tagName==='INPUT'&&a.type==='range')||a.getAttribute('role')==='slider'))a.blur();if(typeof window.__zeroTvNavigate==='function'){window.__zeroTvNavigate('"+direction+"');return true;}return false;}catch(e){return false;}})();";
         web.evaluateJavascript(script,value->{
-            if("true".equals(value)||attempt>=2||web==null)return;
-            web.postDelayed(()->sendTvNavigation(direction,attempt+1),90L*(attempt+1));
+            if("true".equals(value)||attempt>=3||web==null)return;
+            web.postDelayed(()->sendTvNavigation(direction,attempt+1),110L*(attempt+1));
         });
     }
     @Override public boolean dispatchKeyEvent(KeyEvent event){
@@ -99,6 +101,7 @@ public class BrowserPlayerActivity extends Activity {
                 if(!activate&&event.getAction()==KeyEvent.ACTION_DOWN){long now=android.os.SystemClock.elapsedRealtime();if(event.getRepeatCount()>0&&now-lastTvNavAt<180)return true;lastTvNavAt=now;}
                 boolean fire=(activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN);
                 if(fire&&direction!=null){if(activate)lastPlayerGesture=android.os.SystemClock.elapsedRealtime();sendTvNavigation(direction,0);}
+                // Consume every player navigation key here. VidStuck/VidSrc use raw LEFT/RIGHT as seek shortcuts.
                 return true;
             }
         }else if(event.getAction()==KeyEvent.ACTION_DOWN&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN){backState.userActivity();}
@@ -106,11 +109,11 @@ public class BrowserPlayerActivity extends Activity {
     }
 
     private void wakeControls(){
-        if(tvPlayer)tvBackArmed=false;
+        if(tvPlayer){tvBackArmed=false;tvUi.removeCallbacks(armTvBack);tvUi.postDelayed(armTvBack,3400);}
         if(web!=null){web.requestFocus();web.evaluateJavascript("document.documentElement.classList.remove('zero-back-hide','zero-player-idle');if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();window.postMessage({type:'zerostreams-remote-active'},'*');document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-remote-active'},'*')}catch(_){}});",null);}
     }
     private void forceHideTvControls(){
-        tvBackArmed=true;
+        tvUi.removeCallbacks(armTvBack);tvBackArmed=true;
         if(mouse!=null)mouse.stop();
         if(web!=null)web.evaluateJavascript("document.documentElement.classList.add('zero-back-hide','zero-player-idle');if(window.__zeroHidePlayerControls)window.__zeroHidePlayerControls();if(window.__zeroDismissMenus)window.__zeroDismissMenus();document.querySelectorAll('iframe').forEach(f=>{try{f.contentWindow.postMessage({type:'zerostreams-back-hide'},'*')}catch(_){}});",null);
     }
@@ -149,5 +152,5 @@ public class BrowserPlayerActivity extends Activity {
 
     @Override protected void onPause(){if(mouse!=null)mouse.stop();if(adScan!=null)adScan.stop();if(web!=null){CookieManager.getInstance().flush();web.onPause();}super.onPause();}
     @Override protected void onResume(){super.onResume();if(web!=null)web.onResume();if(adScan!=null)adScan.start();if(tvPlayer)wakeControls();}
-    @Override protected void onDestroy(){if(mouse!=null)mouse.stop();if(adScan!=null)adScan.destroy();if(web!=null){web.stopLoading();web.destroy();}super.onDestroy();}
+    @Override protected void onDestroy(){tvUi.removeCallbacksAndMessages(null);if(mouse!=null)mouse.stop();if(adScan!=null)adScan.destroy();if(web!=null){web.stopLoading();web.destroy();}super.onDestroy();}
 }
