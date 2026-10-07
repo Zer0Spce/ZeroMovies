@@ -7,6 +7,22 @@ import java.util.*;
 
 /** Final card presentation layer shared by Android phone, tablet and TV. */
 public class PresentationMainActivity extends CategoryMainActivity {
+    /**
+     * The v1.9 TV build relied on Android's own focus dispatcher. Later 2.0 layers
+     * added a MainActivity dispatchKeyEvent override that attempted to keep focus
+     * inside content rows and made home navigation feel much worse. Bypass that
+     * override on TV and dispatch exactly through the Activity/Window path again.
+     */
+    @Override public boolean dispatchKeyEvent(KeyEvent event){
+        if(!BuildConfig.TV)return super.dispatchKeyEvent(event);
+        onUserInteraction();
+        Window window=getWindow();
+        if(window!=null&&window.superDispatchKeyEvent(event))return true;
+        View decor=window==null?null:window.getDecorView();
+        KeyEvent.DispatcherState state=decor==null?null:decor.getKeyDispatcherState();
+        return event.dispatch(this,state,this);
+    }
+
     @Override LinearLayout card(Catalog.Item item,int token){
         LinearLayout card=super.card(item,token);
         boolean portrait=classicLayout()||flixLayout()||googleLayout();
