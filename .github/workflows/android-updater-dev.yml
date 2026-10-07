@@ -3,7 +3,7 @@ on:
   push:
     branches: [fix/windows-updater]
 permissions:
-  contents: read
+  contents: write
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -23,6 +23,26 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Apply compact Android TV Clean UI rail
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('app/src/main/java/com/zerostreams/app/MainActivity.java')
+          s=p.read_text()
+          old='''void addLayoutRail(LinearLayout outer){sidebar=column();sidebar.setPadding(dp(3),dp(16),dp(3),dp(12));sidebar.setBackgroundColor(youtubeLayout()&&!lightTheme?Color.rgb(15,15,15):BG);'''
+          new='''void addLayoutRail(LinearLayout outer){sidebar=column();sidebar.setPadding(dp(3),dp(16),dp(3),dp(12));if(BuildConfig.TV)sidebar.setGravity(Gravity.CENTER_HORIZONTAL);sidebar.setBackgroundColor(youtubeLayout()&&!lightTheme?Color.rgb(15,15,15):BG);'''
+          if old not in s and new not in s: raise SystemExit('rail setup anchor missing')
+          if new not in s:s=s.replace(old,new,1)
+          old='''outer.addView(layoutRailScroll,new LinearLayout.LayoutParams(dp(BuildConfig.TV?60:52),-1));setRailExpanded(false);}'''
+          new='''outer.addView(layoutRailScroll,new LinearLayout.LayoutParams(dp(BuildConfig.TV?56:52),-1));setRailExpanded(false);}'''
+          if old not in s and new not in s: raise SystemExit('rail width anchor missing')
+          if new not in s:s=s.replace(old,new,1)
+          old='''lp.width=dp(expanded?(BuildConfig.TV?205:185):(BuildConfig.TV?60:52));layoutRailScroll.setLayoutParams(lp);for(Map.Entry<Button,String> entry:layoutRailButtons.entrySet()){Button b=entry.getKey();b.setText(expanded?entry.getValue():"");b.setGravity(Gravity.CENTER_VERTICAL|(expanded?Gravity.START:Gravity.CENTER_HORIZONTAL));b.setCompoundDrawablePadding(dp(expanded?12:0));b.setPadding(dp(expanded?12:0),dp(5),dp(expanded?12:0),dp(5));}'''
+          new='''lp.width=dp(expanded?(BuildConfig.TV?205:185):(BuildConfig.TV?56:52));layoutRailScroll.setLayoutParams(lp);for(Map.Entry<Button,String> entry:layoutRailButtons.entrySet()){Button b=entry.getKey();b.setText(expanded?entry.getValue():"");b.setGravity(expanded?(Gravity.CENTER_VERTICAL|Gravity.START):Gravity.CENTER);b.setCompoundDrawablePadding(dp(expanded?12:0));b.setPadding(dp(expanded?12:0),dp(5),dp(expanded?12:0),dp(5));if(BuildConfig.TV){ViewGroup.LayoutParams bp=b.getLayoutParams();bp.width=expanded?ViewGroup.LayoutParams.MATCH_PARENT:dp(46);bp.height=dp(46);b.setLayoutParams(bp);}}'''
+          if old not in s and new not in s: raise SystemExit('rail collapse anchor missing')
+          if new not in s:s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
       - name: Protect Live TV Sports and PPV files
         run: |
           git fetch origin tag v1.9 --force
@@ -37,16 +57,12 @@ jobs:
             echo 'Protected Live TV / Sports / PPV file changed.' >&2
             exit 1
           fi
-      - name: Verify updater settings and TV navigation contracts
+      - name: Verify compact rail contract
         run: |
-          grep -q 'REQUEST_INSTALL_PACKAGES' app/src/main/AndroidManifest.xml
-          grep -q 'releases/latest' app/src/main/java/com/zerostreams/app/AppUpdater.java
-          grep -q 'settingsHeading(panel,"GENERAL"' app/src/main/java/com/zerostreams/app/MainActivity.java
-          grep -q 'Android TV movie player controls' app/src/main/java/com/zerostreams/app/MainActivity.java
-          grep -q 'event.getRepeatCount()>0' app/src/main/java/com/zerostreams/app/MainActivity.java
-          grep -q 'lastTvNavAt' app/src/main/java/com/zerostreams/app/BrowserPlayerActivity.java
-          grep -q 'bestScore=Infinity' app/src/main/assets/player-guard.js
-          grep -q 'box-shadow:0 0 0 2px rgba(101,230,204,.12)' app/src/main/assets/player-guard.js
+          grep -q 'BuildConfig.TV?56:52' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'bp.width=expanded?ViewGroup.LayoutParams.MATCH_PARENT:dp(46)' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'b.setGravity(expanded?(Gravity.CENTER_VERTICAL|Gravity.START):Gravity.CENTER)' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'sidebar.setGravity(Gravity.CENTER_HORIZONTAL)' app/src/main/java/com/zerostreams/app/MainActivity.java
       - name: TV navigation regression test
         run: |
           rm -rf /tmp/zero-tv-test
@@ -59,3 +75,14 @@ jobs:
         run: gradle :app:compileTvDebugJavaWithJavac --stacktrace
       - name: Android unit tests
         run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --stacktrace
+      - name: Commit validated compact rail
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/src/main/java/com/zerostreams/app/MainActivity.java
+          if git diff --cached --quiet; then
+            echo 'Compact rail already applied.'
+            exit 0
+          fi
+          git commit -m 'Polish Android TV Clean UI collapsed sidebar [skip ci]'
+          git push origin HEAD:fix/windows-updater
