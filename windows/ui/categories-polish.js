@@ -108,4 +108,9 @@
   }
   new MutationObserver(polish).observe(document.body,{childList:true,subtree:true});
   polish();
+
+  // Keep the filmography implementation isolated while loading it as part of the desktop UI bundle.
+  if(!document.querySelector('script[data-zero-filmography]')){
+    const script=document.createElement('script');script.src='filmography-page.js';script.dataset.zeroFilmography='1';document.head.appendChild(script);
+  }
 })();
