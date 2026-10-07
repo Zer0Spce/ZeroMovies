@@ -11,7 +11,16 @@ async function run(){
   dom=page('<iframe id="frame" data-w="1024" data-h="768"></iframe>');let forwarded;const frame=dom.window.document.querySelector('iframe');frame.contentWindow.postMessage=data=>forwarded=data;dom.window.__zeroTvNavigate('left');assert.equal(forwarded.type,'zerostreams-tv-nav');assert.equal(forwarded.direction,'left');assert.equal(dom.window.document.activeElement,frame);dom.window.close();
   dom=page('<video></video><div id="component"></div>');const root=dom.window.document.getElementById('component').attachShadow({mode:'open'});root.innerHTML='<img id="painted" data-w="1024" data-h="768">';dom.window.__zeroDismissQrAd();assert.equal(root.getElementById('painted').style.display,'none','Native-confirmed painted QR advertisements inside open shadow DOM should be removed');assert.equal(dom.window.document.querySelector('video').style.display,'');dom.window.close();
   dom=page('<video></video><div class="plyr__controls" style="opacity:0;visibility:hidden;pointer-events:none;display:none" data-y="650" data-h="70"><button data-x="100">Play</button><button data-x="300">Volume</button></div>');const wake=dom.window,bar=wake.document.querySelector('.plyr__controls');wake.document.documentElement.classList.add("zero-player-idle");bar.style.opacity="0";assert.equal(wake.document.documentElement.classList.contains('zero-player-idle'),true);wake.__zeroTvNavigate('right');assert.equal(wake.document.documentElement.classList.contains('zero-player-idle'),false);assert.equal(wake.getComputedStyle(bar).opacity,'1');assert.equal(wake.getComputedStyle(bar).visibility,'visible');assert.notEqual(wake.getComputedStyle(bar).display,'none');assert.equal(wake.document.activeElement.textContent,'Play');wake.document.documentElement.classList.add("zero-player-idle");bar.style.opacity="0";assert.equal(bar.style.opacity,'0');wake.__zeroTvNavigate('ok');assert.equal(wake.getComputedStyle(bar).opacity,'1');dom.window.close();
+
+  const activityPath=process.env.ZERO_TV_ACTIVITY||'app/src/main/java/com/zerostreams/app/BrowserPlayerActivity.java';
+  const activity=fs.readFileSync(activityPath,'utf8');
+  assert.match(activity,/sendTvNavigation\(direction,0\)/,'TV Activity must route D-pad through the focus navigator');
+  assert.doesNotMatch(activity,/nativeTvFallback/,'Raw Android D-pad fallback must stay removed because providers treat LEFT\/RIGHT as seek');
+  assert.match(activity,/__zeroBackRequest/,'TV Back must query the real player controls\/menu state before exiting');
+  assert.match(activity,/if\(backPending\)return/,'Repeated Back presses must not race the player-state request');
+
   console.log('Idle/provider-hidden controls recover on arrows and OK');
   console.log('TV focus navigation, no arrow seeking, OK activation, embedded navigation, player Back and shadow QR checks passed');
+  console.log('Native TV activity routing keeps raw seek fallback removed and Back state-driven');
 }
 run().catch(error=>{console.error(error);process.exitCode=1;});
