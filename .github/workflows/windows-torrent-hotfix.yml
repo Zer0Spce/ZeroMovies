@@ -1,0 +1,69 @@
+name: Build Windows Torrent Hotfix
+
+on:
+  push:
+    branches: [hotfix/windows-torrent-engine]
+    paths:
+      - .github/workflows/windows-torrent-hotfix.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-hotfix:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      RAWCAST_API_KEY: ''
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+      - name: Install exact dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Verify bundled TMDB key is available
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:TMDB_API_KEY)) { throw 'TMDB_API_KEY secret is missing.' }
+      - name: Configure bundled TMDB key
+        run: npm run prepare-config
+      - name: Verify generated config has bundled key
+        shell: pwsh
+        run: |
+          $cfg = Get-Content generated-config.json -Raw | ConvertFrom-Json
+          if ([string]::IsNullOrWhiteSpace($cfg.tmdbKey)) { throw 'Bundled TMDB key was not written.' }
+          Write-Host 'Bundled TMDB key configured.'
+      - name: Verify WebTorrent 3 loads and starts
+        shell: pwsh
+        run: |
+          node --input-type=module -e "import WebTorrent from 'webtorrent'; const c=new WebTorrent({tracker:true,dht:true,lsd:true,utPex:true,utp:true}); if(!c) process.exit(1); console.log('WebTorrent engine OK'); await c.destroy();"
+      - name: Windows unit tests
+        run: npm test
+      - name: Verify live TMDB discovery and search
+        run: node scripts/tmdb-check.cjs
+      - name: Package portable Windows build
+        run: npm run build
+      - name: Audit packaged credentials
+        run: python ../scripts/audit-release-secrets.py dist generated-config.json
+      - name: Microsoft Defender scan
+        shell: pwsh
+        run: |
+          $scanner = (Get-ChildItem "$env:ProgramData\Microsoft\Windows Defender\Platform\*\MpCmdRun.exe" | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          if (-not $scanner) { throw 'Microsoft Defender scanner unavailable.' }
+          & $scanner -Scan -ScanType 3 -File "$pwd\dist\win-unpacked" -DisableRemediation
+          if ($LASTEXITCODE -ne 0) { throw "Microsoft Defender scan failed or detected a threat (exit $LASTEXITCODE)." }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-1.8.2-Windows-Torrent-Hotfix-TMDB
+          path: windows/dist/ZeroPlay-*.zip
+          if-no-files-found: error
+          retention-days: 3
