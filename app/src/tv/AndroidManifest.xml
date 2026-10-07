@@ -2,7 +2,7 @@
     <uses-feature android:name="android.software.leanback" android:required="true" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <application android:banner="@drawable/tv_banner">
-        <activity android:name=".ReleaseMainActivity" android:exported="true" android:banner="@drawable/tv_banner" android:screenOrientation="landscape">
+        <activity android:name=".CategoryMainActivity" android:exported="true" android:banner="@drawable/tv_banner" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
