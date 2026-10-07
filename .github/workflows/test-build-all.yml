@@ -1,0 +1,120 @@
+name: Pre-release Test Build All
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-build-all.yml'
+permissions:
+  contents: read
+jobs:
+  android:
+    name: Android + Android TV test packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify player rules and navigation
+        env:
+          NODE_PATH: /tmp/zero-qr-tests/node_modules
+          ZERO_GUARD_PATH: app/src/main/assets/player-guard.js
+        run: |
+          mkdir -p /tmp/zero-rule-tests
+          javac -d /tmp/zero-rule-tests app/src/main/java/com/zerostreams/app/AdBlockRules.java app/src/main/java/com/zerostreams/app/TitleSearch.java app/src/main/java/com/zerostreams/app/ProgressRules.java tests/PlayerRulesTest.java tests/ProgressRulesTest.java
+          java -cp /tmp/zero-rule-tests com.zerostreams.app.PlayerRulesTest
+          java -cp /tmp/zero-rule-tests com.zerostreams.app.ProgressRulesTest
+          npm install --prefix /tmp/zero-qr-tests --no-audit --no-fund jsdom@24.1.3
+          node tests/player-guard.test.cjs
+          node tests/tv-navigation.test.cjs
+      - name: Android unit tests
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --no-daemon
+      - name: Android lint
+        run: gradle --continue :app:lintMobileDebug :app:lintTvDebug --no-daemon
+      - name: Build signed Android test APKs
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/zeroplay-release.jks"
+          trap 'rm -f "$ANDROID_KEYSTORE_FILE"' EXIT
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_FILE"
+          chmod 600 "$ANDROID_KEYSTORE_FILE"
+          gradle :app:assembleMobileRelease :app:assembleTvRelease --no-daemon
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/mobile/release/app-mobile-release.apk
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/tv/release/app-tv-release.apk
+          cp app/build/outputs/apk/mobile/release/app-mobile-release.apk ZeroPlay-PreRelease-Fixes-1-23-Android.apk
+          cp app/build/outputs/apk/tv/release/app-tv-release.apk ZeroPlay-PreRelease-Fixes-1-23-AndroidTV.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-PreRelease-Android-Fixes-1-23
+          path: |
+            ZeroPlay-PreRelease-Fixes-1-23-Android.apk
+            ZeroPlay-PreRelease-Fixes-1-23-AndroidTV.apk
+          if-no-files-found: error
+
+  windows:
+    name: Windows portable test package
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - name: Windows tests
+        run: npm test
+      - name: Desktop regression checks
+        run: |
+          npm install --prefix ../ui-test-deps --no-audit --no-fund jsdom@24.1.3
+          $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
+          node scripts/ui-check.cjs
+          node scripts/live-compat-check.cjs
+          node scripts/player-exit-check.cjs
+          $env:ZERO_GUARD_PATH = "assets/player-guard.js"
+          node ../tests/player-guard.test.cjs
+      - name: Configure bundled services
+        run: npm run prepare-config
+      - name: Verify TMDB discovery
+        run: node scripts/tmdb-check.cjs
+      - name: Windows smoke test
+        run: npx electron . --smoke-test
+      - name: Build portable ZIP
+        run: npm run build
+      - name: Rename test ZIP
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem dist\ZeroPlay-*.zip | Select-Object -First 1
+          if (-not $zip) { throw 'Windows portable ZIP not found' }
+          Copy-Item $zip.FullName dist\ZeroPlay-PreRelease-Fixes-1-23-Windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-PreRelease-Windows-Fixes-1-23
+          path: windows/dist/ZeroPlay-PreRelease-Fixes-1-23-Windows-x64.zip
+          if-no-files-found: error
