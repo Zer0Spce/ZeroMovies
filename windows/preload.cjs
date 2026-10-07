@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld('zero',{
   checkForUpdates:()=>ipcRenderer.invoke('update-check'),
   onRefresh:callback=>{const handler=()=>callback();ipcRenderer.on('refresh',handler);return()=>ipcRenderer.removeListener('refresh',handler);}
 });
+function loadSettingsStyles(){if(document.querySelector('link[data-zero-settings]'))return;const link=document.createElement('link');link.rel='stylesheet';link.href='settings-groups.css';link.dataset.zeroSettings='1';document.head.appendChild(link);}
 function organizeSettings(){
   const body=document.querySelector('#settings .settings-body');if(!body||body.dataset.organized==='1')return;body.dataset.organized='1';
   const saveActions=body.querySelector('.actions');
@@ -51,6 +52,6 @@ function organizeSettings(){
   if(saveActions){saveActions.classList.add('settings-save-actions');body.appendChild(saveActions);}
 }
 window.addEventListener('DOMContentLoaded',()=>{
-  organizeSettings();
+  loadSettingsStyles();organizeSettings();
   const surprise=document.querySelector('[data-action="surprise"]');if(!surprise||document.querySelector('[data-action="check-updates"]'))return;const button=document.createElement('button');button.className='icon';button.dataset.action='check-updates';button.type='button';button.title='Check for updates';button.setAttribute('aria-label','Check for updates');button.textContent='⇩';surprise.insertAdjacentElement('afterend',button);button.addEventListener('click',async()=>{const old=button.textContent;button.disabled=true;button.textContent='…';try{const result=await ipcRenderer.invoke('update-check');if(result?.status==='current'){button.textContent='✓';button.title='ZeroPlay is up to date';setTimeout(()=>{if(button.isConnected){button.textContent=old;button.title='Check for updates';}},2200);}else button.textContent=old;}catch{button.textContent='!';button.title='Could not check for updates';setTimeout(()=>{if(button.isConnected){button.textContent=old;button.title='Check for updates';}},2500);}finally{button.disabled=false;}});
 });
