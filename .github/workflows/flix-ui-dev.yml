@@ -1,0 +1,248 @@
+name: Flix UI Development
+on:
+  push:
+    branches: [fix/windows-updater]
+permissions:
+  contents: write
+jobs:
+  patch-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply Flix UI
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def rep(s, old, new, label):
+              if new in s:
+                  return s
+              if old not in s:
+                  raise SystemExit(f'{label} anchor missing')
+              return s.replace(old, new, 1)
+
+          p=Path('app/src/main/java/com/zerostreams/app/MainActivity.java')
+          s=p.read_text()
+          s=rep(s,
+            'if(youtubeLayout())addLayoutRail(outer);',
+            'if(youtubeLayout())addLayoutRail(outer);if(flixLayout()&&BuildConfig.TV)addFlixRail(outer);',
+            'android flix rail hook')
+          s=rep(s,
+            'if(!(googleLayout()&&BuildConfig.TV))body.addView(header);if(googleLayout())addGoogleNavigation(body);',
+            'if(!((googleLayout()||flixLayout())&&BuildConfig.TV))body.addView(header);if(googleLayout())addGoogleNavigation(body);',
+            'android flix header hook')
+          s=rep(s,
+            'if(googleLayout()&&BuildConfig.TV&&!category.equals("Search"))searchRow.setVisibility(View.GONE);',
+            'if((googleLayout()||flixLayout())&&BuildConfig.TV&&!category.equals("Search"))searchRow.setVisibility(View.GONE);',
+            'android flix search hook')
+          s=rep(s,
+            'content=column();content.setPadding(dp(BuildConfig.TV?(googleLayout()?16:30):20),dp(googleLayout()&&BuildConfig.TV?4:14),dp(googleLayout()&&BuildConfig.TV?16:20),dp(28));',
+            'content=column();content.setPadding(dp(BuildConfig.TV?(flixLayout()?0:googleLayout()?16:30):20),dp((googleLayout()||flixLayout())&&BuildConfig.TV?0:14),dp(BuildConfig.TV?(flixLayout()?0:googleLayout()?16:20):20),dp(28));',
+            'android flix content padding')
+          s=rep(s,
+            'tvAtmosphere.setAlpha(googleLayout()?.76f:.35f);',
+            'tvAtmosphere.setAlpha(flixLayout()?0f:googleLayout()?.76f:.35f);',
+            'android flix atmosphere')
+          s=rep(s,
+            'veil.setBackgroundColor(googleLayout()?tint(0x88):tint(0xC8));',
+            'veil.setBackgroundColor(flixLayout()?Color.TRANSPARENT:googleLayout()?tint(0x88):tint(0xC8));',
+            'android flix veil')
+          s=rep(s,
+            'String layoutDisplay(String id){return id.equals("youtube")?"Clean UI":id.equals("google")?"Modern UI":"Native / Original UI";}',
+            'String layoutDisplay(String id){return id.equals("youtube")?"Clean UI":id.equals("google")?"Modern UI":id.equals("flix")?"Flix UI":"Native / Original UI";}',
+            'android layout display')
+          s=rep(s,
+            'void layoutPicker(Button field){String[] ids={"youtube","google","classic"};String[] labels={"Clean UI","Modern UI","Native / Original UI"};',
+            'void layoutPicker(Button field){String[] ids={"youtube","google","flix","classic"};String[] labels={"Clean UI","Modern UI","Flix UI","Native / Original UI"};',
+            'android layout picker')
+          s=rep(s,
+            'String layoutStyle(){String fallback=BuildConfig.TV?"classic":"google";String name=prefs.getString("uiLayout",fallback);return Arrays.asList("youtube","google","classic").contains(name)?name:fallback;}\n    boolean youtubeLayout(){return layoutStyle().equals("youtube");}boolean googleLayout(){return layoutStyle().equals("google");}boolean classicLayout(){return layoutStyle().equals("classic");}',
+            'String layoutStyle(){String fallback=BuildConfig.TV?"classic":"google";String name=prefs.getString("uiLayout",fallback);return Arrays.asList("youtube","google","flix","classic").contains(name)?name:fallback;}\n    boolean youtubeLayout(){return layoutStyle().equals("youtube");}boolean googleLayout(){return layoutStyle().equals("google");}boolean flixLayout(){return layoutStyle().equals("flix");}boolean classicLayout(){return layoutStyle().equals("classic");}',
+            'android layout allowlist')
+          anchor='    void addGoogleNavigation(LinearLayout body){\n'
+          if 'void addFlixRail(LinearLayout outer)' not in s:
+              if anchor not in s: raise SystemExit('android flix rail insertion anchor missing')
+              method='''    void addFlixRail(LinearLayout outer){\n        LinearLayout rail=column();sidebar=rail;rail.setGravity(Gravity.CENTER_HORIZONTAL);rail.setPadding(dp(5),dp(22),dp(5),dp(14));rail.setBackgroundColor(Color.rgb(8,8,8));\n        TextView mark=text("Z",25,ACCENT);bold(mark);mark.setGravity(Gravity.CENTER);mark.setFocusable(true);mark.setClickable(true);mark.setContentDescription("ZeroPlay home");mark.setOnClickListener(v->open("Home"));rail.addView(mark,new LinearLayout.LayoutParams(dp(48),dp(52)));space(rail,18);\n        for(String tab:new String[]{"Search","Home","Series","Movies","LiveTV","IPTV","Live Sports","Downloads","Library","Settings"}){Button b=button("",()->layoutOpen(tab));b.setContentDescription(layoutLabel(tab));b.setCompoundDrawablesWithIntrinsicBounds(new LayoutIcon(this,tab,Color.WHITE),null,null,null);b.setGravity(Gravity.CENTER);b.setPadding(0,0,0,0);b.setBackground(shape(Color.TRANSPARENT,0));b.setOnFocusChangeListener((v,f)->{b.setBackground(shape(f?Color.rgb(38,38,38):Color.TRANSPARENT,f?ACCENT:0));if(prefs.getBoolean("uiAnimations",true))b.animate().scaleX(f?1.08f:1f).scaleY(f?1.08f:1f).setDuration(110).start();});if(!tab.equals("Settings")&&!tab.equals("Library")&&!tab.equals("Search"))navigation.put(tab,b);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(dp(48),dp(48));lp.setMargins(0,0,0,dp(7));rail.addView(b,lp);}\n        ScrollView railScroll=new ScrollView(this);railScroll.setFillViewport(true);railScroll.setVerticalScrollBarEnabled(false);railScroll.addView(rail);outer.addView(railScroll,new LinearLayout.LayoutParams(dp(60),-1));\n    }\n\n'''
+              s=s.replace(anchor, method+anchor, 1)
+          s=rep(s,
+            'if(googleLayout()&&BuildConfig.TV)return;',
+            'if((googleLayout()||flixLayout())&&BuildConfig.TV)return;',
+            'android flix clock')
+          s=rep(s,
+            'if(googleLayout()&&BuildConfig.TV&&search!=null&&search.getParent() instanceof View)((View)search.getParent()).setVisibility(View.VISIBLE);',
+            'if((googleLayout()||flixLayout())&&BuildConfig.TV&&search!=null&&search.getParent() instanceof View)((View)search.getParent()).setVisibility(View.VISIBLE);',
+            'android flix focus search')
+          s=rep(s,
+            'if(googleLayout()&&BuildConfig.TV&&search!=null&&search.getParent() instanceof View)((View)search.getParent()).setVisibility(View.GONE);',
+            'if((googleLayout()||flixLayout())&&BuildConfig.TV&&search!=null&&search.getParent() instanceof View)((View)search.getParent()).setVisibility(View.GONE);',
+            'android flix open search')
+          s=rep(s,
+            'FrameLayout hero=new FrameLayout(this);hero.setBackground(shape(SURFACE,0));hero.setClipToOutline(true);',
+            'FrameLayout hero=new FrameLayout(this);hero.setBackground(shape(SURFACE,0));hero.setClipToOutline(!flixLayout());',
+            'android flix hero clipping')
+          s=rep(s,
+            'View bottom=new View(this);bottom.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{tint(0x00),tint(0xEE)}));hero.addView(bottom,new FrameLayout.LayoutParams(-1,-1));',
+            'View bottom=new View(this);bottom.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{tint(0x00),tint(flixLayout()?0xFA:0xEE)}));hero.addView(bottom,new FrameLayout.LayoutParams(-1,-1));if(flixLayout())shade.setBackground(new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,new int[]{Color.argb(245,0,0,0),Color.argb(190,0,0,0),Color.argb(40,0,0,0)}));',
+            'android flix hero gradient')
+          s=rep(s,
+            'TextView title=text("",BuildConfig.TV?(googleLayout()?50:37):googleLayout()?36:29,INK);',
+            'TextView title=text("",BuildConfig.TV?(flixLayout()?58:googleLayout()?50:37):flixLayout()?40:googleLayout()?36:29,INK);',
+            'android flix hero title')
+          s=rep(s,
+            'TextView description=text("",googleLayout()?15:14,MUTED);',
+            'TextView description=text("",flixLayout()?16:googleLayout()?15:14,flixLayout()?Color.rgb(235,235,235):MUTED);',
+            'android flix hero description')
+          s=rep(s,
+            'content.addView(hero,new LinearLayout.LayoutParams(-1,googleLayout()?dp(BuildConfig.TV?570:470):dp(440)));space(content,googleLayout()?8:24);',
+            'int flixHeroHeight=BuildConfig.TV?Math.max(dp(520),getResources().getDisplayMetrics().heightPixels-dp(56)):dp(520);content.addView(hero,new LinearLayout.LayoutParams(-1,flixLayout()?flixHeroHeight:googleLayout()?dp(BuildConfig.TV?570:470):dp(440)));space(content,(googleLayout()||flixLayout())?8:24);',
+            'android flix hero height')
+          s=rep(s,
+            'new LinearLayout.LayoutParams(dp(classicLayout()?(BuildConfig.TV?150:132):(BuildConfig.TV?260:220)),-2)',
+            'new LinearLayout.LayoutParams(dp((classicLayout()||flixLayout())?(BuildConfig.TV?150:132):(BuildConfig.TV?260:220)),-2)',
+            'android flix row cards')
+          s=rep(s,
+            'FrameLayout posterFrame=new PosterFrame(this,classicLayout()?1.5f:9f/16f);',
+            'FrameLayout posterFrame=new PosterFrame(this,(classicLayout()||flixLayout())?1.5f:9f/16f);',
+            'android flix portrait cards')
+          s=rep(s,
+            'String tileArt=classicLayout()?item.poster:item.raw.optString("backdrop",item.poster);',
+            'String tileArt=(classicLayout()||flixLayout())?item.poster:item.raw.optString("backdrop",item.poster);',
+            'android flix poster artwork')
+          p.write_text(s)
+
+          p=Path('windows/ui/index.html');s=p.read_text()
+          s=rep(s,'<option value="google">Modern UI</option><option value="classic">Native / Original UI</option>', '<option value="google">Modern UI</option><option value="flix">Flix UI</option><option value="classic">Native / Original UI</option>', 'windows layout option')
+          p.write_text(s)
+
+          p=Path('windows/ui/layouts.js');s=p.read_text()
+          s=rep(s,"['youtube','google','classic'].includes(value)","['youtube','google','flix','classic'].includes(value)",'windows layout allowlist')
+          p.write_text(s)
+
+          p=Path('windows/main.cjs');s=p.read_text()
+          s=rep(s,"uiLayout:['youtube','google','classic'].includes(value.uiLayout)?value.uiLayout:'youtube'","uiLayout:['youtube','google','flix','classic'].includes(value.uiLayout)?value.uiLayout:'youtube'",'windows settings allowlist')
+          s=rep(s,"for(const layout of ['youtube','google','classic'])","for(const layout of ['youtube','google','flix','classic'])",'windows smoke layouts')
+          s=rep(s,"expected=layout==='classic'?160:layout==='google'?280:260,ratio=layout==='classic'?1.5:9/16","expected=layout==='classic'?160:layout==='flix'?200:layout==='google'?280:260,ratio=(layout==='classic'||layout==='flix')?1.5:9/16",'windows smoke geometry')
+          p.write_text(s)
+
+          p=Path('windows/ui/app.js');s=p.read_text()
+          s=rep(s,"const img=landscape||state.settings.uiLayout!=='classic'?(item.backdrop||item.poster):item.poster;","const img=landscape||!['classic','flix'].includes(state.settings.uiLayout)?(item.backdrop||item.poster):item.poster;",'windows flix poster artwork')
+          p.write_text(s)
+
+          p=Path('windows/ui/layouts.css');s=p.read_text()
+          marker='/* 2.0 Flix UI */'
+          if marker not in s:
+              s += r'''
+
+/* 2.0 Flix UI */
+:root[data-layout="flix"]{--flix-bg:#080808}
+:root[data-layout="flix"] body{background:var(--flix-bg)}
+:root[data-layout="flix"] #ui-atmosphere{display:none}
+:root[data-layout="flix"] aside{position:sticky;top:0;width:100%;height:70px;bottom:auto;display:flex;flex-direction:row;align-items:center;gap:6px;padding:10px 34px;border:0;background:linear-gradient(180deg,#080808 15%,#080808e8 62%,transparent);z-index:20;overflow-x:auto;scrollbar-width:none}
+:root[data-layout="flix"] aside::-webkit-scrollbar{display:none}
+:root[data-layout="flix"] aside .brand{display:block;flex:0 0 auto;margin:0 24px 0 0;color:var(--mint);font-size:22px;font-weight:900;letter-spacing:.04em}
+:root[data-layout="flix"] aside .brand span{color:var(--ink)}
+:root[data-layout="flix"] aside .brand small,:root[data-layout="flix"] .nav-label,:root[data-layout="flix"] .rail-bottom,:root[data-layout="flix"] .layout-menu,:root[data-layout="flix"] .nav-icon{display:none}
+:root[data-layout="flix"] aside button{flex:0 0 auto;min-height:42px;padding:8px 14px;border:0;border-radius:7px;background:transparent;color:#d7d7d7;font-size:14px;font-weight:600}
+:root[data-layout="flix"] aside button:hover,:root[data-layout="flix"] aside button:focus-visible{background:#ffffff18;color:#fff;outline:2px solid color-mix(in srgb,var(--mint) 78%,white);outline-offset:1px}
+:root[data-layout="flix"] aside button.active{background:#ffffff26;color:#fff}
+:root[data-layout="flix"] aside [data-nav="Home"]{order:1}:root[data-layout="flix"] aside [data-nav="Series"]{order:2}:root[data-layout="flix"] aside [data-nav="Movies"]{order:3}:root[data-layout="flix"] aside [data-nav="IPTV"]{order:4}:root[data-layout="flix"] aside [data-nav="LiveTV"]{order:5}:root[data-layout="flix"] aside [data-nav="Live Sports"]{order:6}:root[data-layout="flix"] aside [data-nav="Downloads"]{order:7}:root[data-layout="flix"] aside [data-nav="Library"]{order:8}:root[data-layout="flix"] aside [data-nav="Search"]{order:9}:root[data-layout="flix"] aside [data-nav="Categories"]{order:10}:root[data-layout="flix"] aside [data-action="settings"]{order:11}
+:root[data-layout="flix"] main{margin:0;padding:0 0 38px;background:var(--flix-bg);max-width:none}
+:root[data-layout="flix"] main>header{position:absolute;right:26px;top:12px;z-index:22;margin:0;gap:8px;background:transparent}
+:root[data-layout="flix"] main>header>div:first-child,:root[data-layout="flix"] main>header #search-form{display:none}
+:root[data-layout="flix"] main>header button{background:#141414cc;border-color:#ffffff24}
+:root[data-layout="flix"] #status{position:absolute;top:74px;left:42px;z-index:16;color:#bbb;background:#0007;border-radius:999px;padding:5px 10px;font-size:11px}
+:root[data-layout="flix"] #content{padding:0}
+:root[data-layout="flix"] .hero{height:calc(100vh - 70px);min-height:560px;max-height:860px;border-radius:0;margin:0;background:#080808;box-shadow:none;overflow:hidden}
+:root[data-layout="flix"] .hero-art{width:100%;height:100%;object-fit:cover;object-position:center 22%;opacity:1}
+:root[data-layout="flix"] .hero-shade{background:linear-gradient(90deg,#080808 0%,#080808f3 14%,#080808b8 35%,transparent 69%),linear-gradient(0deg,#080808 0%,#080808b8 14%,transparent 46%)}
+:root[data-layout="flix"] .hero-content{width:min(720px,48vw);height:100%;padding:clamp(90px,15vh,150px) 0 94px 8.2vw;display:flex;flex-direction:column;justify-content:center}
+:root[data-layout="flix"] .hero .eyebrow{color:var(--mint);font-size:12px;font-weight:900;letter-spacing:.18em}
+:root[data-layout="flix"] .hero h2{font-size:clamp(56px,6vw,92px);line-height:.92;letter-spacing:-.055em;margin:14px 0 16px;max-width:680px;max-height:none;text-shadow:0 4px 28px #000a}
+:root[data-layout="flix"] .hero .badges{font-size:15px;color:#f1f1f1}
+:root[data-layout="flix"] .hero-content>p{height:auto;max-width:620px;margin:14px 0 18px;color:#f0f0f0;font-size:clamp(16px,1.35vw,20px);line-height:1.5;-webkit-line-clamp:3}
+:root[data-layout="flix"] .hero .detail-heading>.watch-actions{display:none}
+:root[data-layout="flix"] .hero .actions{display:flex;gap:10px;margin-top:4px}
+:root[data-layout="flix"] .hero .actions button{min-height:48px;padding:11px 22px;border-radius:6px;font-size:16px;font-weight:800}
+:root[data-layout="flix"] .hero .actions .primary{background:#fff;color:#111;border-color:#fff}
+:root[data-layout="flix"] .hero .actions button[data-action="source"]{display:none}
+:root[data-layout="flix"] .hero .actions button[data-favorite]{background:#6d6d6dcc;color:#fff;border-color:transparent}
+:root[data-layout="flix"] .hero-controls{margin-top:18px;opacity:.8}
+:root[data-layout="flix"] .ranked{display:none}
+:root[data-layout="flix"] .hero+.row-section{margin-top:-106px;position:relative;z-index:5}
+:root[data-layout="flix"] .row-section{position:relative;z-index:5;padding:0 0 0 3.2vw;margin:0 0 26px}
+:root[data-layout="flix"] .section-head{padding-right:3vw}
+:root[data-layout="flix"] .section-head h3{font-size:21px;color:#f5f5f5;font-weight:800}
+:root[data-layout="flix"] .section-head small{display:none}
+:root[data-layout="flix"] .cards{display:flex;gap:8px;overflow-x:auto;padding:8px 3vw 18px 0;scrollbar-width:none}
+:root[data-layout="flix"] .cards::-webkit-scrollbar{display:none}
+:root[data-layout="flix"] .cards .card{width:200px;min-width:200px;max-width:200px;flex:0 0 200px;padding:0;background:transparent;color:#fff;transition:transform .16s,filter .16s}
+:root[data-layout="flix"] .cards .card img,:root[data-layout="flix"] .cards .poster-empty{width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border-radius:6px}
+:root[data-layout="flix"] .card-art{border-radius:6px;overflow:hidden}
+:root[data-layout="flix"] .card-title,:root[data-layout="flix"] .card>small{display:none}
+:root[data-layout="flix"] .thumb-copy{background:linear-gradient(0deg,#050505eb,transparent);padding:44px 10px 10px}
+:root[data-layout="flix"] .card:focus-visible,:root[data-layout="flix"] .card:hover{outline:3px solid #fff;outline-offset:3px;transform:scale(1.055);z-index:8}
+:root[data-layout="flix"] .grid{padding:28px 3.2vw;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px 10px}
+:root[data-layout="flix"] .grid .card img{aspect-ratio:2/3}
+:root[data-layout="flix"] footer{padding:20px 3.2vw;color:#777}
+@media(max-width:900px){:root[data-layout="flix"] aside{padding:8px 14px;height:62px}:root[data-layout="flix"] aside .brand{font-size:18px;margin-right:12px}:root[data-layout="flix"] aside button{padding:7px 10px}:root[data-layout="flix"] main>header{display:none}:root[data-layout="flix"] .hero{height:72vh;min-height:460px}:root[data-layout="flix"] .hero-content{width:72%;padding-left:5vw}:root[data-layout="flix"] .hero h2{font-size:48px}:root[data-layout="flix"] .cards .card{width:155px;min-width:155px;max-width:155px;flex-basis:155px}}
+'''
+              p.write_text(s)
+          PY
+      - name: Protect Live TV Sports and PPV files
+        run: |
+          git fetch origin tag v1.9 --force
+          git diff --exit-code v1.9 -- \
+            app/src/main/java/com/zerostreams/app/LivePlayerActivity.java \
+            app/src/main/java/com/zerostreams/app/SportsPlayerActivity.java \
+            app/src/main/java/com/zerostreams/app/PlaylistStore.java \
+            app/src/main/java/com/zerostreams/app/SportsStore.java \
+            app/src/main/java/com/zerostreams/app/LiveSportsStore.java \
+            windows/ui/live-player.html windows/ui/live-player.js windows/ui/live-player.css windows/live-preload.cjs
+      - name: Verify Flix UI contracts
+        run: |
+          grep -q 'Flix UI' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'void addFlixRail' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'boolean flixLayout()' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'value="flix">Flix UI' windows/ui/index.html
+          grep -q "'youtube','google','flix','classic'" windows/ui/layouts.js
+          grep -q '2.0 Flix UI' windows/ui/layouts.css
+          grep -q "layout==='flix'?200" windows/main.cjs
+      - name: JavaScript syntax
+        run: |
+          node --check windows/ui/app.js
+          node --check windows/ui/layouts.js
+          node --check windows/main.cjs
+      - name: Android Mobile compile
+        run: gradle :app:compileMobileDebugJavaWithJavac --stacktrace
+      - name: Android TV compile
+        run: gradle :app:compileTvDebugJavaWithJavac --stacktrace
+      - name: Android unit tests
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest --stacktrace
+      - name: Commit Flix UI
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/src/main/java/com/zerostreams/app/MainActivity.java windows/ui/index.html windows/ui/layouts.js windows/ui/layouts.css windows/ui/app.js windows/main.cjs
+          if git diff --cached --quiet; then
+            echo 'Flix UI already applied.'
+            exit 0
+          fi
+          git commit -m 'Add Flix UI layout inspired by cinematic streaming interfaces'
+          git push origin HEAD:fix/windows-updater
