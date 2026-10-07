@@ -233,7 +233,13 @@
         const ranked=nodes.filter(node=>node!==current).map(node=>{const r=node.getBoundingClientRect(),dx=r.left+r.width/2-x,dy=r.top+r.height/2-y;const primary=direction==='left'?-dx:direction==='right'?dx:direction==='up'?-dy:dy;const side=(direction==='left'||direction==='right')?Math.abs(dy):Math.abs(dx);return {node,primary,score:primary+side*3};}).filter(row=>row.primary>2).sort((a,b)=>a.score-b.score);
         if(ranked.length){focus(ranked[0].node);if(ranked[0].node.tagName==='IFRAME')try{ranked[0].node.contentWindow.postMessage({type:'zerostreams-tv-nav',direction},'*');}catch(_){}return;}
         if(window.parent!==window){window.parent.postMessage({type:'zerostreams-tv-nav-edge',direction},'*');return;}
-        const index=nodes.indexOf(current),step=(direction==='left'||direction==='up')?-1:1;focus(nodes[(index+step+nodes.length)%nodes.length]);
+        const origin=current.getBoundingClientRect(),ox=(origin.left+origin.right)/2,oy=(origin.top+origin.bottom)/2;
+        const horizontal=direction==='left'||direction==='right',sign=(direction==='left'||direction==='up')?-1:1;
+        let best=null,bestScore=Infinity;
+        for(const node of nodes){if(node===current)continue;const r=node.getBoundingClientRect(),x=(r.left+r.right)/2,y=(r.top+r.bottom)/2,primary=horizontal?(x-ox)*sign:(y-oy)*sign;if(primary<=3)continue;const cross=Math.abs(horizontal?y-oy:x-ox);const overlap=horizontal?Math.max(0,Math.min(origin.bottom,r.bottom)-Math.max(origin.top,r.top)):Math.max(0,Math.min(origin.right,r.right)-Math.max(origin.left,r.left));const score=primary+cross*(overlap>0?.35:1.35);if(score<bestScore){bestScore=score;best=node;}}
+        if(best){focus(best);return;}
+        // No wraparound. Embedded frames may ask their parent to continue, otherwise stay put.
+        if(window.parent!==window)window.parent.postMessage({type:'zerostreams-tv-nav-edge',direction},'*');
       };
       window.addEventListener('message',event=>{
         const data=event.data;if(!data)return;
@@ -245,7 +251,7 @@
       document.addEventListener('keydown',event=>{const direction={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',Enter:'ok'}[event.key];if(!direction)return;event.preventDefault();event.stopImmediatePropagation();window.__zeroTvNavigate(direction);},true);
       document.addEventListener('keyup',event=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter'].includes(event.key)){event.preventDefault();event.stopImmediatePropagation();}},true);
       document.addEventListener('click',event=>{const node=event.composedPath().find(el=>el.matches&&el.matches('button,a,[role="button"]'))||event.target.closest('button,a,[role="button"]');if(!backButton(node))return;event.preventDefault();event.stopImmediatePropagation();exitPlayer();},true);
-      const style=document.createElement('style');style.textContent='.zero-tv-focused{outline:3px solid #65e6cc!important;outline-offset:3px!important;border-radius:5px!important}';
+      const style=document.createElement('style');style.textContent='.zero-tv-focused{outline:2px solid #65e6cc!important;outline-offset:3px!important;border-radius:7px!important;box-shadow:0 0 0 2px rgba(101,230,204,.12),0 0 16px rgba(101,230,204,.28)!important;filter:brightness(1.08)!important;transition:outline-color .12s,box-shadow .12s,filter .12s!important}';
       if(document.head)document.head.appendChild(style);else document.addEventListener('DOMContentLoaded',()=>document.head.appendChild(style),{once:true});
     }
     window.__zeroRemoteActivity = activity;
