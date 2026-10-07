@@ -18,7 +18,12 @@ public class FixedMainActivity extends MainActivity {
     private long surprisePendingUntil;
     private String surpriseDetailId="";
 
-    @Override public void onCreate(Bundle state){super.onCreate(state);getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(this::styleBranding);fixUi.post(this::styleBranding);}
+    @Override public void onCreate(Bundle state){
+        super.onCreate(state);
+        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(()->{styleBranding();compactModernTvUi();});
+        fixUi.post(this::styleBranding);
+        fixUi.postDelayed(this::compactModernTvUi,120);
+    }
 
     private void styleBranding(){styleBranding(getWindow().getDecorView());}
     private void styleBranding(View view){
@@ -39,8 +44,43 @@ public class FixedMainActivity extends MainActivity {
         for(int i=0;i<card.getChildCount();i++)if(card.getChildAt(i) instanceof MainActivity.PosterFrame){FrameLayout old=(FrameLayout)card.getChildAt(i);MainActivity.PosterFrame portrait=new MainActivity.PosterFrame(this,1.5f);while(old.getChildCount()>0){View child=old.getChildAt(0);old.removeViewAt(0);portrait.addView(child,child.getLayoutParams());if(child instanceof ImageView)picture(item.poster,(ImageView)child,token);}ViewGroup.LayoutParams lp=old.getLayoutParams();card.removeViewAt(i);card.addView(portrait,i,lp);break;}return card;
     }
 
+    private void compactModernTvUi(){
+        if(!BuildConfig.TV||!googleLayout())return;
+        compactModernTvUi(getWindow().getDecorView(),null);
+    }
+    private void compactModernTvUi(View view,HorizontalScrollView rail){
+        HorizontalScrollView activeRail=rail;
+        if(view instanceof HorizontalScrollView&&"Modern UI top navigation".contentEquals(view.getContentDescription())){
+            activeRail=(HorizontalScrollView)view;
+            ViewGroup.LayoutParams raw=view.getLayoutParams();
+            if(raw instanceof ViewGroup.MarginLayoutParams){ViewGroup.MarginLayoutParams p=(ViewGroup.MarginLayoutParams)raw;p.height=dp(54);p.leftMargin=dp(18);p.rightMargin=dp(18);p.topMargin=dp(8);p.bottomMargin=dp(5);view.setLayoutParams(p);}else if(raw!=null){raw.height=dp(54);view.setLayoutParams(raw);}
+            view.setPadding(dp(3),0,dp(3),0);
+        }
+        if(activeRail!=null){
+            if(view instanceof TextView){TextView t=(TextView)view;String text=String.valueOf(t.getText());if(text.equalsIgnoreCase("ZeroPlay")||text.equalsIgnoreCase("ZEROPLAY")){ViewGroup.LayoutParams lp=t.getLayoutParams();if(lp!=null){lp.width=dp(132);lp.height=dp(40);t.setLayoutParams(lp);}t.setTextSize(20);}}
+            if(view instanceof Button){Button b=(Button)view;ViewGroup.LayoutParams lp=b.getLayoutParams();if(lp!=null){lp.height=dp(40);b.setLayoutParams(lp);}b.setTextSize(13);b.setPadding(dp(10),0,dp(10),0);String label=String.valueOf(b.getText()).trim();if((label.equalsIgnoreCase("Search")||label.equalsIgnoreCase("For you"))&&activeRail!=null)b.setOnFocusChangeListener(new View.OnFocusChangeListener(){public void onFocusChange(View v,boolean focused){if(focused)activeRail.post(()->activeRail.smoothScrollTo(0,0));}});}
+        }
+        if(view instanceof LinearLayout&&view.isFocusable()&&view.isClickable()){
+            CharSequence cd=view.getContentDescription();ViewParent parent=view.getParent();
+            if(cd!=null&&(String.valueOf(cd).endsWith(", movie")||String.valueOf(cd).endsWith(", series"))&&parent instanceof LinearLayout&&parent.getParent() instanceof HorizontalScrollView){
+                ViewGroup.LayoutParams lp=view.getLayoutParams();if(lp!=null&&lp.width!=dp(170)){lp.width=dp(170);view.setLayoutParams(lp);}
+            }
+        }
+        if(view instanceof ViewGroup){ViewGroup g=(ViewGroup)view;for(int i=0;i<g.getChildCount();i++)compactModernTvUi(g.getChildAt(i),activeRail);}
+    }
+
     @Override void surpriseMovie(){surprisePendingUntil=SystemClock.elapsedRealtime()+20000;super.surpriseMovie();}
-    @Override void details(Catalog.Item item){if(SystemClock.elapsedRealtime()<surprisePendingUntil){surpriseDetailId=item.id;surprisePendingUntil=0;}else if(!item.id.equals(surpriseDetailId))surpriseDetailId="";super.details(item);}
+    @Override void details(Catalog.Item item){
+        if(SystemClock.elapsedRealtime()<surprisePendingUntil){surpriseDetailId=item.id;surprisePendingUntil=0;}else if(!item.id.equals(surpriseDetailId))surpriseDetailId="";
+        super.details(item);
+        if(item.id.equals(surpriseDetailId)){
+            fixUi.post(this::placeSurpriseAgainInActionRow);
+            fixUi.postDelayed(this::placeSurpriseAgainInActionRow,100);
+            fixUi.postDelayed(this::placeSurpriseAgainInActionRow,300);
+            fixUi.postDelayed(this::placeSurpriseAgainInActionRow,700);
+            fixUi.postDelayed(this::placeSurpriseAgainInActionRow,1400);
+        }
+    }
 
     @Override void titleExtras(LinearLayout target,JSONObject data,Catalog.Item item,int token){
         super.titleExtras(target,data,item,token);
@@ -73,7 +113,7 @@ public class FixedMainActivity extends MainActivity {
         LinearLayout.LayoutParams p;if(actions.getOrientation()==LinearLayout.HORIZONTAL){p=new LinearLayout.LayoutParams(-2,dp(48));p.setMargins(dp(8),0,0,0);}else{p=new LinearLayout.LayoutParams(-1,dp(48));p.setMargins(0,dp(8),0,0);}actions.addView(again,p);
     }
 
-    private Button findButton(View root,String contains){if(root instanceof Button&&String.valueOf(((Button)root).getText()).toLowerCase(Locale.ROOT).contains(contains.toLowerCase(Locale.ROOT)))return(Button)root;if(root instanceof ViewGroup){ViewGroup g=(ViewGroup)root;for(int i=0;i<g.getChildCount();i++){Button found=findButton(g.getChildAt(i),contains);if(found!=null)return found;}}return null;}
+    private Button findButton(View root,String contains){if(root instanceof Button&&root.isShown()&&String.valueOf(((Button)root).getText()).toLowerCase(Locale.ROOT).contains(contains.toLowerCase(Locale.ROOT)))return(Button)root;if(root instanceof ViewGroup){ViewGroup g=(ViewGroup)root;for(int i=g.getChildCount()-1;i>=0;i--){Button found=findButton(g.getChildAt(i),contains);if(found!=null)return found;}}return null;}
 
     private void showPersonTitles(int personId,String personName){startActivity(new Intent(this,PersonFilmographyActivity.class).putExtra("personId",personId).putExtra("personName",personName));}
 
