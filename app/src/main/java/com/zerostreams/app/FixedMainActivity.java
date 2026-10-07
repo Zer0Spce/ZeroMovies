@@ -17,12 +17,12 @@ public class FixedMainActivity extends MainActivity {
     private final Handler fixUi=new Handler(Looper.getMainLooper());
     private long surprisePendingUntil;
     private String surpriseDetailId="";
+    private boolean buildingSurpriseDetail;
 
     @Override public void onCreate(Bundle state){
         super.onCreate(state);
-        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(()->{styleBranding();compactModernTvUi();});
+        // Never mutate layout params from a global-layout callback: that caused Modern UI TV relayout/crash loops.
         fixUi.post(this::styleBranding);
-        fixUi.postDelayed(this::compactModernTvUi,120);
     }
 
     private void styleBranding(){styleBranding(getWindow().getDecorView());}
@@ -39,53 +39,49 @@ public class FixedMainActivity extends MainActivity {
 
     @Override void themePicker(Button field){String[] ids={"dark","light","ocean","orchid","sunset","midnight","ember","forest","rose","amethyst","cyber","cobalt","gold","coral","aurora","slate","mocha"};String[] labels={"Zero Dark","Zero Light","Ocean","Orchid","Sunset","Midnight Blue","Ember Glow","Forest Moss","Rose Noir","Amethyst","Cyber Mint","Cobalt Sky","Golden Hour","Coral Night","Aurora","Slate Ice","Mocha"};SharedPreferences prefs=getSharedPreferences("zero",MODE_PRIVATE);showChoicePicker("Choose theme",ids,labels,prefs.getString("theme","dark"),value->{prefs.edit().putString("theme",value).apply();field.setText(themeDisplay(value)+"  ▾");switchPalette(value);styleBranding();});}
 
+    /** Build the compact Modern-TV navigation at creation time instead of resizing it during layout. */
+    @Override void addGoogleNavigation(LinearLayout body){
+        HorizontalScrollView top=new HorizontalScrollView(this);top.setHorizontalScrollBarEnabled(false);top.setContentDescription("Modern UI top navigation");top.setClipToOutline(true);top.setBackground(pill(alphaColor(SURFACE,0x88),alphaColor(ACCENT,0x66)));top.setElevation(dp(6));
+        LinearLayout row=new LinearLayout(this);row.setGravity(Gravity.CENTER_VERTICAL);row.setPadding(dp(8),dp(4),dp(8),dp(4));TextView brand=text("ZEROPLAY",BuildConfig.TV?20:20,BuildConfig.TV?ACCENT:INK);bold(brand);brand.setLetterSpacing(.05f);brand.setGravity(Gravity.CENTER);brand.setSingleLine(true);LinearLayout.LayoutParams brandLp=new LinearLayout.LayoutParams(dp(BuildConfig.TV?132:140),dp(40));brandLp.setMargins(0,0,dp(6),0);row.addView(brand,brandLp);
+        for(String tab:new String[]{"Search","Home","Movies","Series","IPTV","LiveTV","Live Sports","Downloads"}){String label=tab.equals("Home")?"For you":tab.equals("Series")?"Shows":layoutLabel(tab);Button b=modernTab(tab,label);if(BuildConfig.TV){b.setTextSize(13);b.setPadding(dp(10),dp(3),dp(10),dp(3));}LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-2,dp(BuildConfig.TV?40:46));lp.setMargins(0,0,dp(6),0);row.addView(b,lp);}
+        Button library=modernTab("Library","Library");if(BuildConfig.TV){library.setTextSize(13);library.setPadding(dp(10),dp(3),dp(10),dp(3));}LinearLayout.LayoutParams libp=new LinearLayout.LayoutParams(-2,dp(BuildConfig.TV?40:46));libp.setMargins(0,0,dp(8),0);row.addView(library,libp);
+        if(BuildConfig.TV){Button settings=button("⚙",this::settings);settings.setContentDescription("Settings");settings.setTextSize(18);settings.setBackground(pill(alphaColor(SURFACE,0x78),0));settings.setOnFocusChangeListener((v,f)->settings.setBackground(pill(alphaColor(SURFACE,f?0xD8:0x78),f?ACCENT:0)));row.addView(settings,new LinearLayout.LayoutParams(dp(42),dp(40)));surpriseButton=button("🎲",this::surpriseMovie);surpriseButton.setContentDescription("Surprise me");surpriseButton.setTextSize(17);surpriseButton.setBackground(pill(alphaColor(SURFACE,0x78),0));surpriseButton.setOnFocusChangeListener((v,f)->surpriseButton.setBackground(pill(alphaColor(SURFACE,f?0xD8:0x78),f?ACCENT:0)));row.addView(surpriseButton,new LinearLayout.LayoutParams(dp(42),dp(40)));Button theme=button(lightTheme?"☾":"☀",this::toggleTheme);theme.setContentDescription("Toggle theme");theme.setTextSize(18);theme.setBackground(pill(alphaColor(SURFACE,0x78),0));theme.setOnFocusChangeListener((v,f)->theme.setBackground(pill(alphaColor(SURFACE,f?0xD8:0x78),f?ACCENT:0)));row.addView(theme,new LinearLayout.LayoutParams(dp(42),dp(40)));}
+        top.addView(row);LinearLayout.LayoutParams tp=new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?54:58));tp.setMargins(dp(BuildConfig.TV?18:14),dp(BuildConfig.TV?8:8),dp(BuildConfig.TV?18:14),dp(BuildConfig.TV?5:8));body.addView(top,tp);refreshModernTabs();
+    }
+
+    @Override void posterRow(String title,List<Catalog.Item> rows,int token){
+        if(!BuildConfig.TV||!googleLayout()){super.posterRow(title,rows,token);return;}
+        if(rows.isEmpty())return;sectionLabel(content,title);HorizontalScrollView rail=new HorizontalScrollView(this);rail.setHorizontalScrollBarEnabled(false);LinearLayout cards=new LinearLayout(this);for(int i=0;i<Math.min(rows.size(),18);i++){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(170),-2);p.setMargins(0,0,dp(12),0);Catalog.Item item=rows.get(i);LinearLayout tile=card(item,token);if(title.equals("Continue watching"))tile.setOnClickListener(v->resume(item));cards.addView(tile,p);}rail.addView(cards);content.addView(rail);space(content,22);
+    }
+
     @Override LinearLayout card(Catalog.Item item,int token){
         LinearLayout card=super.card(item,token);if(!googleLayout()||item.poster.isEmpty())return card;
         for(int i=0;i<card.getChildCount();i++)if(card.getChildAt(i) instanceof MainActivity.PosterFrame){FrameLayout old=(FrameLayout)card.getChildAt(i);MainActivity.PosterFrame portrait=new MainActivity.PosterFrame(this,1.5f);while(old.getChildCount()>0){View child=old.getChildAt(0);old.removeViewAt(0);portrait.addView(child,child.getLayoutParams());if(child instanceof ImageView)picture(item.poster,(ImageView)child,token);}ViewGroup.LayoutParams lp=old.getLayoutParams();card.removeViewAt(i);card.addView(portrait,i,lp);break;}return card;
     }
 
-    private void compactModernTvUi(){
-        if(!BuildConfig.TV||!googleLayout())return;
-        compactModernTvUi(getWindow().getDecorView(),null);
-    }
-    private void compactModernTvUi(View view,HorizontalScrollView rail){
-        HorizontalScrollView activeRail=rail;
-        if(view instanceof HorizontalScrollView&&"Modern UI top navigation".contentEquals(view.getContentDescription())){
-            activeRail=(HorizontalScrollView)view;
-            ViewGroup.LayoutParams raw=view.getLayoutParams();
-            if(raw instanceof ViewGroup.MarginLayoutParams){ViewGroup.MarginLayoutParams p=(ViewGroup.MarginLayoutParams)raw;if(p.height!=dp(54)||p.leftMargin!=dp(18)||p.rightMargin!=dp(18)||p.topMargin!=dp(8)||p.bottomMargin!=dp(5)){p.height=dp(54);p.leftMargin=dp(18);p.rightMargin=dp(18);p.topMargin=dp(8);p.bottomMargin=dp(5);view.setLayoutParams(p);}}else if(raw!=null&&raw.height!=dp(54)){raw.height=dp(54);view.setLayoutParams(raw);}
-            if(view.getPaddingLeft()!=dp(3))view.setPadding(dp(3),0,dp(3),0);
-        }
-        if(activeRail!=null){
-            if(view instanceof TextView){TextView t=(TextView)view;String text=String.valueOf(t.getText());if(text.equalsIgnoreCase("ZeroPlay")||text.equalsIgnoreCase("ZEROPLAY")){ViewGroup.LayoutParams lp=t.getLayoutParams();if(lp!=null&&(lp.width!=dp(132)||lp.height!=dp(40))){lp.width=dp(132);lp.height=dp(40);t.setLayoutParams(lp);}if(t.getTextSize()/getResources().getDisplayMetrics().scaledDensity>20.5f)t.setTextSize(20);}}
-            if(view instanceof Button){Button b=(Button)view;ViewGroup.LayoutParams lp=b.getLayoutParams();if(lp!=null&&lp.height!=dp(40)){lp.height=dp(40);b.setLayoutParams(lp);}if(b.getTextSize()/getResources().getDisplayMetrics().scaledDensity>13.5f)b.setTextSize(13);if(b.getPaddingLeft()!=dp(10))b.setPadding(dp(10),0,dp(10),0);}
-        }
-        if(view instanceof LinearLayout&&view.isFocusable()&&view.isClickable()){
-            CharSequence cd=view.getContentDescription();ViewParent parent=view.getParent();
-            if(cd!=null&&(String.valueOf(cd).endsWith(", movie")||String.valueOf(cd).endsWith(", series"))&&parent instanceof LinearLayout&&parent.getParent() instanceof HorizontalScrollView){
-                ViewGroup.LayoutParams lp=view.getLayoutParams();if(lp!=null&&lp.width!=dp(170)){lp.width=dp(170);view.setLayoutParams(lp);}
+    @Override Button button(String label,Runnable action){
+        Button result=super.button(label,action);
+        final boolean attachSurprise=buildingSurpriseDetail&&"Download".equalsIgnoreCase(label)&&!surpriseDetailId.isEmpty();
+        if(attachSurprise)result.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener(){
+            @Override public void onViewAttachedToWindow(View v){
+                result.removeOnAttachStateChangeListener(this);
+                result.post(()->{ViewParent parent=result.getParent();if(!(parent instanceof LinearLayout)||!result.isAttachedToWindow())return;LinearLayout actions=(LinearLayout)parent;for(int i=0;i<actions.getChildCount();i++){View child=actions.getChildAt(i);if(child instanceof Button&&String.valueOf(((Button)child).getText()).toLowerCase(Locale.ROOT).contains("surprise me again"))return;}space(actions,8);Button again=FixedMainActivity.super.button("🎲 Surprise me again",FixedMainActivity.this::surpriseMovie);again.setTextColor(Color.WHITE);again.setBackground(shape(Color.rgb(183,59,80),0));again.setOnFocusChangeListener((view,focused)->view.setBackground(shape(focused?Color.rgb(133,35,53):Color.rgb(183,59,80),focused?INK:0)));actions.addView(again,new LinearLayout.LayoutParams(-1,dp(48)));});
             }
-        }
-        if(view instanceof ViewGroup){ViewGroup g=(ViewGroup)view;for(int i=0;i<g.getChildCount();i++)compactModernTvUi(g.getChildAt(i),activeRail);}
+            @Override public void onViewDetachedFromWindow(View v){}
+        });
+        return result;
     }
 
     @Override void surpriseMovie(){surprisePendingUntil=SystemClock.elapsedRealtime()+20000;super.surpriseMovie();}
     @Override void details(Catalog.Item item){
         if(SystemClock.elapsedRealtime()<surprisePendingUntil){surpriseDetailId=item.id;surprisePendingUntil=0;}else if(!item.id.equals(surpriseDetailId))surpriseDetailId="";
-        super.details(item);
-        if(item.id.equals(surpriseDetailId)){
-            fixUi.post(this::placeSurpriseAgainInActionRow);
-            fixUi.postDelayed(this::placeSurpriseAgainInActionRow,100);
-            fixUi.postDelayed(this::placeSurpriseAgainInActionRow,300);
-            fixUi.postDelayed(this::placeSurpriseAgainInActionRow,700);
-            fixUi.postDelayed(this::placeSurpriseAgainInActionRow,1400);
-        }
+        buildingSurpriseDetail=item.id.equals(surpriseDetailId);
+        try{super.details(item);}finally{buildingSurpriseDetail=false;}
     }
 
     @Override void titleExtras(LinearLayout target,JSONObject data,Catalog.Item item,int token){
         super.titleExtras(target,data,item,token);
         if(item.type.equals("movie")){String imdb=data.optString("imdb_id");if(!imdb.isEmpty())loadRotten(target,imdb,token);}
-        if(item.id.equals(surpriseDetailId)){fixUi.post(this::placeSurpriseAgainInActionRow);fixUi.postDelayed(this::placeSurpriseAgainInActionRow,250);fixUi.postDelayed(this::placeSurpriseAgainInActionRow,700);}
         JSONObject credits=data.optJSONObject("credits");JSONArray cast=credits==null?null:credits.optJSONArray("cast");if(cast==null)return;
         HorizontalScrollView rail=null;for(int i=target.getChildCount()-1;i>=0;i--)if(target.getChildAt(i) instanceof HorizontalScrollView){rail=(HorizontalScrollView)target.getChildAt(i);break;}
         if(rail==null||rail.getChildCount()==0||!(rail.getChildAt(0) instanceof LinearLayout))return;
@@ -103,17 +99,6 @@ public class FixedMainActivity extends MainActivity {
         TextView score=text("Rotten Tomatoes · loading…",13,MUTED);score.setTag("zero-rotten-score");target.addView(score,Math.min(2,target.getChildCount()));
         fixIo.execute(()->{try{String rating=OmdbRatings.rotten(imdb);fixUi.post(()->{if(isDestroyed()||!score.isAttachedToWindow())return;if(rating.isEmpty())target.removeView(score);else{score.setText("🍅 Rotten Tomatoes · "+rating);score.setTextColor(ACCENT);bold(score);}});}catch(Exception ignored){fixUi.post(()->{if(score.isAttachedToWindow())target.removeView(score);});}});
     }
-
-    private void placeSurpriseAgainInActionRow(){
-        if(surpriseDetailId.isEmpty())return;View root=getWindow().getDecorView();
-        Button anchor=findButton(root,"download");if(anchor==null)anchor=findButton(root,"watch now");if(anchor==null)anchor=findButton(root,"resume");if(anchor==null)anchor=findButton(root,"source");if(anchor==null)return;
-        ViewParent parent=anchor.getParent();if(!(parent instanceof LinearLayout))return;LinearLayout actions=(LinearLayout)parent;
-        for(int i=0;i<actions.getChildCount();i++){View child=actions.getChildAt(i);if(child instanceof Button&&String.valueOf(((Button)child).getText()).toLowerCase(Locale.ROOT).contains("surprise me again"))return;}
-        Button again=button("🎲 Surprise me again",this::surpriseMovie);again.setTextColor(Color.WHITE);again.setBackground(shape(Color.rgb(183,59,80),0));again.setOnFocusChangeListener((v,f)->v.setBackground(shape(f?Color.rgb(133,35,53):Color.rgb(183,59,80),f?INK:0)));
-        LinearLayout.LayoutParams p;if(actions.getOrientation()==LinearLayout.HORIZONTAL){p=new LinearLayout.LayoutParams(-2,dp(48));p.setMargins(dp(8),0,0,0);}else{p=new LinearLayout.LayoutParams(-1,dp(48));p.setMargins(0,dp(8),0,0);}actions.addView(again,p);
-    }
-
-    private Button findButton(View root,String contains){if(root instanceof Button&&root.isShown()&&String.valueOf(((Button)root).getText()).toLowerCase(Locale.ROOT).contains(contains.toLowerCase(Locale.ROOT)))return(Button)root;if(root instanceof ViewGroup){ViewGroup g=(ViewGroup)root;for(int i=g.getChildCount()-1;i>=0;i--){Button found=findButton(g.getChildAt(i),contains);if(found!=null)return found;}}return null;}
 
     private void showPersonTitles(int personId,String personName){startActivity(new Intent(this,PersonFilmographyActivity.class).putExtra("personId",personId).putExtra("personName",personName));}
 
