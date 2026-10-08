@@ -1,0 +1,32 @@
+name: TEMP Windows Updater 9.9.9.11 Cleanup
+
+on:
+  push:
+    branches:
+      - temp/windows-updater-9.9.9.11
+    paths:
+      - cleanup-temp-windows-updater.txt
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Delete temporary release and tag
+        shell: bash
+        run: |
+          if gh release view v9.9.9.11 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete v9.9.9.11 --repo "$GITHUB_REPOSITORY" --cleanup-tag -y
+          fi
+
+      - name: Delete temporary updater branch
+        shell: bash
+        run: |
+          git push origin --delete temp/windows-updater-9.9.9.11 || true
