@@ -15,6 +15,7 @@ static class Program
             string zip = Full(Required(options, "zip"));
             string version = Required(options, "version");
             string expected = Required(options, "sha256").ToLowerInvariant();
+            int waitPid = options.TryGetValue("wait-pid", out var pidText) && int.TryParse(pidText, out var parsedPid) ? parsedPid : 0;
             if (!File.Exists(zip)) throw new InvalidOperationException("Downloaded update package is missing.");
             if (!File.Exists(Path.Combine(root, "ZeroPlay.exe"))) throw new InvalidOperationException("Stable ZeroPlay launcher is missing.");
             VerifySha(zip, expected);
@@ -29,6 +30,7 @@ static class Program
                 ZipFile.ExtractToDirectory(zip, extract, true);
                 string portable = LocatePortableRoot(extract);
                 string finalDir = Path.Combine(versionsDir, SafeVersion(version));
+                WaitForProcess(waitPid);
                 if (Directory.Exists(finalDir)) Directory.Delete(finalDir, true);
                 if (Path.GetFullPath(portable).TrimEnd(Path.DirectorySeparatorChar).Equals(Path.GetFullPath(extract).TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase))
                     Directory.Move(extract, finalDir);
@@ -82,6 +84,17 @@ static class Program
         using var stream = File.OpenRead(file);
         string actual = Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
         if (!CryptographicOperations.FixedTimeEquals(Convert.FromHexString(actual), Convert.FromHexString(expected))) throw new InvalidOperationException("Downloaded update failed SHA-256 verification.");
+    }
+
+    static void WaitForProcess(int pid)
+    {
+        if (pid <= 0 || pid == Environment.ProcessId) return;
+        try
+        {
+            using var process = Process.GetProcessById(pid);
+            if (!process.WaitForExit(30000)) throw new TimeoutException("ZeroPlay did not close in time for the update.");
+        }
+        catch (ArgumentException) { }
     }
 
     static string LocatePortableRoot(string stage)
