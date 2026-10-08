@@ -1,0 +1,31 @@
+/* Shared title/rating placement: portrait posters label below; landscape thumbnails label inside. */
+:root[data-layout="classic"] .card:not(.landscape) .thumb-copy,
+:root[data-layout="flix"] .card:not(.landscape) .thumb-copy,
+:root[data-layout="google"] .card:not(.landscape) .thumb-copy{display:none!important}
+
+:root[data-layout="classic"] .card:not(.landscape)>.card-title,
+:root[data-layout="flix"] .card:not(.landscape)>.card-title,
+:root[data-layout="google"] .card:not(.landscape)>.card-title{display:block!important;margin:10px 2px 4px!important;font-size:15px!important;font-weight:750!important;line-height:1.2!important;white-space:normal!important;overflow:hidden!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important}
+
+:root[data-layout="classic"] .card:not(.landscape)>small,
+:root[data-layout="flix"] .card:not(.landscape)>small,
+:root[data-layout="google"] .card:not(.landscape)>small{display:block!important;margin:0 2px!important;font-size:12.5px!important;line-height:1.25!important;color:var(--muted)!important}
+
+:root[data-layout="youtube"] .card>.card-title,
+:root[data-layout="youtube"] .card>small,
+.card.landscape>.card-title,
+.card.landscape>small{display:none!important}
+
+:root[data-layout="youtube"] .card .thumb-copy,
+.card.landscape .thumb-copy{display:block!important;padding:34px 14px 11px!important;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.28) 30%,rgba(0,0,0,.88) 100%)!important}
+
+:root[data-layout="youtube"] .card .thumb-copy strong,
+.card.landscape .thumb-copy strong{font-size:16px!important;line-height:1.15!important;font-weight:800!important;text-shadow:0 2px 8px #000!important}
+
+:root[data-layout="youtube"] .card .thumb-copy small,
+.card.landscape .thumb-copy small{font-size:13px!important;line-height:1.2!important;font-weight:650!important;color:#f2f2f2!important;text-shadow:0 2px 7px #000!important}
+
+@media(min-width:1200px){
+  :root[data-layout="youtube"] .card .thumb-copy strong,.card.landscape .thumb-copy strong{font-size:17px!important}
+  :root[data-layout="youtube"] .card .thumb-copy small,.card.landscape .thumb-copy small{font-size:14px!important}
+}

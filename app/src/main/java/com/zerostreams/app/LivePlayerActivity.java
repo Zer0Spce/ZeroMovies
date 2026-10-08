@@ -20,7 +20,7 @@ import java.util.concurrent.*;
 /** ZeroPlay' native live player. No WebView, embedded provider page or external player. */
 @androidx.annotation.OptIn(markerClass=androidx.media3.common.util.UnstableApi.class)
 public class LivePlayerActivity extends Activity {
-    private static final int ACCENT=0xFF65E6CC, SURFACE=0xEF161822;
+    private static final int ACCENT=0xFF65E6CC, SURFACE=0xEF161822, MAX_AUTO_RETRIES=4;
     private final Handler ui=new Handler(Looper.getMainLooper());
     private final ExecutorService io=Executors.newSingleThreadExecutor();
     private ExoPlayer player;
@@ -31,10 +31,11 @@ public class LivePlayerActivity extends Activity {
     private ProgressBar buffering;
     private Button play;
     private List<M3uPlaylist.Channel> channels=Collections.emptyList();
-    private int index,resizeMode=AspectRatioFrameLayout.RESIZE_MODE_FIT;
+    private int index,resizeMode=AspectRatioFrameLayout.RESIZE_MODE_FIT,retryAttempt,loadGeneration;
     private boolean started, destroyed, playWhenReady=true;
     private final Runnable hideControls=()->setControls(false);
-    private final Runnable infoTick=new Runnable(){public void run(){if(!started||player==null)return;if(player.getPlayerError()==null){long offset=player.getCurrentLiveOffset();String quality=player.getVideoFormat()==null?"":player.getVideoFormat().height>0?" · "+player.getVideoFormat().height+"p":"";status.setText(player.getPlaybackState()==Player.STATE_BUFFERING?"Connecting…":player.getPlaybackState()==Player.STATE_ENDED?"Stream ended · Retry or choose another channel":player.isPlaying()?"● LIVE"+(offset!=C.TIME_UNSET&&offset>12_000?" · behind live":"")+quality:"Paused");}ui.postDelayed(this,1000);}};
+    private Runnable pendingReconnect;
+    private final Runnable infoTick=new Runnable(){public void run(){if(!started||player==null)return;if(player.getPlayerError()==null){long offset=player.getCurrentLiveOffset();String quality=player.getVideoFormat()==null?"":player.getVideoFormat().height>0?" · "+player.getVideoFormat().height+"p":"";status.setText(player.getPlaybackState()==Player.STATE_BUFFERING?"Connecting…":player.getPlaybackState()==Player.STATE_ENDED?"Stream ended · reconnecting…":player.isPlaying()?"● LIVE"+(offset!=C.TIME_UNSET&&offset>12_000?" · behind live":"")+quality:"Paused");}ui.postDelayed(this,1000);}};
     int dp(int n){return (int)(getResources().getDisplayMetrics().density*n+.5f);}
     GradientDrawable background(int color,int border){GradientDrawable d=new GradientDrawable();d.setColor(color);d.setCornerRadius(dp(9));if(border!=0)d.setStroke(dp(2),border);return d;}
     Button control(String label,Runnable action){Button b=new Button(this);b.setText(label);b.setAllCaps(false);b.setTextColor(Color.WHITE);b.setTextSize(14);b.setPadding(dp(12),dp(6),dp(12),dp(6));b.setMinWidth(0);b.setMinimumWidth(0);b.setBackground(background(SURFACE,0));b.setFocusable(true);b.setOnClickListener(v->{action.run();wakeControls();});b.setOnFocusChangeListener((v,f)->{v.setBackground(background(SURFACE,f?ACCENT:0));if(f)wakeControls();});return b;}
@@ -57,22 +58,32 @@ public class LivePlayerActivity extends Activity {
         controls.addView(control("Subtitles",()->trackPicker(C.TRACK_TYPE_TEXT)));
         controls.addView(control("Fit",()->{resizeMode=resizeMode==AspectRatioFrameLayout.RESIZE_MODE_FIT?AspectRatioFrameLayout.RESIZE_MODE_ZOOM:AspectRatioFrameLayout.RESIZE_MODE_FIT;video.setResizeMode(resizeMode);message(resizeMode==AspectRatioFrameLayout.RESIZE_MODE_FIT?"Fit to screen":"Fill screen");}));
         HorizontalScrollView row=new HorizontalScrollView(this);row.setHorizontalScrollBarEnabled(false);row.addView(controls);root.addView(row,new FrameLayout.LayoutParams(-1,-2,Gravity.BOTTOM));
-        // Controller visibility belongs to the scroll container, including its background.
         controlsContainer=row;
         root.setOnTouchListener((v,event)->{if(event.getAction()==MotionEvent.ACTION_UP){v.performClick();wakeControls();return true;}return true;});
         video.setOnClickListener(v->wakeControls());setContentView(root);
         boolean live=getIntent().getBooleanExtra("liveList",true);String requested=state==null?getIntent().getStringExtra("channelUrl"):state.getString("channelUrl",getIntent().getStringExtra("channelUrl"));
         if(state!=null)playWhenReady=state.getBoolean("playing",true);
         io.execute(()->{try{List<M3uPlaylist.Channel> list=PlaylistStore.cached(getApplicationContext(),live).channels;int selected=-1;for(int i=0;i<list.size();i++)if(list.get(i).url.equals(requested)){selected=i;break;}final int found=selected;
-            ui.post(()->{if(destroyed)return;if(found<0){status.setText("This channel is no longer in the list. Return and refresh.");buffering.setVisibility(View.GONE);return;}channels=list;index=found;title.setText(channels.get(index).name);if(started)startChannel();});
+            ui.post(()->{if(destroyed)return;if(found<0){status.setText("This channel is no longer in the list. Return and refresh.");buffering.setVisibility(View.GONE);return;}channels=list;index=found;title.setText(channels.get(index).name);if(started)startChannel(true);});
         }catch(Exception error){ui.post(()->{if(!destroyed){status.setText("Channel list unavailable. Return and refresh.");buffering.setVisibility(View.GONE);}});}});
     }
     private HorizontalScrollView controlsContainer;
-    private void startChannel(){
+    private void cancelReconnect(){if(pendingReconnect!=null){ui.removeCallbacks(pendingReconnect);pendingReconnect=null;}}
+    private boolean transientPlaybackError(PlaybackException error){String name=error==null?"":error.getErrorCodeName();return !(name.contains("DECODING")||name.contains("DRM")||name.contains("PARSING")||name.contains("FAILED_RUNTIME_CHECK")||name.contains("BEHIND_LIVE_WINDOW"));}
+    private void scheduleReconnect(String reason){
+        if(!started||destroyed||channels.isEmpty())return;
+        cancelReconnect();
+        if(retryAttempt>=MAX_AUTO_RETRIES){buffering.setVisibility(View.GONE);status.setText("Stream unavailable · Retry or choose another channel");wakeControls();return;}
+        final int generation=loadGeneration;final int attempt=++retryAttempt;long delay=Math.min(10000L,1500L*(1L<<(attempt-1)));
+        status.setText("Stream interrupted · reconnecting "+attempt+"/"+MAX_AUTO_RETRIES+"…");buffering.setVisibility(View.VISIBLE);
+        pendingReconnect=()->{pendingReconnect=null;if(!started||destroyed||generation!=loadGeneration)return;startChannel(false);};ui.postDelayed(pendingReconnect,delay);
+    }
+    private void startChannel(boolean resetRetries){
+        cancelReconnect();if(resetRetries){retryAttempt=0;loadGeneration++;}
         releasePlayer();if(!started||channels.isEmpty())return;
-        M3uPlaylist.Channel channel=channels.get(index);title.setText(channel.name);status.setText("Connecting…");buffering.setVisibility(View.VISIBLE);
+        M3uPlaylist.Channel channel=channels.get(index);title.setText(channel.name);status.setText(retryAttempt>0?"Reconnecting…":"Connecting…");buffering.setVisibility(View.VISIBLE);
         try {
-            DefaultHttpDataSource.Factory http=new DefaultHttpDataSource.Factory().setUserAgent(channel.headers.containsKey("User-Agent")?channel.headers.get("User-Agent"):"ZeroPlay/"+BuildConfig.VERSION_NAME).setConnectTimeoutMs(12000).setReadTimeoutMs(20000).setAllowCrossProtocolRedirects(true).setDefaultRequestProperties(channel.headers);
+            DefaultHttpDataSource.Factory http=new DefaultHttpDataSource.Factory().setUserAgent(channel.headers.containsKey("User-Agent")?channel.headers.get("User-Agent"):"ZeroPlay/"+BuildConfig.VERSION_NAME).setConnectTimeoutMs(20000).setReadTimeoutMs(30000).setAllowCrossProtocolRedirects(true).setDefaultRequestProperties(channel.headers);
             DefaultMediaSourceFactory sources=new DefaultMediaSourceFactory(http);
             MediaItem.Builder media=new MediaItem.Builder().setUri(channel.url).setMediaMetadata(new MediaMetadata.Builder().setTitle(channel.name).build());
             if(!channel.mime.isEmpty())media.setMimeType(channel.mime);
@@ -85,16 +96,16 @@ public class LivePlayerActivity extends Activity {
             player=new ExoPlayer.Builder(this).setMediaSourceFactory(sources).build();
             player.setAudioAttributes(new AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(),true);player.setHandleAudioBecomingNoisy(true);
             player.addListener(new Player.Listener(){
-                @Override public void onPlaybackStateChanged(int state){buffering.setVisibility(state==Player.STATE_BUFFERING?View.VISIBLE:View.GONE);if(state==Player.STATE_READY){wakeControls();}if(state==Player.STATE_ENDED){status.setText("Stream ended · choose Retry or another channel");wakeControls();}}
+                @Override public void onPlaybackStateChanged(int state){buffering.setVisibility(state==Player.STATE_BUFFERING?View.VISIBLE:View.GONE);if(state==Player.STATE_READY){retryAttempt=0;wakeControls();}if(state==Player.STATE_ENDED)scheduleReconnect("ended");}
                 @Override public void onIsPlayingChanged(boolean playing){play.setText(playing?"Pause":"Play");if(!playing)wakeControls();}
-                @Override public void onPlayerError(PlaybackException error){buffering.setVisibility(View.GONE);status.setText("Stream unavailable · "+error.getErrorCodeName()+" · Retry or choose another channel");wakeControls();}
+                @Override public void onPlayerError(PlaybackException error){if(transientPlaybackError(error)){scheduleReconnect(error.getErrorCodeName());}else{buffering.setVisibility(View.GONE);status.setText("Stream unavailable · "+error.getErrorCodeName()+" · Retry or choose another channel");wakeControls();}}
             });
             video.setPlayer(player);player.setMediaItem(media.build());player.prepare();player.setPlayWhenReady(playWhenReady);ui.removeCallbacks(infoTick);ui.post(infoTick);wakeControls();play.requestFocus();
         }catch(Exception error){buffering.setVisibility(View.GONE);status.setText("Channel settings are not supported on this device. Try another channel.");wakeControls();}
     }
-    void retry(){playWhenReady=true;startChannel();}
+    void retry(){playWhenReady=true;startChannel(true);}
     void message(String text){Toast.makeText(this,text,Toast.LENGTH_SHORT).show();}
-    void channelPicker(){if(channels.isEmpty())return;String[] names=new String[channels.size()];for(int i=0;i<names.length;i++)names[i]=channels.get(i).name;new AlertDialog.Builder(this).setTitle("Channels").setSingleChoiceItems(names,index,(dialog,which)->{index=which;playWhenReady=true;startChannel();dialog.dismiss();}).setNegativeButton("Close",null).show();}
+    void channelPicker(){if(channels.isEmpty())return;String[] names=new String[channels.size()];for(int i=0;i<names.length;i++)names[i]=channels.get(i).name;new AlertDialog.Builder(this).setTitle("Channels").setSingleChoiceItems(names,index,(dialog,which)->{index=which;playWhenReady=true;startChannel(true);dialog.dismiss();}).setNegativeButton("Close",null).show();}
     void trackPicker(int type){
         if(player==null)return;List<Tracks.Group> groups=new ArrayList<>();List<Integer> indices=new ArrayList<>();List<String> labels=new ArrayList<>();
         if(type==C.TRACK_TYPE_TEXT){groups.add(null);indices.add(-1);labels.add("Off");}
@@ -105,15 +116,15 @@ public class LivePlayerActivity extends Activity {
     void setControls(boolean show){toolbar.setVisibility(show?View.VISIBLE:View.GONE);controlsContainer.setVisibility(show?View.VISIBLE:View.GONE);}
     void wakeControls(){setControls(true);ui.removeCallbacks(hideControls);if(player!=null&&player.isPlaying()&&player.getPlayerError()==null)ui.postDelayed(hideControls,4500);}
     private void releasePlayer(){ui.removeCallbacks(infoTick);if(player!=null){video.setPlayer(null);player.release();player=null;}}
-    @Override protected void onStart(){super.onStart();started=true;if(!channels.isEmpty())startChannel();}
-    @Override protected void onStop(){started=false;if(player!=null)playWhenReady=player.getPlayWhenReady();releasePlayer();ui.removeCallbacks(hideControls);super.onStop();}
-    @Override protected void onDestroy(){destroyed=true;ui.removeCallbacksAndMessages(null);io.shutdownNow();releasePlayer();super.onDestroy();}
+    @Override protected void onStart(){super.onStart();started=true;if(!channels.isEmpty())startChannel(true);}
+    @Override protected void onStop(){started=false;cancelReconnect();if(player!=null)playWhenReady=player.getPlayWhenReady();releasePlayer();ui.removeCallbacks(hideControls);super.onStop();}
+    @Override protected void onDestroy(){destroyed=true;cancelReconnect();ui.removeCallbacksAndMessages(null);io.shutdownNow();releasePlayer();super.onDestroy();}
     @Override protected void onSaveInstanceState(Bundle state){if(!channels.isEmpty())state.putString("channelUrl",channels.get(index).url);state.putBoolean("playing",player==null?playWhenReady:player.getPlayWhenReady());super.onSaveInstanceState(state);}
-    @Override public void onBackPressed(){finish();}
+    @Override public void onBackPressed(){if(controlsContainer!=null&&controlsContainer.getVisibility()==View.VISIBLE){setControls(false);ui.removeCallbacks(hideControls);return;}finish();}
     @Override public boolean dispatchKeyEvent(KeyEvent event){
         int key=event.getKeyCode();if(key==KeyEvent.KEYCODE_BACK)return super.dispatchKeyEvent(event);
         if(event.getAction()==KeyEvent.ACTION_DOWN){
-            if(key==KeyEvent.KEYCODE_CHANNEL_UP||key==KeyEvent.KEYCODE_CHANNEL_DOWN){if(!channels.isEmpty()){index=(index+(key==KeyEvent.KEYCODE_CHANNEL_UP?1:channels.size()-1))%channels.size();playWhenReady=true;startChannel();}return true;}
+            if(key==KeyEvent.KEYCODE_CHANNEL_UP||key==KeyEvent.KEYCODE_CHANNEL_DOWN){if(!channels.isEmpty()){index=(index+(key==KeyEvent.KEYCODE_CHANNEL_UP?1:channels.size()-1))%channels.size();playWhenReady=true;startChannel(true);}return true;}
             if(key==KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE){if(player!=null){if(player.isPlaying())player.pause();else player.play();}wakeControls();return true;}
             if(key==KeyEvent.KEYCODE_MEDIA_PLAY){if(player!=null)player.play();wakeControls();return true;}
             if(key==KeyEvent.KEYCODE_MEDIA_PAUSE){if(player!=null)player.pause();wakeControls();return true;}

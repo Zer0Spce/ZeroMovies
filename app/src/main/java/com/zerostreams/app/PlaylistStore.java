@@ -1,6 +1,7 @@
 package com.zerostreams.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.AtomicFile;
 import java.io.*;
 import java.net.*;
@@ -14,8 +15,13 @@ final class PlaylistStore {
         Snapshot(List<M3uPlaylist.Channel> c,long t){channels=c;updated=t;}
     }
     private static File file(Context context,boolean live){return new File(context.getFilesDir(),live?"livetv.m3u":"iptv.m3u");}
+    private static List<M3uPlaylist.Channel> visible(Context context,boolean live,List<M3uPlaylist.Channel> channels){
+        if(live)return channels;
+        SharedPreferences prefs=context.getSharedPreferences("zero",Context.MODE_PRIVATE);boolean cignal=prefs.getBoolean("liveCignal",true),converge=prefs.getBoolean("liveConverge",true);List<M3uPlaylist.Channel> out=new ArrayList<>();
+        for(M3uPlaylist.Channel channel:channels){String vendor=(channel.name+" "+channel.group).toLowerCase(Locale.ROOT);if(vendor.contains("cignal")&&!cignal)continue;if(vendor.contains("converge")&&!converge)continue;out.add(channel);}return out;
+    }
     static Snapshot cached(Context context,boolean live) throws IOException {
-        File f=file(context,live);try(InputStream in=new AtomicFile(f).openRead()){return new Snapshot(M3uPlaylist.parse(read(in)),f.lastModified());}
+        File f=file(context,live);try(InputStream in=new AtomicFile(f).openRead()){return new Snapshot(visible(context,live,M3uPlaylist.parse(read(in))),f.lastModified());}
     }
     static Snapshot fetch(Context context,boolean live) throws IOException {
         String url=live?M3uPlaylist.LIVE_URL:M3uPlaylist.IPTV_URL;
@@ -29,7 +35,7 @@ final class PlaylistStore {
             AtomicFile cache=new AtomicFile(file(context,live));FileOutputStream out=null;
             try{out=cache.startWrite();out.write(body.getBytes(StandardCharsets.UTF_8));cache.finishWrite(out);}
             catch(IOException e){if(out!=null)cache.failWrite(out);throw e;}
-            return new Snapshot(channels,System.currentTimeMillis());
+            return new Snapshot(visible(context,live,channels),System.currentTimeMillis());
         } finally {c.disconnect();}
     }
     private static String read(InputStream in) throws IOException {

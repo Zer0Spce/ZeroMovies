@@ -1,8 +1,14 @@
 name: Build ZeroPlay Windows
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - fix/2.0-from-v1.9
 permissions:
   contents: read
+concurrency:
+  group: zeroplay-windows-fix-2-0
+  cancel-in-progress: true
 jobs:
   windows:
     runs-on: windows-latest
@@ -12,7 +18,10 @@ jobs:
         working-directory: windows
     env:
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,19 +38,73 @@ jobs:
           node scripts/ui-check.cjs
           node scripts/live-compat-check.cjs
           node scripts/player-exit-check.cjs
+      - name: Verify Flix layout isolation
+        shell: pwsh
+        run: |
+          $css = Get-Content ui/flix-fix.css -Raw
+          foreach ($needle in @(
+            ':root[data-layout="flix"] aside',
+            ':root[data-layout="flix"] .hero',
+            ':root[data-layout="flix"] .hero+.row-section',
+            ':root[data-layout="flix"] .cards .card:not(.landscape)'
+          )) {
+            if (-not $css.Contains($needle)) { throw "Flix layout rule missing: $needle" }
+          }
+          if ($css -notmatch 'margin-top:-72px') { throw 'Flix catalog must overlap the hero instead of leaving a dead band.' }
+          Write-Host 'Flix cinematic layout rules verified.'
       - name: Verify player controls and QR filtering
         run: |
           $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
           $env:ZERO_GUARD_PATH = "assets/player-guard.js"
           node ../tests/player-guard.test.cjs
-      - name: Configure bundled TMDB key
+      - name: Configure bundled keys
         run: npm run prepare-config
+      - name: Verify Offline Player source
+        shell: pwsh
+        run: |
+          $html = Get-Content ui/offline-player.html -Raw
+          $js = Get-Content ui/offline-player.js -Raw
+          $css = Get-Content ui/offline-player.css -Raw
+          if ($html -notmatch 'subtitle-overlay') { throw 'New Offline Player HTML is missing.' }
+          if ($html -match 'video-js') { throw 'Legacy Video.js Offline Player HTML returned before packaging.' }
+          if ($js -notmatch 'subtitleOverlay') { throw 'Overlay subtitle renderer is missing before packaging.' }
+          if ($js -match 'videojs\(') { throw 'Legacy Video.js Offline Player JS returned before packaging.' }
+          if ($css -match '\.video-js') { throw 'Legacy Video.js Offline Player CSS returned before packaging.' }
+          Write-Host 'Offline Player 2.0 source verified before packaging.'
       - name: Verify live TMDB discovery and search
         run: node scripts/tmdb-check.cjs
       - name: Windows app smoke test
         run: npx electron . --smoke-test
       - name: Package portable ZIP
         run: npm run build
+      - name: Verify Authenticode signature when configured
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:CSC_LINK)) {
+            Write-Warning 'WINDOWS_CSC_LINK is not configured. This build is unsigned and Microsoft Defender SmartScreen may show an Unrecognized app warning.'
+            exit 0
+          }
+          $exe = Get-ChildItem dist/win-unpacked -Filter *.exe -File | Select-Object -First 1
+          if (-not $exe) { throw 'Packaged Windows executable not found for signature verification.' }
+          $signature = Get-AuthenticodeSignature $exe.FullName
+          Write-Host "Signature status: $($signature.Status)"
+          Write-Host "Signer: $($signature.SignerCertificate.Subject)"
+          if ($signature.Status -ne 'Valid') { throw "Windows executable signature is not valid: $($signature.Status)" }
+      - name: Verify packaged Offline Player 2.0
+        shell: pwsh
+        run: |
+          $root = 'dist/win-unpacked/resources/app.asar.unpacked/ui'
+          $htmlPath = Join-Path $root 'offline-player.html'
+          $jsPath = Join-Path $root 'offline-player.js'
+          $cssPath = Join-Path $root 'offline-player.css'
+          foreach ($path in @($htmlPath,$jsPath,$cssPath)) { if (!(Test-Path $path)) { throw "Offline Player unpacked asset missing: $path" } }
+          $html = Get-Content $htmlPath -Raw
+          $js = Get-Content $jsPath -Raw
+          $css = Get-Content $cssPath -Raw
+          if ($html -notmatch 'subtitle-overlay' -or $html -match 'video-js') { throw 'Packaged HTML is not the Offline Player 2.0 UI.' }
+          if ($js -notmatch 'subtitleOverlay' -or $js -match 'videojs\(') { throw 'Packaged JS is not the overlay subtitle player.' }
+          if ($css -match '\.video-js') { throw 'Packaged CSS still contains the legacy Video.js player.' }
+          Write-Host 'Packaged Offline Player 2.0 assets verified.'
       - uses: actions/upload-artifact@v4
         with:
           name: ZeroPlay-Windows-x64

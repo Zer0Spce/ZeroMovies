@@ -1,1 +1,69 @@
-<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; media-src file: data: blob:; connect-src 'none'; img-src 'self' data:; object-src 'none'; base-uri 'none'"><title>ZeroPlay Offline</title><link rel="stylesheet" href="vendor/video-js.min.css"><link rel="stylesheet" href="offline-player.css"></head><body><video id="video" class="video-js vjs-big-play-centered"></video><header><button id="back">‹ Back</button><div><h1 id="title">ZeroPlay Offline</h1><p id="status">Opening downloaded video…</p></div><b>ZERO • OFFLINE</b></header><div id="tools"><button id="subtitle">＋ Load subtitles</button><button id="fit">Fit / Fill</button><button id="full">Fullscreen</button></div><script src="vendor/video.min.js"></script><script src="offline-player.js"></script></body></html>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; media-src file: data: blob:; connect-src 'none'; img-src 'self' data:; object-src 'none'; base-uri 'none'">
+  <title>ZeroPlay Offline</title>
+  <link rel="stylesheet" href="offline-player.css">
+</head>
+<body>
+  <main id="stage">
+    <video id="video" preload="auto" playsinline></video>
+    <div id="wake-surface" aria-hidden="true"></div>
+
+    <header id="topbar">
+      <button id="back" class="icon-button back-button" type="button" aria-label="Back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"/></svg>
+        <span>Back</span>
+      </button>
+      <div class="title-wrap">
+        <h1 id="title">ZeroPlay Offline</h1>
+        <p id="status">Opening downloaded video…</p>
+      </div>
+    </header>
+
+    <section id="controls" aria-label="Video controls">
+      <input id="seek" class="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek">
+      <div class="control-row">
+        <button id="play" class="icon-button" type="button" aria-label="Play or pause">
+          <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg>
+        </button>
+        <button id="mute" class="icon-button" type="button" aria-label="Mute">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4h4l5 4V6l-5 4H5z"/><path class="sound-wave" d="M17 9c1.5 1.8 1.5 4.2 0 6m2-8c2.6 2.8 2.6 7.2 0 10"/></svg>
+        </button>
+        <input id="volume" class="volume" type="range" min="0" max="1" value="1" step="0.02" aria-label="Volume">
+        <span id="time" class="time">0:00 / 0:00</span>
+        <span class="spacer"></span>
+        <button id="subtitle" class="icon-button" type="button" aria-label="Load subtitles" title="Load subtitles">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h4M7 14h7M16 10h1"/></svg>
+        </button>
+        <button id="speed" class="icon-button speed-button" type="button" aria-label="Playback speed" title="Playback speed">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a7 7 0 1 1 14 0"/><path d="M12 12l4-3"/><circle cx="12" cy="17" r="1"/></svg>
+          <span id="speed-label">1×</span>
+        </button>
+        <button id="fit" class="icon-button" type="button" aria-label="Fit or fill video" title="Fit / Fill">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M5.5 12h5M8 9.5 10.5 12 8 14.5M18.5 12h-5M16 9.5 13.5 12l2.5 2.5"/></svg>
+        </button>
+        <button id="full" class="icon-button" type="button" aria-label="Fullscreen" title="Fullscreen">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <div id="speed-menu" class="menu" hidden></div>
+    <input id="subtitle-file" type="file" accept=".srt,.vtt,.ass,.ssa,text/plain" hidden>
+  </main>
+
+  <!-- Keep subtitles outside the hideable/player paint container so the manual
+       chrome toggle can never hide them or place them behind the video. -->
+  <div id="subtitle-overlay" aria-live="off"></div>
+
+  <!-- One persistent icon only: the hit target and visible eye never disappear. -->
+  <button id="controls-toggle" class="controls-toggle" type="button" aria-label="Hide player controls" title="Hide player controls" aria-pressed="false">
+    <svg class="eye-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg>
+  </button>
+
+  <script src="offline-player.js"></script>
+</body>
+</html>
