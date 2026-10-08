@@ -57,6 +57,15 @@
     },true);
   }
 
+  const enforceWebSource=()=>{
+    for(const option of document.querySelectorAll('option[value="vidsrc-sh"]'))option.remove();
+    for(const select of document.querySelectorAll('#playback-source,.title-source')){
+      if(select.value!=='vidstuck')select.value='vidstuck';
+    }
+  };
+  enforceWebSource();
+  new MutationObserver(enforceWebSource).observe(document.documentElement,{subtree:true,childList:true});
+
   const openSource=document.getElementById('open-player-source');
   if(openSource){
     openSource.addEventListener('click',()=>{
