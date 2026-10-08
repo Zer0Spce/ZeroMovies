@@ -187,6 +187,20 @@ public class BrowserPlayerActivity extends Activity {
         web.evaluateJavascript("if(window.__zeroTvNavigate)window.__zeroTvNavigate('"+direction+"');",null);
     }
 
+    private void wakeDpadControls(){
+        // Keep Mouse mode completely separate. D-pad mode only gets the native
+        // hover pulse that previously proved reliable at waking provider controls.
+        wakeControls();
+        if(web==null||web.getWidth()<=0||web.getHeight()<=0)return;
+        long now=android.os.SystemClock.uptimeMillis();
+        float x=web.getWidth()/2f;
+        float y=Math.max(2f,web.getHeight()*.72f);
+        MotionEvent hover=MotionEvent.obtain(now,now,MotionEvent.ACTION_HOVER_MOVE,x,y,0);
+        hover.setSource(InputDevice.SOURCE_MOUSE);
+        web.dispatchGenericMotionEvent(hover);
+        hover.recycle();
+    }
+
     @Override public boolean dispatchKeyEvent(KeyEvent event){
         int key=event.getKeyCode();
         if(isBackKey(key)&&!getIntent().getBooleanExtra("reader",false)){
@@ -199,6 +213,7 @@ public class BrowserPlayerActivity extends Activity {
             }else if(tvNavKey(key)){
                 String direction=tvDirection(key);
                 boolean activate="ok".equals(direction);
+                if(event.getAction()==KeyEvent.ACTION_DOWN&&event.getRepeatCount()==0)wakeDpadControls();
                 boolean fire=(activate&&event.getAction()==KeyEvent.ACTION_UP)||(!activate&&event.getAction()==KeyEvent.ACTION_DOWN&&event.getRepeatCount()==0);
                 if(fire&&direction!=null){
                     if(activate)lastPlayerGesture=android.os.SystemClock.elapsedRealtime();
