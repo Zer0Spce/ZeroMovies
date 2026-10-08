@@ -1,0 +1,103 @@
+name: Apply ZeroPlay 2.0.2 patch once
+
+on:
+  push:
+    branches: [fix/2.0.2-refresh-modern-mobile]
+    paths: [.github/workflows/patch-2.0.2-once.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/2.0.2-refresh-modern-mobile
+          fetch-depth: 0
+      - name: Apply exact 2.0.2 changes
+        shell: python
+        run: |
+          from pathlib import Path
+          import json
+
+          def patch(path, old, new, count=None):
+              p=Path(path); s=p.read_text(encoding='utf-8')
+              n=s.count(old)
+              if n == 0: raise SystemExit(f'Missing expected text in {path}: {old[:120]!r}')
+              if count is not None and n != count: raise SystemExit(f'Expected {count} matches in {path}, got {n}: {old[:120]!r}')
+              p.write_text(s.replace(old,new),encoding='utf-8')
+
+          # Android: force means force. Automatic polling stays hourly.
+          patch('app/src/main/java/com/zerostreams/app/SportsStore.java',
+                'if(System.currentTimeMillis()-cache.optLong("updated")<TTL)return cache;',
+                'if(!force&&System.currentTimeMillis()-cache.optLong("updated")<TTL)return cache;',1)
+
+          m='app/src/main/java/com/zerostreams/app/MainActivity.java'
+          patch(m,
+                'private final Runnable sportsRefresh=()->{if(foreground&&category.equals("Live Sports"))loadSports(true);};',
+                'private final Runnable sportsRefresh=()->{if(foreground&&category.equals("Live Sports"))loadSports(false);};',1)
+          patch(m,'ui.postDelayed(sportsRefresh,60000);','ui.postDelayed(sportsRefresh,SportsStore.TTL);',2)
+          patch(m,'Embedded players · catalogue refreshes every minute','Embedded players · catalogue auto-refreshes every hour',1)
+          patch(m,'Live events · checks for updated channels every 30 minutes while this tab is open.','Live events · catalogue auto-refreshes every hour while this tab is open. Press Refresh anytime for an immediate update.',1)
+          patch(m,
+                'for(String tab:new String[]{"Search","Home","Movies","Series","IPTV","LiveTV","Live Sports","Downloads"}){String label=tab.equals("Home")?"For you":tab.equals("Series")?"Shows":layoutLabel(tab);',
+                'for(String tab:new String[]{"Search","Home","Movies","Series","IPTV","LiveTV","Live Sports","Categories"}){String label=tab.equals("Home")?"Home":tab.equals("Series")?"Shows":layoutLabel(tab);',1)
+
+          # Android 2.0.2.
+          patch('app/build.gradle',"versionCode 38\n        versionName '2.0.1'","versionCode 39\n        versionName '2.0.2'",1)
+
+          # Windows: manual force bypasses the one-hour cache; auto timers really run hourly.
+          patch('windows/playlist.cjs',
+                "(section==='LiveTV'&&Date.now()-cached.updated<TTL)",
+                "(section==='LiveTV'&&!force&&Date.now()-cached.updated<TTL)",1)
+          patch('windows/sports.cjs',
+                "return {async get(force=false){if(cached&&clock()-cached.updated<TTL)return {...cached,stale:false};if(force){const task=forced.catch(()=>{}).then(()=>inflight?inflight.catch(()=>{}):null).then(update);forced=task;return task;}if(!inflight)",
+                "return {async get(force=false){if(force){const task=forced.catch(()=>{}).then(()=>inflight?inflight.catch(()=>{}):null).then(update);forced=task;return task;}if(cached&&clock()-cached.updated<TTL)return {...cached,stale:false};if(!inflight)",1)
+          patch('windows/ui/app.js','Live events · updated lists checked every 30 minutes.','Live events · catalogue auto-refreshes every hour. Press Refresh anytime for an immediate update.',1)
+          patch('windows/ui/app.js',
+                "if(live)liveTimer=setTimeout(()=>{if(category===section&&!document.hidden)renderPlaylist(true);},Math.max(60000,1800000-(Date.now()-snapshot.updated)));",
+                "if(live)liveTimer=setTimeout(()=>{if(category===section&&!document.hidden)renderPlaylist(false);},Math.max(60000,3600000-(Date.now()-snapshot.updated)));",1)
+          patch('windows/ui/app.js','Embedded players · updates every minute','Embedded players · catalogue auto-refreshes every hour',1)
+          patch('windows/ui/app.js',
+                "if(category==='Live Sports')liveTimer=setTimeout(()=>{if(!document.hidden)renderSports(true);},60000);",
+                "if(category==='Live Sports')liveTimer=setTimeout(()=>{if(!document.hidden)renderSports(false);},3600000);",1)
+
+          # Update regression expectations: manual refresh must fetch immediately.
+          p=Path('windows/test/sports.test.cjs'); s=p.read_text(encoding='utf-8')
+          s=s.replace("test('one-hour cache throttles forced refreshes, keeps backup API and stale disk recovery'", "test('one-hour cache throttles automatic refreshes while manual refresh bypasses TTL, keeps backup API and stale disk recovery'")
+          s=s.replace("await Promise.all([store.get(true),store.get(true),store.get(true)]);assert.equal(requests,2);now+=sports.TTL+1;await store.get();assert.equal(requests,4);", "await store.get(true);assert.equal(requests,4);now+=sports.TTL+1;await store.get();assert.equal(requests,6);")
+          s=s.replace("test('manual refresh stays cached inside the hour and refreshes after TTL'", "test('manual refresh forces a fresh catalogue inside the hour'")
+          s=s.replace("assert.equal((await store.get(true)).categories[0].events[0].title,'Revision 1');assert.equal(urls.length,1);now+=sports.TTL+1;assert.equal((await store.get(true)).categories[0].events[0].title,'Revision 2');assert.equal(urls.length,2);", "assert.equal((await store.get(true)).categories[0].events[0].title,'Revision 2');assert.equal(urls.length,2);assert.equal((await store.get()).categories[0].events[0].title,'Revision 2');assert.equal(urls.length,2);")
+          p.write_text(s,encoding='utf-8')
+
+          # Add a PPV manual-force regression to the playlist test.
+          p=Path('windows/test/playlist.test.cjs'); s=p.read_text(encoding='utf-8')
+          addition="""\ntest('Live PPV auto cache is hourly but manual refresh forces the network',async()=>{const root=await fs.mkdtemp(path.join(os.tmpdir(),'zero-ppv-force-'));let calls=0;const store=createStore(root,async()=>{calls++;return new Response(fixture);});try{await store.get('LiveTV');await store.get('LiveTV');assert.equal(calls,1);await store.get('LiveTV',true);assert.equal(calls,2);}finally{await fs.rm(root,{recursive:true,force:true});}});\n"""
+          if "Live PPV auto cache is hourly but manual refresh forces the network" not in s: s+=addition
+          p.write_text(s,encoding='utf-8')
+
+          # Windows 2.0.2 metadata and artifact name.
+          pkg=Path('windows/package.json'); data=json.loads(pkg.read_text(encoding='utf-8'));data['version']='2.0.2';data['build']['win']['artifactName']='ZeroPlay-2.0.2-Windows-x64.${ext}';pkg.write_text(json.dumps(data,indent=2)+'\n',encoding='utf-8')
+          lock=Path('windows/package-lock.json'); data=json.loads(lock.read_text(encoding='utf-8'));data['version']='2.0.2';
+          if '' in data.get('packages',{}): data['packages']['']['version']='2.0.2'
+          lock.write_text(json.dumps(data,indent=2)+'\n',encoding='utf-8')
+
+          # Release notes for the updater-visible maintenance release.
+          Path('docs/release-2.0.2.md').write_text('''# ZeroPlay 2.0.2\n\nMaintenance update for Android, Android TV, and Windows.\n\n## Changes\n- Live PPV now auto-refreshes its catalogue once per hour. The Refresh button always forces an immediate network refresh.\n- Live Sports now auto-refreshes its catalogue once per hour. The Refresh button always forces an immediate network refresh.\n- Android phone/tablet Modern UI now shows Categories in place of Downloads, matching Android TV Modern UI. Downloads remain available through the library/download flows.\n- Modern UI Home label is normalized to Home.\n- Includes the Windows updater reliability fix carried forward from 2.0.1.\n''',encoding='utf-8')
+      - name: Verify patch markers
+        run: |
+          grep -q "versionName '2.0.2'" app/build.gradle
+          grep -q '"version": "2.0.2"' windows/package.json
+          grep -q 'Live Sports.*loadSports(false)' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'Live Sports","Categories"' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q '!force&&System.currentTimeMillis' app/src/main/java/com/zerostreams/app/SportsStore.java
+          grep -q "LiveTV'&&!force" windows/playlist.cjs
+      - name: Commit patch
+        run: |
+          git config user.name "ZeroPlay CI"
+          git config user.email "actions@users.noreply.github.com"
+          git add app windows docs/release-2.0.2.md
+          git commit -m "Prepare ZeroPlay 2.0.2 refresh behavior"
+          git push origin HEAD:fix/2.0.2-refresh-modern-mobile
