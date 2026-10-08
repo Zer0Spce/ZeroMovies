@@ -20,6 +20,8 @@ jobs:
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
       OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -36,6 +38,20 @@ jobs:
           node scripts/ui-check.cjs
           node scripts/live-compat-check.cjs
           node scripts/player-exit-check.cjs
+      - name: Verify Flix layout isolation
+        shell: pwsh
+        run: |
+          $css = Get-Content ui/flix-fix.css -Raw
+          foreach ($needle in @(
+            ':root[data-layout="flix"] aside',
+            ':root[data-layout="flix"] .hero',
+            ':root[data-layout="flix"] .hero+.row-section',
+            ':root[data-layout="flix"] .cards .card:not(.landscape)'
+          )) {
+            if (-not $css.Contains($needle)) { throw "Flix layout rule missing: $needle" }
+          }
+          if ($css -notmatch 'margin-top:-72px') { throw 'Flix catalog must overlap the hero instead of leaving a dead band.' }
+          Write-Host 'Flix cinematic layout rules verified.'
       - name: Verify player controls and QR filtering
         run: |
           $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
@@ -61,6 +77,19 @@ jobs:
         run: npx electron . --smoke-test
       - name: Package portable ZIP
         run: npm run build
+      - name: Verify Authenticode signature when configured
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:CSC_LINK)) {
+            Write-Warning 'WINDOWS_CSC_LINK is not configured. This build is unsigned and Microsoft Defender SmartScreen may show an Unrecognized app warning.'
+            exit 0
+          }
+          $exe = Get-ChildItem dist/win-unpacked -Filter *.exe -File | Select-Object -First 1
+          if (-not $exe) { throw 'Packaged Windows executable not found for signature verification.' }
+          $signature = Get-AuthenticodeSignature $exe.FullName
+          Write-Host "Signature status: $($signature.Status)"
+          Write-Host "Signer: $($signature.SignerCertificate.Subject)"
+          if ($signature.Status -ne 'Valid') { throw "Windows executable signature is not valid: $($signature.Status)" }
       - name: Verify packaged Offline Player 2.0
         shell: pwsh
         run: |
