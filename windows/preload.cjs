@@ -62,7 +62,20 @@ function installSurpriseScope(){
   const root=document.documentElement;root.dataset.zeroSurpriseOrigin='0';const style=document.createElement('style');style.textContent=':root:not([data-zero-surprise-origin="1"]) [data-zero-surprise-again]{display:none!important}';document.head.appendChild(style);
   document.addEventListener('click',event=>{if(event.target.closest?.('[data-action="surprise"],[data-zero-surprise-again]'))root.dataset.zeroSurpriseOrigin='1';else if(event.target.closest?.('[data-detail]'))root.dataset.zeroSurpriseOrigin='0';},true);
 }
+function installHeaderTools(){
+  const surprise=document.querySelector('[data-action="surprise"]');if(!surprise)return;
+  let update=document.querySelector('[data-action="check-updates"]');
+  if(!update){
+    update=document.createElement('button');update.className='icon';update.dataset.action='check-updates';update.type='button';update.title='Check for updates';update.setAttribute('aria-label','Check for updates');update.textContent='⇩';surprise.insertAdjacentElement('afterend',update);
+    update.addEventListener('click',async()=>{const old=update.textContent;update.disabled=true;update.textContent='…';try{const result=await ipcRenderer.invoke('update-check');if(result?.status==='current'){update.textContent='✓';update.title='ZeroPlay is up to date';setTimeout(()=>{if(update.isConnected){update.textContent=old;update.title='Check for updates';}},2200);}else update.textContent=old;}catch{update.textContent='!';update.title='Could not check for updates';setTimeout(()=>{if(update.isConnected){update.textContent=old;update.title='Check for updates';}},2500);}finally{update.disabled=false;}});
+  }
+  if(document.querySelector('[data-action="app-fullscreen"]'))return;
+  const style=document.createElement('style');style.dataset.zeroFullscreenStyle='1';style.textContent=':root[data-app-fullscreen="1"],:root[data-app-fullscreen="1"] body{scrollbar-width:none!important}:root[data-app-fullscreen="1"]::-webkit-scrollbar,:root[data-app-fullscreen="1"] body::-webkit-scrollbar{width:0!important;height:0!important;display:none!important}';document.head.appendChild(style);
+  const full=document.createElement('button');full.className='icon';full.dataset.action='app-fullscreen';full.type='button';full.textContent='⛶';full.title='Fullscreen app';full.setAttribute('aria-label','Fullscreen app');update.insertAdjacentElement('afterend',full);
+  const sync=()=>{const active=!!document.fullscreenElement;document.documentElement.dataset.appFullscreen=active?'1':'0';full.title=active?'Exit fullscreen':'Fullscreen app';full.setAttribute('aria-label',full.title);full.textContent=active?'⛶':'⛶';};
+  full.addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{}sync();});
+  document.addEventListener('fullscreenchange',sync);sync();
+}
 window.addEventListener('DOMContentLoaded',()=>{
-  loadSettingsStyles();organizeSettings();filterLiveProviders();installSurpriseScope();new MutationObserver(()=>filterLiveProviders()).observe(document.getElementById('content'),{childList:true,subtree:true});
-  const surprise=document.querySelector('[data-action="surprise"]');if(!surprise||document.querySelector('[data-action="check-updates"]'))return;const button=document.createElement('button');button.className='icon';button.dataset.action='check-updates';button.type='button';button.title='Check for updates';button.setAttribute('aria-label','Check for updates');button.textContent='⇩';surprise.insertAdjacentElement('afterend',button);button.addEventListener('click',async()=>{const old=button.textContent;button.disabled=true;button.textContent='…';try{const result=await ipcRenderer.invoke('update-check');if(result?.status==='current'){button.textContent='✓';button.title='ZeroPlay is up to date';setTimeout(()=>{if(button.isConnected){button.textContent=old;button.title='Check for updates';}},2200);}else button.textContent=old;}catch{button.textContent='!';button.title='Could not check for updates';setTimeout(()=>{if(button.isConnected){button.textContent=old;button.title='Check for updates';}},2500);}finally{button.disabled=false;}});
+  loadSettingsStyles();organizeSettings();filterLiveProviders();installSurpriseScope();installHeaderTools();new MutationObserver(()=>filterLiveProviders()).observe(document.getElementById('content'),{childList:true,subtree:true});
 });
