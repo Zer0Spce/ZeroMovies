@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs/promises'),path=require('node:path');
 const URLS={LiveTV:'https://raw.githubusercontent.com/Zer0Spce/ZeroStreams/main/playlist.m3u',IPTV:'https://raw.githubusercontent.com/Zer0Spce/ZeroStreams/main/IPTV.m3u'};
-const TTL=1800000;
+const TTL=3600000;
 function http(value){try{const u=new URL(value);return ['http:','https:'].includes(u.protocol)&&!u.username&&!u.password&&!/[\r\n]/.test(value);}catch{return false;}}
 function headers(target,name,value){if(typeof value!=='string'||!value||value.length>2048||/[\r\n]/.test(value))return;const n={'user-agent':'User-Agent',referer:'Referer',origin:'Origin'}[name.toLowerCase()];if(n&&(n==='User-Agent'||http(value)))target[n]=value;}
 function parseHeaders(target,value){for(const pair of value.split('&')){const i=pair.indexOf('=');if(i>0)try{headers(target,decodeURIComponent(pair.slice(0,i)),decodeURIComponent(pair.slice(i+1)));}catch{}}}
