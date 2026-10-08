@@ -1,6 +1,7 @@
 name: TEMP Windows Updater 9.9.9.9
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - temp/windows-updater-9.9.9.9
