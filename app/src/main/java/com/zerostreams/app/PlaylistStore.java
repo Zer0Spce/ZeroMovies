@@ -17,7 +17,7 @@ final class PlaylistStore {
     private static File file(Context context,boolean live){return new File(context.getFilesDir(),live?"livetv.m3u":"iptv.m3u");}
     private static List<M3uPlaylist.Channel> visible(Context context,boolean live,List<M3uPlaylist.Channel> channels){
         if(live)return channels;
-        SharedPreferences prefs=context.getSharedPreferences("zero",Context.MODE_PRIVATE);boolean cignal=prefs.getBoolean("liveCignal",false),converge=prefs.getBoolean("liveConverge",true);List<M3uPlaylist.Channel> out=new ArrayList<>();
+        SharedPreferences prefs=context.getSharedPreferences("zero",Context.MODE_PRIVATE);boolean cignal=prefs.getBoolean("liveCignal",true),converge=prefs.getBoolean("liveConverge",true);List<M3uPlaylist.Channel> out=new ArrayList<>();
         for(M3uPlaylist.Channel channel:channels){String vendor=(channel.name+" "+channel.group).toLowerCase(Locale.ROOT);if(vendor.contains("cignal")&&!cignal)continue;if(vendor.contains("converge")&&!converge)continue;out.add(channel);}return out;
     }
     static Snapshot cached(Context context,boolean live) throws IOException {
