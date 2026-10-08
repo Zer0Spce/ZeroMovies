@@ -89,7 +89,6 @@ jobs:
         run: |
           $zip = Join-Path 'dist' $env:TEST_ASSET
           if (Test-Path $zip) { Remove-Item $zip -Force }
-          $source = (Resolve-Path 'dist/win-unpacked/*').Path
           $command = "Compress-Archive -Path 'dist\win-unpacked\*' -DestinationPath 'dist\$env:TEST_ASSET' -CompressionLevel Optimal -Force"
           & powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command $command
           if ($LASTEXITCODE -ne 0 -or !(Test-Path $zip)) { throw 'Windows PowerShell 5.1 failed to create the updater ZIP.' }
@@ -124,12 +123,19 @@ jobs:
           "$hash  $env:TEST_ASSET" | Set-Content 'dist/SHA256SUMS.txt' -Encoding ascii
           Write-Host "SHA256 $hash"
 
-      - name: Replace temporary release with cache-busting asset
+      - name: Publish cache-busting temporary release asset
         shell: pwsh
         working-directory: ${{ github.workspace }}
         run: |
           gh release view "v$env:TEST_VERSION" --repo "$env:GITHUB_REPOSITORY" *> $null
-          if ($LASTEXITCODE -ne 0) { throw "Temporary release v$env:TEST_VERSION does not exist." }
+          if ($LASTEXITCODE -ne 0) {
+            gh release create "v$env:TEST_VERSION" `
+              --repo "$env:GITHUB_REPOSITORY" `
+              --target "$env:GITHUB_SHA" `
+              --title "TEMP Windows Updater Test 9.9.9.9" `
+              --notes "TEMPORARY Windows-only updater validation release. No feature changes. Delete this release and tag immediately after the updater test is confirmed."
+            if ($LASTEXITCODE -ne 0) { throw 'Could not recreate temporary updater release.' }
+          }
           gh release delete-asset "v$env:TEST_VERSION" "ZeroPlay-$env:TEST_VERSION-Windows-x64.zip" -y --repo "$env:GITHUB_REPOSITORY" 2>$null
           gh release delete-asset "v$env:TEST_VERSION" "$env:TEST_ASSET" -y --repo "$env:GITHUB_REPOSITORY" 2>$null
           gh release delete-asset "v$env:TEST_VERSION" "SHA256SUMS.txt" -y --repo "$env:GITHUB_REPOSITORY" 2>$null
@@ -137,9 +143,10 @@ jobs:
             "windows/dist/$env:TEST_ASSET" `
             "windows/dist/SHA256SUMS.txt" `
             --repo "$env:GITHUB_REPOSITORY"
+          if ($LASTEXITCODE -ne 0) { throw 'Could not upload validated updater assets.' }
 
       - name: Summary
         shell: pwsh
         run: |
-          Write-Host 'Temporary v9.9.9.9 package replaced with Windows PowerShell 5.1-compatible ZIP.'
+          Write-Host 'Temporary v9.9.9.9 package published with Windows PowerShell 5.1-compatible ZIP.'
           Write-Host "Published cache-busting asset: $env:TEST_ASSET"
