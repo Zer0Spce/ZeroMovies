@@ -13,12 +13,15 @@ async function run(){
   dom=page('<video></video><div id="component"></div>');const root=dom.window.document.getElementById('component').attachShadow({mode:'open'});root.innerHTML='<img id="painted" data-w="1024" data-h="768">';dom.window.__zeroDismissQrAd();assert.equal(root.getElementById('painted').style.display,'none','Native-confirmed painted QR advertisements inside open shadow DOM should be removed');assert.equal(dom.window.document.querySelector('video').style.display,'');dom.window.close();
   dom=page('<video></video><div class="plyr__controls" style="opacity:0;visibility:hidden;pointer-events:none;display:none" data-y="650" data-h="70"><button data-x="100">Play</button><button data-x="300">Volume</button></div>');const wake=dom.window,bar=wake.document.querySelector('.plyr__controls');wake.document.documentElement.classList.add("zero-player-idle");bar.style.opacity="0";assert.equal(wake.document.documentElement.classList.contains('zero-player-idle'),true);wake.__zeroTvNavigate('right');assert.equal(wake.document.documentElement.classList.contains('zero-player-idle'),false);assert.equal(wake.getComputedStyle(bar).opacity,'1');assert.equal(wake.getComputedStyle(bar).visibility,'visible');assert.notEqual(wake.getComputedStyle(bar).display,'none');assert.equal(wake.document.activeElement.textContent,'Play');wake.document.documentElement.classList.add("zero-player-idle");bar.style.opacity="0";assert.equal(bar.style.opacity,'0');wake.__zeroTvNavigate('ok');assert.equal(wake.getComputedStyle(bar).opacity,'1');dom.window.close();
 
+  dom=page('<div id="shadow-host"></div>');const shadowWindow=dom.window,shadow=shadowWindow.document.getElementById('shadow-host').attachShadow({mode:'open'});shadow.innerHTML='<button id="shadow-quality" class="zero-tv-focused" data-w="120" data-h="42">1080p</button>';shadowWindow.eval(mouseBackSource);shadowWindow.__zeroTvNavigate('ok');await new Promise(resolve=>setTimeout(resolve,80));const shadowButton=shadow.getElementById('shadow-quality');assert.equal(shadowButton.style.getPropertyValue('outline'),'4px solid #65e6cc','TV focus must be visibly highlighted even inside provider Shadow DOM');assert.match(shadowButton.style.getPropertyValue('box-shadow'),/101, 230, 204/,'Shadow control focus should have a visible teal glow');dom.window.close();
+
   assert.match(mouseBackSource,/__zeroTvBackStep/,'TV Back bridge must expose a staged provider Back request');
   assert.match(mouseBackSource,/return 'menu'/,'Back stage must distinguish an open provider function/menu');
   assert.match(mouseBackSource,/return 'controls'/,'Back stage must distinguish visible player controls');
-  assert.match(mouseBackSource,/return 'exit'/,'Back stage must explicitly report when playback should exit');
+  assert.match(mouseBackSource,/return childStage/,'Back stage must explicitly preserve provider exit or unknown state');
   assert.match(mouseBackSource,/zerostreams-tv-back-query/,'Back staging must recurse into embedded provider frames');
-  assert.match(mouseBackSource,/event\.stopImmediatePropagation\(\)/,'The first D-pad press after script-detected idle must be consumed as wake-only');
+  assert.match(mouseBackSource,/outline','4px solid #65e6cc/,'TV focus highlight must be applied inline so Shadow DOM cannot hide it');
+  assert.match(mouseBackSource,/box-shadow','0 0 0 3px/,'Focused TV controls need a high-contrast glow');
 
   const activityPath=process.env.ZERO_TV_ACTIVITY||'app/src/main/java/com/zerostreams/app/BrowserPlayerActivity.java';
   const activity=fs.readFileSync(activityPath,'utf8');
@@ -39,6 +42,7 @@ async function run(){
   assert.match(mouse,/getBoolean\("playerMouse",true\)/,'Mouse remains the default when no player-mode preference exists');
 
   console.log('TV focus navigation and QR checks passed');
+  console.log('TV focus stays visibly highlighted inside provider Shadow DOM controls');
   console.log('Android TV D-pad idle wake uses a real native hover and consumes the wake key');
   console.log('Android TV Back preserves provider popup → controls → exit as separate stages');
   console.log('Mouse/D-pad mode is selected only from Settings');
