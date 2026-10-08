@@ -16,10 +16,21 @@ const speedMenu=document.getElementById('speed-menu');
 const controls=document.getElementById('controls');
 const topbar=document.getElementById('topbar');
 const wakeSurface=document.getElementById('wake-surface');
-let cues=[],cueIndex=-1,dragging=false,idleTimer,fill=false;
+const controlsToggle=document.getElementById('controls-toggle');
+let cues=[],cueIndex=-1,dragging=false,idleTimer,fill=false,manualControlsHidden=false;
 const CUE_TIME=/^\s*((?:\d{1,2}:)?\d{2}:\d{2}(?:[.,]\d{1,3})?)\s*-->\s*((?:\d{1,2}:)?\d{2}:\d{2}(?:[.,]\d{1,3})?)(?:\s+.*)?\s*$/;
 
-// Reliability-first: Offline Player controls never auto-hide.
+// Reliability-first: keep the compositor-safe controls, with a manual hide/show fallback.
+function setManualControlsHidden(hidden){
+  manualControlsHidden=Boolean(hidden);
+  document.body.classList.toggle('manual-controls-hidden',manualControlsHidden);
+  if(controlsToggle){
+    controlsToggle.setAttribute('aria-pressed',manualControlsHidden?'true':'false');
+    controlsToggle.setAttribute('aria-label',manualControlsHidden?'Show player controls':'Hide player controls');
+    controlsToggle.title=manualControlsHidden?'Show player controls':'Hide player controls';
+  }
+}
+function toggleManualControls(){setManualControlsHidden(!manualControlsHidden);}
 function hideUi(){
   document.body.classList.remove('hidden-ui');
   document.documentElement.style.cursor='';
@@ -74,8 +85,10 @@ function updateTime(){const duration=video.duration||0,current=video.currentTime
 function setPlaying(){document.body.classList.toggle('playing',!video.paused);play.setAttribute('aria-label',video.paused?'Play':'Pause');wake();}
 function setMuted(){document.body.classList.toggle('muted',video.muted||video.volume===0);mute.setAttribute('aria-label',video.muted?'Unmute':'Mute');volume.value=String(video.muted?0:video.volume);}
 function togglePlay(){video.paused?video.play().catch(()=>{}):video.pause();}
-function isUiTarget(target){return Boolean(target?.closest?.('#topbar,#controls,.menu,button,input,select,a'));}
+function isUiTarget(target){return Boolean(target?.closest?.('#topbar,#controls,#controls-toggle,.menu,button,input,select,a'));}
 
+if(controlsToggle)controlsToggle.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();toggleManualControls();});
+setManualControlsHidden(false);
 play.addEventListener('click',togglePlay);
 stage.addEventListener('click',event=>{if(!isUiTarget(event.target))togglePlay();});
 stage.addEventListener('dblclick',event=>{if(!isUiTarget(event.target))toggleFullscreen();});
