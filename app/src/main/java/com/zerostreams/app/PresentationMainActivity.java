@@ -20,6 +20,27 @@ public class PresentationMainActivity extends CategoryMainActivity {
         super.onCreate(state);
     }
 
+    /** 2.0.1: Modern UI calls the landing page Home and exposes Categories on TV. */
+    @Override void addGoogleNavigation(LinearLayout body){
+        super.addGoogleNavigation(body);
+        Button downloads=null;
+        for(Map.Entry<Button,String> entry:new ArrayList<>(modernTabs.entrySet())){
+            Button button=entry.getKey();String tab=entry.getValue();
+            if("Home".equals(tab))button.setText("Home");
+            if(BuildConfig.TV&&"Downloads".equals(tab))downloads=button;
+        }
+        if(downloads!=null){
+            modernTabs.remove(downloads);
+            downloads.setText("Categories");
+            downloads.setContentDescription("Categories");
+            downloads.setOnClickListener(v->layoutOpen("Categories"));
+            Button categories=downloads;
+            downloads.setOnFocusChangeListener((v,f)->styleModernTab(categories,"Categories",f));
+            modernTabs.put(downloads,"Categories");
+            styleModernTab(downloads,"Categories",false);
+        }
+    }
+
     /**
      * Preserve the proven v1.5 Android TV navigation path.
      * Main/home navigation is handled by Android's normal focus dispatch with no
