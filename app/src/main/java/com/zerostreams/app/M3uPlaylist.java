@@ -9,7 +9,7 @@ import java.util.regex.*;
 final class M3uPlaylist {
     static final String LIVE_URL = "https://raw.githubusercontent.com/Zer0Spce/ZeroStreams/main/playlist.m3u";
     static final String IPTV_URL = "https://raw.githubusercontent.com/Zer0Spce/ZeroStreams/main/IPTV.m3u";
-    static final long LIVE_TTL = 30 * 60 * 1000L;
+    static final long LIVE_TTL = 60 * 60 * 1000L;
     private static final Pattern ATTRIBUTE = Pattern.compile("([\\w-]+)\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)'|([^\\s,]+))");
     static final class Channel {
         final String id, name, group, logo, url, mime, drmType, drmKey;
@@ -35,7 +35,6 @@ final class M3uPlaylist {
             while((raw=reader.readLine())!=null) {
                 String line=raw.trim();
                 if(line.startsWith("#EXTINF:")) {
-                    // Reset every field even for decorative/incomplete EXTINF lines.
                     name="";id="";group="";logo="";mime="";drmType="";drmKey="";headers.clear();entry=false;
                     int comma=infoComma(line); if(comma<0)continue;
                     Map<String,String> attrs=new HashMap<>();Matcher m=ATTRIBUTE.matcher(line.substring(0,comma));
@@ -65,7 +64,6 @@ final class M3uPlaylist {
                         if(path.endsWith(".mpd"))mime="application/dash+xml";else if(path.endsWith(".m3u8"))mime="application/x-mpegURL";
                     }
                     String channelId=id.isEmpty()?Integer.toHexString((name+"|"+url).hashCode()):id;
-                    // The same TVG id may legitimately have several stream variants.
                     if(!result.containsKey(name+"|"+url))result.put(name+"|"+url,new Channel(channelId,name,group.isEmpty()?"Channels":group,logo,url,mime,drmType,drmKey,headers));
                     entry=false;
                     if(result.size()>=3000)break;

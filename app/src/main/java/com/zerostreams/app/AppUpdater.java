@@ -4,6 +4,7 @@ import android.app.*;
 import android.content.*;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.*;
 import android.provider.Settings;
@@ -80,18 +81,31 @@ final class AppUpdater implements Application.ActivityLifecycleCallbacks {
 
     private void show(Release r){
         if(activity.isFinishing())return;if(dialog!=null&&dialog.isShowing())dialog.dismiss();
-        int pad=dp(20);LinearLayout box=new LinearLayout(activity);box.setOrientation(LinearLayout.VERTICAL);box.setPadding(pad,pad,pad,pad);
-        TextView eyebrow=text("ZEROPLAY UPDATE",11,Color.rgb(101,230,204));eyebrow.setLetterSpacing(.12f);box.addView(eyebrow);
-        TextView title=text("Update available",24,Color.WHITE);title.setTypeface(null,Typeface.BOLD);box.addView(title);
-        TextView versions=text("v"+BuildConfig.VERSION_NAME+"  →  v"+r.version,14,Color.rgb(190,198,215));versions.setPadding(0,dp(4),0,dp(10));box.addView(versions);
-        TextView warning=text("⚠ Android may require permission to install updates from ZeroPlay. If needed, Update will open the exact ‘Install unknown apps’ page for ZeroPlay. Enable it once, return here, and the update will continue automatically.",12,Color.rgb(255,201,77));warning.setPadding(0,0,0,dp(12));box.addView(warning);
-        TextView ch=text(r.changelog,13,Color.rgb(225,229,238));ch.setTextIsSelectable(true);ScrollView sc=new ScrollView(activity);sc.addView(ch);box.addView(sc,new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?205:240)));
-        ProgressBar progress=new ProgressBar(activity,null,android.R.attr.progressBarStyleHorizontal);progress.setMax(100);progress.setVisibility(View.GONE);box.addView(progress,new LinearLayout.LayoutParams(-1,dp(10)));
-        TextView state=text("",12,Color.rgb(190,198,215));state.setPadding(0,dp(8),0,0);box.addView(state);
+        boolean light="light".equals(prefs.getString("theme","dark"));
+        int surface=light?Color.rgb(250,251,253):Color.rgb(20,22,30),ink=light?Color.rgb(26,33,46):Color.rgb(244,245,250),muted=light?Color.rgb(91,101,117):Color.rgb(190,198,215),accent=light?Color.rgb(10,113,94):Color.rgb(101,230,204);
+        int pad=dp(22);LinearLayout box=new LinearLayout(activity);box.setOrientation(LinearLayout.VERTICAL);box.setPadding(pad,pad,pad,pad);
+        TextView eyebrow=text("ZEROPLAY UPDATE",11,accent);eyebrow.setLetterSpacing(.14f);box.addView(eyebrow);
+        TextView title=text("Update available",BuildConfig.TV?26:24,ink);title.setTypeface(null,Typeface.BOLD);title.setPadding(0,dp(5),0,0);box.addView(title);
+        TextView versions=text("v"+BuildConfig.VERSION_NAME+"  →  v"+r.version,14,muted);versions.setPadding(0,dp(5),0,dp(12));box.addView(versions);
+        TextView warning=text("Android may ask once for permission to install updates from ZeroPlay. If needed, Update opens the exact system permission page and continues automatically when you return.",12,light?Color.rgb(145,92,0):Color.rgb(255,201,77));warning.setPadding(0,0,0,dp(14));box.addView(warning);
+        TextView changeLabel=text("WHAT'S NEW",11,accent);changeLabel.setTypeface(null,Typeface.BOLD);changeLabel.setPadding(0,0,0,dp(6));box.addView(changeLabel);
+        TextView ch=text(r.changelog,13,ink);ch.setTextIsSelectable(true);ch.setLineSpacing(0,1.12f);ScrollView sc=new ScrollView(activity);sc.setFillViewport(true);sc.addView(ch);box.addView(sc,new LinearLayout.LayoutParams(-1,dp(BuildConfig.TV?205:220)));
+        ProgressBar progress=new ProgressBar(activity,null,android.R.attr.progressBarStyleHorizontal);progress.setMax(100);progress.setVisibility(View.GONE);LinearLayout.LayoutParams pp=new LinearLayout.LayoutParams(-1,dp(8));pp.setMargins(0,dp(12),0,0);box.addView(progress,pp);
+        TextView state=text("",12,muted);state.setPadding(0,dp(8),0,0);box.addView(state);
         dialog=new AlertDialog.Builder(activity).setView(box).setNegativeButton("Cancel",null).setNeutralButton("Skip this update",(d,w)->prefs.edit().putString("skippedUpdateVersion",r.version).apply()).setPositiveButton("Update",null).create();
-        dialog.setOnShowListener(x->{Button update=dialog.getButton(AlertDialog.BUTTON_POSITIVE);update.setOnClickListener(v->begin(r,progress,state,update));if(BuildConfig.TV)update.requestFocus();});
-        dialog.show();Window w=dialog.getWindow();if(w!=null){w.setBackgroundDrawableResource(android.R.color.transparent);w.setLayout(dp(BuildConfig.TV?620:Math.min(560,(int)(activity.getResources().getDisplayMetrics().widthPixels/activity.getResources().getDisplayMetrics().density)-28)),-2);}
+        dialog.setOnShowListener(x->{
+            Button update=dialog.getButton(AlertDialog.BUTTON_POSITIVE),cancel=dialog.getButton(AlertDialog.BUTTON_NEGATIVE),skip=dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+            styleButton(update,accent,light?Color.rgb(5,52,44):Color.rgb(6,24,22));styleButton(cancel,light?Color.rgb(228,233,240):Color.rgb(43,47,59),ink);styleButton(skip,light?Color.rgb(228,233,240):Color.rgb(43,47,59),ink);
+            update.setOnClickListener(v->begin(r,progress,state,update));if(BuildConfig.TV)update.requestFocus();
+        });
+        dialog.show();Window w=dialog.getWindow();if(w!=null){
+            GradientDrawable bg=new GradientDrawable();bg.setColor(surface);bg.setCornerRadius(dp(18));bg.setStroke(dp(1),light?0x22000000:0x22FFFFFF);w.setBackgroundDrawable(bg);w.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);WindowManager.LayoutParams attrs=w.getAttributes();attrs.dimAmount=.76f;w.setAttributes(attrs);
+            int screen=activity.getResources().getDisplayMetrics().widthPixels;int max=dp(BuildConfig.TV?640:520);w.setLayout(Math.min((int)(screen*.92f),max),WindowManager.LayoutParams.WRAP_CONTENT);
+        }
     }
+
+    private void styleButton(Button button,int fill,int text){if(button==null)return;button.setAllCaps(false);button.setTextColor(text);button.setTextSize(BuildConfig.TV?15:14);button.setMinWidth(0);button.setMinimumWidth(0);button.setPadding(dp(16),dp(7),dp(16),dp(7));button.setBackground(buttonShape(fill,0));button.setOnFocusChangeListener((v,f)->v.setBackground(buttonShape(fill,f?Color.WHITE:0)));}
+    private GradientDrawable buttonShape(int fill,int border){GradientDrawable d=new GradientDrawable();d.setColor(fill);d.setCornerRadius(dp(10));if(border!=0)d.setStroke(dp(2),border);return d;}
 
     private void begin(Release r,ProgressBar progress,TextView state,Button button){
         if(downloading)return;

@@ -41,7 +41,7 @@ public class BrowserPlayerActivity extends Activity {
         LinearLayout controls=new LinearLayout(this);
         Button back=new Button(this);
         back.setText("Back");
-        back.setOnClickListener(v->finish());
+        back.setOnClickListener(v->{if(reader)finish();else confirmExit();});
         controls.addView(back);
         Button reload=new Button(this);
         reload.setText(reader?"Reload reader":"Reload player");
@@ -108,7 +108,7 @@ public class BrowserPlayerActivity extends Activity {
 
         web.setWebViewClient(new WebViewClient(){
             @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest request){
-                if(tvPlayer&&request.isForMainFrame()&&request.hasGesture()&&java.util.Arrays.asList("vidstuck.xyz","vidsrc.sh").contains(request.getUrl().getHost())&&!String.valueOf(request.getUrl().getPath()).startsWith("/embed/")){finish();return true;}
+                if(tvPlayer&&request.isForMainFrame()&&request.hasGesture()&&java.util.Arrays.asList("vidstuck.xyz","vidsrc.sh").contains(request.getUrl().getHost())&&!String.valueOf(request.getUrl().getPath()).startsWith("/embed/")){confirmExit();return true;}
                 return (blockAds&&AdBlockRules.blocks(request.getUrl().getHost())) || !"https".equals(request.getUrl().getScheme()) || (request.isForMainFrame()&&!PlaybackSources.trusted(request.getUrl().toString()));
             }
             @Override public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest request){
@@ -182,14 +182,10 @@ public class BrowserPlayerActivity extends Activity {
 
     private void sendTvNavigation(String direction){
         if(web==null||direction==null)return;
-        // Exactly one route owns D-pad navigation. The injected controller then
-        // descends through provider frames itself; native code never guesses an iframe.
         web.evaluateJavascript("if(window.__zeroTvNavigate)window.__zeroTvNavigate('"+direction+"');",null);
     }
 
     private void wakeDpadControls(){
-        // Keep Mouse mode completely separate. D-pad mode only gets the native
-        // hover pulse that previously proved reliable at waking provider controls.
         wakeControls();
         if(web==null||web.getWidth()<=0||web.getHeight()<=0)return;
         long now=android.os.SystemClock.uptimeMillis();
@@ -230,6 +226,7 @@ public class BrowserPlayerActivity extends Activity {
         web.evaluateJavascript("if(window.__zeroTvWake)window.__zeroTvWake();else if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();",null);
     }
 
+    private void confirmExit(){ExitConfirmation.show(this,"Exit playback?","Leave this movie or episode and return to ZeroPlay?",this::finish);}
     private String jsValue(String value){if(value==null)return "";return value.replace("\"","").trim();}
     private void resolveTvBack(String stage){
         tvBackRequesting=false;
@@ -240,7 +237,7 @@ public class BrowserPlayerActivity extends Activity {
         }
         if("exit".equals(stage)){
             if(mouse!=null)mouse.stop();
-            finish();
+            confirmExit();
         }
     }
     private void pollTvBackResult(int token,int attempt){
@@ -250,8 +247,6 @@ public class BrowserPlayerActivity extends Activity {
             String result=jsValue(value);
             if("menu".equals(result)||"controls".equals(result)||"exit".equals(result)){resolveTvBack(result);return;}
             if(attempt>=14){
-                // Never dump the user out of playback because an embedded provider
-                // was slow to answer. A later Back can try again.
                 tvBackRequesting=false;
                 wakeControls();
                 return;
@@ -277,7 +272,7 @@ public class BrowserPlayerActivity extends Activity {
     private void installPlayerExitListener(){
         if(!androidx.webkit.WebViewFeature.isFeatureSupported(androidx.webkit.WebViewFeature.WEB_MESSAGE_LISTENER))return;
         androidx.webkit.WebViewCompat.addWebMessageListener(web,"ZeroPlayer",new java.util.HashSet<>(java.util.Arrays.asList(PlaybackSources.ORIGINS)),(view,message,origin,mainFrame,reply)->{
-            if(mainFrame&&PlaybackSources.trusted(origin.toString())&&"back".equals(message.getData()))finish();
+            if(mainFrame&&PlaybackSources.trusted(origin.toString())&&"back".equals(message.getData()))confirmExit();
         });
     }
 
@@ -326,9 +321,10 @@ public class BrowserPlayerActivity extends Activity {
             else super.onBackPressed();
             return;
         }
+        if(fullscreen!=null){closeFullscreen();return;}
         if(tvPlayer){requestTvBackStep();return;}
         if(mouse!=null)mouse.stop();
-        finish();
+        confirmExit();
     }
 
     @Override protected void onPause(){
