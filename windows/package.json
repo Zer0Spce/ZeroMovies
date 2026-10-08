@@ -38,7 +38,7 @@
       "target": [
         "zip"
       ],
-      "artifactName": "ZeroPlay-2.0.3-Windows-x64.${ext}",
+      "artifactName": "ZeroPlay-2.1-Windows-x64.${ext}",
       "icon": "assets/icon.ico"
     },
     "asar": true,
@@ -46,7 +46,6 @@
       "ui/offline-player.html",
       "ui/offline-player.css",
       "ui/offline-player.js"
-    ],
-    "artifactName": "ZeroPlay-2.1-Windows-x64.${ext}"
+    ]
   }
 }
