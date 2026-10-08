@@ -54,7 +54,7 @@ jobs:
           apk=app/build/outputs/apk/tv/release/app-tv-release.apk
           test -s "$apk"
           "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='9.9.9.9'"
-          "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionCode='999999'"
+          "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionCode='38'"
           ! "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | grep -q application-debuggable
           "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose "$apk"
           mkdir -p release-assets
@@ -151,4 +151,4 @@ jobs:
             --repo Zer0Spce/ZeroPlay \
             --target "${GITHUB_SHA}" \
             --title "ZeroPlay v9.9.9 · TEMPORARY UPDATER VALIDATION" \
-            --notes "TEMPORARY updater validation release. Windows and Android TV only. Same ZeroPlay 2.0.1 app contents with placeholder version markers for updater replacement testing. Windows ZeroPlay.exe File/Product Version: 9.9.9.9. Android TV versionName: 9.9.9.9. This release will be deleted after updater validation is confirmed."
+            --notes "TEMPORARY updater validation release. Windows and Android TV only. Same ZeroPlay 2.0.1 app contents with placeholder version markers for updater replacement testing. Windows ZeroPlay.exe File/Product Version: 9.9.9.9. Android TV versionName: 9.9.9.9 (versionCode stays 38 so the real 2.0.1 APK can be restored without a version-code downgrade). This release will be deleted after updater validation is confirmed."
