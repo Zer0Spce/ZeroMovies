@@ -53,6 +53,45 @@
     return visibleFrames().some(frame=>{const r=frame.getBoundingClientRect();return r.width>=innerWidth*.45&&r.height>=innerHeight*.45;});
   }
 
+  // Main-document CSS cannot style controls inside a provider Shadow DOM.
+  // Mirror the TV focus class as an inline highlight so the selected control is
+  // always visible, even inside nested/shadow player components.
+  const HIGHLIGHT_PROPS=['outline','outline-offset','border-radius','box-shadow','filter'];
+  let highlighted=null, savedHighlight=[];
+  function clearHighlight(){
+    if(!highlighted)return;
+    for(const [name,value,priority] of savedHighlight){
+      if(value)highlighted.style.setProperty(name,value,priority);
+      else highlighted.style.removeProperty(name);
+    }
+    highlighted=null;savedHighlight=[];
+  }
+  function applyHighlight(node){
+    if(!node||!visible(node)){clearHighlight();return;}
+    if(node===highlighted)return;
+    clearHighlight();
+    highlighted=node;
+    savedHighlight=HIGHLIGHT_PROPS.map(name=>[name,node.style.getPropertyValue(name),node.style.getPropertyPriority(name)]);
+    node.style.setProperty('outline','4px solid #65e6cc','important');
+    node.style.setProperty('outline-offset','4px','important');
+    node.style.setProperty('border-radius','9px','important');
+    node.style.setProperty('box-shadow','0 0 0 3px rgba(101,230,204,.42),0 0 24px rgba(101,230,204,.9)','important');
+    node.style.setProperty('filter','brightness(1.22)','important');
+  }
+  function syncHighlight(){
+    const selected=all('.zero-tv-focused').filter(visible).pop()||null;
+    applyHighlight(selected);
+  }
+  const originalTvNavigate=typeof window.__zeroTvNavigate==='function'?window.__zeroTvNavigate:null;
+  if(originalTvNavigate){
+    window.__zeroTvNavigate=function(direction,fromChild=null){
+      const result=originalTvNavigate(direction,fromChild);
+      try{requestAnimationFrame(syncHighlight);}catch(_){setTimeout(syncHighlight,0);}
+      setTimeout(syncHighlight,50);
+      return result;
+    };
+  }
+
   function expandedToggle(){
     return all('[aria-expanded="true"]').reverse().find(node=>{
       if(!visible(node))return false;
@@ -83,6 +122,7 @@
     return true;
   }
   function hideLocalControls(){
+    clearHighlight();
     if(typeof window.__zeroHidePlayerControls==='function')window.__zeroHidePlayerControls();
     else document.documentElement.classList.add('zero-back-hide','zero-player-idle');
   }
