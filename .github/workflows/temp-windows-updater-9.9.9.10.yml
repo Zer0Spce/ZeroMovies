@@ -1,0 +1,123 @@
+name: TEMP Windows Updater 9.9.9.10
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - temp/windows-updater-9.9.9.10
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temp-windows-updater-9.9.9.10
+  cancel-in-progress: true
+
+env:
+  TEST_VERSION: 9.9.9.10
+
+jobs:
+  windows:
+    name: Build temporary Windows updater package
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Windows tests
+        run: npm test
+
+      - name: Apply temporary packaged version only
+        shell: pwsh
+        run: |
+          $pkgPath = 'package.json'
+          $pkg = Get-Content $pkgPath -Raw | ConvertFrom-Json
+          $pkg.version = $env:TEST_VERSION
+          $pkg.build.win.artifactName = "ZeroPlay-$env:TEST_VERSION-Windows-x64.${ext}"
+          $pkg | ConvertTo-Json -Depth 20 | Set-Content $pkgPath -Encoding UTF8
+          Write-Host "Temporary runner package version set to $env:TEST_VERSION"
+
+      - name: Configure bundled keys
+        run: npm run prepare-config
+
+      - name: Build standalone ZeroPlayUpdater.exe
+        shell: pwsh
+        run: |
+          dotnet publish updater-helper/ZeroPlayUpdater.csproj -c Release -r win-x64 --self-contained true -o updater-helper/publish
+          Copy-Item updater-helper/publish/ZeroPlayUpdater.exe ./ZeroPlayUpdater.exe -Force
+          if (!(Test-Path './ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe was not created.' }
+
+      - name: Smoke test Windows app
+        run: npx electron . --smoke-test
+
+      - name: Build temporary portable package
+        run: npx electron-builder --win --x64 --publish never
+
+      - name: Verify package and embedded version
+        shell: pwsh
+        run: |
+          $zip = "dist/ZeroPlay-$env:TEST_VERSION-Windows-x64.zip"
+          if (!(Test-Path $zip)) { throw "Temporary Windows ZIP was not created: $zip" }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlay.exe')) { throw 'ZeroPlay.exe missing.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe missing.' }
+          if (!(Test-Path 'dist/win-unpacked/resources/app.asar')) { throw 'app.asar missing.' }
+          $verify = 'dist/verify-asar'
+          if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
+          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          $embedded = Get-Content "$verify/package.json" -Raw | ConvertFrom-Json
+          if ($embedded.version -ne $env:TEST_VERSION) { throw "Expected embedded version $env:TEST_VERSION, got $($embedded.version)" }
+          Remove-Item $verify -Recurse -Force
+          Write-Host "Verified temporary Windows package version $env:TEST_VERSION"
+
+      - name: Create updater checksum
+        shell: pwsh
+        run: |
+          $name = "ZeroPlay-$env:TEST_VERSION-Windows-x64.zip"
+          $hash = (Get-FileHash "dist/$name" -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  $name" | Set-Content 'dist/SHA256SUMS.txt' -Encoding ascii
+          Get-Content 'dist/SHA256SUMS.txt'
+
+      - name: Refuse to overwrite an existing temporary release
+        shell: pwsh
+        run: |
+          gh release view "v$env:TEST_VERSION" --repo "$env:GITHUB_REPOSITORY" *> $null
+          if ($LASTEXITCODE -eq 0) { throw "Release v$env:TEST_VERSION already exists. Refusing to overwrite it." }
+          exit 0
+
+      - name: Publish temporary updater release
+        shell: pwsh
+        run: |
+          $name = "ZeroPlay-$env:TEST_VERSION-Windows-x64.zip"
+          gh release create "v$env:TEST_VERSION" "dist/$name" 'dist/SHA256SUMS.txt' --repo "$env:GITHUB_REPOSITORY" --target "$env:GITHUB_SHA" --title "ZeroPlay v$env:TEST_VERSION" --notes "Temporary Windows-only updater validation package. Functionally based on the current ZeroPlay 2.1 Windows build; the packaged app version is intentionally changed to $env:TEST_VERSION so the in-app updater detects it. This release will be deleted after validation."
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-${{ env.TEST_VERSION }}-Windows-Updater-Temporary
+          path: |
+            windows/dist/ZeroPlay-${{ env.TEST_VERSION }}-Windows-x64.zip
+            windows/dist/SHA256SUMS.txt
+          if-no-files-found: error
+          compression-level: 0
