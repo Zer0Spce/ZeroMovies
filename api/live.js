@@ -3,6 +3,10 @@ const PLAYLISTS={ppv:'https://raw.githubusercontent.com/Zer0Spce/ZeroStreams/mai
 const SPORTS_PRIMARY='https://api.ppv.st';
 
 function httpsUrl(value){try{const u=new URL(String(value||''));return u.protocol==='https:'&&!u.username&&!u.password?u.href:'';}catch{return '';}}
+function parseClearKeys(value){
+  const out={};for(const pair of String(value||'').split(',')){const [kid,key]=pair.trim().split(':');if(/^[0-9a-f]{32}$/i.test(kid||'')&&/^[0-9a-f]{32}$/i.test(key||''))out[kid.toLowerCase()]=key.toLowerCase();}
+  return out;
+}
 function parseM3u(text){
   if(typeof text!=='string'||text.length>5_000_000||!text.replace(/^\uFEFF/,'').trim().startsWith('#EXTM3U'))throw Error('Invalid playlist');
   const rows=[];let current=null;
@@ -11,11 +15,23 @@ function parseM3u(text){
     if(line.startsWith('#EXTINF:')){
       const comma=line.indexOf(',');if(comma<0){current=null;continue;}
       const attrs={};for(const m of line.slice(0,comma).matchAll(/([\w-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s,]+))/g))attrs[m[1].toLowerCase()]=m[2]??m[3]??m[4];
-      current={name:(line.slice(comma+1).trim()||attrs['tvg-name']||'Live channel').slice(0,240),group:(attrs['group-title']||'Channels').slice(0,120),logo:httpsUrl(attrs['tvg-logo']),url:'',browserPlayable:true};
+      current={name:(line.slice(comma+1).trim()||attrs['tvg-name']||'Live channel').slice(0,240),group:(attrs['group-title']||'Channels').slice(0,120),logo:httpsUrl(attrs['tvg-logo']),url:'',mime:'',drm:'',clearKeys:{},requiresHeaders:false,browserPlayable:true};
     }else if(current&&line.startsWith('#EXTGRP:'))current.group=(line.slice(8).trim()||'Channels').slice(0,120);
-    else if(current&&(line.startsWith('#EXTVLCOPT:')||line.startsWith('#KODIPROP:')))current.browserPlayable=false;
-    else if(current&&!line.startsWith('#')){
-      const rawUrl=line.split('|')[0],url=httpsUrl(rawUrl);if(url){current.url=url;if(line.includes('|'))current.browserPlayable=false;rows.push(current);}current=null;if(rows.length>=2500)break;
+    else if(current&&line.startsWith('#EXTVLCOPT:'))current.requiresHeaders=true;
+    else if(current&&line.startsWith('#KODIPROP:')){
+      const eq=line.indexOf('='),name=line.slice(10,eq).trim().toLowerCase(),value=line.slice(eq+1).trim();
+      if(name.endsWith('.manifest_type'))current.mime=value==='mpd'?'application/dash+xml':value==='hls'?'application/x-mpegurl':'';
+      else if(name.endsWith('.license_type'))current.drm=value.toLowerCase().includes('clearkey')?'clearkey':value.toLowerCase();
+      else if(name.endsWith('.license_key'))current.clearKeys=parseClearKeys(value);
+      else if(name.endsWith('.stream_headers')||name.endsWith('.common_headers'))current.requiresHeaders=true;
+    }else if(current&&!line.startsWith('#')){
+      const rawUrl=line.split('|')[0],url=httpsUrl(rawUrl);if(url){
+        current.url=url;if(line.includes('|'))current.requiresHeaders=true;
+        if(!current.mime){const p=new URL(url).pathname.toLowerCase();if(p.endsWith('.mpd'))current.mime='application/dash+xml';else if(p.endsWith('.m3u8'))current.mime='application/x-mpegurl';}
+        const drmOk=!current.drm||(current.drm==='clearkey'&&Object.keys(current.clearKeys).length>0);
+        current.browserPlayable=!current.requiresHeaders&&drmOk;
+        rows.push(current);
+      }current=null;if(rows.length>=2500)break;
     }
   }
   return rows;
@@ -48,3 +64,4 @@ module.exports=async function handler(req,res){
     const channels=parseM3u(await getText(PLAYLISTS[kind]));return res.status(200).json({kind,channels});
   }catch(error){return res.status(502).json({error:error?.message||'Live service unavailable'});}
 };
+module.exports.parseM3u=parseM3u;module.exports.parseClearKeys=parseClearKeys;
