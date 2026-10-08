@@ -9,7 +9,6 @@
 <body>
   <main id="stage">
     <video id="video" preload="auto" playsinline></video>
-    <div id="subtitle-overlay" aria-live="off"></div>
     <div id="wake-surface" aria-hidden="true"></div>
 
     <header id="topbar">
@@ -56,9 +55,13 @@
     <input id="subtitle-file" type="file" accept=".srt,.vtt,.ass,.ssa,text/plain" hidden>
   </main>
 
+  <!-- Keep subtitles outside the hideable/player paint container so the manual
+       chrome toggle can never hide them or place them behind the video. -->
+  <div id="subtitle-overlay" aria-live="off"></div>
+
+  <!-- One persistent icon only: the hit target and visible eye never disappear. -->
   <button id="controls-toggle" class="controls-toggle" type="button" aria-label="Hide player controls" title="Hide player controls" aria-pressed="false">
     <svg class="eye-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg>
-    <svg class="eye-off-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.2A10.6 10.6 0 0 1 12 6c6 0 9.5 6 9.5 6a16.8 16.8 0 0 1-2.2 2.8M6.1 6.1A16.4 16.4 0 0 0 2.5 12s3.5 6 9.5 6a10.4 10.4 0 0 0 3.2-.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
   </button>
 
   <script src="offline-player.js"></script>
