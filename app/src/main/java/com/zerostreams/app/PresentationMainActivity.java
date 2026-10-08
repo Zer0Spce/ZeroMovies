@@ -41,6 +41,16 @@ public class PresentationMainActivity extends CategoryMainActivity {
         }
     }
 
+    @Override void sportsPage(int token){
+        super.sportsPage(token);
+        LinearLayout host=contentHost();if(host!=null)replaceSportsRefreshCopy(host);
+    }
+
+    private void replaceSportsRefreshCopy(View view){
+        if(view instanceof TextView){TextView label=(TextView)view;String value=String.valueOf(label.getText());if(value.contains("catalogue refreshes every minute"))label.setText(value.replace("catalogue refreshes every minute","catalogue refreshes every hour"));}
+        if(view instanceof ViewGroup){ViewGroup group=(ViewGroup)view;for(int i=0;i<group.getChildCount();i++)replaceSportsRefreshCopy(group.getChildAt(i));}
+    }
+
     /**
      * Preserve the proven v1.5 Android TV navigation path.
      * Main/home navigation is handled by Android's normal focus dispatch with no
