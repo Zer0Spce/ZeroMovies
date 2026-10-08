@@ -79,8 +79,8 @@ jobs:
       OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
       RAWCAST_API_KEY: ''
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
-      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+      CSC_LINK: ''
+      CSC_KEY_PASSWORD: ''
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -96,6 +96,15 @@ jobs:
         run: npx electron . --smoke-test
       - name: Build Windows updater test ZIP
         run: npm run build
+      - name: Stamp exact Windows placeholder version and rebuild ZIP
+        shell: pwsh
+        run: |
+          $exe='dist/win-unpacked/ZeroPlay.exe'
+          npx --yes rcedit $exe --set-file-version 9.9.9.9 --set-product-version 9.9.9.9
+          if ($LASTEXITCODE -ne 0) { throw 'Could not stamp exact temporary Windows version.' }
+          $zip='dist/ZeroPlay-9.9.9-Windows-x64.zip'
+          Remove-Item $zip -Force -ErrorAction SilentlyContinue
+          Compress-Archive -Path 'dist/win-unpacked/*' -DestinationPath $zip -CompressionLevel Optimal
       - name: Verify Windows placeholder versions
         shell: pwsh
         run: |
@@ -104,7 +113,7 @@ jobs:
           $exe=Get-Item 'dist/win-unpacked/ZeroPlay.exe'
           $info=$exe.VersionInfo
           if ($info.FileVersion -ne '9.9.9.9') { throw "Wrong FileVersion: $($info.FileVersion)" }
-          if ($info.ProductVersion -notlike '9.9.9.9*') { throw "Wrong ProductVersion: $($info.ProductVersion)" }
+          if ($info.ProductVersion -ne '9.9.9.9') { throw "Wrong ProductVersion: $($info.ProductVersion)" }
           Write-Host "Verified ZeroPlay.exe FileVersion=$($info.FileVersion) ProductVersion=$($info.ProductVersion)"
       - name: Audit Windows test package
         run: python ../scripts/audit-release-secrets.py dist generated-config.json
