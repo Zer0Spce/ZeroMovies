@@ -1,0 +1,199 @@
+name: Release ZeroPlay 2.0.1
+
+on:
+  push:
+    branches: [release/v2.0.1]
+  workflow_dispatch:
+
+concurrency:
+  group: zeroplay-production-v2-0-1
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      signed: ${{ steps.signing.outputs.ready }}
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      RAWCAST_API_KEY: ''
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Configure permanent Android signing key
+        id: signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          test -n "$ANDROID_KEYSTORE_PASSWORD"
+          test -n "$ANDROID_KEY_ALIAS"
+          umask 077
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/zeroplay-release.jks"
+          echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/zeroplay-release.jks" >> "$GITHUB_ENV"
+          echo 'ready=true' >> "$GITHUB_OUTPUT"
+
+      - name: Verify player rules and TV controller
+        run: |
+          mkdir -p /tmp/zero-rule-tests
+          javac -d /tmp/zero-rule-tests app/src/main/java/com/zerostreams/app/AdBlockRules.java app/src/main/java/com/zerostreams/app/TitleSearch.java app/src/main/java/com/zerostreams/app/ProgressRules.java tests/PlayerRulesTest.java tests/ProgressRulesTest.java
+          java -cp /tmp/zero-rule-tests com.zerostreams.app.PlayerRulesTest
+          java -cp /tmp/zero-rule-tests com.zerostreams.app.ProgressRulesTest
+          npm install --prefix /tmp/zero-qr-tests --no-audit --no-fund jsdom@24.1.3
+          NODE_PATH=/tmp/zero-qr-tests/node_modules ZERO_GUARD_PATH=app/src/main/assets/player-guard.js node tests/player-guard.test.cjs
+          NODE_PATH=/tmp/zero-qr-tests/node_modules node tests/tv-navigation.test.cjs
+
+      - name: Test, build and lint signed production APKs
+        run: gradle :app:testMobileReleaseUnitTest :app:testTvReleaseUnitTest :app:assembleMobileRelease :app:assembleTvRelease :app:lintMobileRelease :app:lintTvRelease
+
+      - name: Verify 2.0.1 production APKs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          mobile=app/build/outputs/apk/mobile/release/app-mobile-release.apk
+          tv=app/build/outputs/apk/tv/release/app-tv-release.apk
+          test -s "$mobile" && test -s "$tv"
+          for apk in "$mobile" "$tv"; do
+            "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | head -n 1 | grep -q "versionName='2.0.1'"
+            ! "$ANDROID_HOME/build-tools/34.0.0/aapt" dump badging "$apk" | grep -q application-debuggable
+            "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose "$apk"
+          done
+          cp "$mobile" release-assets/ZeroPlay-2.0.1-Android.apk
+          cp "$tv" release-assets/ZeroPlay-2.0.1-Android-TV.apk
+
+      - name: Audit Android release assets
+        run: python scripts/audit-release-secrets.py release-assets app/src
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.0.1-Android
+          path: release-assets/*.apk
+          if-no-files-found: error
+
+      - name: Remove temporary signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/zeroplay-release.jks"
+
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      RAWCAST_API_KEY: ''
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+
+      - name: Desktop interface regressions
+        run: |
+          npm install --prefix ../ui-test-deps --no-audit --no-fund jsdom@24.1.3
+          $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
+          node scripts/ui-check.cjs
+          node scripts/live-compat-check.cjs
+          node scripts/player-exit-check.cjs
+
+      - name: Verify player controls and QR filtering
+        run: |
+          $env:NODE_PATH = "${{ github.workspace }}\ui-test-deps\node_modules"
+          $env:ZERO_GUARD_PATH = "assets/player-guard.js"
+          node ../tests/player-guard.test.cjs
+
+      - name: Configure bundled keys
+        run: npm run prepare-config
+
+      - name: Verify live TMDB discovery and search
+        run: node scripts/tmdb-check.cjs
+
+      - name: Windows app smoke test
+        run: npx electron . --smoke-test
+
+      - name: Package portable ZIP
+        run: npm run build
+
+      - name: Verify 2.0.1 package
+        shell: pwsh
+        run: |
+          if (!(Test-Path 'dist/ZeroPlay-2.0.1-Windows-x64.zip')) { throw 'ZeroPlay 2.0.1 portable ZIP missing.' }
+          if (-not [string]::IsNullOrWhiteSpace($env:CSC_LINK)) {
+            $exe = Get-ChildItem dist/win-unpacked -Filter *.exe -File | Select-Object -First 1
+            if (-not $exe) { throw 'Packaged Windows executable not found.' }
+            $signature = Get-AuthenticodeSignature $exe.FullName
+            if ($signature.Status -ne 'Valid') { throw "Windows executable signature is not valid: $($signature.Status)" }
+          }
+
+      - name: Audit Windows release files
+        run: python ../scripts/audit-release-secrets.py dist generated-config.json
+
+      - name: Scan packaged Windows build with Microsoft Defender
+        shell: pwsh
+        run: |
+          $scanner = (Get-ChildItem "$env:ProgramData\Microsoft\Windows Defender\Platform\*\MpCmdRun.exe" | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          if (-not $scanner) { throw 'Microsoft Defender scanner unavailable; release blocked.' }
+          & $scanner -Scan -ScanType 3 -File "$pwd\dist\win-unpacked" -DisableRemediation
+          if ($LASTEXITCODE -ne 0) { throw "Microsoft Defender scan failed or detected a threat (exit $LASTEXITCODE); release blocked." }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.0.1-Windows
+          path: windows/dist/ZeroPlay-2.0.1-Windows-x64.zip
+          if-no-files-found: error
+
+  publish:
+    needs: [android, windows]
+    if: ${{ always() && needs.android.result == 'success' && needs.windows.result == 'success' && needs.android.outputs.signed == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ZeroPlay-2.0.1-Android
+          path: release-assets
+      - uses: actions/download-artifact@v4
+        with:
+          name: ZeroPlay-2.0.1-Windows
+          path: release-assets
+      - name: Final release credential audit
+        run: python scripts/audit-release-secrets.py release-assets
+      - name: Publish ZeroPlay 2.0.1 maintenance update
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/publish-release-2.0.1.py
