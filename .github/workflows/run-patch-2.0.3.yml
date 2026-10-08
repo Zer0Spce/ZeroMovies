@@ -1,0 +1,42 @@
+name: Run ZeroPlay 2.0.3 patch
+
+on:
+  push:
+    branches:
+      - fix/2.0.3-updater-series-selector
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/2.0.3-updater-series-selector
+          fetch-depth: 0
+      - name: Extract and run patch
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          source=Path('.github/workflows/patch-2.0.3.yml').read_text(encoding='utf-8')
+          marker="          python - <<'PY'\n"
+          start=source.index(marker)+len(marker)
+          end=source.index("\n          PY\n",start)
+          body=source[start:end]
+          body='\n'.join(line[10:] if line.startswith('          ') else line for line in body.splitlines())+'\n'
+          Path('/tmp/patch-2.0.3.py').write_text(body,encoding='utf-8')
+          PY
+          python /tmp/patch-2.0.3.py
+      - name: Commit patched source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/run-patch-2.0.3.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Prepare ZeroPlay 2.0.3 updater repair and series selectors [2.0.3 patched]'
+          git push origin HEAD:fix/2.0.3-updater-series-selector
