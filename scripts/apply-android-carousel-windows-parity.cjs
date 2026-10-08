@@ -32,6 +32,5 @@ if(!s.includes(old)){
   throw new Error('Expected carousel source block not found');
 }
 s=s.replace(old,replacement);
-s=s.replace('private final Map<String,List<Catalog.Item>> carouselSourceCache=new HashMap<>();private final Set<String> carouselSourceLoading=new HashSet<>();\n','');
 fs.writeFileSync(file,s);
 console.log('Android/TV carousel source behavior now mirrors Windows home data selection.');
