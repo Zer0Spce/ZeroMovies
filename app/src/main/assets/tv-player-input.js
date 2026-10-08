@@ -102,11 +102,11 @@
     selected = node;
     saveStyles(focusStyles, node, ['outline','outline-offset','border-radius','box-shadow','filter','position','z-index']);
     node.classList.add('zero-tv-focused');
-    node.style.setProperty('outline', '4px solid #65e6cc', 'important');
-    node.style.setProperty('outline-offset', '4px', 'important');
-    node.style.setProperty('border-radius', '9px', 'important');
-    node.style.setProperty('box-shadow', '0 0 0 3px rgba(101,230,204,.45),0 0 24px rgba(101,230,204,.95)', 'important');
-    node.style.setProperty('filter', 'brightness(1.22)', 'important');
+    node.style.setProperty('outline', '2px solid #65e6cc', 'important');
+    node.style.setProperty('outline-offset', '2px', 'important');
+    node.style.setProperty('border-radius', '7px', 'important');
+    node.style.setProperty('box-shadow', '0 0 0 1px rgba(101,230,204,.28),0 0 10px rgba(101,230,204,.48)', 'important');
+    node.style.setProperty('filter', 'brightness(1.08)', 'important');
     node.style.setProperty('position', getComputedStyle(node).position === 'static' ? 'relative' : getComputedStyle(node).position, 'important');
     node.style.setProperty('z-index', '2147483646', 'important');
     try { node.focus({preventScroll:true}); node.scrollIntoView({block:'nearest', inline:'nearest'}); }
@@ -152,6 +152,10 @@
 
   function wakeTree() {
     forceShowControls();
+    // Some provider frameworks update their hidden state on the next render tick.
+    // Reinforce the same wake briefly without changing navigation semantics.
+    setTimeout(forceShowControls, 70);
+    setTimeout(forceShowControls, 180);
     if (typeof window.__zeroRemoteActivity === 'function') {
       try { window.__zeroRemoteActivity(); } catch (_) {}
     }
