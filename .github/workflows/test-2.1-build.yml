@@ -41,6 +41,11 @@ jobs:
           else
             echo 'Standalone updater helper/carousel fixes already applied.'
           fi
+          if ! grep -q 'carouselSourceCache' app/src/main/java/com/zerostreams/app/MainActivity.java || grep -q "title:'Exit ZeroPlay?'" windows/main.cjs; then
+            node scripts/apply-2.1-carousel-source-exit-fixes.cjs
+          else
+            echo 'Final Android carousel source and Windows exit fixes already applied.'
+          fi
 
       - name: Verify requested source changes
         shell: bash
@@ -48,6 +53,9 @@ jobs:
           set -euo pipefail
           grep -q 'No, Go Back' app/src/main/java/com/zerostreams/app/ExitConfirmation.java
           grep -q 'carouselSource' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'carouselSourceCache' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'ensureCarouselSource' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'carouselItems(String key,String mode)' app/src/main/java/com/zerostreams/app/ContentApi.java
           grep -q 'heroIndex=0;stopPreview' app/src/main/java/com/zerostreams/app/MainActivity.java
           grep -q 'Reset application and settings' app/src/main/java/com/zerostreams/app/MainActivity.java
           grep -q 'carousel-source' windows/ui/index.html
@@ -55,6 +63,7 @@ jobs:
           grep -q 'version-manager.cjs' windows/bootstrap.cjs
           grep -q 'ZeroPlayUpdater.exe' windows/updater.cjs
           grep -q 'ZipFile.ExtractToDirectory' windows/updater-helper/Program.cs
+          if grep -q "title:'Exit ZeroPlay?'" windows/main.cjs; then echo 'Windows exit confirmation is still present'; exit 1; fi
           if grep -q 'tar.exe' windows/updater.cjs; then echo 'Old in-app ZIP extraction is still present'; exit 1; fi
           if grep -q 'robocopy.exe' windows/updater.cjs; then echo 'Old in-place updater is still present'; exit 1; fi
 
@@ -66,7 +75,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add app windows scripts
           if ! git diff --cached --quiet; then
-            git commit -m '[2.1 source] Add standalone updater helper and carousel fixes'
+            git commit -m '[2.1 source] Fix Android carousel source switching and Windows exit behavior'
             git push origin HEAD:test/2.1-pre-release
           fi
 
@@ -204,15 +213,17 @@ jobs:
             if (!(Test-Path "$verify/$file")) { throw "$file missing from packaged app." }
           }
           $updaterSource = Get-Content "$verify/updater.cjs" -Raw
+          $mainSource = Get-Content "$verify/main.cjs" -Raw
           if ($updaterSource -notmatch 'ZeroPlayUpdater\.exe') { throw 'Packaged updater does not delegate to helper.' }
           if ($updaterSource -match 'tar\.exe') { throw 'Packaged app still extracts updates internally.' }
+          if ($mainSource -match 'Exit ZeroPlay\?') { throw 'Packaged Windows app still contains the exit confirmation.' }
           Remove-Item $verify -Recurse -Force
           $extract = 'dist/zip-verify'
           if (Test-Path $extract) { Remove-Item $extract -Recurse -Force }
           Expand-Archive -LiteralPath $zip -DestinationPath $extract -Force
           if (!(Test-Path "$extract/ZeroPlayUpdater.exe")) { throw 'ZIP does not contain ZeroPlayUpdater.exe at its root.' }
           Remove-Item $extract -Recurse -Force
-          Write-Host 'Windows 2.1 package verified with standalone ZeroPlayUpdater.exe. No release was published.'
+          Write-Host 'Windows 2.1 package verified with standalone ZeroPlayUpdater.exe and no exit confirmation. No release was published.'
 
       - uses: actions/upload-artifact@v4
         with:
