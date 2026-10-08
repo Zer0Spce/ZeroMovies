@@ -18,6 +18,14 @@ public class PresentationMainActivity extends CategoryMainActivity {
         return super.dispatchKeyEvent(event);
     }
 
+    @Override public void onBackPressed(){
+        ExitConfirmation.show(this,"Exit ZeroPlay?","Are you sure you want to close ZeroPlay?",this::exitZeroPlay);
+    }
+
+    private void exitZeroPlay(){
+        super.onBackPressed();
+    }
+
     /** Modern UI Movies/Shows use the same compact TV scale as the fixed home rows. */
     @Override void grid(List<Catalog.Item> rows,int token){
         if(!BuildConfig.TV||!googleLayout()){super.grid(rows,token);return;}
