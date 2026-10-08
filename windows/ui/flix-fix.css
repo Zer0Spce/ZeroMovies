@@ -1,5 +1,159 @@
+/* Windows Flix UI: isolated cinematic layout. Do not leak these rules into Clean/Modern/Classic. */
+:root[data-layout="flix"]{
+  --flix-bg:#050505;
+  --flix-panel:rgba(18,18,18,.78);
+  --flix-line:rgba(255,255,255,.12);
+  --flix-muted:#b7b7b7;
+  --flix-accent:#65e6cc;
+  color-scheme:dark;
+}
+
+:root[data-layout="flix"] body{background:var(--flix-bg)!important;color:#fff}
+:root[data-layout="flix"] #ui-atmosphere img{opacity:.12!important;filter:blur(44px)!important;transform:scale(1.08)!important}
 :root[data-layout="flix"] .zero-wordmark{display:none!important}
-:root[data-layout="flix"] main>header{top:78px!important;right:28px!important;z-index:18!important;margin:0!important;gap:8px!important;background:transparent!important}
-:root[data-layout="flix"] main>header>div:first-child,:root[data-layout="flix"] main>header #search-form{display:none!important}
-:root[data-layout="flix"] main>header button{min-height:38px!important;padding:7px 11px!important;border-radius:8px!important;background:#141414d9!important;border-color:#ffffff24!important;box-shadow:0 6px 20px #0006!important}
-@media(max-width:900px){:root[data-layout="flix"] main>header{display:none!important}}
+
+/* Netflix-style horizontal top rail instead of the default left sidebar. */
+:root[data-layout="flix"] aside{
+  position:sticky!important;top:0!important;left:0!important;right:0!important;bottom:auto!important;
+  width:100%!important;height:70px!important;margin:0!important;padding:10px 28px!important;
+  display:flex!important;flex-direction:row!important;align-items:center!important;gap:5px!important;
+  overflow-x:auto!important;overflow-y:hidden!important;
+  border:0!important;border-bottom:1px solid rgba(255,255,255,.06)!important;
+  background:linear-gradient(180deg,rgba(5,5,5,.98),rgba(5,5,5,.88))!important;
+  backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;
+  z-index:40!important;scrollbar-width:none!important;
+}
+:root[data-layout="flix"] aside::-webkit-scrollbar{display:none}
+:root[data-layout="flix"] aside .brand{
+  display:block!important;flex:0 0 auto!important;margin:0 20px 0 0!important;
+  font-size:20px!important;letter-spacing:.045em!important;color:#fff!important;
+}
+:root[data-layout="flix"] aside .brand span{color:var(--flix-accent)!important}
+:root[data-layout="flix"] aside .brand small,
+:root[data-layout="flix"] aside .nav-label,
+:root[data-layout="flix"] aside .rail-bottom,
+:root[data-layout="flix"] aside .layout-menu,
+:root[data-layout="flix"] aside .nav-icon{display:none!important}
+:root[data-layout="flix"] aside button{
+  flex:0 0 auto!important;min-height:38px!important;margin:0!important;padding:8px 12px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  border:0!important;border-radius:7px!important;background:transparent!important;
+  color:#bdbdbd!important;font-size:13px!important;white-space:nowrap!important;
+}
+:root[data-layout="flix"] aside button span{display:inline!important;margin:0!important;font-size:13px!important}
+:root[data-layout="flix"] aside button:hover,
+:root[data-layout="flix"] aside button:focus-visible{background:#ffffff12!important;color:#fff!important}
+:root[data-layout="flix"] aside button.active{background:#ffffff18!important;color:#fff!important;font-weight:700!important}
+
+/* Main shell stays tight to the rail; no inherited giant top/left dead space. */
+:root[data-layout="flix"] main{
+  position:relative!important;margin:0!important;max-width:none!important;
+  padding:0 32px 38px!important;background:transparent!important;
+}
+:root[data-layout="flix"] main>header{
+  position:absolute!important;top:18px!important;right:32px!important;left:auto!important;
+  width:auto!important;min-height:0!important;margin:0!important;padding:0!important;
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;
+  background:transparent!important;border:0!important;z-index:30!important;
+}
+:root[data-layout="flix"] main>header>div:first-child,
+:root[data-layout="flix"] main>header #search-form{display:none!important}
+:root[data-layout="flix"] main>header button{
+  min-height:38px!important;height:38px!important;padding:7px 11px!important;border-radius:8px!important;
+  background:rgba(18,18,18,.78)!important;border:1px solid rgba(255,255,255,.14)!important;
+  color:#fff!important;box-shadow:0 8px 26px rgba(0,0,0,.28)!important;
+  backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;
+}
+:root[data-layout="flix"] main>header button:hover,
+:root[data-layout="flix"] main>header button:focus-visible{background:rgba(42,42,42,.92)!important}
+:root[data-layout="flix"] #status{position:relative!important;z-index:4!important;margin:0!important;min-height:0!important;padding:0!important;height:0!important;overflow:hidden!important}
+
+/* Full-bleed cinematic hero. */
+:root[data-layout="flix"] .hero{
+  width:calc(100% + 64px)!important;height:clamp(500px,68vh,730px)!important;min-height:500px!important;
+  margin:0 -32px 0!important;border-radius:0!important;overflow:hidden!important;background:#080808!important;
+  box-shadow:none!important;
+}
+:root[data-layout="flix"] .hero-art{opacity:1!important;object-fit:cover!important;object-position:center 28%!important}
+:root[data-layout="flix"] .hero-shade{
+  background:
+    linear-gradient(90deg,rgba(5,5,5,.98) 0%,rgba(5,5,5,.82) 27%,rgba(5,5,5,.34) 55%,rgba(5,5,5,.04) 77%),
+    linear-gradient(0deg,#050505 0%,rgba(5,5,5,.9) 9%,rgba(5,5,5,.35) 35%,transparent 64%)!important;
+}
+:root[data-layout="flix"] .hero-content{
+  width:min(720px,58%)!important;max-width:none!important;padding:82px 52px 105px!important;
+  display:flex!important;flex-direction:column!important;justify-content:flex-end!important;
+}
+:root[data-layout="flix"] .hero h2{
+  margin:12px 0 12px!important;max-height:none!important;min-height:0!important;
+  font-size:clamp(44px,4.1vw,64px)!important;line-height:1.02!important;font-weight:750!important;
+  letter-spacing:-.045em!important;color:#fff!important;text-shadow:0 3px 22px rgba(0,0,0,.42)!important;
+}
+:root[data-layout="flix"] .hero-content>p{
+  width:min(620px,100%)!important;height:auto!important;margin:8px 0!important;
+  color:#ddd!important;font-size:15px!important;line-height:1.5!important;
+  display:-webkit-box!important;-webkit-line-clamp:3!important;-webkit-box-orient:vertical!important;overflow:hidden!important;
+}
+:root[data-layout="flix"] .hero .badges{color:#d0d0d0!important}
+:root[data-layout="flix"] .hero .badge{background:#ffffff17!important;border-color:#ffffff20!important;color:#fff!important}
+:root[data-layout="flix"] .hero .actions{margin-top:18px!important;gap:9px!important}
+:root[data-layout="flix"] .hero .actions button{min-height:40px!important;padding:9px 15px!important;border-radius:7px!important}
+:root[data-layout="flix"] .hero .actions .primary{background:#fff!important;color:#111!important;border-color:#fff!important}
+:root[data-layout="flix"] .hero-controls{margin-top:16px!important}
+:root[data-layout="flix"] .ranked{display:none!important}
+
+/* Bring the catalog up into the hero instead of leaving a giant blank band. */
+:root[data-layout="flix"] .hero+.row-section{position:relative!important;z-index:5!important;margin-top:-72px!important;padding-top:0!important}
+:root[data-layout="flix"] .row-section{position:relative!important;z-index:5!important;margin:24px 0 30px!important}
+:root[data-layout="flix"] .row-section h3{margin:0 0 12px!important;font-size:20px!important;color:#fff!important}
+:root[data-layout="flix"] .section-head small{color:#9d9d9d!important}
+:root[data-layout="flix"] .cards{gap:12px!important;padding:5px 3px 14px!important;overflow-x:auto!important}
+
+/* Flix cards are portrait, compact, and consistent. */
+:root[data-layout="flix"] .cards .card:not(.landscape),
+:root[data-layout="flix"] .card:not(.landscape){
+  width:178px!important;min-width:178px!important;max-width:178px!important;flex:0 0 178px!important;
+  color:#fff!important;border-radius:10px!important;
+}
+:root[data-layout="flix"] .card:not(.landscape) img,
+:root[data-layout="flix"] .card:not(.landscape) .poster-empty{
+  width:100%!important;height:auto!important;aspect-ratio:2/3!important;object-fit:cover!important;border-radius:10px!important;
+}
+:root[data-layout="flix"] .card-title{margin:9px 0 3px!important;font-size:13px!important;color:#fff!important}
+:root[data-layout="flix"] .card small{color:#9f9f9f!important}
+:root[data-layout="flix"] .card:hover{transform:translateY(-4px) scale(1.018)!important}
+:root[data-layout="flix"] .card:focus-visible{outline:3px solid #fff!important;outline-offset:3px!important;transform:translateY(-3px) scale(1.02)!important}
+:root[data-layout="flix"] .landscape{flex:0 0 270px!important;max-width:270px!important}
+:root[data-layout="flix"] .landscape img{height:auto!important;aspect-ratio:16/9!important;border-radius:10px!important}
+:root[data-layout="flix"] .grid{grid-template-columns:repeat(auto-fill,minmax(166px,1fr))!important;gap:22px 14px!important}
+:root[data-layout="flix"] .grid .card{width:100%!important;min-width:0!important;max-width:none!important}
+
+/* Non-home pages should start directly below the top rail and never inherit hero-sized spacing. */
+:root[data-layout="flix"]:not([data-section="Home"]) main{padding-top:26px!important}
+:root[data-layout="flix"]:not([data-section="Home"]) #content{min-height:calc(100vh - 120px)!important}
+:root[data-layout="flix"] .tools,
+:root[data-layout="flix"] .library-tabs{margin-top:10px!important}
+
+@media(max-width:1100px){
+  :root[data-layout="flix"] aside{padding:9px 16px!important}
+  :root[data-layout="flix"] aside .brand{margin-right:10px!important}
+  :root[data-layout="flix"] main{padding-left:22px!important;padding-right:22px!important}
+  :root[data-layout="flix"] main>header{right:22px!important}
+  :root[data-layout="flix"] .hero{width:calc(100% + 44px)!important;margin-left:-22px!important;margin-right:-22px!important}
+  :root[data-layout="flix"] .hero-content{width:66%!important;padding:70px 38px 96px!important}
+}
+
+@media(max-width:760px){
+  :root[data-layout="flix"] aside{height:62px!important;padding:8px 10px!important}
+  :root[data-layout="flix"] aside .brand{font-size:17px!important;margin-right:8px!important}
+  :root[data-layout="flix"] aside button{padding:7px 9px!important;font-size:12px!important}
+  :root[data-layout="flix"] main{padding:0 12px 28px!important}
+  :root[data-layout="flix"] main>header{display:none!important}
+  :root[data-layout="flix"] .hero{width:calc(100% + 24px)!important;height:520px!important;min-height:520px!important;margin-left:-12px!important;margin-right:-12px!important}
+  :root[data-layout="flix"] .hero-content{width:100%!important;padding:58px 22px 78px!important}
+  :root[data-layout="flix"] .hero h2{font-size:38px!important}
+  :root[data-layout="flix"] .hero-content>p{-webkit-line-clamp:2!important;font-size:14px!important}
+  :root[data-layout="flix"] .hero+.row-section{margin-top:-36px!important}
+  :root[data-layout="flix"] .cards .card:not(.landscape),
+  :root[data-layout="flix"] .card:not(.landscape){width:150px!important;min-width:150px!important;max-width:150px!important;flex-basis:150px!important}
+}
