@@ -46,69 +46,104 @@ jobs:
       - name: Configure bundled keys
         run: npm run prepare-config
 
-      - name: Build normal Windows portable package
+      - name: Set packaged app metadata to 9.9.9.9
+        shell: pwsh
+        run: |
+          node -e "const fs=require('fs');const p=require('./package.json');p.build=p.build||{};p.build.extraMetadata={...(p.build.extraMetadata||{}),version:process.env.TEST_VERSION};fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
+          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+          if ($pkg.version -ne '2.0.3') { throw 'Source package version was unexpectedly changed.' }
+          if ($pkg.build.extraMetadata.version -ne $env:TEST_VERSION) { throw 'Temporary packaged version metadata was not set.' }
+
+      - name: Build Windows portable package with Electron Builder
         run: npx electron-builder --win --x64 --publish never
 
-      - name: Patch packaged app version only to 9.9.9.9
+      - name: Verify unpacked portable build and packaged version
         shell: pwsh
         run: |
-          $asar = 'dist/win-unpacked/resources/app.asar'
-          $stage = 'dist/app-asar-temp'
-          if (!(Test-Path $asar)) { throw 'Packaged app.asar was not found.' }
-          if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
-          npx --yes @electron/asar extract $asar $stage
-          $pkgPath = Join-Path $stage 'package.json'
-          if (!(Test-Path $pkgPath)) { throw 'package.json was not found inside app.asar.' }
-          $pkg = Get-Content $pkgPath -Raw | ConvertFrom-Json
-          $pkg.version = $env:TEST_VERSION
-          $pkg | ConvertTo-Json -Depth 100 | Set-Content $pkgPath -Encoding UTF8
-          Remove-Item $asar -Force
-          npx --yes @electron/asar pack $stage $asar
-          Remove-Item $stage -Recurse -Force
-
-      - name: Verify patched packaged version
-        shell: pwsh
-        run: |
+          $root = 'dist/win-unpacked'
+          $exe = Join-Path $root 'ZeroPlay.exe'
+          $asar = Join-Path $root 'resources/app.asar'
+          if (!(Test-Path $exe)) { throw 'ZeroPlay.exe is missing from win-unpacked.' }
+          if (!(Test-Path $asar)) { throw 'resources/app.asar is missing from win-unpacked.' }
           $verify = 'dist/app-asar-verify'
           if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
-          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          npx --yes @electron/asar extract $asar $verify
           $pkg = Get-Content (Join-Path $verify 'package.json') -Raw | ConvertFrom-Json
-          if ($pkg.version -ne $env:TEST_VERSION) { throw "Expected version $env:TEST_VERSION but found $($pkg.version)." }
+          if ($pkg.version -ne $env:TEST_VERSION) { throw "Expected packaged version $env:TEST_VERSION but found $($pkg.version)." }
           Remove-Item $verify -Recurse -Force
-          Write-Host "Packaged ZeroPlay app version is $env:TEST_VERSION"
+          Write-Host "Electron packaged ZeroPlay as version $env:TEST_VERSION"
 
-      - name: Create updater ZIP and checksum
+      - name: Launch-test packaged app
+        shell: pwsh
+        run: |
+          $exe = Resolve-Path 'dist/win-unpacked/ZeroPlay.exe'
+          $p = Start-Process -FilePath $exe -ArgumentList '--smoke-test' -PassThru
+          Start-Sleep -Seconds 8
+          if ($p.HasExited) { throw "Packaged ZeroPlay exited during launch test with code $($p.ExitCode)." }
+          Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+          Write-Host 'Packaged ZeroPlay stayed running during launch test.'
+
+      - name: Prepare updater ZIP from Electron Builder output
+        shell: pwsh
+        run: |
+          $source = 'dist/ZeroPlay-2.0.3-Windows-x64.zip'
+          $zip = "dist/ZeroPlay-$env:TEST_VERSION-Windows-x64.zip"
+          if (!(Test-Path $source)) { throw 'Electron Builder ZIP was not found.' }
+          if (Test-Path $zip) { Remove-Item $zip -Force }
+          Move-Item $source $zip
+
+      - name: Validate updater ZIP exactly like the app
         shell: pwsh
         run: |
           $zip = "dist/ZeroPlay-$env:TEST_VERSION-Windows-x64.zip"
-          if (Test-Path $zip) { Remove-Item $zip -Force }
-          Compress-Archive -Path 'dist/win-unpacked/*' -DestinationPath $zip -CompressionLevel Optimal
+          $stage = 'dist/updater-zip-verify'
+          if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
+          Expand-Archive -LiteralPath $zip -DestinationPath $stage -Force
+          $exe = Get-ChildItem -LiteralPath $stage -Recurse -File -Filter 'ZeroPlay.exe' | Select-Object -First 1
+          if ($null -eq $exe) { throw 'Updater ZIP does not contain ZeroPlay.exe.' }
+          $portableRoot = $exe.Directory.FullName
+          $asar = Join-Path $portableRoot 'resources/app.asar'
+          if (!(Test-Path $asar)) { throw 'Updater ZIP does not contain resources/app.asar beside ZeroPlay.exe.' }
+          $asarVerify = 'dist/updater-asar-verify'
+          if (Test-Path $asarVerify) { Remove-Item $asarVerify -Recurse -Force }
+          npx --yes @electron/asar extract $asar $asarVerify
+          $pkg = Get-Content (Join-Path $asarVerify 'package.json') -Raw | ConvertFrom-Json
+          if ($pkg.version -ne $env:TEST_VERSION) { throw "Updater ZIP contains app version $($pkg.version), expected $env:TEST_VERSION." }
+          Remove-Item $asarVerify -Recurse -Force
+          Remove-Item $stage -Recurse -Force
+          Write-Host "Updater ZIP validated: ZeroPlay.exe + resources/app.asar + version $env:TEST_VERSION"
+
+      - name: Create SHA256 checksum
+        shell: pwsh
+        run: |
+          $zip = "dist/ZeroPlay-$env:TEST_VERSION-Windows-x64.zip"
           $hash = (Get-FileHash -Algorithm SHA256 $zip).Hash.ToLowerInvariant()
           "$hash  ZeroPlay-$env:TEST_VERSION-Windows-x64.zip" | Set-Content 'dist/SHA256SUMS.txt' -Encoding ascii
           Write-Host "SHA256 $hash"
 
-      - name: Refuse to overwrite an existing 9.9.9.9 release
+      - name: Replace temporary release assets
         shell: pwsh
         working-directory: ${{ github.workspace }}
         run: |
           gh release view "v$env:TEST_VERSION" --repo "$env:GITHUB_REPOSITORY" *> $null
-          if ($LASTEXITCODE -eq 0) { throw "Release v$env:TEST_VERSION already exists; refusing to overwrite it." }
-          exit 0
-
-      - name: Publish temporary updater test release
-        shell: pwsh
-        working-directory: ${{ github.workspace }}
-        run: |
-          gh release create "v$env:TEST_VERSION" `
-            "windows/dist/ZeroPlay-$env:TEST_VERSION-Windows-x64.zip" `
-            "windows/dist/SHA256SUMS.txt" `
-            --repo "$env:GITHUB_REPOSITORY" `
-            --target "$env:GITHUB_SHA" `
-            --title "TEMP Windows Updater Test 9.9.9.9" `
-            --notes "TEMPORARY Windows-only updater validation release. No feature changes. The portable package is the current ZeroPlay Windows build with only the packaged app version changed to 9.9.9.9 so the existing updater can exercise detection, download, SHA-256 verification, replacement, relaunch, and version confirmation. Delete this release and tag immediately after the updater test is confirmed."
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload "v$env:TEST_VERSION" `
+              "windows/dist/ZeroPlay-$env:TEST_VERSION-Windows-x64.zip" `
+              "windows/dist/SHA256SUMS.txt" `
+              --clobber `
+              --repo "$env:GITHUB_REPOSITORY"
+          } else {
+            gh release create "v$env:TEST_VERSION" `
+              "windows/dist/ZeroPlay-$env:TEST_VERSION-Windows-x64.zip" `
+              "windows/dist/SHA256SUMS.txt" `
+              --repo "$env:GITHUB_REPOSITORY" `
+              --target "$env:GITHUB_SHA" `
+              --title "TEMP Windows Updater Test 9.9.9.9" `
+              --notes "TEMPORARY Windows-only updater validation release. No feature changes. Delete this release and tag immediately after the updater test is confirmed."
+          }
 
       - name: Summary
         shell: pwsh
         run: |
-          Write-Host 'Temporary release v9.9.9.9 published for Windows updater testing.'
-          Write-Host 'Delete the release/tag after validation.'
+          Write-Host 'Temporary v9.9.9.9 Windows updater package rebuilt and release assets replaced.'
+          Write-Host 'The published ZIP was extracted and validated with the same required portable layout as the updater.'
