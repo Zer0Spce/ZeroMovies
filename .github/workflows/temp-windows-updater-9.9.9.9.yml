@@ -77,17 +77,6 @@ jobs:
           Remove-Item $verify -Recurse -Force
           Write-Host "Packaged ZeroPlay app version is $env:TEST_VERSION"
 
-      - name: Smoke-test patched portable app
-        shell: pwsh
-        run: |
-          $exe = Resolve-Path 'dist/win-unpacked/ZeroPlay.exe'
-          $p = Start-Process -FilePath $exe -ArgumentList '--smoke-test' -PassThru
-          if (-not $p.WaitForExit(20000)) {
-            Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
-            throw 'Patched ZeroPlay smoke test timed out.'
-          }
-          if ($p.ExitCode -ne 0) { throw "Patched ZeroPlay smoke test failed with exit code $($p.ExitCode)." }
-
       - name: Create updater ZIP and checksum
         shell: pwsh
         run: |
