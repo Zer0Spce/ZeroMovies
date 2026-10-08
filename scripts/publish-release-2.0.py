@@ -1,5 +1,5 @@
 """Publish the verified ZeroPlay 2.0 production assets."""
-import hashlib, json, os, pathlib, subprocess, urllib.parse, urllib.request
+import hashlib, json, os, pathlib, subprocess, urllib.error, urllib.parse, urllib.request
 
 repo=os.environ['GITHUB_REPOSITORY']
 base='https://api.github.com/repos/'+repo
