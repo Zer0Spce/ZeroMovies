@@ -1,6 +1,7 @@
 'use strict';
 (() => {
   const overlayIds=['web-player','settings','detail'];
+  const allowedExternalHosts=new Set(['www.youtube.com','www.themoviedb.org','vidstuck.xyz']);
   let closingFromHistory=false;
 
   const topOpenDialog=()=>overlayIds.map(id=>document.getElementById(id)).find(node=>node?.open)||null;
@@ -65,6 +66,37 @@
   };
   enforceWebSource();
   new MutationObserver(enforceWebSource).observe(document.documentElement,{subtree:true,childList:true});
+
+  const nativeOpen=window.open.bind(window);
+  window.open=(value,target,features)=>{
+    try{
+      const url=new URL(value,location.href);
+      if(url.origin===location.origin)return nativeOpen(url.href,target,features);
+      if(url.protocol!=='https:'||!allowedExternalHosts.has(url.hostname))return null;
+      return nativeOpen(url.href,target||'_blank',features||'noopener,noreferrer');
+    }catch{return null;}
+  };
+
+  document.addEventListener('click',event=>{
+    const link=event.target.closest('a[href]');
+    if(!link)return;
+    try{
+      const url=new URL(link.href,location.href);
+      if(url.origin===location.origin)return;
+      if(url.protocol!=='https:'||!allowedExternalHosts.has(url.hostname)){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      link.rel='noopener noreferrer';
+      if(!link.target)link.target='_blank';
+    }catch{
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  },true);
+
+  window.name='';
 
   const openSource=document.getElementById('open-player-source');
   if(openSource){
