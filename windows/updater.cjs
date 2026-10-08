@@ -21,13 +21,88 @@ async function check({manual=false}={}){const release=await latest();const info=
 function psQuote(value){return "'"+String(value).replace(/'/g,"''")+"'";}
 async function sha256(file){const hash=crypto.createHash('sha256'),stream=fs.createReadStream(file);for await(const chunk of stream)hash.update(chunk);return hash.digest('hex');}
 async function expectedSha256(release){const direct=String(release.asset?.digest||'').trim().toLowerCase();if(/^sha256:[0-9a-f]{64}$/.test(direct))return direct.slice(7);const checksum=release.checksumAsset;if(!checksum?.browser_download_url)return '';const response=await fetch(checksum.browser_download_url,{headers:{'User-Agent':'ZeroPlay-Windows-Updater'},redirect:'follow',signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('Could not download SHA256SUMS.txt ('+response.status+').');const text=await response.text(),target=String(release.asset?.name||'');for(const line of text.split(/\r?\n/)){const match=line.trim().match(/^([0-9a-fA-F]{64})\s+\*?(.+)$/);if(match&&match[2].trim()===target)return match[1].toLowerCase();}throw Error('SHA256SUMS.txt does not contain a checksum for '+target+'.');}
-async function prepareUpdate(release){if(downloadBusy)throw Error('An update is already downloading.');downloadBusy=true;try{const info=releaseView(release),root=path.join(app.getPath('temp'),'ZeroPlay-update-'+info.version+'-'+Date.now()),zip=path.join(root,'update.zip'),stage=path.join(root,'stage');await fsp.mkdir(root,{recursive:true});const expected=await expectedSha256(release);if(!expected)throw Error('The update package has no trusted SHA-256 checksum. Installation was stopped.');const response=await fetch(release.asset.browser_download_url,{headers:{'User-Agent':'ZeroPlay-Windows-Updater'},redirect:'follow',signal:AbortSignal.timeout(1800000)});if(!response.ok||!response.body)throw Error('Update download failed ('+response.status+').');const total=Number(response.headers.get('content-length'))||Number(release.asset.size)||0;let received=0;const source=Readable.fromWeb(response.body);source.on('data',chunk=>{received+=chunk.length;if(updateWindow&&!updateWindow.isDestroyed())updateWindow.webContents.send('update-progress',{received,total,percent:total?Math.min(100,received/total*100):0});});await pipeline(source,fs.createWriteStream(zip,{flags:'wx'}));const digest=await sha256(zip);if(digest!==expected)throw Error('Downloaded update failed SHA-256 verification.');
+async function locatePortableRoot(stage){
+  const queue=[[stage,0]];
+  while(queue.length){
+    const [dir,depth]=queue.shift();
+    let entries;try{entries=await fsp.readdir(dir,{withFileTypes:true});}catch{continue;}
+    if(entries.some(entry=>entry.isFile()&&entry.name.toLowerCase()==='zeroplay.exe')){
+      const asar=path.join(dir,'resources','app.asar');
+      try{await fsp.access(asar);return dir;}catch{}
+    }
+    if(depth<4)for(const entry of entries)if(entry.isDirectory()&&entry.name!=='__MACOSX')queue.push([path.join(dir,entry.name),depth+1]);
+  }
+  throw Error('The update package does not contain a complete ZeroPlay portable build.');
+}
+async function prepareUpdate(release){if(downloadBusy)throw Error('An update is already downloading.');downloadBusy=true;try{
+ const info=releaseView(release),root=path.join(app.getPath('temp'),'ZeroPlay-update-'+info.version+'-'+Date.now()),zip=path.join(root,'update.zip'),stage=path.join(root,'stage');await fsp.mkdir(root,{recursive:true});
+ const expected=await expectedSha256(release);if(!expected)throw Error('The update package has no trusted SHA-256 checksum. Installation was stopped.');
+ const response=await fetch(release.asset.browser_download_url,{headers:{'User-Agent':'ZeroPlay-Windows-Updater'},redirect:'follow',signal:AbortSignal.timeout(1800000)});if(!response.ok||!response.body)throw Error('Update download failed ('+response.status+').');
+ const total=Number(response.headers.get('content-length'))||Number(release.asset.size)||0;let received=0;const source=Readable.fromWeb(response.body);source.on('data',chunk=>{received+=chunk.length;if(updateWindow&&!updateWindow.isDestroyed())updateWindow.webContents.send('update-progress',{received,total,percent:total?Math.min(100,received/total*100):0});});await pipeline(source,fs.createWriteStream(zip,{flags:'wx'}));
+ const digest=await sha256(zip);if(digest!==expected)throw Error('Downloaded update failed SHA-256 verification.');
  await new Promise((resolve,reject)=>{const p=spawn('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',`Expand-Archive -LiteralPath ${psQuote(zip)} -DestinationPath ${psQuote(stage)} -Force`],{windowsHide:true});let stderr='';p.stderr.on('data',d=>stderr+=d);p.on('error',reject);p.on('exit',code=>code===0?resolve():reject(Error(stderr.trim()||'Could not unpack the update.')));});
- let sourceDir=stage;const children=await fsp.readdir(stage,{withFileTypes:true});if(children.length===1&&children[0].isDirectory())sourceDir=path.join(stage,children[0].name);const sourceExe=path.join(sourceDir,'ZeroPlay.exe');try{await fsp.access(sourceExe);}catch{throw Error('The update package does not contain ZeroPlay.exe.');}
- const installDir=path.dirname(process.execPath),script=path.join(root,'apply-update.ps1'),currentPid=process.pid,launch=path.join(installDir,'ZeroPlay.exe'),log=path.join(app.getPath('temp'),'ZeroPlay-updater.log');const sourceHash=await sha256(sourceExe);
- const body=`$ErrorActionPreference='Stop'\n$ProgressPreference='SilentlyContinue'\n$pidToWait=${currentPid}\n$source=${psQuote(sourceDir)}\n$target=${psQuote(installDir)}\n$launch=${psQuote(launch)}\n$expectedExeHash=${psQuote(sourceHash)}\n$log=${psQuote(log)}\nfunction Log([string]$m){Add-Content -LiteralPath $log -Value ((Get-Date -Format o)+' '+$m)}\ntry {\n  Set-Content -LiteralPath $log -Value ((Get-Date -Format o)+' ZeroPlay updater started')\n  for($i=0;$i -lt 120;$i++){\n    if(-not (Get-Process -Id $pidToWait -ErrorAction SilentlyContinue)){break}\n    Start-Sleep -Milliseconds 500\n  }\n  if(Get-Process -Id $pidToWait -ErrorAction SilentlyContinue){throw 'ZeroPlay did not close in time.'}\n  Start-Sleep -Milliseconds 700\n  Log 'Main process exited; applying files.'\n  & robocopy.exe $source $target /E /COPY:DAT /DCOPY:DAT /R:20 /W:1 /NFL /NDL /NJH /NJS /NP | Out-Null\n  $rc=$LASTEXITCODE\n  if($rc -ge 8){throw ('Robocopy failed with exit code '+$rc)}\n  if(-not (Test-Path -LiteralPath $launch)){throw 'Updated ZeroPlay.exe is missing.'}\n  $installedHash=(Get-FileHash -Algorithm SHA256 -LiteralPath $launch).Hash.ToLowerInvariant()\n  if($installedHash -ne $expectedExeHash){throw 'Updated ZeroPlay.exe failed verification after copy.'}\n  Log 'Files applied and verified; relaunching ZeroPlay.'\n  Start-Process -FilePath $launch -WorkingDirectory $target\n  Log 'Relaunch command completed.'\n  Start-Sleep -Seconds 2\n  Remove-Item -LiteralPath ${psQuote(root)} -Recurse -Force -ErrorAction SilentlyContinue\n} catch {\n  Log ('FAILED: '+$_.Exception.Message)\n  try { Add-Type -AssemblyName PresentationFramework; [System.Windows.MessageBox]::Show('ZeroPlay could not finish installing the update.\\n\\n'+$_.Exception.Message+'\\n\\nLog: '+$log,'ZeroPlay Update Failed','OK','Error') | Out-Null } catch {}\n  exit 1\n}\n`;
- await fsp.writeFile(script,body,'utf8');return {script,version:info.version,log};}finally{downloadBusy=false;}}
-async function startInstall(event){trustedUpdate(event);if(!currentRelease)throw Error('No update is selected.');const prepared=await prepareUpdate(currentRelease);const child=spawn('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',prepared.script],{detached:true,stdio:'ignore',windowsHide:true});child.on('error',error=>{if(updateWindow&&!updateWindow.isDestroyed())updateWindow.webContents.send('update-install-error',String(error.message||error));});child.unref();setTimeout(()=>app.quit(),900);return {ok:true,version:prepared.version};}
+ const sourceDir=await locatePortableRoot(stage),sourceExe=path.join(sourceDir,'ZeroPlay.exe'),sourceAsar=path.join(sourceDir,'resources','app.asar');
+ const installDir=path.dirname(process.execPath),script=path.join(root,'apply-update.ps1'),currentPid=process.pid,launch=path.join(installDir,'ZeroPlay.exe'),targetAsar=path.join(installDir,'resources','app.asar'),log=path.join(app.getPath('temp'),'ZeroPlay-updater.log');
+ const sourceExeHash=await sha256(sourceExe),sourceAsarHash=await sha256(sourceAsar);
+ const body=`$ErrorActionPreference='Stop'
+$ProgressPreference='SilentlyContinue'
+$mainPid=${currentPid}
+$source=${psQuote(sourceDir)}
+$target=${psQuote(installDir)}
+$launch=${psQuote(launch)}
+$targetAsar=${psQuote(targetAsar)}
+$expectedExeHash=${psQuote(sourceExeHash)}
+$expectedAsarHash=${psQuote(sourceAsarHash)}
+$log=${psQuote(log)}
+function Log([string]$m){ Add-Content -LiteralPath $log -Value ((Get-Date -Format o)+' '+$m) }
+function ZeroPlayProcesses {
+  @(Get-CimInstance Win32_Process -Filter "Name='ZeroPlay.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.ExecutablePath -and [String]::Equals($_.ExecutablePath,$launch,[StringComparison]::OrdinalIgnoreCase) })
+}
+try {
+  Set-Content -LiteralPath $log -Value ((Get-Date -Format o)+' ZeroPlay updater started')
+  Log ('Source: '+$source)
+  Log ('Target: '+$target)
+  for($i=0;$i -lt 120;$i++){
+    $main=Get-Process -Id $mainPid -ErrorAction SilentlyContinue
+    $same=@(ZeroPlayProcesses)
+    if(-not $main -and $same.Count -eq 0){ break }
+    Start-Sleep -Milliseconds 500
+  }
+  $same=@(ZeroPlayProcesses)
+  if($same.Count -gt 0){
+    Log ('Stopping '+$same.Count+' remaining ZeroPlay process(es).')
+    foreach($proc in $same){ Stop-Process -Id $proc.ProcessId -Force -ErrorAction SilentlyContinue }
+    Start-Sleep -Milliseconds 1200
+  }
+  if(Get-Process -Id $mainPid -ErrorAction SilentlyContinue){ Stop-Process -Id $mainPid -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 800 }
+  if(@(ZeroPlayProcesses).Count -gt 0){ throw 'ZeroPlay files are still in use after shutdown.' }
+  New-Item -ItemType Directory -Path $target -Force | Out-Null
+  Log 'All ZeroPlay processes are closed; replacing application files.'
+  & robocopy.exe $source $target /E /COPY:DAT /DCOPY:DAT /R:30 /W:1 /XJ /IS /IT /NFL /NDL /NJH /NJS /NP | Out-Null
+  $rc=$LASTEXITCODE
+  Log ('Robocopy exit code '+$rc)
+  if($rc -ge 8){ throw ('Robocopy failed with exit code '+$rc) }
+  if(-not (Test-Path -LiteralPath $launch)){ throw 'Updated ZeroPlay.exe is missing.' }
+  if(-not (Test-Path -LiteralPath $targetAsar)){ throw 'Updated resources\app.asar is missing.' }
+  $installedExe=(Get-FileHash -Algorithm SHA256 -LiteralPath $launch).Hash.ToLowerInvariant()
+  $installedAsar=(Get-FileHash -Algorithm SHA256 -LiteralPath $targetAsar).Hash.ToLowerInvariant()
+  if($installedExe -ne $expectedExeHash){ throw 'Updated ZeroPlay.exe failed verification after replacement.' }
+  if($installedAsar -ne $expectedAsarHash){ throw 'Updated app.asar failed verification after replacement.' }
+  Log 'Application files replaced and verified.'
+  $started=Start-Process -FilePath $launch -WorkingDirectory $target -PassThru
+  Start-Sleep -Milliseconds 1400
+  if($started.HasExited){ throw 'The updated ZeroPlay process exited immediately after relaunch.' }
+  Log ('Relaunched ZeroPlay with PID '+$started.Id)
+  Start-Sleep -Milliseconds 500
+} catch {
+  Log ('FAILED: '+$_.Exception.Message)
+  try { Add-Type -AssemblyName PresentationFramework; [System.Windows.MessageBox]::Show('ZeroPlay could not finish installing the update.\n\n'+$_.Exception.Message+'\n\nUpdater log: '+$log,'ZeroPlay Update Failed','OK','Error') | Out-Null } catch {}
+  exit 1
+}
+`;
+ await fsp.writeFile(script,body,'utf8');return {script,version:info.version,log};
+}finally{downloadBusy=false;}}
+async function startInstall(event){trustedUpdate(event);if(!currentRelease)throw Error('No update is selected.');const prepared=await prepareUpdate(currentRelease);const child=spawn('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',prepared.script],{detached:true,stdio:'ignore',windowsHide:true});child.on('error',error=>{if(updateWindow&&!updateWindow.isDestroyed())updateWindow.webContents.send('update-install-error',String(error.message||error));});child.unref();setTimeout(()=>{try{app.exit(0);}catch{process.exit(0);}},1400);return {ok:true,version:prepared.version};}
 function bindMain(win){if(mainWindow||win.isDestroyed())return;mainWindow=win;win.on('closed',()=>{if(mainWindow===win)mainWindow=null;});win.once('ready-to-show',()=>{if(!process.argv.includes('--smoke-test'))setTimeout(()=>check({manual:false}).catch(()=>{}),1800);});}
 function install(){if(installed)return;installed=true;app.on('browser-window-created',(_event,win)=>{if(!mainWindow&&win.getTitle()==='ZeroPlay')bindMain(win);});ipcMain.handle('update-check',async(event)=>{trustedMain(event);return check({manual:true});});ipcMain.handle('update-window-action',async(event,action)=>{trustedUpdate(event);if(action==='cancel'){closeUpdate();return {ok:true};}if(action==='skip'){if(currentRelease){const s=readState();s.skippedVersion=releaseView(currentRelease).version;writeState(s);}closeUpdate();return {ok:true};}if(action==='install')return startInstall(event);throw Error('Unsupported updater action');});}
 module.exports={install,newer,cleanVersion,releaseView,expectedSha256,testRelease};
