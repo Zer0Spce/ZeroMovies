@@ -10,18 +10,12 @@ import java.util.*;
 public class PresentationMainActivity extends CategoryMainActivity {
 
     /**
-     * Android TV home navigation must behave like the v1.9 Activity path.
-     * Do not add repeat throttling, row confinement or custom spatial jumps here;
-     * let Android/Window focus dispatch choose the next view exactly once.
+     * Preserve the proven v1.5 Android TV navigation path.
+     * Main/home navigation is handled by Android's normal focus dispatch with no
+     * custom interception, throttling, row confinement or spatial remapping.
      */
     @Override public boolean dispatchKeyEvent(KeyEvent event){
-        if(!BuildConfig.TV)return super.dispatchKeyEvent(event);
-        onUserInteraction();
-        Window window=getWindow();
-        if(window!=null&&window.superDispatchKeyEvent(event))return true;
-        View decor=window==null?null:window.getDecorView();
-        KeyEvent.DispatcherState state=decor==null?null:decor.getKeyDispatcherState();
-        return event.dispatch(this,state,this);
+        return super.dispatchKeyEvent(event);
     }
 
     /** Modern UI Movies/Shows use the same compact TV scale as the fixed home rows. */
