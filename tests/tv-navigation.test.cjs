@@ -13,26 +13,34 @@ async function run(){
   dom=page('<video></video><div id="component"></div>');const root=dom.window.document.getElementById('component').attachShadow({mode:'open'});root.innerHTML='<img id="painted" data-w="1024" data-h="768">';dom.window.__zeroDismissQrAd();assert.equal(root.getElementById('painted').style.display,'none','Native-confirmed painted QR advertisements inside open shadow DOM should be removed');assert.equal(dom.window.document.querySelector('video').style.display,'');dom.window.close();
   dom=page('<video></video><div class="plyr__controls" style="opacity:0;visibility:hidden;pointer-events:none;display:none" data-y="650" data-h="70"><button data-x="100">Play</button><button data-x="300">Volume</button></div>');const wake=dom.window,bar=wake.document.querySelector('.plyr__controls');wake.document.documentElement.classList.add("zero-player-idle");bar.style.opacity="0";assert.equal(wake.document.documentElement.classList.contains('zero-player-idle'),true);wake.__zeroTvNavigate('right');assert.equal(wake.document.documentElement.classList.contains('zero-player-idle'),false);assert.equal(wake.getComputedStyle(bar).opacity,'1');assert.equal(wake.getComputedStyle(bar).visibility,'visible');assert.notEqual(wake.getComputedStyle(bar).display,'none');assert.equal(wake.document.activeElement.textContent,'Play');wake.document.documentElement.classList.add("zero-player-idle");bar.style.opacity="0";assert.equal(bar.style.opacity,'0');wake.__zeroTvNavigate('ok');assert.equal(wake.getComputedStyle(bar).opacity,'1');dom.window.close();
 
-  assert.match(mouseBackSource,/wakeHiddenDpadControls/,'D-pad bridge must explicitly wake hidden provider controls');
-  assert.match(mouseBackSource,/zero-player-idle/,'D-pad wake must detect provider idle state');
-  assert.match(mouseBackSource,/event\.stopImmediatePropagation\(\)/,'The first D-pad press after idle must be consumed as wake-only so it cannot seek or activate a control');
+  assert.match(mouseBackSource,/__zeroTvBackStep/,'TV Back bridge must expose a staged provider Back request');
+  assert.match(mouseBackSource,/return 'menu'/,'Back stage must distinguish an open provider function/menu');
+  assert.match(mouseBackSource,/return 'controls'/,'Back stage must distinguish visible player controls');
+  assert.match(mouseBackSource,/return 'exit'/,'Back stage must explicitly report when playback should exit');
+  assert.match(mouseBackSource,/zerostreams-tv-back-query/,'Back staging must recurse into embedded provider frames');
+  assert.match(mouseBackSource,/event\.stopImmediatePropagation\(\)/,'The first D-pad press after script-detected idle must be consumed as wake-only');
 
   const activityPath=process.env.ZERO_TV_ACTIVITY||'app/src/main/java/com/zerostreams/app/BrowserPlayerActivity.java';
   const activity=fs.readFileSync(activityPath,'utf8');
+  const mouse=fs.readFileSync('app/src/main/java/com/zerostreams/app/TvMouse.java','utf8');
   assert.match(activity,/sendTvNavigation\(direction,0\)/,'TV Activity must route D-pad through the focus navigator');
   assert.doesNotMatch(activity,/nativeTvFallback/,'Raw Android D-pad fallback must stay removed because providers treat LEFT\/RIGHT as seek');
   assert.match(activity,/querySelectorAll\('iframe'\)/,'Embed navigation must discover visible provider iframes');
   assert.match(activity,/zerostreams-tv-nav/,'Embed navigation must forward D-pad commands into the provider iframe instead of raw Android seek keys');
-  assert.match(activity,/tvBackArmed=false;tvUi\.removeCallbacks\(armTvBack\);tvUi\.postDelayed\(armTvBack,3400\)/,'Remote activity must mark controls visible and arm exit only after the provider idle window');
-  assert.match(activity,/__zeroBackRequest/,'TV Back must ask the provider to dismiss its own menu or resolution popup before hiding ZeroPlay controls');
-  assert.match(activity,/if\(!tvBackArmed\)\{forceHideTvControls\(\);return;\}/,'First Back while controls are considered visible must hide controls only after provider menus are dismissed');
-  assert.match(activity,/forceHideTvControls/,'TV Back must have a native force-hide path');
-  assert.match(activity,/tvBackArmed=true/,'Hidden or idle controls must arm the next Back to exit');
-  assert.match(activity,/finish\(\);\s*return;\s*\}/,'A Back after controls are hidden or idle must exit playback');
+  assert.match(activity,/consumeDpadWake/,'D-pad mode must explicitly detect an idle wake-only press');
+  assert.match(activity,/wakeProviderWithHover/,'D-pad wake must send native WebView pointer activity');
+  assert.match(activity,/dispatchGenericMotionEvent/,'D-pad wake must use a native hover event so provider controls really reappear');
+  assert.match(activity,/dpadWakeKey/,'The matching key-up after a wake-only press must also be consumed');
+  assert.match(activity,/__zeroTvBackStep/,'TV Back must use the popup → controls → exit stage bridge');
+  assert.match(activity,/"menu"\.equals\(stage\)/,'Native Back must preserve the provider popup stage');
+  assert.match(activity,/"controls"\.equals\(stage\)/,'Native Back must preserve the controls-hide stage');
+  assert.doesNotMatch(activity,/putBoolean\("playerMouse",true\)/,'Opening a movie must not overwrite the Settings-selected player mode');
+  assert.doesNotMatch(mouse,/KEYCODE_MENU/,'Player mode switching must be Settings-only, not a Menu-button toggle');
+  assert.match(mouse,/getBoolean\("playerMouse",true\)/,'Mouse remains the default when no player-mode preference exists');
 
-  console.log('Idle/provider-hidden controls recover on arrows and OK');
-  console.log('First D-pad press after provider idle is wake-only; next press navigates');
-  console.log('TV focus navigation, no arrow seeking, OK activation, embedded navigation, player Back and shadow QR checks passed');
-  console.log('Native TV activity routes directly into provider iframe and preserves provider-popup → controls → exit Back order');
+  console.log('TV focus navigation and QR checks passed');
+  console.log('Android TV D-pad idle wake uses a real native hover and consumes the wake key');
+  console.log('Android TV Back preserves provider popup → controls → exit as separate stages');
+  console.log('Mouse/D-pad mode is selected only from Settings');
 }
 run().catch(error=>{console.error(error);process.exitCode=1;});
