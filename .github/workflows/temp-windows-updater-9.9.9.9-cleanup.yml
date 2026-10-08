@@ -1,0 +1,25 @@
+name: TEMP Windows Updater 9.9.9.9 Cleanup
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TEST_TAG: v9.9.9.9
+    steps:
+      - name: Delete temporary updater release and tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$TEST_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$TEST_TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag -y
+            echo "Deleted temporary release and tag $TEST_TAG"
+          else
+            echo "Temporary release $TEST_TAG is already absent."
+          fi
