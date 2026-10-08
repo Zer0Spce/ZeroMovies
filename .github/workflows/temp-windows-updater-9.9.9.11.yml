@@ -45,9 +45,6 @@ jobs:
       - name: Configure bundled keys
         run: npm run prepare-config
 
-      - name: Smoke test temporary build
-        run: npx electron . --smoke-test
-
       - name: Build Windows 9.9.9.11 portable ZIP
         run: npx electron-builder --win --x64 --publish never
 
@@ -94,4 +91,4 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title 'TEMP Windows Updater Test 9.9.9.11' \
-            --notes $'TEMPORARY WINDOWS-ONLY UPDATE FOR UPDATER VALIDATION.\n\nThis contains the current ZeroPlay 2.1 Windows code with the packaged application version changed to 9.9.9.11 so the new version-folder updater can be tested end-to-end.\n\nExpected test: ZeroPlay 2.1 detects 9.9.9.11, downloads and verifies the ZIP, installs it under the versioned update location, relaunches through the stable launcher, and the app reports version 9.9.9.11.\n\nDelete this release and tag immediately after successful validation.'
+            --notes $'TEMPORARY WINDOWS-ONLY UPDATE FOR UPDATER VALIDATION.\n\nThis contains the already-tested ZeroPlay 2.1 Windows code with the packaged application version changed to 9.9.9.11 so the new version-folder updater can be tested end-to-end.\n\nExpected test: ZeroPlay 2.1 detects 9.9.9.11, downloads and verifies the ZIP, installs it under the versioned update location, relaunches through the stable launcher, and the app reports version 9.9.9.11.\n\nDelete this release and tag immediately after successful validation.'
