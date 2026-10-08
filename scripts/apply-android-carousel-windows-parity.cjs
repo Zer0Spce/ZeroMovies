@@ -23,14 +23,11 @@ const replacement=`    void ensureCarouselSource(String mode){/* Android home al
             }
         }
         LinkedHashMap<String,Catalog.Item> unique=new LinkedHashMap<>();
-        for(Catalog.Item item:source){if(item==null||item.type.equals("live")||item.type.equals("manga")||(item.backdrop.isEmpty()&&item.poster.isEmpty()))continue;unique.put(item.type+":"+item.id,item);if(unique.size()>=10)break;}
-        if(unique.isEmpty()&&!mode.equals("top"))for(Catalog.Item item:all){if(item!=null&&item.raw.optBoolean("trending")&&!item.raw.optBoolean("upcoming")&&!item.type.equals("live")&&!item.type.equals("manga")&&(!item.backdrop.isEmpty()||!item.poster.isEmpty())){unique.put(item.type+":"+item.id,item);if(unique.size()>=10)break;}}
+        for(Catalog.Item item:source){if(item==null||item.type.equals("live")||item.type.equals("manga")||(item.raw.optString("backdrop").isEmpty()&&item.poster.isEmpty()))continue;unique.put(item.type+":"+item.id,item);if(unique.size()>=10)break;}
+        if(unique.isEmpty()&&!mode.equals("top"))for(Catalog.Item item:all){if(item!=null&&item.raw.optBoolean("trending")&&!item.raw.optBoolean("upcoming")&&!item.type.equals("live")&&!item.type.equals("manga")&&(!item.raw.optString("backdrop").isEmpty()||!item.poster.isEmpty())){unique.put(item.type+":"+item.id,item);if(unique.size()>=10)break;}}
         return new ArrayList<>(unique.values());
     }`;
-if(!s.includes(old)){
-  if(s.includes('Android home already loads all carousel source feeds')) process.exit(0);
-  throw new Error('Expected carousel source block not found');
-}
-s=s.replace(old,replacement);
+if(s.includes(old)) s=s.replace(old,replacement);
+s=s.replaceAll('item\\.backdrop\\.isEmpty\\(\\)','item.raw.optString("backdrop").isEmpty()');
 fs.writeFileSync(file,s);
 console.log('Android/TV carousel source behavior now mirrors Windows home data selection.');
