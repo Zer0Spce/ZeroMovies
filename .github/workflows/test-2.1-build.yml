@@ -1,0 +1,198 @@
+name: ZeroPlay 2.1 Pre-release Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - test/2.1-pre-release
+
+permissions:
+  contents: write
+
+concurrency:
+  group: zeroplay-2-1-pre-release
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[2.1 source]') }}
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.head.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Apply 2.1 pre-release source fixes
+        run: node scripts/apply-2.1-pre-release.cjs
+
+      - name: Verify requested source changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'No, Go Back' app/src/main/java/com/zerostreams/app/ExitConfirmation.java
+          grep -q 'carouselSource' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'Reset application and settings' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'carousel-source' windows/ui/index.html
+          grep -q 'version-manager.cjs' windows/bootstrap.cjs
+          grep -q 'tar.exe' windows/updater.cjs
+          if grep -q 'robocopy.exe' windows/updater.cjs; then echo 'Old in-place updater is still present'; exit 1; fi
+
+      - name: Commit patched 2.1 test source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app windows
+          if ! git diff --cached --quiet; then
+            git commit -m '[2.1 source] Apply cross-platform pre-release fixes'
+            git push origin HEAD:test/2.1-pre-release
+          fi
+
+      - name: Record prepared commit
+        id: head
+        shell: bash
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Remove obsolete temporary updater-test releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          for tag in v9.9.9.9 v9.9.9.10; do
+            if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              gh release delete "$tag" --cleanup-tag -y --repo "$GITHUB_REPOSITORY" || true
+            fi
+          done
+
+  android:
+    name: Android Mobile + TV
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Unit tests
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest
+
+      - name: Build signed Mobile + TV 2.1 APKs
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/zeroplay-release.jks"
+          trap 'rm -f "$ANDROID_KEYSTORE_FILE"' EXIT
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_FILE"
+          chmod 600 "$ANDROID_KEYSTORE_FILE"
+          gradle :app:assembleMobileRelease :app:assembleTvRelease
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/mobile/release/app-mobile-release.apk
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/tv/release/app-tv-release.apk
+          cp app/build/outputs/apk/mobile/release/app-mobile-release.apk app/build/outputs/apk/ZeroPlay-2.1-Android-Mobile.apk
+          cp app/build/outputs/apk/tv/release/app-tv-release.apk app/build/outputs/apk/ZeroPlay-2.1-Android-TV.apk
+
+      - name: Lint Mobile + TV
+        run: gradle --continue :app:lintMobileRelease :app:lintTvRelease
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1-Android-Test-Builds
+          path: |
+            app/build/outputs/apk/ZeroPlay-2.1-Android-Mobile.apk
+            app/build/outputs/apk/ZeroPlay-2.1-Android-TV.apk
+          if-no-files-found: error
+          compression-level: 0
+
+  windows:
+    name: Windows Portable
+    needs: prepare
+    runs-on: windows-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Windows tests
+        run: npm test
+
+      - name: Configure bundled keys
+        run: npm run prepare-config
+
+      - name: Smoke test Windows app
+        run: npx electron . --smoke-test
+
+      - name: Build portable Windows 2.1 ZIP only
+        run: npx electron-builder --win --x64 --publish never
+
+      - name: Verify portable package and new updater architecture
+        shell: pwsh
+        run: |
+          $zip = 'dist/ZeroPlay-2.1-Windows-x64.zip'
+          if (!(Test-Path $zip)) { throw 'Windows 2.1 portable ZIP was not created.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlay.exe')) { throw 'ZeroPlay.exe missing.' }
+          if (!(Test-Path 'dist/win-unpacked/resources/app.asar')) { throw 'app.asar missing.' }
+          $verify = 'dist/verify-asar'
+          if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
+          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          $pkg = Get-Content "$verify/package.json" -Raw | ConvertFrom-Json
+          if ($pkg.version -ne '2.1.0') { throw "Expected Windows app version 2.1.0, got $($pkg.version)" }
+          foreach ($file in @('version-manager.cjs','updater.cjs')) {
+            if (!(Test-Path "$verify/$file")) { throw "$file missing from packaged app." }
+          }
+          Remove-Item $verify -Recurse -Force
+          Write-Host 'Windows 2.1 portable package verified. No release was published.'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1-Windows-Portable-Test
+          path: windows/dist/ZeroPlay-2.1-Windows-x64.zip
+          if-no-files-found: error
+          compression-level: 0
