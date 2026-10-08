@@ -1,9 +1,9 @@
 'use strict';
 (() => {
   const STORAGE='zerostreams-web-v1';
-  const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',uiLayout:'youtube',source:'vidstuck'},hasKey:true,version:'1.8.0 Web'});
+  const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',uiLayout:'youtube',source:'vidstuck'},hasKey:true,version:'2.0 Web'});
   let saved=defaults(),playing,iframe,idleTimer,lastProgress=0;
-  try{const parsed=JSON.parse(localStorage.getItem(STORAGE)||'null');if(parsed&&typeof parsed==='object')saved={...saved,...parsed,settings:{...saved.settings,...parsed.settings}};}catch{}
+  try{const parsed=JSON.parse(localStorage.getItem(STORAGE)||'null');if(parsed&&typeof parsed==='object')saved={...saved,...parsed,settings:{...saved.settings,...parsed.settings},version:'2.0 Web'};}catch{}
   for(const name of ['favorites','planned','history','searches'])if(!Array.isArray(saved[name]))saved[name]=[];
   for(const name of ['positions','collections'])if(!saved[name]||typeof saved[name]!=='object'||Array.isArray(saved[name]))saved[name]={};
   const copy=()=>JSON.parse(JSON.stringify(saved));
@@ -38,7 +38,7 @@
       else if(action==='clear-searches')saved.searches=[];
       else if(action==='remove-history')saved.history=saved.history.filter(x=>x.historyKey!==value);
       else if(action==='clear-history'){saved.history=[];saved.positions={};}
-      else if(action==='settings'){if(!['PH','US','GB','CA','AU','IN','JP'].includes(value?.region))throw Error('Invalid region');if(!['dark','light'].includes(value.theme)||!window.playbackSources.sources.some(s=>s.id===value.source))throw Error('Invalid appearance or playback source');saved.settings={region:value.region,gain:1,uiLayout:['youtube','google','classic'].includes(value.uiLayout)?value.uiLayout:'youtube',theme:value.theme,source:value.source};}
+      else if(action==='settings'){if(!['PH','US','GB','CA','AU','IN','JP'].includes(value?.region))throw Error('Invalid region');if(!['dark','light'].includes(value.theme)||!window.playbackSources.sources.some(s=>s.id===value.source))throw Error('Invalid appearance or playback source');saved.settings={region:value.region,gain:1,uiLayout:['youtube','google','flix','classic'].includes(value.uiLayout)?value.uiLayout:'youtube',theme:value.theme,source:value.source};}
       else if(action==='collection'){const name=String(value?.name||'').trim().slice(0,60);if(!name||['__proto__','constructor','prototype'].includes(name))throw Error('Invalid collection name');const item=clean(value.item),rows=saved.collections[name]||[];if(!Array.isArray(rows))throw Error('Invalid collection');saved.collections[name]=rows.some(x=>key(x)===key(item))?rows.filter(x=>key(x)!==key(item)):[item,...rows].slice(0,300);}
       else throw Error('Unsupported library action');persist();return copy();
     },
