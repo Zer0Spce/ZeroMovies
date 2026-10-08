@@ -36,6 +36,11 @@ jobs:
           else
             echo '2.1 source is already prepared; preserving follow-up fixes.'
           fi
+          if ! grep -q 'ZeroPlayUpdater.exe' windows/updater.cjs; then
+            node scripts/apply-updater-helper-carousel-fixes.cjs
+          else
+            echo 'Standalone updater helper/carousel fixes already applied.'
+          fi
 
       - name: Verify requested source changes
         shell: bash
@@ -43,10 +48,14 @@ jobs:
           set -euo pipefail
           grep -q 'No, Go Back' app/src/main/java/com/zerostreams/app/ExitConfirmation.java
           grep -q 'carouselSource' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'heroIndex=0;stopPreview' app/src/main/java/com/zerostreams/app/MainActivity.java
           grep -q 'Reset application and settings' app/src/main/java/com/zerostreams/app/MainActivity.java
           grep -q 'carousel-source' windows/ui/index.html
+          grep -q 'heroPicks()' windows/ui/experience.js
           grep -q 'version-manager.cjs' windows/bootstrap.cjs
-          grep -q 'tar.exe' windows/updater.cjs
+          grep -q 'ZeroPlayUpdater.exe' windows/updater.cjs
+          grep -q 'ZipFile.ExtractToDirectory' windows/updater-helper/Program.cs
+          if grep -q 'tar.exe' windows/updater.cjs; then echo 'Old in-app ZIP extraction is still present'; exit 1; fi
           if grep -q 'robocopy.exe' windows/updater.cjs; then echo 'Old in-place updater is still present'; exit 1; fi
 
       - name: Commit generated 2.1 source if necessary
@@ -55,9 +64,9 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add app windows
+          git add app windows scripts
           if ! git diff --cached --quiet; then
-            git commit -m '[2.1 source] Apply cross-platform pre-release fixes'
+            git commit -m '[2.1 source] Add standalone updater helper and carousel fixes'
             git push origin HEAD:test/2.1-pre-release
           fi
 
@@ -65,17 +74,6 @@ jobs:
         id: head
         shell: bash
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-      - name: Remove obsolete temporary updater-test releases
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          for tag in v9.9.9.9 v9.9.9.10; do
-            if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-              gh release delete "$tag" --cleanup-tag -y --repo "$GITHUB_REPOSITORY" || true
-            fi
-          done
 
   android:
     name: Android Mobile + TV
@@ -142,7 +140,7 @@ jobs:
     name: Windows Portable
     needs: prepare
     runs-on: windows-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     defaults:
       run:
         working-directory: windows
@@ -163,6 +161,10 @@ jobs:
           cache: npm
           cache-dependency-path: windows/package-lock.json
 
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
@@ -172,18 +174,26 @@ jobs:
       - name: Configure bundled keys
         run: npm run prepare-config
 
+      - name: Build standalone ZeroPlayUpdater.exe
+        shell: pwsh
+        run: |
+          dotnet publish updater-helper/ZeroPlayUpdater.csproj -c Release -r win-x64 --self-contained true -o updater-helper/publish
+          Copy-Item updater-helper/publish/ZeroPlayUpdater.exe ./ZeroPlayUpdater.exe -Force
+          if (!(Test-Path './ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe was not created.' }
+
       - name: Smoke test Windows app
         run: npx electron . --smoke-test
 
       - name: Build portable Windows 2.1 ZIP only
         run: npx electron-builder --win --x64 --publish never
 
-      - name: Verify portable package and new updater architecture
+      - name: Verify portable package and updater helper
         shell: pwsh
         run: |
           $zip = 'dist/ZeroPlay-2.1-Windows-x64.zip'
           if (!(Test-Path $zip)) { throw 'Windows 2.1 portable ZIP was not created.' }
           if (!(Test-Path 'dist/win-unpacked/ZeroPlay.exe')) { throw 'ZeroPlay.exe missing.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe missing from portable root.' }
           if (!(Test-Path 'dist/win-unpacked/resources/app.asar')) { throw 'app.asar missing.' }
           $verify = 'dist/verify-asar'
           if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
@@ -193,8 +203,16 @@ jobs:
           foreach ($file in @('version-manager.cjs','updater.cjs')) {
             if (!(Test-Path "$verify/$file")) { throw "$file missing from packaged app." }
           }
+          $updaterSource = Get-Content "$verify/updater.cjs" -Raw
+          if ($updaterSource -notmatch 'ZeroPlayUpdater\.exe') { throw 'Packaged updater does not delegate to helper.' }
+          if ($updaterSource -match 'tar\.exe') { throw 'Packaged app still extracts updates internally.' }
           Remove-Item $verify -Recurse -Force
-          Write-Host 'Windows 2.1 portable package verified. No release was published.'
+          $extract = 'dist/zip-verify'
+          if (Test-Path $extract) { Remove-Item $extract -Recurse -Force }
+          Expand-Archive -LiteralPath $zip -DestinationPath $extract -Force
+          if (!(Test-Path "$extract/ZeroPlayUpdater.exe")) { throw 'ZIP does not contain ZeroPlayUpdater.exe at its root.' }
+          Remove-Item $extract -Recurse -Force
+          Write-Host 'Windows 2.1 package verified with standalone ZeroPlayUpdater.exe. No release was published.'
 
       - uses: actions/upload-artifact@v4
         with:
