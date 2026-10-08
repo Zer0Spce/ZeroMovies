@@ -101,7 +101,8 @@ public class PlayerActivity extends Activity {
     @Override protected void onStop(){stopPlayer();super.onStop();}
     @Override protected void onDestroy(){tvUi.removeCallbacksAndMessages(null);super.onDestroy();}
     @Override protected void onSaveInstanceState(Bundle out){if(player!=null){position=player.getCurrentPosition();playWhenReady=player.getPlayWhenReady();}out.putLong("position",position);out.putBoolean("playing",playWhenReady);out.putBoolean("subtitleLookupStarted",subtitleLookupStarted);super.onSaveInstanceState(out);}
-    @Override public void onBackPressed(){if(BuildConfig.TV&&view!=null){if(!tvBackArmed){view.hideController();tvBackArmed=true;return;}finish();return;}super.onBackPressed();}
+    private void confirmExit(){ExitConfirmation.show(this,"Exit playback?","Leave this video and return to ZeroPlay?",this::finish);}
+    @Override public void onBackPressed(){if(BuildConfig.TV&&view!=null){if(!tvBackArmed){view.hideController();tvBackArmed=true;return;}confirmExit();return;}confirmExit();}
     @Override public boolean dispatchKeyEvent(KeyEvent event){
         if(BuildConfig.TV){int key=event.getKeyCode();if(key==KeyEvent.KEYCODE_BACK||key==KeyEvent.KEYCODE_ESCAPE||key==KeyEvent.KEYCODE_BUTTON_B){if(event.getAction()==KeyEvent.ACTION_UP&&!event.isCanceled())onBackPressed();return true;}if(tvNavKey(key))return handleTvNavigation(event);if(event.getAction()==KeyEvent.ACTION_DOWN&&key!=KeyEvent.KEYCODE_VOLUME_UP&&key!=KeyEvent.KEYCODE_VOLUME_DOWN)wakeTvController();}
         return view.dispatchKeyEvent(event)||super.dispatchKeyEvent(event);
