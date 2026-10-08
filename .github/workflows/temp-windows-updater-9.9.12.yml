@@ -1,0 +1,117 @@
+name: TEMP Windows Updater 9.9.12
+
+on:
+  push:
+    branches:
+      - temp/windows-updater-9.9.12
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temp-windows-updater-9-9-12
+  cancel-in-progress: true
+
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Run Windows tests
+        run: npm test
+
+      - name: Configure bundled keys
+        run: npm run prepare-config
+
+      - name: Build standalone ZeroPlayUpdater.exe
+        shell: pwsh
+        run: |
+          dotnet publish updater-helper/ZeroPlayUpdater.csproj -c Release -r win-x64 --self-contained true -o updater-helper/publish
+          Copy-Item updater-helper/publish/ZeroPlayUpdater.exe ./ZeroPlayUpdater.exe -Force
+          if (!(Test-Path './ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe was not created.' }
+
+      - name: Build Windows 9.9.12 portable ZIP
+        run: npx electron-builder --win --x64 --publish never
+
+      - name: Verify temporary package
+        shell: pwsh
+        run: |
+          $zip = 'dist/ZeroPlay-9.9.12-Windows-x64.zip'
+          if (!(Test-Path $zip)) { throw 'Temporary updater ZIP was not created.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlay.exe')) { throw 'ZeroPlay.exe missing.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe missing.' }
+          if (!(Test-Path 'dist/win-unpacked/resources/app.asar')) { throw 'app.asar missing.' }
+          $verify = 'dist/verify-asar'
+          if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
+          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          $pkg = Get-Content "$verify/package.json" -Raw | ConvertFrom-Json
+          if ($pkg.version -ne '9.9.12') { throw "Expected packaged version 9.9.12, got $($pkg.version)" }
+          $source = Get-Content "$verify/updater.cjs" -Raw
+          if ($source -notmatch 'ZeroPlayUpdater\.exe') { throw 'Packaged updater does not use ZeroPlayUpdater.exe.' }
+          if ($source -match 'tar\.exe|Expand-Archive|robocopy\.exe') { throw 'Old updater extraction/replacement logic is still packaged.' }
+          Remove-Item $verify -Recurse -Force
+          $extract = 'dist/zip-verify'
+          if (Test-Path $extract) { Remove-Item $extract -Recurse -Force }
+          Expand-Archive -LiteralPath $zip -DestinationPath $extract -Force
+          if (!(Test-Path "$extract/ZeroPlay.exe")) { throw 'ZIP root is missing ZeroPlay.exe.' }
+          if (!(Test-Path "$extract/ZeroPlayUpdater.exe")) { throw 'ZIP root is missing ZeroPlayUpdater.exe.' }
+          if (!(Test-Path "$extract/resources/app.asar")) { throw 'ZIP root is missing resources/app.asar.' }
+          Remove-Item $extract -Recurse -Force
+
+      - name: Create checksum
+        shell: pwsh
+        run: |
+          $zip = 'dist/ZeroPlay-9.9.12-Windows-x64.zip'
+          $hash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  ZeroPlay-9.9.12-Windows-x64.zip" | Set-Content -Encoding ascii dist/SHA256SUMS.txt
+
+      - name: Publish temporary release
+        working-directory: .
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view v9.9.12 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'v9.9.12 already exists; refusing to overwrite.'
+            exit 1
+          fi
+          gh release create v9.9.12 \
+            windows/dist/ZeroPlay-9.9.12-Windows-x64.zip \
+            windows/dist/SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title 'TEMP Windows Updater Test 9.9.12' \
+            --notes $'TEMPORARY WINDOWS-ONLY UPDATE FOR THE NEW STANDALONE UPDATER TEST.\n\nBuilt from the corrected ZeroPlay 2.1 code. ZeroPlay downloads and verifies the package, then hands installation to ZeroPlayUpdater.exe. The helper waits for ZeroPlay to close, extracts with .NET ZIP APIs, installs versions/9.9.12, switches current.json, and relaunches.\n\nThe packaged app version is 9.9.12 so Settings > About confirms the update actually switched versions.\n\nDelete this release and tag immediately after validation.'
+
+      - name: Remove obsolete 9.9.11 test release
+        working-directory: .
+        shell: bash
+        run: |
+          if gh release view v9.9.11 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete v9.9.11 --repo "$GITHUB_REPOSITORY" --cleanup-tag -y || true
+          fi
