@@ -2,7 +2,8 @@ package com.zerostreams.app;
 
 import android.graphics.*;
 import android.os.*;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.*;
 import org.json.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -22,6 +23,20 @@ public class CategoryMainActivity extends ReleaseMainActivity {
             final String art=chosen;if(!art.isEmpty())categoryArtworkUsed.add(art);categoryUi.post(()->{if(isDestroyed()||!image.isAttachedToWindow())return;if(art.isEmpty())CategoryMainActivity.super.genrePicture(type,id,image,token);else picture(art,image,token);});
         }catch(Exception ignored){categoryUi.post(()->{if(!isDestroyed()&&image.isAttachedToWindow())CategoryMainActivity.super.genrePicture(type,id,image,token);});}});
     }
+
+    @Override void render(){
+        super.render();
+        if(!"Genre".equals(currentSection()))return;
+        LinearLayout host=mainContent();if(host==null)return;
+        Button back=button("← Back to Categories",()->open("Categories"));
+        back.setContentDescription("Back to all categories");
+        LinearLayout.LayoutParams bp=new LinearLayout.LayoutParams(-2,dp(BuildConfig.TV?46:42));
+        host.addView(back,0,bp);
+        View gap=new View(this);host.addView(gap,1,new LinearLayout.LayoutParams(1,dp(12)));
+    }
+
+    private String currentSection(){try{java.lang.reflect.Field f=MainActivity.class.getDeclaredField("category");f.setAccessible(true);Object value=f.get(this);return value==null?"":String.valueOf(value);}catch(Exception ignored){return "";}}
+    private LinearLayout mainContent(){try{java.lang.reflect.Field f=MainActivity.class.getDeclaredField("content");f.setAccessible(true);Object value=f.get(this);return value instanceof LinearLayout?(LinearLayout)value:null;}catch(Exception ignored){return null;}}
 
     @Override protected void onDestroy(){categoryUi.removeCallbacksAndMessages(null);categoryIo.shutdownNow();super.onDestroy();}
 }
