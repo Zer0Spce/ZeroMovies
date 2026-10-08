@@ -78,3 +78,5 @@ aside{background:var(--sidebar,#0d1019)}aside button{color:var(--muted);font-wei
 [data-theme="light"] #settings .settings-body>label,[data-theme="light"] #settings fieldset,[data-theme="light"] #settings .rawcast-controls{background:#f8fafc;border-color:#d8e0ea}
 [data-theme="light"] #settings .settings-body>h3,[data-theme="light"] #settings .actions{border-color:#d8e0ea}
 @media(max-width:700px){#settings{width:94vw}#settings .settings-body{padding:24px 18px 28px}}
+
+.episode-picker{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin:10px 0 14px}.episode-picker label{display:flex;flex-direction:column;gap:6px;min-width:145px;color:var(--muted);font-size:12px}.episode-picker select{min-height:42px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:8px 10px}@media(max-width:700px){.episode-picker{display:grid;grid-template-columns:1fr 1fr}.episode-picker label{min-width:0}}
