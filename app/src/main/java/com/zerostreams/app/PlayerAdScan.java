@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 final class PlayerAdScan {
     private final Activity activity;private final WebView web;private final Handler handler=new Handler(Looper.getMainLooper());
     private final ExecutorService decoder=Executors.newSingleThreadExecutor();private boolean active,busy;private long startedAt,confirmedAt;
-    PlayerAdScan(Activity a,WebView w){activity=a;web=w;AdBlockRules.init(a);}
+    PlayerAdScan(Activity a,WebView w){activity=a;web=w;PlayerAdBlockState.init(a);}
     private final Runnable tick=new Runnable(){public void run(){if(!active)return;capture();handler.postDelayed(this,(SystemClock.elapsedRealtime()-startedAt<18000||SystemClock.elapsedRealtime()-confirmedAt<5000)?1000:3500);}};
     void start(){if(active)return;active=true;startedAt=SystemClock.elapsedRealtime();handler.postDelayed(tick,300);}
     void stop(){active=false;handler.removeCallbacks(tick);}
@@ -33,7 +33,7 @@ final class PlayerAdScan {
                 try{String parsed=new URI(url).getHost();if(parsed!=null){host=parsed.toLowerCase(java.util.Locale.ROOT);activity.getSharedPreferences("zero",Activity.MODE_PRIVATE).edit().putString("playerQrLastHost",host).apply();}}catch(Exception ignored){}
                 if(QrAdDetector.isAdUrl(url)){
                     confirmedAt=SystemClock.elapsedRealtime();
-                    AdBlockRules.confirm(activity,host,"qr-confirmed");
+                    PlayerAdBlockState.confirm(activity,host,"qr-confirmed");
                     dismissConfirmedHost(host);
                 }
             });});
