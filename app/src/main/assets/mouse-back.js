@@ -2,37 +2,28 @@
   if (window.__zeroMouseBackInstalled) return;
   window.__zeroMouseBackInstalled = true;
 
-  // In Android TV D-pad mode the provider may hide its controls after a few
-  // seconds. The first controller navigation press after that idle state is a
-  // wake-up press only: restore the provider controls and consume that single
-  // navigation event so it cannot seek, activate, or move focus accidentally.
-  // Mouse mode is unaffected because native mouse handling consumes those keys
-  // before a zerostreams-tv-nav message is sent to the provider iframe.
-  function wakeHiddenDpadControls(event) {
-    const data = event.data;
-    if (!window.__zeroTv || !data || data.type !== 'zerostreams-tv-nav') return;
-    if (window.parent === window || event.source !== window.parent) return;
-    const root = document.documentElement;
-    const hidden = root.classList.contains('zero-player-idle') || root.classList.contains('zero-back-hide');
-    if (!hidden) return;
-    root.classList.remove('zero-player-idle', 'zero-back-hide');
-    if (typeof window.__zeroRemoteActivity === 'function') window.__zeroRemoteActivity();
-    event.stopImmediatePropagation();
-  }
-  window.addEventListener('message', wakeHiddenDpadControls, true);
-
   const MENU_SELECTORS = [
     'dialog[open]',
     '[role="dialog"]',
     '[role="menu"]',
     '[role="listbox"]',
+    '[aria-modal="true"]',
     '.vjs-menu',
     '.vjs-menu-content',
     '.plyr__menu__container',
     '.shaka-settings-menu',
     '.shaka-overflow-menu',
-    '[data-state="open"]',
-    '[aria-expanded="true"] + *'
+    '[data-state="open"]'
+  ].join(',');
+  const CONTROL_SELECTORS = [
+    '.jw-controlbar',
+    '.jw-controls',
+    '.plyr__controls',
+    '.vjs-control-bar',
+    '.shaka-controls-container',
+    '[role="toolbar"]',
+    '[data-zero-controlbar]',
+    '[data-zero-controls]'
   ].join(',');
 
   function visible(node) {
@@ -42,16 +33,32 @@
     return style.display !== 'none' && style.visibility !== 'hidden' &&
       Number(style.opacity || 1) > 0 && rect.width > 2 && rect.height > 2;
   }
+  function idleRoot() {
+    const root = document.documentElement;
+    return root.classList.contains('zero-player-idle') || root.classList.contains('zero-back-hide');
+  }
+  function localControlsVisible() {
+    if (idleRoot()) return false;
+    const bars = Array.from(document.querySelectorAll(CONTROL_SELECTORS)).filter(node => {
+      if (!visible(node) || node.querySelector('video,iframe')) return false;
+      const rect = node.getBoundingClientRect();
+      return rect.height < innerHeight * .42;
+    });
+    if (bars.length) return true;
+    // player-guard maintains zero-player-idle after its inactivity window. If a
+    // provider uses an unrecognised control class, a non-idle document that owns
+    // the video still counts as controls-visible for the Back stack.
+    return Boolean(document.querySelector('video'));
+  }
 
   function closeLocalMenu() {
     const menus = Array.from(document.querySelectorAll(MENU_SELECTORS)).filter(node => {
       if (!visible(node)) return false;
       if (node.querySelector('video,iframe')) return false;
+      if (node.classList.contains('shaka-hidden')) return false;
       const rect = node.getBoundingClientRect();
-      // Ignore normal full-screen player wrappers. A popup/settings menu is smaller
-      // than the complete viewport or explicitly identifies itself as a menu/dialog.
-      return node.matches('dialog,[role="dialog"],[role="menu"],[role="listbox"],.vjs-menu,.vjs-menu-content,.plyr__menu__container,.shaka-settings-menu,.shaka-overflow-menu') ||
-        rect.width < innerWidth * .92 || rect.height < innerHeight * .92;
+      return node.matches('dialog,[role="dialog"],[role="menu"],[role="listbox"],[aria-modal="true"],.vjs-menu,.vjs-menu-content,.plyr__menu__container,.shaka-settings-menu,.shaka-overflow-menu') ||
+        rect.width < innerWidth * .94 || rect.height < innerHeight * .94;
     });
     if (!menus.length) return false;
 
@@ -70,85 +77,88 @@
     }
 
     const expanded = Array.from(document.querySelectorAll('[aria-expanded="true"]')).reverse()
-      .find(node => visible(node));
+      .find(node => visible(node) && (!menu.id || node.getAttribute('aria-controls') === menu.id || node.closest('button,[role="button"]')));
     if (expanded) {
       expanded.click();
       return true;
     }
 
-    // Provider UIs commonly use Escape to close resolution/settings popups.
     const target = document.activeElement || document;
-    target.dispatchEvent(new KeyboardEvent('keydown', {key:'Escape', code:'Escape', bubbles:true, cancelable:true}));
-    target.dispatchEvent(new KeyboardEvent('keyup', {key:'Escape', code:'Escape', bubbles:true, cancelable:true}));
+    for (const receiver of [target, document]) {
+      receiver.dispatchEvent(new KeyboardEvent('keydown', {key:'Escape', code:'Escape', bubbles:true, cancelable:true}));
+      receiver.dispatchEvent(new KeyboardEvent('keyup', {key:'Escape', code:'Escape', bubbles:true, cancelable:true}));
+    }
     return true;
+  }
+
+  function hideLocalControls() {
+    if (typeof window.__zeroHidePlayerControls === 'function') window.__zeroHidePlayerControls();
+    else document.documentElement.classList.add('zero-back-hide', 'zero-player-idle');
   }
 
   let sequence = 0;
   const waiters = new Map();
-
-  function askChildren() {
-    const frames = Array.from(document.querySelectorAll('iframe')).filter(visible);
-    if (!frames.length) return Promise.resolve(false);
-
-    const request = 'zmb-' + (++sequence) + '-' + Date.now();
+  function askChild(frame) {
+    const request = 'ztv-' + (++sequence) + '-' + Date.now();
     return new Promise(resolve => {
-      let remaining = frames.length;
-      let finished = false;
-      const timer = setTimeout(() => finish(false), 220);
-
-      function finish(value) {
-        if (finished) return;
-        finished = true;
-        clearTimeout(timer);
-        waiters.delete(request);
-        resolve(value);
-      }
-
-      waiters.set(request, {
-        reply(handled) {
-          if (handled) return finish(true);
-          remaining--;
-          if (remaining <= 0) finish(false);
-        }
-      });
-
-      frames.forEach(frame => {
-        try {
-          frame.contentWindow.postMessage({type:'zerostreams-mouse-back-query', request}, '*');
-        } catch (_) {
-          remaining--;
-          if (remaining <= 0) finish(false);
-        }
-      });
+      const timer = setTimeout(() => { waiters.delete(request); resolve('exit'); }, 260);
+      waiters.set(request, {source:frame.contentWindow, resolve:value => { clearTimeout(timer); waiters.delete(request); resolve(value); }});
+      try { frame.contentWindow.postMessage({type:'zerostreams-tv-back-query', request}, '*'); }
+      catch (_) { clearTimeout(timer); waiters.delete(request); resolve('exit'); }
     });
   }
-
-  async function closeOneProviderFunction() {
-    if (closeLocalMenu()) return true;
-    return await askChildren();
+  async function askChildrenStage() {
+    const frames = Array.from(document.querySelectorAll('iframe')).filter(visible).sort((a,b) => {
+      const ar=a.getBoundingClientRect(),br=b.getBoundingClientRect();return br.width*br.height-ar.width*ar.height;
+    });
+    for (const frame of frames) {
+      const stage = await askChild(frame);
+      if (stage !== 'exit') return stage;
+    }
+    return 'exit';
+  }
+  async function backStep() {
+    const childStage = await askChildrenStage();
+    if (childStage !== 'exit') return childStage;
+    if (closeLocalMenu()) return 'menu';
+    if (localControlsVisible()) {
+      hideLocalControls();
+      return 'controls';
+    }
+    return 'exit';
   }
 
-  window.__zeroMouseBackRequest = async token => {
+  // First D-pad press after player idle is wake-only. Native Android also sends
+  // a real hover event, while this capture listener prevents that same press
+  // from seeking or activating a provider control.
+  window.addEventListener('message', event => {
+    const data = event.data;
+    if (!window.__zeroTv || !data || data.type !== 'zerostreams-tv-nav') return;
+    if (window.parent === window || event.source !== window.parent || !idleRoot()) return;
+    document.documentElement.classList.remove('zero-player-idle', 'zero-back-hide');
+    if (typeof window.__zeroRemoteActivity === 'function') window.__zeroRemoteActivity();
+    event.stopImmediatePropagation();
+  }, true);
+
+  window.__zeroTvBackStep = async token => {
     window.__zeroBackResult = null;
-    const handled = await closeOneProviderFunction();
-    window.__zeroBackResult = {token, handled};
+    const stage = await backStep();
+    window.__zeroBackResult = {token, stage, handled:stage !== 'exit'};
   };
+  // Compatibility for older callers while the native TV path uses staged Back.
+  window.__zeroMouseBackRequest = window.__zeroTvBackStep;
 
   window.addEventListener('message', async event => {
     const data = event.data;
     if (!data) return;
-
-    if (data.type === 'zerostreams-mouse-back-query' && data.request) {
-      const handled = await closeOneProviderFunction();
-      try {
-        event.source.postMessage({type:'zerostreams-mouse-back-result', request:data.request, handled}, '*');
-      } catch (_) {}
+    if (data.type === 'zerostreams-tv-back-query' && data.request) {
+      const stage = await backStep();
+      try { event.source.postMessage({type:'zerostreams-tv-back-result', request:data.request, stage}, '*'); } catch (_) {}
       return;
     }
-
-    if (data.type === 'zerostreams-mouse-back-result' && data.request) {
+    if (data.type === 'zerostreams-tv-back-result' && data.request) {
       const waiter = waiters.get(data.request);
-      if (waiter) waiter.reply(data.handled === true);
+      if (waiter && waiter.source === event.source) waiter.resolve(['menu','controls','exit'].includes(data.stage)?data.stage:'exit');
     }
   });
 })();
