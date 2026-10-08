@@ -4,7 +4,7 @@
   "description": "ZeroPlay movies, series, Live TV and Live Sports with sports ad filtering",
   "author": "ZeroPlay",
   "private": true,
-  "main": "main.cjs",
+  "main": "bootstrap.cjs",
   "scripts": {
     "start": "electron .",
     "test": "node --test test/*.test.cjs",
