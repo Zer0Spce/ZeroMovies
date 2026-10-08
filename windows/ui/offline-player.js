@@ -20,7 +20,8 @@ const controlsToggle=document.getElementById('controls-toggle');
 let cues=[],cueIndex=-1,dragging=false,idleTimer,fill=false,manualControlsHidden=false;
 const CUE_TIME=/^\s*((?:\d{1,2}:)?\d{2}:\d{2}(?:[.,]\d{1,3})?)\s*-->\s*((?:\d{1,2}:)?\d{2}:\d{2}(?:[.,]\d{1,3})?)(?:\s+.*)?\s*$/;
 
-// Reliability-first: keep the compositor-safe controls, with a manual hide/show fallback.
+// Reliability-first: only the top bar and bottom controls are hideable.
+// The eye and subtitles are explicitly kept visible every time this state changes.
 function setManualControlsHidden(hidden){
   manualControlsHidden=Boolean(hidden);
   document.body.classList.toggle('manual-controls-hidden',manualControlsHidden);
@@ -28,6 +29,15 @@ function setManualControlsHidden(hidden){
     controlsToggle.setAttribute('aria-pressed',manualControlsHidden?'true':'false');
     controlsToggle.setAttribute('aria-label',manualControlsHidden?'Show player controls':'Hide player controls');
     controlsToggle.title=manualControlsHidden?'Show player controls':'Hide player controls';
+    controlsToggle.style.setProperty('display','flex','important');
+    controlsToggle.style.setProperty('opacity','1','important');
+    controlsToggle.style.setProperty('visibility','visible','important');
+    controlsToggle.style.setProperty('pointer-events','auto','important');
+  }
+  if(subtitleOverlay){
+    subtitleOverlay.style.setProperty('display','block','important');
+    subtitleOverlay.style.setProperty('opacity','1','important');
+    subtitleOverlay.style.setProperty('visibility','visible','important');
   }
 }
 function toggleManualControls(){setManualControlsHidden(!manualControlsHidden);}
