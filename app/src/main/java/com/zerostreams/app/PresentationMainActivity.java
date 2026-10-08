@@ -1,6 +1,7 @@
 package com.zerostreams.app;
 
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
@@ -8,6 +9,16 @@ import java.util.*;
 
 /** Final card presentation layer shared by Android phone, tablet and TV. */
 public class PresentationMainActivity extends CategoryMainActivity {
+
+    @Override public void onCreate(Bundle state){
+        android.content.SharedPreferences prefs=getSharedPreferences("zero",MODE_PRIVATE);
+        android.content.SharedPreferences.Editor editor=prefs.edit();boolean changed=false;
+        if(!prefs.contains("uiLayout")){editor.putString("uiLayout","google");changed=true;}
+        if(!prefs.contains("liveCignal")){editor.putBoolean("liveCignal",true);changed=true;}
+        if(!prefs.contains("liveConverge")){editor.putBoolean("liveConverge",true);changed=true;}
+        if(changed)editor.commit();
+        super.onCreate(state);
+    }
 
     /**
      * Preserve the proven v1.5 Android TV navigation path.
