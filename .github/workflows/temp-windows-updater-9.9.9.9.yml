@@ -47,7 +47,7 @@ jobs:
         run: npm run prepare-config
 
       - name: Build normal Windows portable package
-        run: npm run build
+        run: npx electron-builder --win --x64 --publish never
 
       - name: Patch packaged app version only to 9.9.9.9
         shell: pwsh
