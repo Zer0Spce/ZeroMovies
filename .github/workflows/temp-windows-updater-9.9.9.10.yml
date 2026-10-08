@@ -51,7 +51,7 @@ jobs:
           $pkgPath = 'package.json'
           $pkg = Get-Content $pkgPath -Raw | ConvertFrom-Json
           $pkg.version = $env:TEST_VERSION
-          $pkg.build.win.artifactName = "ZeroPlay-$env:TEST_VERSION-Windows-x64.${ext}"
+          $pkg.build.win.artifactName = 'ZeroPlay-' + $env:TEST_VERSION + '-Windows-x64.${ext}'
           $pkg | ConvertTo-Json -Depth 20 | Set-Content $pkgPath -Encoding UTF8
           Write-Host "Temporary runner package version set to $env:TEST_VERSION"
       - name: Configure bundled keys
