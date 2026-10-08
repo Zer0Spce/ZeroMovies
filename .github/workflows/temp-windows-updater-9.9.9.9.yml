@@ -1,4 +1,4 @@
-name: TEMP Windows Updater 9.9.9.9
+name: TEMP Windows Updater Fresh Test
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: temp-windows-updater-9-9-9-9
+  group: temp-windows-updater-fresh-test
   cancel-in-progress: true
 
 jobs:
@@ -27,8 +27,8 @@ jobs:
       CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
       CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
       GH_TOKEN: ${{ github.token }}
-      TEST_VERSION: 9.9.9.9
-      TEST_ASSET: ZeroPlay-9.9.9.9-r2-Windows-x64.zip
+      TEST_VERSION: 9.9.9.10
+      TEST_ASSET: ZeroPlay-9.9.9.10-Windows-x64.zip
     steps:
       - uses: actions/checkout@v4
 
@@ -47,7 +47,7 @@ jobs:
       - name: Configure bundled keys
         run: npm run prepare-config
 
-      - name: Set packaged app metadata to 9.9.9.9
+      - name: Set packaged app metadata to fresh test version
         shell: pwsh
         run: |
           node -e "const fs=require('fs');const p=require('./package.json');p.build=p.build||{};p.build.extraMetadata={...(p.build.extraMetadata||{}),version:process.env.TEST_VERSION};fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');"
@@ -94,7 +94,7 @@ jobs:
           if ($LASTEXITCODE -ne 0 -or !(Test-Path $zip)) { throw 'Windows PowerShell 5.1 failed to create the updater ZIP.' }
           Write-Host "Created $env:TEST_ASSET using Windows PowerShell 5.1"
 
-      - name: Validate ZIP through the exact updater extraction path
+      - name: Validate ZIP through exact v2.0.3 updater extraction path
         shell: pwsh
         run: |
           $stage = 'dist/updater-zip-verify'
@@ -103,7 +103,7 @@ jobs:
           & powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command $command
           if ($LASTEXITCODE -ne 0) { throw 'Windows PowerShell 5.1 failed to extract the updater ZIP.' }
           node -e "const fs=require('fs/promises'),path=require('path');(async()=>{const stage=path.resolve('dist/updater-zip-verify');const q=[[stage,0]];while(q.length){const [d,depth]=q.shift();let es;try{es=await fs.readdir(d,{withFileTypes:true})}catch{continue}if(es.some(e=>e.isFile()&&e.name.toLowerCase()==='zeroplay.exe')){try{await fs.access(path.join(d,'resources','app.asar'));console.log('UPDATER_ROOT='+d);process.exit(0)}catch{}}if(depth<4)for(const e of es)if(e.isDirectory()&&e.name!=='__MACOSX')q.push([path.join(d,e.name),depth+1])}console.error('No updater-compatible portable root found');process.exit(1)})()"
-          if ($LASTEXITCODE -ne 0) { throw 'The ZIP fails the actual locatePortableRoot() logic used by ZeroPlay.' }
+          if ($LASTEXITCODE -ne 0) { throw 'The ZIP fails the actual locatePortableRoot() logic used by ZeroPlay 2.0.3.' }
           $exe = Get-ChildItem -LiteralPath $stage -Recurse -File -Filter 'ZeroPlay.exe' | Select-Object -First 1
           $asar = Join-Path $exe.Directory.FullName 'resources/app.asar'
           $asarVerify = 'dist/updater-asar-verify'
@@ -123,30 +123,29 @@ jobs:
           "$hash  $env:TEST_ASSET" | Set-Content 'dist/SHA256SUMS.txt' -Encoding ascii
           Write-Host "SHA256 $hash"
 
-      - name: Publish cache-busting temporary release asset
+      - name: Publish fresh temporary release
         shell: pwsh
         working-directory: ${{ github.workspace }}
         run: |
           gh release view "v$env:TEST_VERSION" --repo "$env:GITHUB_REPOSITORY" *> $null
-          if ($LASTEXITCODE -ne 0) {
-            gh release create "v$env:TEST_VERSION" `
-              --repo "$env:GITHUB_REPOSITORY" `
-              --target "$env:GITHUB_SHA" `
-              --title "TEMP Windows Updater Test 9.9.9.9" `
-              --notes "TEMPORARY Windows-only updater validation release. No feature changes. Delete this release and tag immediately after the updater test is confirmed."
-            if ($LASTEXITCODE -ne 0) { throw 'Could not recreate temporary updater release.' }
+          if ($LASTEXITCODE -eq 0) {
+            gh release delete "v$env:TEST_VERSION" --cleanup-tag -y --repo "$env:GITHUB_REPOSITORY"
           }
-          gh release delete-asset "v$env:TEST_VERSION" "ZeroPlay-$env:TEST_VERSION-Windows-x64.zip" -y --repo "$env:GITHUB_REPOSITORY" 2>$null
-          gh release delete-asset "v$env:TEST_VERSION" "$env:TEST_ASSET" -y --repo "$env:GITHUB_REPOSITORY" 2>$null
-          gh release delete-asset "v$env:TEST_VERSION" "SHA256SUMS.txt" -y --repo "$env:GITHUB_REPOSITORY" 2>$null
-          gh release upload "v$env:TEST_VERSION" `
+          gh release create "v$env:TEST_VERSION" `
             "windows/dist/$env:TEST_ASSET" `
             "windows/dist/SHA256SUMS.txt" `
-            --repo "$env:GITHUB_REPOSITORY"
-          if ($LASTEXITCODE -ne 0) { throw 'Could not upload validated updater assets.' }
+            --repo "$env:GITHUB_REPOSITORY" `
+            --target "$env:GITHUB_SHA" `
+            --title "TEMP Windows Updater Test $env:TEST_VERSION" `
+            --notes "Fresh temporary Windows-only updater validation release for ZeroPlay 2.0.3. Exact asset name, Windows PowerShell 5.1 extraction tested, no feature changes. Delete immediately after validation."
+          if ($LASTEXITCODE -ne 0) { throw 'Could not publish fresh updater test release.' }
+          gh release view 'v9.9.9.9' --repo "$env:GITHUB_REPOSITORY" *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release delete 'v9.9.9.9' --cleanup-tag -y --repo "$env:GITHUB_REPOSITORY"
+          }
 
       - name: Summary
         shell: pwsh
         run: |
-          Write-Host 'Temporary v9.9.9.9 package published with Windows PowerShell 5.1-compatible ZIP.'
-          Write-Host "Published cache-busting asset: $env:TEST_ASSET"
+          Write-Host "Fresh temporary release v$env:TEST_VERSION published."
+          Write-Host "Exact preferred updater asset: $env:TEST_ASSET"
