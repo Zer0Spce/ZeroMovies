@@ -46,6 +46,12 @@
       "ui/offline-player.html",
       "ui/offline-player.css",
       "ui/offline-player.js"
+    ],
+    "extraFiles": [
+      {
+        "from": "ZeroPlayUpdater.exe",
+        "to": "ZeroPlayUpdater.exe"
+      }
     ]
   }
 }
