@@ -49,7 +49,7 @@
       if(iframe){iframe.src='about:blank';iframe.remove();}playing=item;lastProgress=0;record(item,position);
       const season=position.season===0?0:Number(position.season)||1,episode=Number(position.episode)||1;
       const url=new URL(window.playbackSources.url(item,position,saved.settings.source));
-      iframe=document.createElement('iframe');iframe.src=url.href;iframe.title=item.title+' player';iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.allowFullscreen=true;iframe.referrerPolicy='strict-origin-when-cross-origin';iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation');
+      iframe=document.createElement('iframe');iframe.src=url.href;iframe.title=item.title+' player';iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.allowFullscreen=true;iframe.referrerPolicy='strict-origin-when-cross-origin';
       document.getElementById('player-title').textContent=item.title;document.getElementById('player-stage').appendChild(iframe);if(!dialog.open)dialog.showModal();activity();refresh();
     },
     async external(value){const url=new URL(value);if(url.protocol!=='https:'||!['www.youtube.com','www.themoviedb.org'].includes(url.hostname))throw Error('Unsupported link');window.open(url.href,'_blank','noopener,noreferrer');},
