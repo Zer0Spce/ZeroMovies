@@ -92,7 +92,7 @@ static class Program
                     ValidatePortable(finalDir);
 
                     Step("Switching active version…", 88);
-                    Activate(root, version, finalDir);
+                    Program.Activate(root, version, finalDir);
                     TryDelete(zip);
                     TryDeleteDirectory(work);
                     if (!string.IsNullOrWhiteSpace(downloadDir)) TryDeleteDirectory(downloadDir);
