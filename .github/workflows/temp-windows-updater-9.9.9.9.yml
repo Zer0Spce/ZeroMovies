@@ -1,0 +1,124 @@
+name: TEMP Windows Updater 9.9.9.9
+
+on:
+  push:
+    branches:
+      - temp/windows-updater-9.9.9.9
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temp-windows-updater-9-9-9-9
+  cancel-in-progress: true
+
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+      GH_TOKEN: ${{ github.token }}
+      TEST_VERSION: 9.9.9.9
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Run updater tests
+        run: node --test test/updater.test.cjs
+
+      - name: Configure bundled keys
+        run: npm run prepare-config
+
+      - name: Build normal Windows portable package
+        run: npm run build
+
+      - name: Patch packaged app version only to 9.9.9.9
+        shell: pwsh
+        run: |
+          $asar = 'dist/win-unpacked/resources/app.asar'
+          $stage = 'dist/app-asar-temp'
+          if (!(Test-Path $asar)) { throw 'Packaged app.asar was not found.' }
+          if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
+          npx --yes @electron/asar extract $asar $stage
+          $pkgPath = Join-Path $stage 'package.json'
+          if (!(Test-Path $pkgPath)) { throw 'package.json was not found inside app.asar.' }
+          $pkg = Get-Content $pkgPath -Raw | ConvertFrom-Json
+          $pkg.version = $env:TEST_VERSION
+          $pkg | ConvertTo-Json -Depth 100 | Set-Content $pkgPath -Encoding UTF8
+          Remove-Item $asar -Force
+          npx --yes @electron/asar pack $stage $asar
+          Remove-Item $stage -Recurse -Force
+
+      - name: Verify patched packaged version
+        shell: pwsh
+        run: |
+          $verify = 'dist/app-asar-verify'
+          if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
+          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          $pkg = Get-Content (Join-Path $verify 'package.json') -Raw | ConvertFrom-Json
+          if ($pkg.version -ne $env:TEST_VERSION) { throw "Expected version $env:TEST_VERSION but found $($pkg.version)." }
+          Remove-Item $verify -Recurse -Force
+          Write-Host "Packaged ZeroPlay app version is $env:TEST_VERSION"
+
+      - name: Smoke-test patched portable app
+        shell: pwsh
+        run: |
+          $exe = Resolve-Path 'dist/win-unpacked/ZeroPlay.exe'
+          $p = Start-Process -FilePath $exe -ArgumentList '--smoke-test' -PassThru
+          if (-not $p.WaitForExit(20000)) {
+            Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+            throw 'Patched ZeroPlay smoke test timed out.'
+          }
+          if ($p.ExitCode -ne 0) { throw "Patched ZeroPlay smoke test failed with exit code $($p.ExitCode)." }
+
+      - name: Create updater ZIP and checksum
+        shell: pwsh
+        run: |
+          $zip = "dist/ZeroPlay-$env:TEST_VERSION-Windows-x64.zip"
+          if (Test-Path $zip) { Remove-Item $zip -Force }
+          Compress-Archive -Path 'dist/win-unpacked/*' -DestinationPath $zip -CompressionLevel Optimal
+          $hash = (Get-FileHash -Algorithm SHA256 $zip).Hash.ToLowerInvariant()
+          "$hash  ZeroPlay-$env:TEST_VERSION-Windows-x64.zip" | Set-Content 'dist/SHA256SUMS.txt' -Encoding ascii
+          Write-Host "SHA256 $hash"
+
+      - name: Refuse to overwrite an existing 9.9.9.9 release
+        shell: pwsh
+        working-directory: ${{ github.workspace }}
+        run: |
+          gh release view "v$env:TEST_VERSION" --repo "$env:GITHUB_REPOSITORY" *> $null
+          if ($LASTEXITCODE -eq 0) { throw "Release v$env:TEST_VERSION already exists; refusing to overwrite it." }
+          exit 0
+
+      - name: Publish temporary updater test release
+        shell: pwsh
+        working-directory: ${{ github.workspace }}
+        run: |
+          gh release create "v$env:TEST_VERSION" `
+            "windows/dist/ZeroPlay-$env:TEST_VERSION-Windows-x64.zip" `
+            "windows/dist/SHA256SUMS.txt" `
+            --repo "$env:GITHUB_REPOSITORY" `
+            --target "$env:GITHUB_SHA" `
+            --title "TEMP Windows Updater Test 9.9.9.9" `
+            --notes "TEMPORARY Windows-only updater validation release. No feature changes. The portable package is the current ZeroPlay Windows build with only the packaged app version changed to 9.9.9.9 so the existing updater can exercise detection, download, SHA-256 verification, replacement, relaunch, and version confirmation. Delete this release and tag immediately after the updater test is confirmed."
+
+      - name: Summary
+        shell: pwsh
+        run: |
+          Write-Host 'Temporary release v9.9.9.9 published for Windows updater testing.'
+          Write-Host 'Delete the release/tag after validation.'
