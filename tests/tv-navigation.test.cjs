@@ -1,50 +1,88 @@
-const {JSDOM}=require('jsdom'),fs=require('node:fs'),assert=require('node:assert/strict');
-const source=fs.readFileSync(process.env.ZERO_GUARD_PATH||'android-next/player-guard.js','utf8');
-const mouseBackSource=fs.readFileSync(process.env.ZERO_MOUSE_BACK_PATH||'app/src/main/assets/mouse-back.js','utf8');
-function page(html){const dom=new JSDOM(html,{runScripts:'outside-only',url:'https://vidstuck.xyz/embed/movie/299534'}),w=dom.window;w.__zeroTv=true;w.__zeroBlockAds=true;w.HTMLElement.prototype.getBoundingClientRect=function(){const left=Number(this.dataset.x)||0,top=Number(this.dataset.y)||0,width=Number(this.dataset.w)||100,height=Number(this.dataset.h)||40;return {left,top,width,height,right:left+width,bottom:top+height};};w.HTMLElement.prototype.scrollIntoView=function(){};w.eval(source);w.document.dispatchEvent(new w.Event('DOMContentLoaded'));return dom;}
+const {JSDOM}=require('jsdom');
+const fs=require('node:fs');
+const assert=require('node:assert/strict');
+
+const controller=fs.readFileSync('app/src/main/assets/tv-player-input.js','utf8');
+
+function page(html){
+  const dom=new JSDOM(html,{runScripts:'outside-only',url:'https://vidstuck.xyz/embed/movie/299534'});
+  const w=dom.window;
+  w.__zeroTv=true;
+  w.HTMLElement.prototype.getBoundingClientRect=function(){
+    const left=Number(this.dataset.x)||0,top=Number(this.dataset.y)||0,width=Number(this.dataset.w)||100,height=Number(this.dataset.h)||40;
+    return {left,top,width,height,right:left+width,bottom:top+height};
+  };
+  w.HTMLElement.prototype.scrollIntoView=function(){};
+  w.eval(controller);
+  return dom;
+}
+
+const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+
 async function run(){
-  let dom=page('<video></video><div class="plyr__controls" data-y="650" data-w="1024" data-h="70"><button id="play" data-x="100" data-y="660">Play</button><button id="volume" data-x="300" data-y="660">Volume</button><button id="subtitles" data-x="500" data-y="660">Subtitles</button></div>');const w=dom.window;let seeks=0,clicks=0;w.document.addEventListener('keydown',event=>{if(event.key==='ArrowLeft')seeks++;});w.document.getElementById('play').onclick=()=>clicks++;
-  w.__zeroTvNavigate('right');assert.equal(w.document.activeElement.id,'play');w.__zeroTvNavigate('right');assert.equal(w.document.activeElement.id,'volume');
-  const left=new w.KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true,cancelable:true});w.document.dispatchEvent(left);assert.equal(w.document.activeElement.id,'play');assert.equal(seeks,0,'Left must navigate focus without reaching provider seek hotkeys');assert.equal(left.defaultPrevented,true);assert.equal(clicks,0,'Arrow movement must not activate playback');
-  w.__zeroTvNavigate('ok');assert.equal(clicks,1);dom.window.close();
-  dom=page('<button id="top" data-x="400" data-y="100">Top</button><button id="down" data-x="410" data-y="300">Down</button><button id="side" data-x="50" data-y="280">Side</button>');dom.window.__zeroTvNavigate('down');assert.equal(dom.window.document.activeElement.id,'top');dom.window.__zeroTvNavigate('down');assert.equal(dom.window.document.activeElement.id,'down','Down should choose the nearest control below, not a sideways/list-order item');dom.window.__zeroTvNavigate('down');assert.equal(dom.window.document.activeElement.id,'down','Navigation must not wrap at the bottom');dom.window.close();
-  dom=page('<button id="back" aria-label="Go back">Back</button><button id="play" data-x="200">Play</button>');let exits=0;dom.window.ZeroPlayer={postMessage:value=>{assert.equal(value,'back');exits++;}};dom.window.document.getElementById('back').click();assert.equal(exits,1,'The player Back button should exit via the narrow native action');dom.window.close();
-  dom=page('<iframe id="frame" data-w="1024" data-h="768"></iframe>');let forwarded;const frame=dom.window.document.querySelector('iframe');frame.contentWindow.postMessage=data=>forwarded=data;dom.window.__zeroTvNavigate('left');assert.equal(forwarded.type,'zerostreams-tv-nav');assert.equal(forwarded.direction,'left');assert.equal(dom.window.document.activeElement,frame);dom.window.close();
-  dom=page('<video></video><div id="component"></div>');const root=dom.window.document.getElementById('component').attachShadow({mode:'open'});root.innerHTML='<img id="painted" data-w="1024" data-h="768">';dom.window.__zeroDismissQrAd();assert.equal(root.getElementById('painted').style.display,'none','Native-confirmed painted QR advertisements inside open shadow DOM should be removed');assert.equal(dom.window.document.querySelector('video').style.display,'');dom.window.close();
-  dom=page('<video></video><div class="plyr__controls" style="opacity:0;visibility:hidden;pointer-events:none;display:none" data-y="650" data-h="70"><button data-x="100">Play</button><button data-x="300">Volume</button></div>');const wake=dom.window,bar=wake.document.querySelector('.plyr__controls');wake.document.documentElement.classList.add("zero-player-idle");bar.style.opacity="0";assert.equal(wake.document.documentElement.classList.contains('zero-player-idle'),true);wake.__zeroTvNavigate('right');assert.equal(wake.document.documentElement.classList.contains('zero-player-idle'),false);assert.equal(wake.getComputedStyle(bar).opacity,'1');assert.equal(wake.getComputedStyle(bar).visibility,'visible');assert.notEqual(wake.getComputedStyle(bar).display,'none');assert.equal(wake.document.activeElement.textContent,'Play');wake.document.documentElement.classList.add("zero-player-idle");bar.style.opacity="0";assert.equal(bar.style.opacity,'0');wake.__zeroTvNavigate('ok');assert.equal(wake.getComputedStyle(bar).opacity,'1');dom.window.close();
+  let dom=page('<video></video><div class="plyr__controls" data-y="650" data-w="1024" data-h="70"><button id="play" aria-label="Play" data-x="100" data-y="660">Play</button><button id="volume" aria-label="Volume" data-x="300" data-y="660">Volume</button><button id="subs" aria-label="Subtitles" data-x="500" data-y="660">Subtitles</button></div>');
+  let w=dom.window;
+  w.__zeroTvNavigate('right');
+  assert.equal(w.document.activeElement.id,'play','First D-pad press should visibly focus the initial player control');
+  assert.equal(w.document.getElementById('play').style.getPropertyValue('outline'),'4px solid #65e6cc');
+  w.__zeroTvNavigate('right');
+  assert.equal(w.document.activeElement.id,'volume','Second Right should move to the next real control');
+  assert.match(w.document.getElementById('volume').style.getPropertyValue('box-shadow'),/101\s*,\s*230\s*,\s*204/,'Focused player control needs an obvious teal glow');
+  let clicks=0;w.document.getElementById('volume').onclick=()=>clicks++;
+  w.__zeroTvNavigate('ok');assert.equal(clicks,1,'OK should activate only the highlighted control');
+  dom.window.close();
 
-  dom=page('<div id="shadow-host"></div>');const shadowWindow=dom.window,shadow=shadowWindow.document.getElementById('shadow-host').attachShadow({mode:'open'});shadow.innerHTML='<button id="shadow-quality" class="zero-tv-focused" data-w="120" data-h="42">1080p</button>';shadowWindow.eval(mouseBackSource);shadowWindow.__zeroTvNavigate('ok');await new Promise(resolve=>setTimeout(resolve,80));const shadowButton=shadow.getElementById('shadow-quality');assert.equal(shadowButton.style.getPropertyValue('outline'),'4px solid #65e6cc','TV focus must be visibly highlighted even inside provider Shadow DOM');assert.match(shadowButton.style.getPropertyValue('box-shadow'),/101,\s*230,\s*204/,'Shadow control focus should have a visible teal glow');dom.window.close();
+  dom=page('<video></video><div class="plyr__controls" style="opacity:0;visibility:hidden;display:none" data-y="650" data-w="1024" data-h="70"><button id="play" aria-label="Play" data-x="100" data-y="660">Play</button><button id="volume" aria-label="Volume" data-x="300" data-y="660">Volume</button></div>');
+  w=dom.window;
+  const bar=w.document.querySelector('.plyr__controls');
+  w.document.documentElement.classList.add('zero-player-idle');
+  w.__zeroTvNavigate('right');
+  assert.equal(w.getComputedStyle(bar).visibility,'visible','First D-pad press after real provider idle should wake controls');
+  assert.notEqual(w.getComputedStyle(bar).display,'none','Wake must restore a hidden provider control bar');
+  assert.equal(w.document.activeElement.id,'','Wake-only press must not accidentally activate or move a hidden control');
+  w.__zeroTvNavigate('right');
+  assert.equal(w.document.activeElement.id,'play','The next D-pad press should begin normal navigation');
+  dom.window.close();
 
-  assert.match(mouseBackSource,/__zeroTvBackStep/,'TV Back bridge must expose a staged provider Back request');
-  assert.match(mouseBackSource,/return 'menu'/,'Back stage must distinguish an open provider function/menu');
-  assert.match(mouseBackSource,/return 'controls'/,'Back stage must distinguish visible player controls');
-  assert.match(mouseBackSource,/return childStage/,'Back stage must explicitly preserve provider exit or unknown state');
-  assert.match(mouseBackSource,/zerostreams-tv-back-query/,'Back staging must recurse into embedded provider frames');
-  assert.match(mouseBackSource,/outline','4px solid #65e6cc/,'TV focus highlight must be applied inline so Shadow DOM cannot hide it');
-  assert.match(mouseBackSource,/box-shadow','0 0 0 3px/,'Focused TV controls need a high-contrast glow');
+  dom=page('<video></video><div id="host"></div>');
+  w=dom.window;
+  const shadow=w.document.getElementById('host').attachShadow({mode:'open'});
+  shadow.innerHTML='<div class="plyr__controls" data-y="650" data-w="800" data-h="70"><button id="quality" aria-label="Quality" data-x="200" data-y="660">1080p</button><button id="sub" aria-label="Subtitles" data-x="400" data-y="660">CC</button></div>';
+  w.__zeroTvNavigate('right');
+  const quality=shadow.getElementById('quality');
+  assert.equal(quality.style.getPropertyValue('outline'),'4px solid #65e6cc','Shadow-DOM provider controls must get the same visible highlight');
+  dom.window.close();
 
-  const activityPath=process.env.ZERO_TV_ACTIVITY||'app/src/main/java/com/zerostreams/app/BrowserPlayerActivity.java';
-  const activity=fs.readFileSync(activityPath,'utf8');
+  dom=page('<video></video><button id="settings" aria-label="Settings" aria-expanded="true">Settings</button><div role="menu" data-w="240" data-h="180"><button>1080p</button></div>');
+  w=dom.window;
+  let closed=0;w.document.getElementById('settings').onclick=()=>{closed++;w.document.getElementById('settings').setAttribute('aria-expanded','false');w.document.querySelector('[role="menu"]').style.display='none';};
+  w.__zeroTvBackRequest(1);await wait(20);
+  assert.equal(w.__zeroBackResult.stage,'menu','Back must close a provider settings/quality menu before doing anything else');
+  assert.equal(closed,1);
+  dom.window.close();
+
+  dom=page('<video></video><div class="plyr__controls" data-y="650" data-w="1024" data-h="70"><button aria-label="Play">Play</button></div>');
+  w=dom.window;
+  w.__zeroTvBackRequest(2);await wait(20);
+  assert.equal(w.__zeroBackResult.stage,'controls','Back with visible player controls must hide controls, not exit the movie');
+  w.__zeroTvBackRequest(3);await wait(20);
+  assert.equal(w.__zeroBackResult.stage,'exit','Only Back after controls are already hidden may exit playback');
+  dom.window.close();
+
+  const activity=fs.readFileSync('app/src/main/java/com/zerostreams/app/BrowserPlayerActivity.java','utf8');
   const mouse=fs.readFileSync('app/src/main/java/com/zerostreams/app/TvMouse.java','utf8');
-  assert.match(activity,/sendTvNavigation\(direction,0\)/,'TV Activity must route D-pad through the focus navigator');
-  assert.doesNotMatch(activity,/nativeTvFallback/,'Raw Android D-pad fallback must stay removed because providers treat LEFT\/RIGHT as seek');
-  assert.match(activity,/querySelectorAll\('iframe'\)/,'Embed navigation must discover visible provider iframes');
-  assert.match(activity,/zerostreams-tv-nav/,'Embed navigation must forward D-pad commands into the provider iframe instead of raw Android seek keys');
-  assert.match(activity,/consumeDpadWake/,'D-pad mode must explicitly detect an idle wake-only press');
-  assert.match(activity,/wakeProviderWithHover/,'D-pad wake must send native WebView pointer activity');
-  assert.match(activity,/dispatchGenericMotionEvent/,'D-pad wake must use a native hover event so provider controls really reappear');
-  assert.match(activity,/dpadWakeKey/,'The matching key-up after a wake-only press must also be consumed');
-  assert.match(activity,/__zeroTvBackStep/,'TV Back must use the popup → controls → exit stage bridge');
-  assert.match(activity,/"menu"\.equals\(stage\)/,'Native Back must preserve the provider popup stage');
-  assert.match(activity,/"controls"\.equals\(stage\)/,'Native Back must preserve the controls-hide stage');
-  assert.doesNotMatch(activity,/putBoolean\("playerMouse",true\)/,'Opening a movie must not overwrite the Settings-selected player mode');
-  assert.doesNotMatch(mouse,/KEYCODE_MENU/,'Player mode switching must be Settings-only, not a Menu-button toggle');
-  assert.match(mouse,/getBoolean\("playerMouse",true\)/,'Mouse remains the default when no player-mode preference exists');
+  assert.match(activity,/tv-player-input\.js/,'TV player must load the new single input controller');
+  assert.match(activity,/if\(window\.__zeroTvNavigate\)window\.__zeroTvNavigate/,'Native D-pad must route once through the top-level controller');
+  assert.doesNotMatch(activity,/querySelectorAll\('iframe'\).*zerostreams-tv-nav/s,'Native Android must not guess the largest provider iframe anymore');
+  assert.doesNotMatch(activity,/consumeDpadWake/,'Native timer-based D-pad wake interception must stay removed');
+  assert.doesNotMatch(activity,/mouse-back\.js/,'The obsolete competing Back/input script must not be injected');
+  assert.match(activity,/__zeroTvBackRequest/,'Mouse and D-pad Back must use the same clean staged controller');
+  assert.doesNotMatch(activity,/putBoolean\("playerMouse",true\)/,'Opening a movie must not overwrite the Settings-selected mode');
+  assert.doesNotMatch(mouse,/KEYCODE_MENU/,'Mouse/D-pad switching must remain Settings-only');
+  assert.match(mouse,/getBoolean\("playerMouse",true\)/,'Mouse remains the default if no preference exists');
 
-  console.log('TV focus navigation and QR checks passed');
-  console.log('TV focus stays visibly highlighted inside provider Shadow DOM controls');
-  console.log('Android TV D-pad idle wake uses a real native hover and consumes the wake key');
-  console.log('Android TV Back preserves provider popup → controls → exit as separate stages');
-  console.log('Mouse/D-pad mode is selected only from Settings');
+  console.log('Clean Android TV input controller checks passed');
+  console.log('D-pad wake, visible focus, Shadow DOM navigation and staged Back checks passed');
+  console.log('Settings-only Mouse/D-pad selection preserved');
 }
 run().catch(error=>{console.error(error);process.exitCode=1;});
