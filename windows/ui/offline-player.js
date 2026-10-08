@@ -15,12 +15,11 @@ const speedLabel=document.getElementById('speed-label');
 const speedMenu=document.getElementById('speed-menu');
 const controls=document.getElementById('controls');
 const topbar=document.getElementById('topbar');
-const controlsToggle=document.getElementById('controls-toggle');
 const wakeSurface=document.getElementById('wake-surface');
-let cues=[],cueIndex=-1,dragging=false,idleTimer,fill=false,manualControlsHidden=false;
+let cues=[],cueIndex=-1,dragging=false,idleTimer,fill=false;
 const CUE_TIME=/^\s*((?:\d{1,2}:)?\d{2}:\d{2}(?:[.,]\d{1,3})?)\s*-->\s*((?:\d{1,2}:)?\d{2}:\d{2}(?:[.,]\d{1,3})?)(?:\s+.*)?\s*$/;
 
-// Reliability-first: Offline Player auto-hide is disabled. Controls are hidden only by the manual toggle.
+// Reliability-first: Offline Player controls never auto-hide.
 function hideUi(){
   document.body.classList.remove('hidden-ui');
   document.documentElement.style.cursor='';
@@ -41,16 +40,6 @@ function recoverControls(){
   requestAnimationFrame(wake);
   for(const delay of [80,220,600])setTimeout(wake,delay);
 }
-function setManualControlsHidden(hidden){
-  manualControlsHidden=Boolean(hidden);
-  document.body.classList.toggle('manual-controls-hidden',manualControlsHidden);
-  if(!speedMenu.hidden)speedMenu.hidden=true;
-  controlsToggle.setAttribute('aria-label',manualControlsHidden?'Show controls':'Hide controls');
-  controlsToggle.title=manualControlsHidden?'Show controls':'Hide controls';
-  // Subtitles are intentionally untouched: they remain visible while the UI is hidden.
-  renderSubtitle(true);
-}
-function toggleManualControls(){setManualControlsHidden(!manualControlsHidden);}
 function toggleFullscreen(){
   recoverControls();
   try{Promise.resolve(window.offline.fullscreen()).finally(recoverControls);}catch(error){status.textContent=error.message||'Could not toggle fullscreen';recoverControls();}
@@ -85,13 +74,14 @@ function updateTime(){const duration=video.duration||0,current=video.currentTime
 function setPlaying(){document.body.classList.toggle('playing',!video.paused);play.setAttribute('aria-label',video.paused?'Play':'Pause');wake();}
 function setMuted(){document.body.classList.toggle('muted',video.muted||video.volume===0);mute.setAttribute('aria-label',video.muted?'Unmute':'Mute');volume.value=String(video.muted?0:video.volume);}
 function togglePlay(){video.paused?video.play().catch(()=>{}):video.pause();}
+function isUiTarget(target){return Boolean(target?.closest?.('#topbar,#controls,.menu,button,input,select,a'));}
 
-controlsToggle.addEventListener('click',toggleManualControls);
 play.addEventListener('click',togglePlay);
-video.addEventListener('click',togglePlay);
-video.addEventListener('dblclick',toggleFullscreen);
+stage.addEventListener('click',event=>{if(!isUiTarget(event.target))togglePlay();});
+stage.addEventListener('dblclick',event=>{if(!isUiTarget(event.target))toggleFullscreen();});
 video.addEventListener('play',setPlaying);video.addEventListener('pause',setPlaying);video.addEventListener('timeupdate',updateTime);video.addEventListener('durationchange',updateTime);video.addEventListener('seeking',()=>{cueIndex=-1;renderSubtitle(true);});video.addEventListener('seeked',()=>{cueIndex=-1;renderSubtitle(true);});video.addEventListener('volumechange',setMuted);
 video.addEventListener('loadedmetadata',()=>{status.textContent='✓ Ready · '+format(video.duration);updateTime();recoverControls();});
+video.addEventListener('loadeddata',recoverControls);video.addEventListener('canplay',recoverControls);video.addEventListener('playing',recoverControls);
 video.addEventListener('error',()=>{status.textContent='This file uses a codec the Windows media engine cannot decode.';recoverControls();});
 
 mute.addEventListener('click',()=>{video.muted=!video.muted;setMuted();wake();});
@@ -120,4 +110,4 @@ if(wakeSurface){wakeSurface.style.pointerEvents='none';}
 
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();window.offline.close();return;}if(event.key==='F11'){event.preventDefault();toggleFullscreen();return;}if(event.code==='Space'&&!/^(INPUT|BUTTON|SELECT)$/.test(event.target?.tagName||'')){event.preventDefault();togglePlay();return;}if(event.key==='ArrowRight'&&!/^(INPUT|BUTTON|SELECT)$/.test(event.target?.tagName||'')){event.preventDefault();video.currentTime=Math.min(video.duration||Infinity,(video.currentTime||0)+10);cueIndex=-1;updateTime();return;}if(event.key==='ArrowLeft'&&!/^(INPUT|BUTTON|SELECT)$/.test(event.target?.tagName||'')){event.preventDefault();video.currentTime=Math.max(0,(video.currentTime||0)-10);cueIndex=-1;updateTime();return;}if(event.key==='ArrowUp'&&!/^(INPUT|BUTTON|SELECT)$/.test(event.target?.tagName||'')){event.preventDefault();video.muted=false;video.volume=Math.min(1,video.volume+.05);return;}if(event.key==='ArrowDown'&&!/^(INPUT|BUTTON|SELECT)$/.test(event.target?.tagName||'')){event.preventDefault();video.volume=Math.max(0,video.volume-.05);return;}});
 
-(async()=>{try{setManualControlsHidden(false);const context=await window.offline.context();title.textContent=context.title||'Downloaded video';video.src=context.url;const found=context.subtitles||[];if(found.length){try{useTrack(found[0],false);status.textContent='✓ Auto-loaded subtitles · '+(found[0].label||'local subtitle')+' · '+cues.length+' cues';}catch{status.textContent='Local subtitle found but could not be parsed';}}await video.play().catch(()=>{});setPlaying();setMuted();syncRate();recoverControls();}catch(error){status.textContent=error.message||'Could not open downloaded video';recoverControls();}})();
+(async()=>{try{const context=await window.offline.context();title.textContent=context.title||'Downloaded video';video.src=context.url;const found=context.subtitles||[];if(found.length){try{useTrack(found[0],false);status.textContent='✓ Auto-loaded subtitles · '+(found[0].label||'local subtitle')+' · '+cues.length+' cues';}catch{status.textContent='Local subtitle found but could not be parsed';}}await video.play().catch(()=>{});setPlaying();setMuted();syncRate();recoverControls();}catch(error){status.textContent=error.message||'Could not open downloaded video';recoverControls();}})();
