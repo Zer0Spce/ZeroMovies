@@ -45,8 +45,14 @@ jobs:
           node scripts/live-compat-check.cjs
           node scripts/player-exit-check.cjs
 
-      - name: Verify updater source syntax
-        run: node --check updater.cjs
+      - name: Verify updater source repair
+        shell: pwsh
+        run: |
+          node --check updater.cjs
+          $text = Get-Content updater.cjs -Raw
+          foreach ($needle in @('robocopy.exe','Updated ZeroPlay.exe failed verification after copy.','Start-Process -FilePath $launch -WorkingDirectory $target','ZeroPlay-updater.log')) {
+            if (-not $text.Contains($needle)) { throw "Updater repair marker missing: $needle" }
+          }
 
       - name: Verify player controls and QR filtering
         run: |
@@ -71,12 +77,8 @@ jobs:
         run: |
           if (!(Test-Path 'dist/ZeroPlay-2.0.1-Windows-x64.zip')) { throw '2.0.1 Windows ZIP was not produced.' }
           if ((Get-Item 'dist/ZeroPlay-2.0.1-Windows-x64.zip').Length -le 0) { throw '2.0.1 Windows ZIP is empty.' }
-          $unpacked = 'dist/win-unpacked/resources/app.asar.unpacked/updater.cjs'
-          if (!(Test-Path $unpacked)) { throw 'Packaged updater.cjs is missing.' }
-          $text = Get-Content $unpacked -Raw
-          foreach ($needle in @('robocopy.exe','Updated ZeroPlay.exe failed verification after copy.','Start-Process -FilePath $launch -WorkingDirectory $target','ZeroPlay-updater.log')) {
-            if (-not $text.Contains($needle)) { throw "Updater repair marker missing: $needle" }
-          }
+          if (!(Test-Path 'dist/win-unpacked/resources/app.asar')) { throw 'Packaged app.asar is missing.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlay.exe')) { throw 'Packaged ZeroPlay.exe is missing.' }
 
       - name: Verify Authenticode signature when configured
         shell: pwsh
