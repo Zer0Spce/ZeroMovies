@@ -1,0 +1,97 @@
+name: TEMP Windows Updater 9.9.9.11
+
+on:
+  push:
+    branches:
+      - temp/windows-updater-9.9.9.11
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temp-windows-updater-9-9-9-11
+  cancel-in-progress: true
+
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Run Windows tests
+        run: npm test
+
+      - name: Configure bundled keys
+        run: npm run prepare-config
+
+      - name: Smoke test temporary build
+        run: npx electron . --smoke-test
+
+      - name: Build Windows 9.9.9.11 portable ZIP
+        run: npx electron-builder --win --x64 --publish never
+
+      - name: Verify packaged version and updater payload
+        shell: pwsh
+        run: |
+          $zip = 'dist/ZeroPlay-9.9.9.11-Windows-x64.zip'
+          if (!(Test-Path $zip)) { throw 'Temporary updater ZIP was not created.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlay.exe')) { throw 'ZeroPlay.exe missing.' }
+          if (!(Test-Path 'dist/win-unpacked/resources/app.asar')) { throw 'app.asar missing.' }
+          $verify = 'dist/verify-asar'
+          if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
+          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          $pkg = Get-Content "$verify/package.json" -Raw | ConvertFrom-Json
+          if ($pkg.version -ne '9.9.9.11') { throw "Expected packaged version 9.9.9.11, got $($pkg.version)" }
+          foreach ($file in @('version-manager.cjs','updater.cjs')) {
+            if (!(Test-Path "$verify/$file")) { throw "$file missing from packaged app." }
+          }
+          Remove-Item $verify -Recurse -Force
+
+      - name: Create SHA256SUMS.txt
+        shell: pwsh
+        run: |
+          $zip = 'dist/ZeroPlay-9.9.9.11-Windows-x64.zip'
+          $hash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
+          "$hash  ZeroPlay-9.9.9.11-Windows-x64.zip" | Set-Content -Encoding ascii dist/SHA256SUMS.txt
+
+      - name: Refuse to overwrite an existing temporary release
+        working-directory: .
+        shell: bash
+        run: |
+          if gh release view v9.9.9.11 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'v9.9.9.11 already exists; refusing to overwrite it.'
+            exit 1
+          fi
+
+      - name: Publish temporary Windows updater test release
+        working-directory: .
+        shell: bash
+        run: |
+          gh release create v9.9.9.11 \
+            windows/dist/ZeroPlay-9.9.9.11-Windows-x64.zip \
+            windows/dist/SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title 'TEMP Windows Updater Test 9.9.9.11' \
+            --notes $'TEMPORARY WINDOWS-ONLY UPDATE FOR UPDATER VALIDATION.\n\nThis contains the current ZeroPlay 2.1 Windows code with the packaged application version changed to 9.9.9.11 so the new version-folder updater can be tested end-to-end.\n\nExpected test: ZeroPlay 2.1 detects 9.9.9.11, downloads and verifies the ZIP, installs it under the versioned update location, relaunches through the stable launcher, and the app reports version 9.9.9.11.\n\nDelete this release and tag immediately after successful validation.'
