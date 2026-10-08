@@ -13,66 +13,81 @@
     '[role="toolbar"]', '[data-zero-controlbar]', '[data-zero-controls]'
   ].join(',');
 
-  let unknownBackFallback = 0;
-  let lastNavRelay = 0;
-
+  function roots() {
+    const out=[document], queue=[document];
+    for(let i=0;i<queue.length&&i<48;i++){
+      const root=queue[i];
+      root.querySelectorAll('*').forEach(node=>{
+        if(node.shadowRoot&&!out.includes(node.shadowRoot)){out.push(node.shadowRoot);queue.push(node.shadowRoot);}
+      });
+    }
+    return out;
+  }
+  function all(selector){
+    const out=[];
+    for(const root of roots()){
+      try{out.push(...root.querySelectorAll(selector));}catch(_){}
+    }
+    return Array.from(new Set(out));
+  }
   function visible(node) {
     if (!node || node.hidden) return false;
     const style = getComputedStyle(node), rect = node.getBoundingClientRect();
     return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity || 1) > 0 && rect.width > 2 && rect.height > 2;
   }
-  function visibleFrames(exclude) {
-    return Array.from(document.querySelectorAll('iframe')).filter(frame => frame !== exclude && visible(frame)).sort((a,b) => {
+  function visibleFrames(){
+    return all('iframe').filter(visible).sort((a,b)=>{
       const ar=a.getBoundingClientRect(),br=b.getBoundingClientRect();return br.width*br.height-ar.width*ar.height;
     });
   }
-  function idleRoot() {
-    const root = document.documentElement;
-    return root.classList.contains('zero-player-idle') || root.classList.contains('zero-back-hide');
+  function idleRoot(){
+    return document.documentElement.classList.contains('zero-player-idle') || document.documentElement.classList.contains('zero-back-hide');
   }
-  function localControlsVisible() {
-    if (idleRoot()) return false;
-    const bars = Array.from(document.querySelectorAll(CONTROL_SELECTORS)).filter(node => {
-      if (!visible(node) || node.querySelector('video,iframe')) return false;
-      return node.getBoundingClientRect().height < innerHeight * .42;
+  function localControlsVisible(){
+    if(idleRoot())return false;
+    const bars=all(CONTROL_SELECTORS).filter(node=>{
+      if(!visible(node)||node.querySelector?.('video,iframe'))return false;
+      return node.getBoundingClientRect().height<innerHeight*.42;
     });
-    if (bars.length || document.querySelector('video')) return true;
-    return visibleFrames().some(frame => {
-      const r=frame.getBoundingClientRect();return r.width>=innerWidth*.45&&r.height>=innerHeight*.45;
-    });
+    if(bars.length||all('video').some(visible))return true;
+    return visibleFrames().some(frame=>{const r=frame.getBoundingClientRect();return r.width>=innerWidth*.45&&r.height>=innerHeight*.45;});
   }
 
-  function expandedToggle() {
-    return Array.from(document.querySelectorAll('[aria-expanded="true"]')).reverse().find(node => {
-      if (!visible(node)) return false;
+  function expandedToggle(){
+    return all('[aria-expanded="true"]').reverse().find(node=>{
+      if(!visible(node))return false;
       const text=(node.getAttribute('aria-label')||node.getAttribute('title')||node.textContent||'').trim();
       return /settings|quality|resolution|subtitle|caption|audio|speed|menu|more|options/i.test(text)||Boolean(node.getAttribute('aria-controls'));
     });
   }
-  function closeLocalMenu() {
+  function closeLocalMenu(){
     const toggle=expandedToggle();
     if(toggle){toggle.click();return true;}
-    const menus=Array.from(document.querySelectorAll(MENU_SELECTORS)).filter(node=>{
-      if(!visible(node)||node.querySelector('video,iframe')||node.classList.contains('shaka-hidden'))return false;
+    const menus=all(MENU_SELECTORS).filter(node=>{
+      if(!visible(node)||node.querySelector?.('video,iframe')||node.classList?.contains('shaka-hidden'))return false;
       const rect=node.getBoundingClientRect();if(rect.width>=innerWidth*.97&&rect.height>=innerHeight*.97)return false;
-      return Boolean(node.matches('dialog,[role="dialog"],[role="menu"],[role="listbox"],[aria-modal="true"]')||node.querySelector('button,[role="button"],[role="menuitem"],[role="option"],input,select,[tabindex]'));
+      return Boolean(node.matches?.('dialog,[role="dialog"],[role="menu"],[role="listbox"],[aria-modal="true"]')||node.querySelector?.('button,[role="button"],[role="menuitem"],[role="option"],input,select,[tabindex]'));
     });
     if(!menus.length)return false;
     const menu=menus[menus.length-1];
     if(menu.tagName==='DIALOG'&&typeof menu.close==='function'){menu.close();return true;}
-    const close=menu.querySelector('[aria-label="Close"],[aria-label="Back"],[title="Close"],[title="Back"],.shaka-back-to-overflow-button,.vjs-menu-button');
+    const close=menu.querySelector?.('[aria-label="Close"],[aria-label="Back"],[title="Close"],[title="Back"],.shaka-back-to-overflow-button,.vjs-menu-button');
     if(close){close.click();return true;}
-    const owner=Array.from(document.querySelectorAll('[aria-expanded="true"]')).reverse().find(node=>visible(node)&&(!menu.id||node.getAttribute('aria-controls')===menu.id));
+    const owner=all('[aria-expanded="true"]').reverse().find(node=>visible(node)&&(!menu.id||node.getAttribute('aria-controls')===menu.id));
     if(owner){owner.click();return true;}
-    const target=menu.contains(document.activeElement)?document.activeElement:menu;
+    const target=menu.contains?.(document.activeElement)?document.activeElement:menu;
     for(const receiver of [target,document]){
       receiver.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',bubbles:true,cancelable:true}));
       receiver.dispatchEvent(new KeyboardEvent('keyup',{key:'Escape',code:'Escape',bubbles:true,cancelable:true}));
     }
     return true;
   }
-  function hideLocalControls(){if(typeof window.__zeroHidePlayerControls==='function')window.__zeroHidePlayerControls();else document.documentElement.classList.add('zero-back-hide','zero-player-idle');}
+  function hideLocalControls(){
+    if(typeof window.__zeroHidePlayerControls==='function')window.__zeroHidePlayerControls();
+    else document.documentElement.classList.add('zero-back-hide','zero-player-idle');
+  }
   function forceMenuBack(){
+    closeLocalMenu();
     const target=document.activeElement||document;
     for(const receiver of [target,document]){
       receiver.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',bubbles:true,cancelable:true}));
@@ -80,13 +95,14 @@
     }
     visibleFrames().forEach(frame=>{try{frame.contentWindow.postMessage({type:'zerostreams-tv-force-back'},'*');}catch(_){}});
   }
+  window.__zeroTvForceProviderBack=forceMenuBack;
 
   let sequence=0;
   const waiters=new Map();
   function askChild(frame){
     const request='ztv-'+(++sequence)+'-'+Date.now();
     return new Promise(resolve=>{
-      const timer=setTimeout(()=>{waiters.delete(request);resolve('unknown');},360);
+      const timer=setTimeout(()=>{waiters.delete(request);resolve('unknown');},420);
       waiters.set(request,{source:frame.contentWindow,resolve:value=>{clearTimeout(timer);waiters.delete(request);resolve(value);}});
       try{frame.contentWindow.postMessage({type:'zerostreams-tv-back-query',request},'*');}
       catch(_){clearTimeout(timer);waiters.delete(request);resolve('unknown');}
@@ -102,63 +118,24 @@
     return unknown?'unknown':'exit';
   }
   async function backStep(){
-    if(closeLocalMenu()){unknownBackFallback=0;return 'menu';}
+    if(closeLocalMenu())return 'menu';
     const childStage=await askChildrenStage();
-    if(childStage==='menu'){unknownBackFallback=0;return 'menu';}
-    if(childStage==='controls'){unknownBackFallback=1;return 'controls';}
-    if(localControlsVisible()){hideLocalControls();unknownBackFallback=1;return 'controls';}
-    if(childStage==='unknown'){
-      if(unknownBackFallback===0){unknownBackFallback=1;forceMenuBack();return 'menu';}
-      if(unknownBackFallback===1){unknownBackFallback=2;hideLocalControls();return 'controls';}
-      unknownBackFallback=0;return 'exit';
-    }
-    unknownBackFallback=0;return 'exit';
+    if(childStage==='menu')return 'menu';
+    if(childStage==='controls')return 'controls';
+    if(localControlsVisible()){hideLocalControls();return 'controls';}
+    return childStage;
   }
-
-  // Keep the current native wake fix, but restore the v1.5 navigation route if
-  // Android initially lands in a wrapper/ad iframe instead of the player frame.
-  const originalTvNavigate=typeof window.__zeroTvNavigate==='function'?window.__zeroTvNavigate:null;
-  if(originalTvNavigate){
-    window.__zeroTvNavigate=function(direction,fromChild=null){
-      const before=document.activeElement;
-      originalTvNavigate(direction,fromChild);
-      const after=document.activeElement;
-      const resolved=after&&after!==document.body&&after!==document.documentElement&&
-        (after!==before||after.classList?.contains('zero-tv-focused'));
-      if(resolved)return;
-      const child=visibleFrames()[0];
-      if(child){try{child.contentWindow.postMessage({type:'zerostreams-tv-nav',direction},'*');return;}catch(_){}}
-      if(window.parent!==window&&Date.now()-lastNavRelay>120){lastNavRelay=Date.now();window.parent.postMessage({type:'zerostreams-tv-nav-retry',direction},'*');}
-    };
-  }
-
-  window.addEventListener('message',event=>{
-    const data=event.data;
-    if(!window.__zeroTv||!data)return;
-    if(data.type==='zerostreams-tv-nav'&&window.parent!==window&&event.source===window.parent&&idleRoot()){
-      document.documentElement.classList.remove('zero-player-idle','zero-back-hide');
-      if(typeof window.__zeroRemoteActivity==='function')window.__zeroRemoteActivity();
-      event.stopImmediatePropagation();
-      return;
-    }
-    if(data.type==='zerostreams-tv-nav-retry'){
-      const sender=visibleFrames().find(frame=>frame.contentWindow===event.source);
-      const target=visibleFrames(sender)[0];
-      if(target){try{target.contentWindow.postMessage({type:'zerostreams-tv-nav',direction:data.direction},'*');}catch(_){}}
-      else if(originalTvNavigate)originalTvNavigate(data.direction,sender||null);
-    }
-  },true);
 
   window.__zeroTvBackStep=async token=>{
     window.__zeroBackResult=null;
     const stage=await backStep();
-    window.__zeroBackResult={token,stage,handled:stage!=='exit'};
+    window.__zeroBackResult={token,stage,handled:stage!=='exit'&&stage!=='unknown'};
   };
   window.__zeroMouseBackRequest=window.__zeroTvBackStep;
 
   window.addEventListener('message',async event=>{
     const data=event.data;if(!data)return;
-    if(data.type==='zerostreams-tv-force-back'){if(!closeLocalMenu())forceMenuBack();return;}
+    if(data.type==='zerostreams-tv-force-back'){forceMenuBack();return;}
     if(data.type==='zerostreams-tv-back-query'&&data.request){
       const stage=await backStep();
       try{event.source.postMessage({type:'zerostreams-tv-back-result',request:data.request,stage},'*');}catch(_){}
@@ -166,11 +143,7 @@
     }
     if(data.type==='zerostreams-tv-back-result'&&data.request){
       const waiter=waiters.get(data.request);
-      if(waiter&&waiter.source===event.source)waiter.resolve(['menu','controls','exit'].includes(data.stage)?data.stage:'unknown');
+      if(waiter&&waiter.source===event.source)waiter.resolve(['menu','controls','exit','unknown'].includes(data.stage)?data.stage:'unknown');
     }
   });
-
-  const resetFallback=()=>{unknownBackFallback=0;};
-  document.addEventListener('pointerdown',resetFallback,true);
-  document.addEventListener('keydown',event=>{if(!['Escape','BrowserBack'].includes(event.key))resetFallback();},true);
 })();
