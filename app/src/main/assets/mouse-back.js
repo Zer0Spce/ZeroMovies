@@ -2,6 +2,25 @@
   if (window.__zeroMouseBackInstalled) return;
   window.__zeroMouseBackInstalled = true;
 
+  // In Android TV D-pad mode the provider may hide its controls after a few
+  // seconds. The first controller navigation press after that idle state is a
+  // wake-up press only: restore the provider controls and consume that single
+  // navigation event so it cannot seek, activate, or move focus accidentally.
+  // Mouse mode is unaffected because native mouse handling consumes those keys
+  // before a zerostreams-tv-nav message is sent to the provider iframe.
+  function wakeHiddenDpadControls(event) {
+    const data = event.data;
+    if (!window.__zeroTv || !data || data.type !== 'zerostreams-tv-nav') return;
+    if (window.parent === window || event.source !== window.parent) return;
+    const root = document.documentElement;
+    const hidden = root.classList.contains('zero-player-idle') || root.classList.contains('zero-back-hide');
+    if (!hidden) return;
+    root.classList.remove('zero-player-idle', 'zero-back-hide');
+    if (typeof window.__zeroRemoteActivity === 'function') window.__zeroRemoteActivity();
+    event.stopImmediatePropagation();
+  }
+  window.addEventListener('message', wakeHiddenDpadControls, true);
+
   const MENU_SELECTORS = [
     'dialog[open]',
     '[role="dialog"]',
