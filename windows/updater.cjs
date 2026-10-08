@@ -1,6 +1,7 @@
 'use strict';
 const {app,BrowserWindow,ipcMain}=require('electron');
 const fs=require('node:fs'),fsp=require('node:fs/promises'),path=require('node:path'),crypto=require('node:crypto'),{spawn}=require('node:child_process'),{Readable}=require('node:stream'),{pipeline}=require('node:stream/promises');
+const versions=require('./version-manager.cjs');
 const API='https://api.github.com/repos/Zer0Spce/ZeroPlay/releases?per_page=20';
 let installed=false,mainWindow,updateWindow,currentRelease,downloadBusy=false;
 const cleanVersion=value=>String(value||'').trim().replace(/^v/i,'').split('-')[0].split('.').map(x=>Number(x)||0);
@@ -14,95 +15,14 @@ async function latest(){const response=await fetch(API,{headers:{Accept:'applica
 function trustedMain(event){if(!mainWindow||mainWindow.isDestroyed()||event.sender!==mainWindow.webContents)throw Error('Untrusted updater request');}
 function trustedUpdate(event){if(!updateWindow||updateWindow.isDestroyed()||event.sender!==updateWindow.webContents)throw Error('Untrusted updater window');}
 function closeUpdate(){if(updateWindow&&!updateWindow.isDestroyed())updateWindow.close();updateWindow=null;}
-async function showUpdate(release){currentRelease=release;if(updateWindow&&!updateWindow.isDestroyed()){updateWindow.focus();updateWindow.webContents.send('update-release',releaseView(release));return;}
- updateWindow=new BrowserWindow({width:560,height:590,minWidth:500,minHeight:500,maxWidth:680,maxHeight:760,resizable:true,maximizable:false,fullscreenable:false,title:'ZeroPlay Update',parent:mainWindow||undefined,modal:false,show:false,autoHideMenuBar:true,backgroundColor:'#0f0f0f',icon:path.join(__dirname,'assets/icon.png'),webPreferences:{preload:path.join(__dirname,'updater-preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});
- updateWindow.setMenuBarVisibility(false);updateWindow.webContents.setWindowOpenHandler(()=>({action:'deny'}));updateWindow.webContents.on('will-navigate',event=>event.preventDefault());updateWindow.on('closed',()=>{updateWindow=null;});updateWindow.once('ready-to-show',()=>updateWindow?.show());await updateWindow.loadFile(path.join(__dirname,'ui/updater.html'));updateWindow.webContents.send('update-release',releaseView(release));}
-async function check({manual=false}={}){const release=await latest();const info=releaseView(release);if(!newer(info.version,app.getVersion()))return {status:'current',...info};if(!manual&&readState().skippedVersion===info.version)return {status:'skipped',...info};await showUpdate(release);return {status:'available',...info};}
-function psQuote(value){return "'"+String(value).replace(/'/g,"''")+"'";}
+async function showUpdate(release){currentRelease=release;if(updateWindow&&!updateWindow.isDestroyed()){updateWindow.focus();updateWindow.webContents.send('update-release',releaseView(release));return;}updateWindow=new BrowserWindow({width:560,height:590,minWidth:500,minHeight:500,maxWidth:680,maxHeight:760,resizable:true,maximizable:false,fullscreenable:false,title:'ZeroPlay Update',parent:mainWindow||undefined,modal:false,show:false,autoHideMenuBar:true,backgroundColor:'#0f0f0f',icon:path.join(__dirname,'assets/icon.png'),webPreferences:{preload:path.join(__dirname,'updater-preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false,webSecurity:true}});updateWindow.setMenuBarVisibility(false);updateWindow.webContents.setWindowOpenHandler(()=>({action:'deny'}));updateWindow.webContents.on('will-navigate',event=>event.preventDefault());updateWindow.on('closed',()=>{updateWindow=null;});updateWindow.once('ready-to-show',()=>updateWindow?.show());await updateWindow.loadFile(path.join(__dirname,'ui/updater.html'));updateWindow.webContents.send('update-release',releaseView(release));}
+async function check({manual=false}={}){const release=await latest(),info=releaseView(release);if(!newer(info.version,app.getVersion()))return {status:'current',...info};if(!manual&&readState().skippedVersion===info.version)return {status:'skipped',...info};await showUpdate(release);return {status:'available',...info};}
 async function sha256(file){const hash=crypto.createHash('sha256'),stream=fs.createReadStream(file);for await(const chunk of stream)hash.update(chunk);return hash.digest('hex');}
 async function expectedSha256(release){const direct=String(release.asset?.digest||'').trim().toLowerCase();if(/^sha256:[0-9a-f]{64}$/.test(direct))return direct.slice(7);const checksum=release.checksumAsset;if(!checksum?.browser_download_url)return '';const response=await fetch(checksum.browser_download_url,{headers:{'User-Agent':'ZeroPlay-Windows-Updater'},redirect:'follow',signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('Could not download SHA256SUMS.txt ('+response.status+').');const text=await response.text(),target=String(release.asset?.name||'');for(const line of text.split(/\r?\n/)){const match=line.trim().match(/^([0-9a-fA-F]{64})\s+\*?(.+)$/);if(match&&match[2].trim()===target)return match[1].toLowerCase();}throw Error('SHA256SUMS.txt does not contain a checksum for '+target+'.');}
-async function locatePortableRoot(stage){
-  const queue=[[stage,0]];
-  while(queue.length){
-    const [dir,depth]=queue.shift();
-    let entries;try{entries=await fsp.readdir(dir,{withFileTypes:true});}catch{continue;}
-    if(entries.some(entry=>entry.isFile()&&entry.name.toLowerCase()==='zeroplay.exe')){
-      const asar=path.join(dir,'resources','app.asar');
-      try{await fsp.access(asar);return dir;}catch{}
-    }
-    if(depth<4)for(const entry of entries)if(entry.isDirectory()&&entry.name!=='__MACOSX')queue.push([path.join(dir,entry.name),depth+1]);
-  }
-  throw Error('The update package does not contain a complete ZeroPlay portable build.');
-}
-async function prepareUpdate(release){if(downloadBusy)throw Error('An update is already downloading.');downloadBusy=true;try{
- const info=releaseView(release),root=path.join(app.getPath('temp'),'ZeroPlay-update-'+info.version+'-'+Date.now()),zip=path.join(root,'update.zip'),stage=path.join(root,'stage');await fsp.mkdir(root,{recursive:true});
- const expected=await expectedSha256(release);if(!expected)throw Error('The update package has no trusted SHA-256 checksum. Installation was stopped.');
- const response=await fetch(release.asset.browser_download_url,{headers:{'User-Agent':'ZeroPlay-Windows-Updater'},redirect:'follow',signal:AbortSignal.timeout(1800000)});if(!response.ok||!response.body)throw Error('Update download failed ('+response.status+').');
- const total=Number(response.headers.get('content-length'))||Number(release.asset.size)||0;let received=0;const source=Readable.fromWeb(response.body);source.on('data',chunk=>{received+=chunk.length;if(updateWindow&&!updateWindow.isDestroyed())updateWindow.webContents.send('update-progress',{received,total,percent:total?Math.min(100,received/total*100):0});});await pipeline(source,fs.createWriteStream(zip,{flags:'wx'}));
- const digest=await sha256(zip);if(digest!==expected)throw Error('Downloaded update failed SHA-256 verification.');
- await new Promise((resolve,reject)=>{const p=spawn('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',`Expand-Archive -LiteralPath ${psQuote(zip)} -DestinationPath ${psQuote(stage)} -Force`],{windowsHide:true});let stderr='';p.stderr.on('data',d=>stderr+=d);p.on('error',reject);p.on('exit',code=>code===0?resolve():reject(Error(stderr.trim()||'Could not unpack the update.')));});
- const sourceDir=await locatePortableRoot(stage),sourceExe=path.join(sourceDir,'ZeroPlay.exe'),sourceAsar=path.join(sourceDir,'resources','app.asar');
- const installDir=path.dirname(process.execPath),script=path.join(root,'apply-update.ps1'),currentPid=process.pid,launch=path.join(installDir,'ZeroPlay.exe'),targetAsar=path.join(installDir,'resources','app.asar'),log=path.join(app.getPath('temp'),'ZeroPlay-updater.log');
- const sourceExeHash=await sha256(sourceExe),sourceAsarHash=await sha256(sourceAsar);
- const body=`$ErrorActionPreference='Stop'
-$ProgressPreference='SilentlyContinue'
-$mainPid=${currentPid}
-$source=${psQuote(sourceDir)}
-$target=${psQuote(installDir)}
-$launch=${psQuote(launch)}
-$targetAsar=${psQuote(targetAsar)}
-$expectedExeHash=${psQuote(sourceExeHash)}
-$expectedAsarHash=${psQuote(sourceAsarHash)}
-$log=${psQuote(log)}
-function Log([string]$m){ Add-Content -LiteralPath $log -Value ((Get-Date -Format o)+' '+$m) }
-function ZeroPlayProcesses {
-  @(Get-CimInstance Win32_Process -Filter "Name='ZeroPlay.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.ExecutablePath -and [String]::Equals($_.ExecutablePath,$launch,[StringComparison]::OrdinalIgnoreCase) })
-}
-try {
-  Set-Content -LiteralPath $log -Value ((Get-Date -Format o)+' ZeroPlay updater started')
-  Log ('Source: '+$source)
-  Log ('Target: '+$target)
-  for($i=0;$i -lt 120;$i++){
-    $main=Get-Process -Id $mainPid -ErrorAction SilentlyContinue
-    $same=@(ZeroPlayProcesses)
-    if(-not $main -and $same.Count -eq 0){ break }
-    Start-Sleep -Milliseconds 500
-  }
-  $same=@(ZeroPlayProcesses)
-  if($same.Count -gt 0){
-    Log ('Stopping '+$same.Count+' remaining ZeroPlay process(es).')
-    foreach($proc in $same){ Stop-Process -Id $proc.ProcessId -Force -ErrorAction SilentlyContinue }
-    Start-Sleep -Milliseconds 1200
-  }
-  if(Get-Process -Id $mainPid -ErrorAction SilentlyContinue){ Stop-Process -Id $mainPid -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 800 }
-  if(@(ZeroPlayProcesses).Count -gt 0){ throw 'ZeroPlay files are still in use after shutdown.' }
-  New-Item -ItemType Directory -Path $target -Force | Out-Null
-  Log 'All ZeroPlay processes are closed; replacing application files.'
-  & robocopy.exe $source $target /E /COPY:DAT /DCOPY:DAT /R:30 /W:1 /XJ /IS /IT /NFL /NDL /NJH /NJS /NP | Out-Null
-  $rc=$LASTEXITCODE
-  Log ('Robocopy exit code '+$rc)
-  if($rc -ge 8){ throw ('Robocopy failed with exit code '+$rc) }
-  if(-not (Test-Path -LiteralPath $launch)){ throw 'Updated ZeroPlay.exe is missing.' }
-  if(-not (Test-Path -LiteralPath $targetAsar)){ throw 'Updated resources\app.asar is missing.' }
-  $installedExe=(Get-FileHash -Algorithm SHA256 -LiteralPath $launch).Hash.ToLowerInvariant()
-  $installedAsar=(Get-FileHash -Algorithm SHA256 -LiteralPath $targetAsar).Hash.ToLowerInvariant()
-  if($installedExe -ne $expectedExeHash){ throw 'Updated ZeroPlay.exe failed verification after replacement.' }
-  if($installedAsar -ne $expectedAsarHash){ throw 'Updated app.asar failed verification after replacement.' }
-  Log 'Application files replaced and verified.'
-  $started=Start-Process -FilePath $launch -WorkingDirectory $target -PassThru
-  Start-Sleep -Milliseconds 1400
-  if($started.HasExited){ throw 'The updated ZeroPlay process exited immediately after relaunch.' }
-  Log ('Relaunched ZeroPlay with PID '+$started.Id)
-  Start-Sleep -Milliseconds 500
-} catch {
-  Log ('FAILED: '+$_.Exception.Message)
-  try { Add-Type -AssemblyName PresentationFramework; [System.Windows.MessageBox]::Show('ZeroPlay could not finish installing the update.\n\n'+$_.Exception.Message+'\n\nUpdater log: '+$log,'ZeroPlay Update Failed','OK','Error') | Out-Null } catch {}
-  exit 1
-}
-`;
- await fsp.writeFile(script,body,'utf8');return {script,version:info.version,log};
-}finally{downloadBusy=false;}}
-async function startInstall(event){trustedUpdate(event);if(!currentRelease)throw Error('No update is selected.');const prepared=await prepareUpdate(currentRelease);const child=spawn('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',prepared.script],{detached:true,stdio:'ignore',windowsHide:true});child.on('error',error=>{if(updateWindow&&!updateWindow.isDestroyed())updateWindow.webContents.send('update-install-error',String(error.message||error));});child.unref();setTimeout(()=>{try{app.exit(0);}catch{process.exit(0);}},1400);return {ok:true,version:prepared.version};}
-function bindMain(win){if(mainWindow||win.isDestroyed())return;mainWindow=win;win.on('closed',()=>{if(mainWindow===win)mainWindow=null;});win.once('ready-to-show',()=>{if(!process.argv.includes('--smoke-test'))setTimeout(()=>check({manual:false}).catch(()=>{}),1800);});}
-function install(){if(installed)return;installed=true;app.on('browser-window-created',(_event,win)=>{if(!mainWindow&&win.getTitle()==='ZeroPlay')bindMain(win);});ipcMain.handle('update-check',async(event)=>{trustedMain(event);return check({manual:true});});ipcMain.handle('update-window-action',async(event,action)=>{trustedUpdate(event);if(action==='cancel'){closeUpdate();return {ok:true};}if(action==='skip'){if(currentRelease){const s=readState();s.skippedVersion=releaseView(currentRelease).version;writeState(s);}closeUpdate();return {ok:true};}if(action==='install')return startInstall(event);throw Error('Unsupported updater action');});}
-module.exports={install,newer,cleanVersion,releaseView,expectedSha256,testRelease};
+async function locatePortableRoot(stage){const queue=[[stage,0]];while(queue.length){const [dir,depth]=queue.shift();let entries;try{entries=await fsp.readdir(dir,{withFileTypes:true});}catch{continue;}if(entries.some(entry=>entry.isFile()&&entry.name.toLowerCase()==='zeroplay.exe')){try{await fsp.access(path.join(dir,'resources','app.asar'));return dir;}catch{}}if(depth<4)for(const entry of entries)if(entry.isDirectory()&&entry.name!=='__MACOSX')queue.push([path.join(dir,entry.name),depth+1]);}throw Error('The downloaded update was extracted, but ZeroPlay.exe and resources/app.asar were not found together. Windows Security may have quarantined a file. Your current version was not changed.');}
+async function extractZip(zip,stage){await fsp.mkdir(stage,{recursive:true});await new Promise((resolve,reject)=>{const p=spawn('tar.exe',['-xf',zip,'-C',stage],{windowsHide:true});let stderr='';p.stderr.on('data',d=>stderr+=d);p.on('error',reject);p.on('exit',code=>code===0?resolve():reject(Error(stderr.trim()||'Windows could not unpack the update package.')));});}
+async function installVersion(release){if(downloadBusy)throw Error('An update is already downloading.');downloadBusy=true;let work;try{const info=releaseView(release),versionsDir=await versions.ensureVersionsDir();work=path.join(versionsDir,'.staging-'+info.version+'-'+Date.now());const zip=path.join(work,'update.zip'),stage=path.join(work,'extract');await fsp.mkdir(work,{recursive:true});const expected=await expectedSha256(release);if(!expected)throw Error('The update package has no trusted SHA-256 checksum. Installation was stopped.');const response=await fetch(release.asset.browser_download_url,{headers:{'User-Agent':'ZeroPlay-Windows-Updater'},redirect:'follow',signal:AbortSignal.timeout(1800000)});if(!response.ok||!response.body)throw Error('Update download failed ('+response.status+').');const total=Number(response.headers.get('content-length'))||Number(release.asset.size)||0;let received=0;const source=Readable.fromWeb(response.body);source.on('data',chunk=>{received+=chunk.length;if(updateWindow&&!updateWindow.isDestroyed())updateWindow.webContents.send('update-progress',{received,total,percent:total?Math.min(100,received/total*100):0});});await pipeline(source,fs.createWriteStream(zip,{flags:'wx'}));const digest=await sha256(zip);if(digest!==expected)throw Error('Downloaded update failed SHA-256 verification.');await extractZip(zip,stage);const portable=await locatePortableRoot(stage),finalDir=path.join(versionsDir,info.version);await fsp.rm(finalDir,{recursive:true,force:true});if(path.resolve(portable)===path.resolve(stage)){await fsp.rm(zip,{force:true});await fsp.rename(stage,finalDir);}else{await fsp.rename(portable,finalDir);await fsp.rm(work,{recursive:true,force:true});work=null;}await fsp.access(path.join(finalDir,'ZeroPlay.exe'));await fsp.access(path.join(finalDir,'resources','app.asar'));versions.activate(info.version,finalDir,app.getVersion());return {ok:true,version:info.version};}catch(error){if(work)await fsp.rm(work,{recursive:true,force:true}).catch(()=>{});throw error;}finally{downloadBusy=false;}}
+async function startInstall(event){trustedUpdate(event);if(!currentRelease)throw Error('No update is selected.');const result=await installVersion(currentRelease);versions.launchRoot();setTimeout(()=>{try{app.exit(0);}catch{process.exit(0);}},700);return result;}
+function bindMain(win){if(mainWindow||win.isDestroyed())return;mainWindow=win;win.on('closed',()=>{if(mainWindow===win)mainWindow=null;});win.once('ready-to-show',()=>{if(!process.argv.includes('--smoke-test')&&!process.argv.includes('--version-child'))setTimeout(()=>check({manual:false}).catch(()=>{}),1800);});}
+function install(){if(installed)return;installed=true;app.on('browser-window-created',(_event,win)=>{if(!mainWindow&&win.getTitle()==='ZeroPlay')bindMain(win);});ipcMain.handle('update-check',async event=>{trustedMain(event);return check({manual:true});});ipcMain.handle('update-window-action',async(event,action)=>{trustedUpdate(event);if(action==='cancel'){closeUpdate();return {ok:true};}if(action==='skip'){if(currentRelease){const s=readState();s.skippedVersion=releaseView(currentRelease).version;writeState(s);}closeUpdate();return {ok:true};}if(action==='install')return startInstall(event);throw Error('Unsupported updater action');});}
+module.exports={install,newer,cleanVersion,releaseView,expectedSha256,testRelease,locatePortableRoot,extractZip};

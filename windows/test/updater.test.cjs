@@ -1,7 +1,6 @@
-const test=require('node:test'),assert=require('node:assert/strict');
-const {newer,cleanVersion,testRelease}=require('../updater.cjs');
-test('update version comparison handles tags and patch versions',()=>{assert.deepEqual(cleanVersion('v2.0.1'),[2,0,1]);assert.equal(newer('2.0','1.9.0'),true);assert.equal(newer('1.9','1.9.0'),false);assert.equal(newer('1.9.1','1.9.0'),true);assert.equal(newer('1.8.9','1.9.0'),false);});
-test('updater ignores demo releases',()=>{assert.equal(testRelease({tag_name:'v9.9.9-TEST'}),true);assert.equal(testRelease({tag_name:'v2.0-DEMO'}),true);assert.equal(testRelease({tag_name:'v2.0-placeholder'}),true);assert.equal(testRelease({tag_name:'v2.0'}),false);});
-
-const fs=require('node:fs'),path=require('node:path');
-test('replacement helper waits for every ZeroPlay process and verifies copied core files',()=>{const source=fs.readFileSync(path.join(__dirname,'..','updater.cjs'),'utf8');assert.match(source,/Get-CimInstance Win32_Process/);assert.match(source,/robocopy\.exe/);assert.match(source,/expectedAsarHash/);assert.match(source,/app\.exit\(0\)/);assert.match(source,/Relaunched ZeroPlay/);});
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const updater=require('../updater.cjs');
+test('update version comparison handles tags and patch versions',()=>{assert.deepEqual(updater.cleanVersion('v2.1.0'),[2,1,0]);assert.equal(updater.newer('2.1','2.0.3'),true);assert.equal(updater.newer('2.1.0','2.1'),false);});
+test('updater ignores demo releases',()=>{assert.equal(updater.testRelease({tag_name:'v9.9.9-TEST'}),true);assert.equal(updater.testRelease({tag_name:'v2.1-DEMO'}),true);assert.equal(updater.testRelease({tag_name:'v2.1'}),false);});
+test('Windows updater installs into version folders instead of replacing the running app',()=>{const source=fs.readFileSync(path.join(__dirname,'..','updater.cjs'),'utf8');assert.match(source,/versions.activate/);assert.match(source,/tar.exe/);assert.doesNotMatch(source,/robocopy.exe/);assert.doesNotMatch(source,/Expand-Archive/);});
+test('stable launcher has confirmation and rollback handshake',()=>{const source=fs.readFileSync(path.join(__dirname,'..','version-manager.cjs'),'utf8');assert.match(source,/pending:true/);assert.match(source,/confirmCurrent/);assert.match(source,/rollback/);assert.match(source,/current.json/);});

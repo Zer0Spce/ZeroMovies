@@ -1,6 +1,6 @@
 {
   "name": "zerostreams-windows",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "ZeroPlay movies, series, Live TV and Live Sports with sports ad filtering",
   "author": "ZeroPlay",
   "private": true,
@@ -46,6 +46,7 @@
       "ui/offline-player.html",
       "ui/offline-player.css",
       "ui/offline-player.js"
-    ]
+    ],
+    "artifactName": "ZeroPlay-2.1-Windows-x64.${ext}"
   }
 }
