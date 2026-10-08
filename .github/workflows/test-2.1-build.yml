@@ -15,7 +15,6 @@ concurrency:
 
 jobs:
   prepare:
-    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[2.1 source]') }}
     runs-on: ubuntu-latest
     outputs:
       sha: ${{ steps.head.outputs.sha }}
@@ -28,8 +27,15 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Apply 2.1 pre-release source fixes
-        run: node scripts/apply-2.1-pre-release.cjs
+      - name: Apply 2.1 pre-release source fixes if needed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -q "versionName '2.0.3'" app/build.gradle; then
+            node scripts/apply-2.1-pre-release.cjs
+          else
+            echo '2.1 source is already prepared; preserving follow-up fixes.'
+          fi
 
       - name: Verify requested source changes
         shell: bash
@@ -43,7 +49,7 @@ jobs:
           grep -q 'tar.exe' windows/updater.cjs
           if grep -q 'robocopy.exe' windows/updater.cjs; then echo 'Old in-place updater is still present'; exit 1; fi
 
-      - name: Commit patched 2.1 test source
+      - name: Commit generated 2.1 source if necessary
         shell: bash
         run: |
           set -euo pipefail
