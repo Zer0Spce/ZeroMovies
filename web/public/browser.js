@@ -6,6 +6,7 @@
   try{const parsed=JSON.parse(localStorage.getItem(STORAGE)||'null');if(parsed&&typeof parsed==='object')saved={...saved,...parsed,settings:{...saved.settings,...parsed.settings},version:'2.0 Web'};}catch{}
   for(const name of ['favorites','planned','history','searches'])if(!Array.isArray(saved[name]))saved[name]=[];
   for(const name of ['positions','collections'])if(!saved[name]||typeof saved[name]!=='object'||Array.isArray(saved[name]))saved[name]={};
+  if(saved.settings.source!=='vidstuck'){saved.settings.source='vidstuck';try{localStorage.setItem(STORAGE,JSON.stringify(saved));}catch{}}
   const copy=()=>JSON.parse(JSON.stringify(saved));
   function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(saved));}catch{throw Error('Your browser could not save the library. Storage may be full or disabled.');}}
   function key(item){return item.type+':'+item.id;}
@@ -38,7 +39,7 @@
       else if(action==='clear-searches')saved.searches=[];
       else if(action==='remove-history')saved.history=saved.history.filter(x=>x.historyKey!==value);
       else if(action==='clear-history'){saved.history=[];saved.positions={};}
-      else if(action==='settings'){if(!['PH','US','GB','CA','AU','IN','JP'].includes(value?.region))throw Error('Invalid region');if(!['dark','light'].includes(value.theme)||!window.playbackSources.sources.some(s=>s.id===value.source))throw Error('Invalid appearance or playback source');saved.settings={region:value.region,gain:1,uiLayout:['youtube','google','flix','classic'].includes(value.uiLayout)?value.uiLayout:'youtube',theme:value.theme,source:value.source};}
+      else if(action==='settings'){if(!['PH','US','GB','CA','AU','IN','JP'].includes(value?.region))throw Error('Invalid region');if(!['dark','light'].includes(value.theme)||value.source!=='vidstuck')throw Error('Invalid appearance or playback source');saved.settings={region:value.region,gain:1,uiLayout:['youtube','google','flix','classic'].includes(value.uiLayout)?value.uiLayout:'youtube',theme:value.theme,source:'vidstuck'};}
       else if(action==='collection'){const name=String(value?.name||'').trim().slice(0,60);if(!name||['__proto__','constructor','prototype'].includes(name))throw Error('Invalid collection name');const item=clean(value.item),rows=saved.collections[name]||[];if(!Array.isArray(rows))throw Error('Invalid collection');saved.collections[name]=rows.some(x=>key(x)===key(item))?rows.filter(x=>key(x)!==key(item)):[item,...rows].slice(0,300);}
       else throw Error('Unsupported library action');persist();return copy();
     },
@@ -47,8 +48,7 @@
       if(selected&&(!Number.isInteger(selected.season)||selected.season<0||selected.season>1000||!Number.isInteger(selected.episode)||selected.episode<1||selected.episode>10000))throw Error('Choose a valid episode');
       const previous=saved.positions[key(item)];if(selected&&previous&&selected.season===previous.season&&selected.episode===previous.episode)position=previous;
       if(iframe){iframe.src='about:blank';iframe.remove();}playing=item;lastProgress=0;record(item,position);
-      const season=position.season===0?0:Number(position.season)||1,episode=Number(position.episode)||1;
-      const url=new URL(window.playbackSources.url(item,position,saved.settings.source));
+      const url=new URL(window.playbackSources.url(item,position,'vidstuck'));
       iframe=document.createElement('iframe');iframe.src=url.href;iframe.title=item.title+' player';iframe.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';iframe.allowFullscreen=true;iframe.referrerPolicy='strict-origin-when-cross-origin';
       document.getElementById('player-title').textContent=item.title;document.getElementById('player-stage').appendChild(iframe);if(!dialog.open)dialog.showModal();activity();refresh();
     },
