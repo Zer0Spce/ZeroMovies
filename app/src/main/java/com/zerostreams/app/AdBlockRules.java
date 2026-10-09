@@ -4,7 +4,7 @@ import java.util.*;
 
 /** Pure rules engine shared by runtime code and plain-Java regression tests. */
 final class AdBlockRules {
-    static final String RULESET_VERSION="2.0-known-good-2026-10-08";
+    static final String RULESET_VERSION="2.1.2-hotfix-2026-10-09";
 
     interface Observer { void onBlocked(String host,String reason); }
 
@@ -15,6 +15,7 @@ final class AdBlockRules {
         "exoclick.com", "exosrv.com", "trafficjunky.net", "juicyads.com",
         "hilltopads.net", "a-ads.com", "adnxs.com", "adskeeper.com",
         "mgid.com", "taboola.com", "outbrain.com",
+        "histats.com", "histats.net",
         "gurlleviter.cyou"
     };
 
