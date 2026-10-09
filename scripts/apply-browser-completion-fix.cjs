@@ -47,3 +47,4 @@ if(!guard.includes('zerostreams-direct-progress')){
 }
 write('app/src/main/assets/player-guard.js',guard);
 console.log('Applied embedded-player completion tracking fix.');
+require('./apply-android-episode-parity-fix.cjs');
