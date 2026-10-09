@@ -14,7 +14,7 @@ final class TvMouse extends View implements Choreographer.FrameCallback {
     private boolean enabled,running,left,right,up,down;private float x=-1,y=-1;private long lastFrame,heldAt,lastHover,lastWake;
     private final Runnable hide=()->setVisibility(GONE);
     TvMouse(Activity activity,WebView web,FrameLayout parent,Runnable wake){super(activity);this.activity=activity;this.web=web;this.wake=wake;setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);setFocusable(false);setClickable(false);parent.addView(this,new FrameLayout.LayoutParams(-1,-1));setVisibility(GONE);
-        enabled=activity.getSharedPreferences("zero",Activity.MODE_PRIVATE).getBoolean("playerMouse",true);
+        enabled=activity.getSharedPreferences("zero",Activity.MODE_PRIVATE).getBoolean("playerMouse",false);
     }
     boolean isMouseEnabled(){return enabled;}
     boolean wakeNow(){if(!enabled)return false;if(x<0){x=Math.max(2,web.getWidth()/2f);y=Math.max(2,web.getHeight()/2f);}setVisibility(VISIBLE);invalidate();handler.removeCallbacks(hide);handler.postDelayed(hide,5000);long now=SystemClock.uptimeMillis();MotionEvent hover=MotionEvent.obtain(now,now,MotionEvent.ACTION_HOVER_MOVE,x,y,0);hover.setSource(InputDevice.SOURCE_MOUSE);web.dispatchGenericMotionEvent(hover);hover.recycle();lastHover=now;lastWake=now;wake.run();return true;}
