@@ -1,0 +1,231 @@
+name: ZeroPlay 2.1.2 Hotfix Test
+
+on:
+  push:
+    branches: [hotfix/2.1.2-test]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zeroplay-2-1-2-hotfix-test
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Android Mobile + TV Hotfix Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Apply Android 2.1.2 episode-completion hotfix
+        run: |
+          node scripts/apply-browser-completion-fix.cjs
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('app/build.gradle')
+          s=p.read_text()
+          s=s.replace("versionCode 42", "versionCode 43")
+          s=s.replace("versionName '2.1.1'", "versionName '2.1.2-test'")
+          p.write_text(s)
+          PY
+          grep -q 'zerostreams-direct-progress' app/src/main/assets/player-guard.js
+          grep -q 'terminal=event.optBoolean("ended",false)' app/src/main/java/com/zerostreams/app/BrowserPlayerActivity.java
+          grep -q 'histats.com' app/src/main/java/com/zerostreams/app/AdBlockRules.java
+
+      - name: Unit tests
+        run: gradle :app:testMobileReleaseUnitTest :app:testTvReleaseUnitTest
+
+      - name: Build signed hotfix APKs
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          test -n "$ANDROID_KEYSTORE_PASSWORD"
+          test -n "$ANDROID_KEY_ALIAS"
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/zeroplay-release.jks"
+          trap 'rm -f "$ANDROID_KEYSTORE_FILE"' EXIT
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_FILE"
+          chmod 600 "$ANDROID_KEYSTORE_FILE"
+          gradle :app:assembleMobileRelease :app:assembleTvRelease
+          mobile=app/build/outputs/apk/mobile/release/app-mobile-release.apk
+          tv=app/build/outputs/apk/tv/release/app-tv-release.apk
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose "$mobile"
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose "$tv"
+          mkdir -p hotfix-assets
+          cp "$mobile" hotfix-assets/ZeroPlay-2.1.2-Test-Android.apk
+          cp "$tv" hotfix-assets/ZeroPlay-2.1.2-Test-Android-TV.apk
+
+      - name: Lint Mobile + TV
+        run: gradle --continue :app:lintMobileRelease :app:lintTvRelease
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1.2-Android-Hotfix-Test
+          path: hotfix-assets/*.apk
+          if-no-files-found: error
+          compression-level: 0
+
+  windows:
+    name: Windows Hotfix Test
+    runs-on: windows-latest
+    timeout-minutes: 50
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Windows tests
+        run: npm test
+
+      - name: Configure bundled keys
+        run: npm run prepare-config
+
+      - name: Download pinned mpv x64 playback engine
+        shell: pwsh
+        run: |
+          $url = 'https://github.com/shinchiro/mpv-winbuild-cmake/releases/download/20261009/mpv-x86_64-20261009-git-36abaa32d0.7z'
+          $expected = '9afbe74f4ab885ca512769f8835758eb66b7b8a5ea6d679500588f8e7fec632e'
+          Invoke-WebRequest -Uri $url -OutFile mpv.7z
+          $actual = (Get-FileHash mpv.7z -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw "mpv SHA-256 mismatch: $actual" }
+          New-Item -ItemType Directory -Force vendor/mpv | Out-Null
+          7z x mpv.7z -ovendor/mpv -y | Out-Host
+          $mpv = Get-ChildItem vendor/mpv -Filter mpv.exe -Recurse | Select-Object -First 1
+          if (-not $mpv) { throw 'mpv.exe missing after extraction.' }
+          if ($mpv.Directory.FullName -ne (Resolve-Path vendor/mpv).Path) { Copy-Item "$($mpv.Directory.FullName)/*" vendor/mpv -Recurse -Force }
+          Remove-Item mpv.7z -Force
+
+      - name: Apply validated Windows hotfix stack
+        run: |
+          node scripts/apply-offline-mpv-test.cjs
+          node scripts/apply-final-windows-polish.cjs
+          node scripts/apply-episode-progress-fix.cjs
+          node scripts/apply-windows-episode-completion-fix.cjs
+          node scripts/fix-final-windows-action-tdz.cjs
+          node scripts/apply-2.1.2-player-adblock.cjs
+
+      - name: Set test metadata
+        shell: pwsh
+        run: |
+          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+          $pkg.version = '2.1.2-beta.1'
+          $pkg.build.win.artifactName = 'ZeroPlay-2.1.2-Hotfix-Test-Windows-x64.${ext}'
+          $pkg | ConvertTo-Json -Depth 100 | Set-Content package.json -Encoding utf8
+
+      - name: Build native mpv video surface
+        shell: pwsh
+        run: |
+          dotnet publish mpv-host-helper/MpvVideoHost.csproj -c Release -r win-x64 --self-contained true -o mpv-host-helper/publish
+          Copy-Item mpv-host-helper/publish/MpvVideoHost.exe ./MpvVideoHost.exe -Force
+
+      - name: Build updater helper
+        shell: pwsh
+        run: |
+          dotnet publish updater-helper/ZeroPlayUpdater.csproj -c Release -r win-x64 --self-contained true -o updater-helper/publish
+          Copy-Item updater-helper/publish/ZeroPlayUpdater.exe ./ZeroPlayUpdater.exe -Force
+
+      - name: Verify hotfix source wiring
+        shell: pwsh
+        run: |
+          $renderer = Get-Content ui/app.js -Raw
+          $main = Get-Content main.cjs -Raw
+          $core = Get-Content core.cjs -Raw
+          if ($renderer -match "if\(action==='source-keep'\)|if\(action==='source-once'\)|if\(action==='source-cancel'\)") { throw 'Windows action TDZ regression still present.' }
+          if ($renderer -notmatch "target\.dataset\.action==='source-keep'") { throw 'Windows source confirmation hotfix missing.' }
+          if ($main -notmatch '__zeroEpisodeProbe') { throw 'Windows real-video episode probe missing.' }
+          if ($main -notmatch 'playbackCompleted') { throw 'Windows completion lock missing.' }
+          if ($main -notmatch 'contents\.session\.webRequest\.onBeforeRequest') { throw 'Windows embedded-player network adblock missing.' }
+          if ($core -notmatch 'histats\.com') { throw 'Histats domain rule missing.' }
+
+      - name: Smoke test Windows app
+        shell: pwsh
+        run: |
+          $process = Start-Process -FilePath 'cmd.exe' -ArgumentList '/d','/s','/c','npx electron . --smoke-test' -PassThru -NoNewWindow
+          if ($process.WaitForExit(60000)) {
+            if ($process.ExitCode -ne 0) { throw "Electron smoke test failed with exit code $($process.ExitCode)." }
+          } else {
+            & taskkill.exe /PID $process.Id /T /F | Out-Host
+          }
+
+      - name: Build portable Windows ZIP
+        run: npx electron-builder --win --x64 --publish never
+
+      - name: Verify packaged hotfix
+        shell: pwsh
+        run: |
+          $zip='dist/ZeroPlay-2.1.2-Hotfix-Test-Windows-x64.zip'
+          if (!(Test-Path $zip)) { throw 'Hotfix ZIP missing.' }
+          $verify='dist/verify-asar'
+          if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
+          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          $renderer=Get-Content "$verify/ui/app.js" -Raw
+          $main=Get-Content "$verify/main.cjs" -Raw
+          $core=Get-Content "$verify/core.cjs" -Raw
+          if ($renderer -match "if\(action==='source-keep'\)|if\(action==='source-cancel'\)") { throw 'Packaged action TDZ regression present.' }
+          if ($main -notmatch '__zeroEpisodeProbe') { throw 'Packaged episode completion probe missing.' }
+          if ($main -notmatch 'contents\.session\.webRequest\.onBeforeRequest') { throw 'Packaged network adblock missing.' }
+          if ($core -notmatch 'histats\.com') { throw 'Packaged Histats rule missing.' }
+          Remove-Item $verify -Recurse -Force
+
+      - name: Microsoft Defender scan
+        shell: pwsh
+        run: |
+          $scanner=(Get-ChildItem "$env:ProgramData\Microsoft\Windows Defender\Platform\*\MpCmdRun.exe" | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          if (-not $scanner) { throw 'Microsoft Defender scanner unavailable.' }
+          & $scanner -Scan -ScanType 3 -File "$pwd\dist\win-unpacked" -DisableRemediation
+          if ($LASTEXITCODE -ne 0) { throw "Microsoft Defender scan failed/detected threat: $LASTEXITCODE" }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1.2-Windows-Hotfix-Test
+          path: windows/dist/ZeroPlay-2.1.2-Hotfix-Test-Windows-x64.zip
+          if-no-files-found: error
+          compression-level: 0
