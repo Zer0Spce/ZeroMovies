@@ -69,6 +69,13 @@ jobs:
       - name: Apply isolated offline-player test patch
         run: node scripts/apply-offline-mpv-test.cjs
 
+      - name: Build dedicated native mpv video surface
+        shell: pwsh
+        run: |
+          dotnet publish mpv-host-helper/MpvVideoHost.csproj -c Release -r win-x64 --self-contained true -o mpv-host-helper/publish
+          Copy-Item mpv-host-helper/publish/MpvVideoHost.exe ./MpvVideoHost.exe -Force
+          if (!(Test-Path './MpvVideoHost.exe')) { throw 'MpvVideoHost.exe was not created.' }
+
       - name: Verify embedded player source wiring
         shell: pwsh
         run: |
@@ -77,9 +84,11 @@ jobs:
           $pkg = Get-Content package.json -Raw | ConvertFrom-Json
           if ($main -notmatch 'MpvOfflinePlayer') { throw 'Main process is not wired to mpv offline playback.' }
           if ($main -match "contents.loadFile\(path.join\(__dirname,'ui/offline-player.html'\)\)") { throw 'Legacy Chromium offline player is still the active openOffline path.' }
-          if ($mpvHostSource -notmatch '--wid=') { throw 'mpv is not embedded into a ZeroPlay-owned native window.' }
+          if ($mpvHostSource -notmatch 'bundledVideoHost') { throw 'Dedicated native video host is not wired.' }
+          if ($mpvHostSource -notmatch '--wid=') { throw 'mpv is not targeting the dedicated native video surface.' }
           if ($mpvHostSource -notmatch "'--osc=no'") { throw 'Default mpv OSC is still enabled.' }
           if ($mpvHostSource -notmatch 'offline-mpv.html') { throw 'Modern ZeroPlay offline control overlay is not wired.' }
+          if (!(Test-Path './MpvVideoHost.exe')) { throw 'Native video host helper is missing.' }
           foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
             if (!(Test-Path $file)) { throw "Missing embedded offline player file: $file" }
           }
@@ -104,6 +113,7 @@ jobs:
           $zip = 'dist/ZeroPlay-2.1-Windows-Offline-mpv-Test.zip'
           if (!(Test-Path $zip)) { throw 'Offline-player test ZIP was not created.' }
           if (!(Test-Path 'dist/win-unpacked/resources/mpv/mpv.exe')) { throw 'Bundled mpv.exe is missing from packaged app.' }
+          if (!(Test-Path 'dist/win-unpacked/resources/mpv-host/MpvVideoHost.exe')) { throw 'Dedicated native video host is missing from packaged app.' }
           if (!(Test-Path 'dist/win-unpacked/ZeroPlay.exe')) { throw 'ZeroPlay.exe is missing.' }
           $verify = 'dist/verify-asar'
           if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
@@ -112,6 +122,7 @@ jobs:
           $mpvHostSource = Get-Content "$verify/mpv-offline.cjs" -Raw
           if ($main -notmatch 'MpvOfflinePlayer') { throw 'Packaged main process is not using mpv offline playback.' }
           if ($mpvHostSource -notmatch 'gpu-api=d3d11') { throw 'mpv offline host is incomplete.' }
+          if ($mpvHostSource -notmatch 'bundledVideoHost') { throw 'Packaged player does not use the dedicated native video surface.' }
           if ($mpvHostSource -notmatch '--wid=') { throw 'Packaged mpv host is not embedded.' }
           if ($mpvHostSource -notmatch "'--osc=no'") { throw 'Packaged mpv host still enables the default OSC.' }
           foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
