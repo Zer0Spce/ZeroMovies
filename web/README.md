@@ -1,6 +1,8 @@
 # ZeroPlay website
 
-Responsive movie/TV website using the same design and catalog features as the Windows app. Includes TMDB discovery, provider browsing, search, details, cast, trailers, related titles, episode selection, watchlists, collections, Plan to Watch and device-local watch/search history. No Live or Manga tabs. Includes saved night/light mode, a home Watchlist row, and a playback source picker for VidStuck and VidSrc.sh.
+**Current website version: ZeroPlay 2.1.2 Web.**
+
+Responsive movie/TV website using the same core discovery experience as ZeroPlay. Includes TMDB discovery, provider browsing, search, details, cast, trailers, related titles, episode selection, watchlists, collections, Plan to Watch and device-local watch/search history. The website intentionally does **not** include Live TV, PPV / Sports, or Live Sports. Includes saved night/light mode, a home Watchlist row, and VidStuck web playback.
 
 ## Deploy to Vercel
 
@@ -20,7 +22,7 @@ Netlify remains supported. Root `netlify.toml` runs the same build command, publ
 
 No authentication or cross-device account synchronization is included; libraries stay in this browser.
 
-VidStuck is embedded using its documented TMDB URLs and options. Playback progress is accepted only from the active iframe and exact VidStuck origin, matching content ID/type and validated timestamps. Embedded popups and top-level redirects are restricted by iframe sandboxing.
+VidStuck is embedded using its documented TMDB URLs and options. Playback progress is accepted only from the active iframe and exact VidStuck origin, matching content ID/type and validated timestamps. Embedded popups and top-level redirects are restricted by the website controls and hosting Content Security Policy.
 
 A normal website cannot inspect or remove content inside VidStuck's cross-origin iframe. The Android/Windows QR scanner, control filtering, remote mouse and audio boost do not run on the website. Provider advertisements/verification and playback availability remain controlled by VidStuck. The website's own close/title controls hide after idle time; the provider's controls remain its own.
 

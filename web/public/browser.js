@@ -1,9 +1,9 @@
 'use strict';
 (() => {
   const STORAGE='zerostreams-web-v1';
-  const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',uiLayout:'youtube',source:'vidstuck'},hasKey:true,version:'2.0 Web'});
+  const defaults=()=>({favorites:[],planned:[],history:[],positions:{},searches:[],collections:{},settings:{region:'PH',gain:1,theme:'dark',uiLayout:'youtube',source:'vidstuck'},hasKey:true,version:'2.1.2 Web'});
   let saved=defaults(),playing,iframe,idleTimer,lastProgress=0;
-  try{const parsed=JSON.parse(localStorage.getItem(STORAGE)||'null');if(parsed&&typeof parsed==='object')saved={...saved,...parsed,settings:{...saved.settings,...parsed.settings},version:'2.0 Web'};}catch{}
+  try{const parsed=JSON.parse(localStorage.getItem(STORAGE)||'null');if(parsed&&typeof parsed==='object')saved={...saved,...parsed,settings:{...saved.settings,...parsed.settings},version:'2.1.2 Web'};}catch{}
   for(const name of ['favorites','planned','history','searches'])if(!Array.isArray(saved[name]))saved[name]=[];
   for(const name of ['positions','collections'])if(!saved[name]||typeof saved[name]!=='object'||Array.isArray(saved[name]))saved[name]={};
   if(saved.settings.source!=='vidstuck'){saved.settings.source='vidstuck';try{localStorage.setItem(STORAGE,JSON.stringify(saved));}catch{}}
