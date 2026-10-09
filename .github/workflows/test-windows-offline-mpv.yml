@@ -69,13 +69,20 @@ jobs:
       - name: Apply isolated offline-player test patch
         run: node scripts/apply-offline-mpv-test.cjs
 
-      - name: Verify test source wiring
+      - name: Verify embedded player source wiring
         shell: pwsh
         run: |
           $main = Get-Content main.cjs -Raw
+          $host = Get-Content mpv-offline.cjs -Raw
           $pkg = Get-Content package.json -Raw | ConvertFrom-Json
           if ($main -notmatch 'MpvOfflinePlayer') { throw 'Main process is not wired to mpv offline playback.' }
           if ($main -match "contents.loadFile\(path.join\(__dirname,'ui/offline-player.html'\)\)") { throw 'Legacy Chromium offline player is still the active openOffline path.' }
+          if ($host -notmatch '--wid=') { throw 'mpv is not embedded into a ZeroPlay-owned native window.' }
+          if ($host -notmatch "'--osc=no'") { throw 'Default mpv OSC is still enabled.' }
+          if ($host -notmatch 'offline-mpv.html') { throw 'Modern ZeroPlay offline control overlay is not wired.' }
+          foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
+            if (!(Test-Path $file)) { throw "Missing embedded offline player file: $file" }
+          }
           if ($pkg.build.win.artifactName -ne 'ZeroPlay-2.1-Windows-Offline-mpv-Test.${ext}') { throw 'Unexpected test artifact name.' }
 
       - name: Build standalone ZeroPlayUpdater.exe
@@ -91,7 +98,7 @@ jobs:
       - name: Build portable Windows test ZIP
         run: npx electron-builder --win --x64 --publish never
 
-      - name: Verify packaged mpv offline engine
+      - name: Verify packaged embedded mpv player
         shell: pwsh
         run: |
           $zip = 'dist/ZeroPlay-2.1-Windows-Offline-mpv-Test.zip'
@@ -105,6 +112,11 @@ jobs:
           $mpvHost = Get-Content "$verify/mpv-offline.cjs" -Raw
           if ($main -notmatch 'MpvOfflinePlayer') { throw 'Packaged main process is not using mpv offline playback.' }
           if ($mpvHost -notmatch 'gpu-api=d3d11') { throw 'mpv offline host is incomplete.' }
+          if ($mpvHost -notmatch '--wid=') { throw 'Packaged mpv host is not embedded.' }
+          if ($mpvHost -notmatch "'--osc=no'") { throw 'Packaged mpv host still enables the default OSC.' }
+          foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
+            if (!(Test-Path "$verify/$file")) { throw "Packaged player UI is missing: $file" }
+          }
           Remove-Item $verify -Recurse -Force
 
       - name: Scan packaged test build with Microsoft Defender
