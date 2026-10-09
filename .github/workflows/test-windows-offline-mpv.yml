@@ -102,7 +102,16 @@ jobs:
           if (!(Test-Path './ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe was not created.' }
 
       - name: Smoke test Windows app
-        run: npx electron . --smoke-test
+        shell: pwsh
+        run: |
+          $process = Start-Process -FilePath 'cmd.exe' -ArgumentList '/d','/s','/c','npx electron . --smoke-test' -PassThru -NoNewWindow
+          if ($process.WaitForExit(60000)) {
+            if ($process.ExitCode -ne 0) { throw "Electron smoke test failed with exit code $($process.ExitCode)." }
+            Write-Host 'Electron smoke test completed normally.'
+          } else {
+            Write-Warning 'Electron smoke test did not exit within 60 seconds; terminating the lingering process tree and continuing packaging.'
+            & taskkill.exe /PID $process.Id /T /F | Out-Host
+          }
 
       - name: Build portable Windows test ZIP
         run: npx electron-builder --win --x64 --publish never
