@@ -14,7 +14,7 @@ final class PlayerAdScan {
     private final ExecutorService decoder=Executors.newSingleThreadExecutor();private boolean active,busy;private long startedAt,confirmedAt;
     PlayerAdScan(Activity a,WebView w){activity=a;web=w;PlayerAdBlockState.init(a);}
     private final Runnable tick=new Runnable(){public void run(){if(!active)return;capture();handler.postDelayed(this,(SystemClock.elapsedRealtime()-startedAt<18000||SystemClock.elapsedRealtime()-confirmedAt<5000)?1000:3500);}};
-    void start(){if(active)return;active=true;startedAt=SystemClock.elapsedRealtime();handler.postDelayed(tick,300);}
+    void start(){if(BuildConfig.LITE||active)return;active=true;startedAt=SystemClock.elapsedRealtime();handler.postDelayed(tick,300);}
     void stop(){active=false;handler.removeCallbacks(tick);}
     void destroy(){stop();decoder.shutdownNow();}
     private void capture(){
