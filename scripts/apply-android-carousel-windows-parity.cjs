@@ -28,6 +28,6 @@ const replacement=`    void ensureCarouselSource(String mode){/* Android home al
         return new ArrayList<>(unique.values());
     }`;
 if(s.includes(old)) s=s.replace(old,replacement);
-s=s.replaceAll('item\\.backdrop\\.isEmpty\\(\\)','item.raw.optString("backdrop").isEmpty()');
+s=s.replaceAll('item.backdrop.isEmpty()','item.raw.optString("backdrop").isEmpty()');
 fs.writeFileSync(file,s);
 console.log('Android/TV carousel source behavior now mirrors Windows home data selection.');
