@@ -48,7 +48,10 @@ const pkg=JSON.parse(fs.readFileSync(packageFile,'utf8'));
 pkg.build=pkg.build||{};
 pkg.build.win=pkg.build.win||{};
 pkg.build.win.artifactName='ZeroPlay-2.1-Windows-Offline-mpv-Test.${ext}';
-pkg.build.extraResources=[...(pkg.build.extraResources||[]).filter(row=>row?.to!=='mpv'),{from:'vendor/mpv',to:'mpv',filter:['**/*']}];
+const extras=(pkg.build.extraResources||[]).filter(row=>!['mpv','mpv-host'].includes(row?.to));
+extras.push({from:'vendor/mpv',to:'mpv',filter:['**/*']});
+extras.push({from:'MpvVideoHost.exe',to:'mpv-host/MpvVideoHost.exe'});
+pkg.build.extraResources=extras;
 fs.writeFileSync(packageFile,JSON.stringify(pkg,null,2)+'\n');
 
 console.log('Applied isolated mpv-backed Windows offline-player test patch.');
