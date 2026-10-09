@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ZeroPlay Offline</title>
+  <link rel="stylesheet" href="offline-mpv.css">
+</head>
+<body>
+  <main id="player-shell">
+    <div id="top-fade" class="fade"></div>
+    <div id="bottom-fade" class="fade"></div>
+
+    <header id="topbar" class="chrome">
+      <button id="back" class="icon-button back" type="button" aria-label="Back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div class="title-block">
+        <div class="eyebrow">OFFLINE PLAYBACK</div>
+        <div id="title" class="title">Downloaded video</div>
+      </div>
+      <div id="engine-badge" class="engine-badge">MPV ENGINE</div>
+    </header>
+
+    <button id="center-play" class="center-play chrome" type="button" aria-label="Play or pause">
+      <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg>
+    </button>
+
+    <section id="controls" class="controls chrome" aria-label="Offline player controls">
+      <div class="seek-wrap">
+        <input id="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek">
+        <div class="time-row"><span id="current">0:00</span><span id="remaining">-0:00</span></div>
+      </div>
+
+      <div class="control-row">
+        <div class="cluster left-cluster">
+          <button id="play" class="icon-button" type="button" aria-label="Play or pause">
+            <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg>
+          </button>
+          <button id="back10" class="icon-button" type="button" aria-label="Back 10 seconds">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V3m0 0h5M4 3l4 4a8 8 0 1 1-1.6 8"/><text x="8.4" y="15.5">10</text></svg>
+          </button>
+          <button id="forward10" class="icon-button" type="button" aria-label="Forward 10 seconds">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8V3m0 0h-5m5 0-4 4a8 8 0 1 0 1.6 8"/><text x="7.6" y="15.5">10</text></svg>
+          </button>
+          <button id="mute" class="icon-button" type="button" aria-label="Mute">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4h4l5 4V6l-5 4H5z"/><path class="waves" d="M17 9c1.5 1.8 1.5 4.2 0 6m2-8c2.7 2.8 2.7 7.2 0 10"/></svg>
+          </button>
+          <input id="volume" class="volume" type="range" min="0" max="100" value="100" step="1" aria-label="Volume">
+        </div>
+
+        <div class="cluster right-cluster">
+          <button id="subtitle" class="pill-button" type="button" aria-label="Subtitles">CC</button>
+          <div class="menu-wrap">
+            <button id="speed" class="pill-button" type="button" aria-label="Playback speed"><span id="speed-label">1×</span></button>
+            <div id="speed-menu" class="popup" hidden></div>
+          </div>
+          <button id="fit" class="icon-button" type="button" aria-label="Fit or fill video">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>
+          </button>
+          <button id="full" class="icon-button" type="button" aria-label="Fullscreen">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div id="subtitle-menu" class="popup subtitle-popup" hidden>
+      <button type="button" data-sub="toggle">Toggle subtitles</button>
+      <button type="button" data-sub="load">Load subtitle file…</button>
+      <div id="subtitle-tracks"></div>
+    </div>
+
+    <div id="toast" class="toast" hidden></div>
+  </main>
+  <script src="offline-mpv.js"></script>
+</body>
+</html>
