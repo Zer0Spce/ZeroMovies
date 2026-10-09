@@ -16,3 +16,13 @@ test('website does not expose Live TV, PPV or Live Sports',()=>{
   assert.equal(fs.existsSync(path.join(root,'web/public/live.css')),false);
   assert.equal(fs.existsSync(path.join(root,'api/live.js')),false);
 });
+
+test('website loads additional movie and series pages automatically while scrolling',()=>{
+  const html=read('web/public/index.html');
+  const infinite=read('web/public/infinite-scroll.js');
+  assert.match(html,/infinite-scroll\.js/);
+  assert.match(infinite,/data-action="next-page"/);
+  assert.match(infinite,/addEventListener\('scroll'/);
+  assert.match(infinite,/savedGrid\.appendChild/);
+  assert.match(infinite,/paging\.hidden=true/);
+});
