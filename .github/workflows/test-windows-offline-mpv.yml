@@ -72,6 +72,9 @@ jobs:
       - name: Apply final Windows title and history polish
         run: node scripts/apply-final-windows-polish.cjs
 
+      - name: Apply real episode progress refresh
+        run: node scripts/apply-episode-progress-fix.cjs
+
       - name: Build dedicated native mpv video surface
         shell: pwsh
         run: |
@@ -96,6 +99,8 @@ jobs:
           if ($mpvHostSource -notmatch 'offline-mpv.html') { throw 'Modern ZeroPlay offline control overlay is not wired.' }
           if ($renderer -notmatch 'zero-title-sources') { throw 'Per-title source preference UI is missing.' }
           if ($renderer -notmatch 'episodeReminder') { throw 'Episode watched/in-progress reminders are missing.' }
+          if ($renderer -notmatch "if\(!progress\)return ''") { throw 'Started episode fallback marker is missing.' }
+          if ($renderer -notmatch "\$\('#detail'\)\.open&&activeDetail") { throw 'Open detail episode refresh is missing.' }
           if ($core -notmatch 'positions\[historyKey\]') { throw 'Per-episode history storage is missing.' }
           if (!(Test-Path './MpvVideoHost.exe')) { throw 'Native video host helper is missing.' }
           foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
@@ -148,6 +153,8 @@ jobs:
           if ($mpvHostSource -notmatch "'--osc=no'") { throw 'Packaged mpv host still enables the default OSC.' }
           if ($renderer -notmatch 'zero-title-sources') { throw 'Packaged per-title source UI is missing.' }
           if ($renderer -notmatch 'episodeReminder') { throw 'Packaged episode history reminders are missing.' }
+          if ($renderer -notmatch "if\(!progress\)return ''") { throw 'Packaged started episode fallback marker is missing.' }
+          if ($renderer -notmatch "\$\('#detail'\)\.open&&activeDetail") { throw 'Packaged open detail episode refresh is missing.' }
           if ($core -notmatch 'positions\[historyKey\]') { throw 'Packaged per-episode history storage is missing.' }
           foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
             if (!(Test-Path "$verify/$file")) { throw "Packaged player UI is missing: $file" }
