@@ -20,11 +20,10 @@ if(source.includes(globals)){
   throw Error('Global player state marker not found.');
 }
 
-const closeMarker='function closePlayer(){\n  if(!player)return;';
-if(source.includes(closeMarker)){
-  source=source.replace(closeMarker,"function closePlayer(){\n  if(mpvOffline){try{mpvOffline.close();}catch{}mpvOffline=null;offlineSelection=null;}\n  if(!player){if(main&&!main.isDestroyed()){main.setTitle('ZeroPlay');main.webContents.focus();refresh();}return;}");
-}else if(!source.includes('if(mpvOffline){try{mpvOffline.close();}')){
-  throw Error('closePlayer marker not found.');
+if(!source.includes('if(mpvOffline){try{mpvOffline.close();}')){
+  const closePattern=/function closePlayer\(\)\{\r?\n\s*if\(!player\)return;/;
+  if(!closePattern.test(source))throw Error('closePlayer marker not found.');
+  source=source.replace(closePattern,"function closePlayer(){\n  if(mpvOffline){try{mpvOffline.close();}catch{}mpvOffline=null;offlineSelection=null;}\n  if(!player){if(main&&!main.isDestroyed()){main.setTitle('ZeroPlay');main.webContents.focus();refresh();}return;}");
 }
 
 const start=source.indexOf('async function openOffline(job,filePath){');
