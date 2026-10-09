@@ -61,10 +61,10 @@ function closePlayer(){
   clearInterval(scanTimer);clearInterval(cursorTimer);if(qrWorker)qrWorker.terminate();qrWorker=null;scanning=false;host.close();
   if(main&&!main.isDestroyed()){main.setTitle('ZeroPlay');main.webContents.focus();refresh();}
 }
-async function openPlayer(value,selected,fixture,prepare=false){
-  value=core.cleanItem(value);const saved=state.positions[core.key(value)];let position=selected?core.episode(selected):saved||{};
+async function openPlayer(value,selected,fixture,prepare=false,sourceOverride){
+  value=core.cleanItem(value);const requestedSource=["vidstuck","vidsrc-sh","rawcast"].includes(sourceOverride)?sourceOverride:"vidstuck";const playbackSource=requestedSource==="rawcast"&&state.settings.rawcastPlayback!==true?"vidstuck":requestedSource;const saved=state.positions[core.key(value)];let position=selected?core.episode(selected):saved||{};
   if(selected&&saved&&saved.season===position.season&&saved.episode===position.episode)position=saved;
-  if(state.settings.source==='rawcast'&&state.settings.rawcastPlayback===true&&!fixture){if(!rawcastKey())throw Error('RawCast key required. Enable RawCast and add your key in Settings. Streaming uses your limited API quota.');const media=await rawcast.stream(value,core.episode(position));await openLive('RawCast',0,{name:value.title,...media,headers:{},vod:true,rawcastItem:value,rawcastEpisode:core.episode(position),start:position.timestamp||0});current=value;core.record(state,value,position);persist();refresh();return;}
+  if(playbackSource==='rawcast'&&state.settings.rawcastPlayback===true&&!fixture){if(!rawcastKey())throw Error('RawCast key required. Enable RawCast and add your key in Settings. Streaming uses your limited API quota.');const media=await rawcast.stream(value,core.episode(position));await openLive('RawCast',0,{name:value.title,...media,headers:{},vod:true,rawcastItem:value,rawcastEpisode:core.episode(position),start:position.timestamp||0});current=value;core.record(state,value,position);persist();refresh();return;}
   closePlayer();
   current=value;core.record(state,value,position);persist();refresh();
   guard='window.__zeroTv=false;window.__zeroBlockAds=true;window.__zeroGain='+state.settings.gain+';'+fs.readFileSync(path.join(__dirname,'assets/player-guard.js'),'utf8')+'\n'+fs.readFileSync(path.join(__dirname,'assets/player-exit.js'),'utf8')+"\nif(!window.__zeroDesktopMouse){window.__zeroDesktopMouse=true;let last=0;document.addEventListener('mousemove',()=>{if(Date.now()-last<350)return;last=Date.now();if(window.__zeroRemoteActivity)window.__zeroRemoteActivity();});}";
@@ -97,7 +97,7 @@ async function openPlayer(value,selected,fixture,prepare=false){
   contents.on('render-process-gone',()=>{if(player===view)closePlayer();});
   cursorTimer=setInterval(()=>{if(!playerHost||main.isDestroyed()||!main.isFocused())return;const cursor=screen.getCursorScreenPoint(),bounds=main.getContentBounds();if(cursor.x>=bounds.x&&cursor.x<bounds.x+bounds.width&&cursor.y>=bounds.y&&cursor.y<bounds.y+12)playerHost.activity();},200);
   scanTimer=setInterval(scanAd,3500);
-  try{if(fixture&&smoke)await contents.loadFile(fixture);else await contents.loadURL(core.playerUrl(value,position,state.settings.source));contents.focus();}catch(error){if(player===view)closePlayer();throw error;}
+  try{if(fixture&&smoke)await contents.loadFile(fixture);else await contents.loadURL(core.playerUrl(value,position,playbackSource));contents.focus();}catch(error){if(player===view)closePlayer();throw error;}
 
 }
 async function openSports(id,index){
@@ -195,7 +195,7 @@ app.whenReady().then(async()=>{
   ipcMain.handle('player-fullscreen',event=>{if(event.sender!==toolbar?.webContents||event.senderFrame?.url!==toolsURL)throw Error('Untrusted player control');return playerHost.toggleFullscreen();});
   ipcMain.handle('state',event=>{trusted(event);return snapshot();});
   ipcMain.handle('external',(event,url)=>{trusted(event);const u=new URL(url);if(u.protocol!=='https:'||!['www.youtube.com','www.themoviedb.org','rawcast.space','tspsearch.dev'].includes(u.hostname))throw Error('Unsupported link');return shell.openExternal(u.href);});
-  ipcMain.handle('play',async(event,value,ep)=>{trusted(event);await openPlayer(value,ep);return true;});
+  ipcMain.handle('play',async(event,value,ep,source)=>{trusted(event);await openPlayer(value,ep,null,false,source);return true;});
   ipcMain.handle('change',(event,action,value)=>{
     trusted(event);
     if(['favorites','planned'].includes(action)){value=core.cleanItem(value);const exists=state[action].some(row=>core.key(row)===core.key(value));state[action]=exists?state[action].filter(row=>core.key(row)!==core.key(value)):[value,...state[action]].slice(0,300);}
