@@ -7,6 +7,7 @@ test('website enhancement bundle is wired into the web shell',()=>{
   assert.match(html,/manifest\.json/);
   assert.match(html,/enhancements\.css/);
   assert.match(html,/web-enhancements\.js/);
+  assert.match(html,/web-polish-fixes\.js/);
   assert.ok(fs.existsSync(path.join(root,'web/public/sw.js')));
 });
 
@@ -30,6 +31,14 @@ test('website supports richer details franchises routes keyboard and install flo
   assert.match(js,/beforeinstallprompt/);
   assert.match(js,/ArrowRight/);
   assert.match(js,/event\.key==='\/'/);
+});
+
+test('website preserves loaded pages on detail back and syncs provider filter mode',()=>{
+  const polish=read('web/public/web-polish-fixes.js');
+  assert.match(polish,/historyRestoreUntil/);
+  assert.match(polish,/document\.documentElement\.dataset\.section===section/);
+  assert.match(polish,/data-provider-type/);
+  assert.match(polish,/\/genre\/'\+providerType/);
 });
 
 test('website infinite scrolling deduplicates preloads and retries',()=>{
