@@ -16,13 +16,13 @@ public class ReleaseMainActivity extends FinalMainActivity {
 
     @Override void carousel(List<Catalog.Item> all,int token){
         final LinearLayout host=contentHost();if(host==null||all.isEmpty()){super.carousel(all,token);return;}
-        final List<Catalog.Item> picks=new ArrayList<>();for(Catalog.Item item:all)if(item.raw.optBoolean("trending")&&!item.raw.optBoolean("upcoming")&&picks.size()<6)picks.add(item);if(picks.isEmpty())picks.addAll(all.subList(0,Math.min(6,all.size())));if(picks.isEmpty())return;
+        final List<Catalog.Item> picks=carouselSourceItems(all);if(picks.isEmpty())return;
         final int[] index={0};final FrameLayout hero=new FrameLayout(this);hero.setBackground(shape(SURFACE,0));hero.setClipToOutline(!flixLayout());
         final ImageView art=new ImageView(this);art.setScaleType(ImageView.ScaleType.CENTER_CROP);hero.addView(art,new FrameLayout.LayoutParams(-1,-1));
         View shade=new View(this);shade.setBackground(new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,flixLayout()?new int[]{Color.argb(245,0,0,0),Color.argb(190,0,0,0),Color.argb(40,0,0,0)}:new int[]{tint(0xF5),tint(0xB8),tint(0x68)}));hero.addView(shade,new FrameLayout.LayoutParams(-1,-1));
         View bottom=new View(this);bottom.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{tint(0),tint(flixLayout()?0xFA:0xEE)}));hero.addView(bottom,new FrameLayout.LayoutParams(-1,-1));
         LinearLayout info=column();info.setPadding(dp(googleLayout()?36:24),dp(googleLayout()?34:24),dp(googleLayout()?30:20),dp(googleLayout()?34:20));FrameLayout.LayoutParams ip=new FrameLayout.LayoutParams(BuildConfig.TV?dp(googleLayout()?620:520):-1,-2,Gravity.START|Gravity.BOTTOM);hero.addView(info,ip);
-        TextView eyebrow=text(googleLayout()?"FEATURED FOR YOU":"TRENDING THIS WEEK",11,googleLayout()?INK:ACCENT);eyebrow.setLetterSpacing(.12f);info.addView(eyebrow);space(info,10);
+        TextView eyebrow=text(carouselEyebrow(),11,googleLayout()?INK:ACCENT);eyebrow.setLetterSpacing(.12f);info.addView(eyebrow);space(info,10);
         final TextView title=text("",BuildConfig.TV?(flixLayout()?58:googleLayout()?50:37):flixLayout()?40:googleLayout()?36:29,INK);bold(title);title.setMaxLines(2);info.addView(title);space(info,8);
         final TextView facts=text("",13,INK);info.addView(facts);space(info,10);
         final TextView description=text("",flixLayout()?16:googleLayout()?15:14,flixLayout()?Color.rgb(235,235,235):MUTED);description.setMaxLines(googleLayout()?2:3);description.setEllipsize(android.text.TextUtils.TruncateAt.END);info.addView(description);space(info,16);

@@ -41,7 +41,7 @@ final class ExitConfirmation {
         TextView body=text(activity,message,BuildConfig.TV?15:14,muted);body.setLineSpacing(0,1.12f);body.setPadding(0,0,0,(int)(20*density));box.addView(body);
 
         LinearLayout actions=new LinearLayout(activity);actions.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
-        Button no=new Button(activity);no.setText("No, keep watching");styleButton(no,light?Color.rgb(229,234,240):Color.rgb(42,46,58),ink,density);
+        Button no=new Button(activity);no.setText("No, Go Back");styleButton(no,light?Color.rgb(229,234,240):Color.rgb(42,46,58),ink,density);
         Button yes=new Button(activity);yes.setText("Yes, exit");styleButton(yes,danger,Color.WHITE,density);
         LinearLayout.LayoutParams bp=new LinearLayout.LayoutParams(-2,(int)((BuildConfig.TV?48:44)*density));bp.setMargins((int)(8*density),0,0,0);
         actions.addView(no,new LinearLayout.LayoutParams(-2,(int)((BuildConfig.TV?48:44)*density)));actions.addView(yes,bp);box.addView(actions);

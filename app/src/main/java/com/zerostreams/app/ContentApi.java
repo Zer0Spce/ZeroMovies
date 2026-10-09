@@ -63,6 +63,7 @@ final class ContentApi {
     }
     static JSONObject searchPageData(String query,String key,int page) throws Exception {return tmdb("/search/multi",key,"&query="+URLEncoder.encode(query.trim(),"UTF-8")+"&include_adult=false&page="+page);}
     static JSONObject browsePageData(String key,String section,int page) throws Exception {return tmdb(section.equals("Series")?"/tv/popular":"/movie/popular",key,"&page="+page);}
+    static List<Catalog.Item> carouselItems(String key,String mode) throws Exception {String path,media;if(mode.equals("recommended")){path="/movie/top_rated";media="movie";}else if(mode.equals("popular")){path="/movie/popular";media="movie";}else if(mode.equals("now")){path="/movie/now_playing";media="movie";}else if(mode.equals("top")){path="/trending/all/week";media="";}else return new ArrayList<>();return tmdbRows(tmdb(path,key,"&page=1").getJSONArray("results"),media,false);}
     static JSONObject providerPageData(String key,String type,int provider,String region,int page) throws Exception {
         if(provider<=0||!region.matches("[A-Z]{2}")||!type.equals("movie")&&!type.equals("tv"))throw new IOException("Invalid provider");
         return tmdb("/discover/"+type,key,"&include_adult=false&with_watch_providers="+provider+"&watch_region="+region+"&with_watch_monetization_types=flatrate&sort_by=popularity.desc&page="+page);

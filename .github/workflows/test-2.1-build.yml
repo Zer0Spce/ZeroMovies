@@ -1,0 +1,233 @@
+name: ZeroPlay 2.1 Pre-release Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - test/2.1-pre-release
+
+permissions:
+  contents: write
+
+concurrency:
+  group: zeroplay-2-1-pre-release
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.head.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Apply 2.1 pre-release source fixes if needed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -q "versionName '2.0.3'" app/build.gradle; then
+            node scripts/apply-2.1-pre-release.cjs
+          else
+            echo '2.1 source is already prepared; preserving follow-up fixes.'
+          fi
+          if ! grep -q 'ZeroPlayUpdater.exe' windows/updater.cjs; then
+            node scripts/apply-updater-helper-carousel-fixes.cjs
+          else
+            echo 'Standalone updater helper/carousel fixes already applied.'
+          fi
+          if ! grep -q 'carouselSourceCache' app/src/main/java/com/zerostreams/app/MainActivity.java || grep -q "title:'Exit ZeroPlay?'" windows/main.cjs; then
+            node scripts/apply-2.1-carousel-source-exit-fixes.cjs
+          else
+            echo 'Final Android carousel source and Windows exit fixes already applied.'
+          fi
+
+      - name: Verify requested source changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'No, Go Back' app/src/main/java/com/zerostreams/app/ExitConfirmation.java
+          grep -q 'carouselSource' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'carouselSourceCache' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'ensureCarouselSource' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'carouselItems(String key,String mode)' app/src/main/java/com/zerostreams/app/ContentApi.java
+          grep -q 'heroIndex=0;stopPreview' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'Reset application and settings' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'carousel-source' windows/ui/index.html
+          grep -q 'heroPicks()' windows/ui/experience.js
+          grep -q 'version-manager.cjs' windows/bootstrap.cjs
+          grep -q 'ZeroPlayUpdater.exe' windows/updater.cjs
+          grep -q 'ZipFile.ExtractToDirectory' windows/updater-helper/Program.cs
+          if grep -q "title:'Exit ZeroPlay?'" windows/main.cjs; then echo 'Windows exit confirmation is still present'; exit 1; fi
+          if grep -q 'tar.exe' windows/updater.cjs; then echo 'Old in-app ZIP extraction is still present'; exit 1; fi
+          if grep -q 'robocopy.exe' windows/updater.cjs; then echo 'Old in-place updater is still present'; exit 1; fi
+
+      - name: Commit generated 2.1 source if necessary
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app windows scripts
+          if ! git diff --cached --quiet; then
+            git commit -m '[2.1 source] Fix Android carousel source switching and Windows exit behavior'
+            git push origin HEAD:test/2.1-pre-release
+          fi
+
+      - name: Record prepared commit
+        id: head
+        shell: bash
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  android:
+    name: Android Mobile + TV
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Unit tests
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest
+
+      - name: Build signed Mobile + TV 2.1 APKs
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/zeroplay-release.jks"
+          trap 'rm -f "$ANDROID_KEYSTORE_FILE"' EXIT
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_FILE"
+          chmod 600 "$ANDROID_KEYSTORE_FILE"
+          gradle :app:assembleMobileRelease :app:assembleTvRelease
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/mobile/release/app-mobile-release.apk
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/tv/release/app-tv-release.apk
+          cp app/build/outputs/apk/mobile/release/app-mobile-release.apk app/build/outputs/apk/ZeroPlay-2.1-Android-Mobile.apk
+          cp app/build/outputs/apk/tv/release/app-tv-release.apk app/build/outputs/apk/ZeroPlay-2.1-Android-TV.apk
+
+      - name: Lint Mobile + TV
+        run: gradle --continue :app:lintMobileRelease :app:lintTvRelease
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1-Android-Test-Builds
+          path: |
+            app/build/outputs/apk/ZeroPlay-2.1-Android-Mobile.apk
+            app/build/outputs/apk/ZeroPlay-2.1-Android-TV.apk
+          if-no-files-found: error
+          compression-level: 0
+
+  windows:
+    name: Windows Portable
+    needs: prepare
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Windows tests
+        run: npm test
+
+      - name: Configure bundled keys
+        run: npm run prepare-config
+
+      - name: Build standalone ZeroPlayUpdater.exe
+        shell: pwsh
+        run: |
+          dotnet publish updater-helper/ZeroPlayUpdater.csproj -c Release -r win-x64 --self-contained true -o updater-helper/publish
+          Copy-Item updater-helper/publish/ZeroPlayUpdater.exe ./ZeroPlayUpdater.exe -Force
+          if (!(Test-Path './ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe was not created.' }
+
+      - name: Smoke test Windows app
+        run: npx electron . --smoke-test
+
+      - name: Build portable Windows 2.1 ZIP only
+        run: npx electron-builder --win --x64 --publish never
+
+      - name: Verify portable package and updater helper
+        shell: pwsh
+        run: |
+          $zip = 'dist/ZeroPlay-2.1-Windows-x64.zip'
+          if (!(Test-Path $zip)) { throw 'Windows 2.1 portable ZIP was not created.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlay.exe')) { throw 'ZeroPlay.exe missing.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe missing from portable root.' }
+          if (!(Test-Path 'dist/win-unpacked/resources/app.asar')) { throw 'app.asar missing.' }
+          $verify = 'dist/verify-asar'
+          if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
+          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          $pkg = Get-Content "$verify/package.json" -Raw | ConvertFrom-Json
+          if ($pkg.version -ne '2.1.0') { throw "Expected Windows app version 2.1.0, got $($pkg.version)" }
+          foreach ($file in @('version-manager.cjs','updater.cjs')) {
+            if (!(Test-Path "$verify/$file")) { throw "$file missing from packaged app." }
+          }
+          $updaterSource = Get-Content "$verify/updater.cjs" -Raw
+          $mainSource = Get-Content "$verify/main.cjs" -Raw
+          if ($updaterSource -notmatch 'ZeroPlayUpdater\.exe') { throw 'Packaged updater does not delegate to helper.' }
+          if ($updaterSource -match 'tar\.exe') { throw 'Packaged app still extracts updates internally.' }
+          if ($mainSource -match 'Exit ZeroPlay\?') { throw 'Packaged Windows app still contains the exit confirmation.' }
+          Remove-Item $verify -Recurse -Force
+          $extract = 'dist/zip-verify'
+          if (Test-Path $extract) { Remove-Item $extract -Recurse -Force }
+          Expand-Archive -LiteralPath $zip -DestinationPath $extract -Force
+          if (!(Test-Path "$extract/ZeroPlayUpdater.exe")) { throw 'ZIP does not contain ZeroPlayUpdater.exe at its root.' }
+          Remove-Item $extract -Recurse -Force
+          Write-Host 'Windows 2.1 package verified with standalone ZeroPlayUpdater.exe and no exit confirmation. No release was published.'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1-Windows-Portable-Test
+          path: windows/dist/ZeroPlay-2.1-Windows-x64.zip
+          if-no-files-found: error
+          compression-level: 0

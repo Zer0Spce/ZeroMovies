@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
-        <shape android:shape="rectangle">
-            <solid android:color="#6654E5C1"/>
-            <stroke android:width="3dp" android:color="#FF65E6CC"/>
-            <corners android:radius="8dp"/>
-        </shape>
+        <shape android:shape="rectangle"><solid android:color="#6654E5C1"/><stroke android:width="3dp" android:color="#FF65E6CC"/><corners android:radius="10dp"/></shape>
     </item>
     <item android:state_focused="true">
-        <shape android:shape="rectangle">
-            <solid android:color="#5554E5C1"/>
-            <stroke android:width="3dp" android:color="#FF65E6CC"/>
-            <corners android:radius="8dp"/>
-        </shape>
+        <shape android:shape="rectangle"><solid android:color="#5554E5C1"/><stroke android:width="3dp" android:color="#FF65E6CC"/><corners android:radius="10dp"/></shape>
     </item>
     <item android:state_selected="true">
-        <shape android:shape="rectangle">
-            <solid android:color="#3D54E5C1"/>
-            <stroke android:width="2dp" android:color="#CC65E6CC"/>
-            <corners android:radius="8dp"/>
-        </shape>
+        <shape android:shape="rectangle"><solid android:color="#3D54E5C1"/><stroke android:width="2dp" android:color="#CC65E6CC"/><corners android:radius="10dp"/></shape>
     </item>
-    <item android:drawable="@android:color/transparent"/>
+    <item><shape android:shape="rectangle"><solid android:color="#FF171E2C"/><stroke android:width="1dp" android:color="#FF46536B"/><corners android:radius="10dp"/></shape></item>
 </selector>

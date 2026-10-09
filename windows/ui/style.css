@@ -80,3 +80,14 @@ aside{background:var(--sidebar,#0d1019)}aside button{color:var(--muted);font-wei
 @media(max-width:700px){#settings{width:94vw}#settings .settings-body{padding:24px 18px 28px}}
 
 .episode-picker{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin:10px 0 14px}.episode-picker label{display:flex;flex-direction:column;gap:6px;min-width:145px;color:var(--muted);font-size:12px}.episode-picker select{min-height:42px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:8px 10px}@media(max-width:700px){.episode-picker{display:grid;grid-template-columns:1fr 1fr}.episode-picker label{min-width:0}}
+
+/* ZeroPlay 2.1 series selector polish */
+.episode-picker{display:grid;grid-template-columns:repeat(2,minmax(150px,1fr));gap:12px;margin:18px 0;padding:14px;border:1px solid #30394b;border-radius:14px;background:#121722cc}
+.episode-picker label{display:block;margin:0;color:var(--mint);font-size:12px;font-weight:700;letter-spacing:.04em}
+.episode-picker select{display:block;width:100%;min-height:48px;margin-top:8px;padding:10px 38px 10px 12px;border:1px solid #46536b;border-radius:10px;background:#171e2c;color:var(--ink);font-weight:650;transition:border-color .15s,box-shadow .15s,transform .15s}
+.episode-picker select:hover{border-color:var(--mint)}
+.episode-picker select:focus-visible{outline:2px solid var(--mint);outline-offset:2px;border-color:var(--mint);box-shadow:0 0 0 4px color-mix(in srgb,var(--mint) 18%,transparent);transform:translateY(-1px)}
+.danger-zone{margin-top:26px;border-color:#6f343b}.danger-zone button{border-color:#8e3c46;color:#ff9ca5}.danger-zone button:hover,.danger-zone button:focus-visible{background:#4a2026;color:#fff}
+[data-theme="light"] .episode-picker{background:#ffffffd9;border-color:#d1d9e4}[data-theme="light"] .episode-picker select{background:#fff;color:#182130;border-color:#bdc8d6}
+@media(max-width:650px){.episode-picker{grid-template-columns:1fr}}
+

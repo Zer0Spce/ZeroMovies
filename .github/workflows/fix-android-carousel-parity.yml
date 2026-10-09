@@ -1,0 +1,92 @@
+name: Fix Android Carousel Parity
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - test/2.1-pre-release
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fix-android-carousel-parity
+  cancel-in-progress: true
+
+jobs:
+  apply-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Apply Windows-parity carousel behavior
+        run: node scripts/apply-android-carousel-windows-parity.cjs
+
+      - name: Commit source fix if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/src/main/java/com/zerostreams/app/MainActivity.java
+          if ! git diff --cached --quiet; then
+            git commit -m '[2.1] Match Android carousel behavior to Windows'
+            git push origin HEAD:test/2.1-pre-release
+          fi
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Unit tests
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest
+
+      - name: Build signed Mobile + TV APKs
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/zeroplay-release.jks"
+          trap 'rm -f "$ANDROID_KEYSTORE_FILE"' EXIT
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_FILE"
+          chmod 600 "$ANDROID_KEYSTORE_FILE"
+          gradle :app:assembleMobileRelease :app:assembleTvRelease
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/mobile/release/app-mobile-release.apk
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/tv/release/app-tv-release.apk
+          cp app/build/outputs/apk/mobile/release/app-mobile-release.apk app/build/outputs/apk/ZeroPlay-2.1-Android-Mobile-carousel-parity.apk
+          cp app/build/outputs/apk/tv/release/app-tv-release.apk app/build/outputs/apk/ZeroPlay-2.1-Android-TV-carousel-parity.apk
+
+      - name: Lint
+        run: gradle --continue :app:lintMobileRelease :app:lintTvRelease
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1-Android-Carousel-Parity
+          path: |
+            app/build/outputs/apk/ZeroPlay-2.1-Android-Mobile-carousel-parity.apk
+            app/build/outputs/apk/ZeroPlay-2.1-Android-TV-carousel-parity.apk
+          if-no-files-found: error
+          compression-level: 0
