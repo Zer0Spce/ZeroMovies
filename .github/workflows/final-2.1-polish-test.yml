@@ -1,0 +1,188 @@
+name: Final 2.1 Polish Test
+
+on:
+  push:
+    branches:
+      - test/2.1-pre-release
+
+permissions:
+  contents: write
+
+concurrency:
+  group: final-2-1-polish-test
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    if: ${{ !contains(github.event.head_commit.message, '[final-polish-generated]') }}
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.head.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Apply final 2.1 polish
+        run: node scripts/apply-final-2.1-polish.cjs
+
+      - name: Verify final polish source
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'getBoolean("playerMouse",false)' app/src/main/java/com/zerostreams/app/TvMouse.java
+          grep -q 'playbackSourceFor:' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'Keep for this title' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'episodeReminder' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'Clear watched history' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q 'zero-title-sources' windows/ui/app.js
+          grep -q 'episodeReminder' windows/ui/app.js
+          grep -q 'clear-history' windows/ui/index.html
+          grep -q 'state.positions\[historyKey\]' windows/core.cjs
+          grep -q "ipcRenderer.invoke('play',item,episode,source)" windows/preload.cjs
+
+      - name: Commit generated source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app windows scripts
+          if ! git diff --cached --quiet; then
+            git commit -m '[final-polish-generated] Per-title sources, episode reminders and D-pad default'
+            git push origin HEAD:test/2.1-pre-release
+          fi
+
+      - name: Record prepared commit
+        id: head
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  android:
+    name: Android Mobile + TV Final Polish
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Unit tests
+        run: gradle :app:testMobileDebugUnitTest :app:testTvDebugUnitTest
+      - name: Build signed Mobile + TV APKs
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/zeroplay-release.jks"
+          trap 'rm -f "$ANDROID_KEYSTORE_FILE"' EXIT
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_FILE"
+          chmod 600 "$ANDROID_KEYSTORE_FILE"
+          gradle :app:assembleMobileRelease :app:assembleTvRelease
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/mobile/release/app-mobile-release.apk
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose app/build/outputs/apk/tv/release/app-tv-release.apk
+          cp app/build/outputs/apk/mobile/release/app-mobile-release.apk app/build/outputs/apk/ZeroPlay-2.1-Final-Polish-Mobile.apk
+          cp app/build/outputs/apk/tv/release/app-tv-release.apk app/build/outputs/apk/ZeroPlay-2.1-Final-Polish-TV.apk
+      - name: Lint Mobile + TV
+        run: gradle --continue :app:lintMobileRelease :app:lintTvRelease
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1-Final-Polish-Android
+          path: |
+            app/build/outputs/apk/ZeroPlay-2.1-Final-Polish-Mobile.apk
+            app/build/outputs/apk/ZeroPlay-2.1-Final-Polish-TV.apk
+          compression-level: 0
+
+  windows:
+    name: Windows Final Polish
+    needs: prepare
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Windows tests
+        run: npm test
+      - name: Configure bundled keys
+        run: npm run prepare-config
+      - name: Build updater helper
+        shell: pwsh
+        run: |
+          dotnet publish updater-helper/ZeroPlayUpdater.csproj -c Release -r win-x64 --self-contained true -o updater-helper/publish
+          Copy-Item updater-helper/publish/ZeroPlayUpdater.exe ./ZeroPlayUpdater.exe -Force
+      - name: Smoke test Windows app with timeout
+        shell: pwsh
+        run: |
+          $p=Start-Process -FilePath 'npx.cmd' -ArgumentList @('electron','.','--smoke-test') -WorkingDirectory $pwd -PassThru -NoNewWindow
+          if(-not $p.WaitForExit(60000)) {
+            Write-Host 'Smoke UI remained alive after 60 seconds; terminating the runner process tree.'
+            taskkill /PID $p.Id /T /F | Out-Host
+          } elseif($p.ExitCode -ne 0) { throw "Electron smoke test failed with exit code $($p.ExitCode)." }
+      - name: Build portable Windows ZIP
+        run: npx electron-builder --win --x64 --publish never
+      - name: Verify packaged polish
+        shell: pwsh
+        run: |
+          $zip='dist/ZeroPlay-2.1-Windows-x64.zip'
+          if(!(Test-Path $zip)){throw 'Windows ZIP missing.'}
+          $verify='dist/verify-polish'
+          if(Test-Path $verify){Remove-Item $verify -Recurse -Force}
+          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          $app=Get-Content "$verify/ui/app.js" -Raw
+          $core=Get-Content "$verify/core.cjs" -Raw
+          if($app -notmatch 'zero-title-sources'){throw 'Per-title source preferences missing.'}
+          if($app -notmatch 'episodeReminder'){throw 'Episode reminders missing.'}
+          if($core -notmatch 'positions\[historyKey\]'){throw 'Per-episode progress storage missing.'}
+          Remove-Item $verify -Recurse -Force
+      - name: Defender scan
+        shell: pwsh
+        run: |
+          $scanner=(Get-ChildItem "$env:ProgramData\Microsoft\Windows Defender\Platform\*\MpCmdRun.exe" | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          if(-not $scanner){throw 'Microsoft Defender unavailable.'}
+          & $scanner -Scan -ScanType 3 -File "$pwd\dist\win-unpacked" -DisableRemediation
+          if($LASTEXITCODE -ne 0){throw "Microsoft Defender scan failed or detected a threat (exit $LASTEXITCODE)."}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1-Final-Polish-Windows
+          path: windows/dist/ZeroPlay-2.1-Windows-x64.zip
+          compression-level: 0
