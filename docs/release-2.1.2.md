@@ -2,6 +2,8 @@
 
 ZeroPlay 2.1.2 is a focused hotfix for Windows playback UI stability and player ad filtering across Windows, Android, and Android TV / Google TV.
 
+**Release channel:** Hotfix
+
 ## Highlights
 
 ### Windows series / source UI hotfix
