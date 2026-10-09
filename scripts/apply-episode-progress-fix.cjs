@@ -15,6 +15,22 @@ history=replace(history,
 'Android started episode marker');
 write('app/src/main/java/com/zerostreams/app/HistoryStore.java',history);
 
+// Refresh the open Android episode selector as soon as playback returns.
+let androidMain=read('app/src/main/java/com/zerostreams/app/MainActivity.java');
+androidMain=replace(androidMain,
+'    private LinearLayout activeProviderCards;\n    private final Map<String,String> oneTimePlaybackSources=new HashMap<>();',
+'    private LinearLayout activeProviderCards;\n    private Runnable episodeStatusRefresh;\n    private final Map<String,String> oneTimePlaybackSources=new HashMap<>();',
+'Android episode refresh field');
+androidMain=replace(androidMain,
+'        JSONArray raw=data.optJSONArray("seasons");if(raw==null||seasonPicker==null||episodePicker==null)return;',
+'        JSONArray raw=data.optJSONArray("seasons");if(raw==null||seasonPicker==null||episodePicker==null)return;episodeStatusRefresh=()->loadSeriesEpisodeSelector(item,selectedSeason[0],episodePicker,selectedEpisode);',
+'Android episode refresh callback');
+androidMain=replace(androidMain,
+'    @Override protected void onResume(){super.onResume();foreground=true;if(ready){if(TspSearchProvider.get(this).configured()){',
+'    @Override protected void onResume(){super.onResume();foreground=true;if(ready){if(detailsOpen&&episodeStatusRefresh!=null)episodeStatusRefresh.run();if(TspSearchProvider.get(this).configured()){',
+'Android episode refresh on resume');
+write('app/src/main/java/com/zerostreams/app/MainActivity.java',androidMain);
+
 // Android native player: persist exact position + duration every few seconds and
 // on exit/end. Completion is retained instead of deleting the episode state.
 let player=read('app/src/main/java/com/zerostreams/app/PlayerActivity.java');
