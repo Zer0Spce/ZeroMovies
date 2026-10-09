@@ -1,0 +1,123 @@
+name: Windows Offline mpv Test
+
+on:
+  push:
+    branches:
+      - fix/windows-offline-mpv-test
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-offline-mpv-test
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Windows offline-player test
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Run existing Windows tests
+        run: npm test
+
+      - name: Configure bundled keys and existing player vendors
+        run: npm run prepare-config
+
+      - name: Download pinned mpv x64 playback engine
+        shell: pwsh
+        run: |
+          $url = 'https://github.com/shinchiro/mpv-winbuild-cmake/releases/download/20261009/mpv-x86_64-20261009-git-36abaa32d0.7z'
+          $expected = '9afbe74f4ab885ca512769f8835758eb66b7b8a5ea6d679500588f8e7fec632e'
+          Invoke-WebRequest -Uri $url -OutFile mpv.7z
+          $actual = (Get-FileHash mpv.7z -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw "mpv SHA-256 mismatch: $actual" }
+          New-Item -ItemType Directory -Force vendor/mpv | Out-Null
+          7z x mpv.7z -ovendor/mpv -y | Out-Host
+          $mpv = Get-ChildItem vendor/mpv -Filter mpv.exe -Recurse | Select-Object -First 1
+          if (-not $mpv) { throw 'mpv.exe missing after extraction.' }
+          if ($mpv.Directory.FullName -ne (Resolve-Path vendor/mpv).Path) {
+            Copy-Item "$($mpv.Directory.FullName)/*" vendor/mpv -Recurse -Force
+          }
+          if (!(Test-Path vendor/mpv/mpv.exe)) { throw 'mpv.exe was not normalized to vendor/mpv/mpv.exe.' }
+          Remove-Item mpv.7z -Force
+
+      - name: Apply isolated offline-player test patch
+        run: node scripts/apply-offline-mpv-test.cjs
+
+      - name: Verify test source wiring
+        shell: pwsh
+        run: |
+          $main = Get-Content main.cjs -Raw
+          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+          if ($main -notmatch 'MpvOfflinePlayer') { throw 'Main process is not wired to mpv offline playback.' }
+          if ($main -match "contents.loadFile\(path.join\(__dirname,'ui/offline-player.html'\)\)") { throw 'Legacy Chromium offline player is still the active openOffline path.' }
+          if ($pkg.build.win.artifactName -ne 'ZeroPlay-2.1-Windows-Offline-mpv-Test.${ext}') { throw 'Unexpected test artifact name.' }
+
+      - name: Build standalone ZeroPlayUpdater.exe
+        shell: pwsh
+        run: |
+          dotnet publish updater-helper/ZeroPlayUpdater.csproj -c Release -r win-x64 --self-contained true -o updater-helper/publish
+          Copy-Item updater-helper/publish/ZeroPlayUpdater.exe ./ZeroPlayUpdater.exe -Force
+          if (!(Test-Path './ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe was not created.' }
+
+      - name: Smoke test Windows app
+        run: npx electron . --smoke-test
+
+      - name: Build portable Windows test ZIP
+        run: npx electron-builder --win --x64 --publish never
+
+      - name: Verify packaged mpv offline engine
+        shell: pwsh
+        run: |
+          $zip = 'dist/ZeroPlay-2.1-Windows-Offline-mpv-Test.zip'
+          if (!(Test-Path $zip)) { throw 'Offline-player test ZIP was not created.' }
+          if (!(Test-Path 'dist/win-unpacked/resources/mpv/mpv.exe')) { throw 'Bundled mpv.exe is missing from packaged app.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlay.exe')) { throw 'ZeroPlay.exe is missing.' }
+          $verify = 'dist/verify-asar'
+          if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
+          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          $main = Get-Content "$verify/main.cjs" -Raw
+          $mpvHost = Get-Content "$verify/mpv-offline.cjs" -Raw
+          if ($main -notmatch 'MpvOfflinePlayer') { throw 'Packaged main process is not using mpv offline playback.' }
+          if ($mpvHost -notmatch 'gpu-api=d3d11') { throw 'mpv offline host is incomplete.' }
+          Remove-Item $verify -Recurse -Force
+
+      - name: Scan packaged test build with Microsoft Defender
+        shell: pwsh
+        run: |
+          $scanner = (Get-ChildItem "$env:ProgramData\Microsoft\Windows Defender\Platform\*\MpCmdRun.exe" | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          if (-not $scanner) { throw 'Microsoft Defender scanner unavailable.' }
+          & $scanner -Scan -ScanType 3 -File "$pwd\dist\win-unpacked" -DisableRemediation
+          if ($LASTEXITCODE -ne 0) { throw "Microsoft Defender scan failed or detected a threat (exit $LASTEXITCODE)." }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1-Windows-Offline-mpv-Test
+          path: windows/dist/ZeroPlay-2.1-Windows-Offline-mpv-Test.zip
+          if-no-files-found: error
+          compression-level: 0
