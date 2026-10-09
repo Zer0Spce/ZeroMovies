@@ -1,0 +1,185 @@
+name: Windows Offline mpv Test
+
+on:
+  push:
+    branches:
+      - fix/windows-offline-mpv-test
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-offline-mpv-test
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Windows offline-player test
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: windows
+    env:
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Run existing Windows tests
+        run: npm test
+
+      - name: Configure bundled keys and existing player vendors
+        run: npm run prepare-config
+
+      - name: Download pinned mpv x64 playback engine
+        shell: pwsh
+        run: |
+          $url = 'https://github.com/shinchiro/mpv-winbuild-cmake/releases/download/20261009/mpv-x86_64-20261009-git-36abaa32d0.7z'
+          $expected = '9afbe74f4ab885ca512769f8835758eb66b7b8a5ea6d679500588f8e7fec632e'
+          Invoke-WebRequest -Uri $url -OutFile mpv.7z
+          $actual = (Get-FileHash mpv.7z -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw "mpv SHA-256 mismatch: $actual" }
+          New-Item -ItemType Directory -Force vendor/mpv | Out-Null
+          7z x mpv.7z -ovendor/mpv -y | Out-Host
+          $mpv = Get-ChildItem vendor/mpv -Filter mpv.exe -Recurse | Select-Object -First 1
+          if (-not $mpv) { throw 'mpv.exe missing after extraction.' }
+          if ($mpv.Directory.FullName -ne (Resolve-Path vendor/mpv).Path) {
+            Copy-Item "$($mpv.Directory.FullName)/*" vendor/mpv -Recurse -Force
+          }
+          if (!(Test-Path vendor/mpv/mpv.exe)) { throw 'mpv.exe was not normalized to vendor/mpv/mpv.exe.' }
+          Remove-Item mpv.7z -Force
+
+      - name: Apply isolated offline-player test patch
+        run: node scripts/apply-offline-mpv-test.cjs
+
+      - name: Apply final Windows title and history polish
+        run: node scripts/apply-final-windows-polish.cjs
+
+      - name: Apply real episode progress refresh
+        run: node scripts/apply-episode-progress-fix.cjs
+
+      - name: Apply Windows episode completion tracking
+        run: node scripts/apply-windows-episode-completion-fix.cjs
+
+      - name: Build dedicated native mpv video surface
+        shell: pwsh
+        run: |
+          dotnet publish mpv-host-helper/MpvVideoHost.csproj -c Release -r win-x64 --self-contained true -o mpv-host-helper/publish
+          Copy-Item mpv-host-helper/publish/MpvVideoHost.exe ./MpvVideoHost.exe -Force
+          if (!(Test-Path './MpvVideoHost.exe')) { throw 'MpvVideoHost.exe was not created.' }
+
+      - name: Verify embedded player and final polish source wiring
+        shell: pwsh
+        run: |
+          $main = Get-Content main.cjs -Raw
+          $mpvHostSource = Get-Content mpv-offline.cjs -Raw
+          $renderer = Get-Content ui/app.js -Raw
+          $core = Get-Content core.cjs -Raw
+          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+          if ($main -notmatch 'MpvOfflinePlayer') { throw 'Main process is not wired to mpv offline playback.' }
+          if ($main -match "contents.loadFile\(path.join\(__dirname,'ui/offline-player.html'\)\)") { throw 'Legacy Chromium offline player is still the active openOffline path.' }
+          if ($main -notmatch 'sourceOverride') { throw 'Per-title playback source override is not wired.' }
+          if ($main -notmatch '__zeroEpisodeProbe') { throw 'Direct Windows episode completion probe is missing.' }
+          if ($main -notmatch 'playbackCompleted') { throw 'Windows completion lock is missing.' }
+          if ($main -notmatch 'completed=position.percent>=95') { throw 'Final provider progress bypass is missing.' }
+          if ($mpvHostSource -notmatch 'bundledVideoHost') { throw 'Dedicated native video host is not wired.' }
+          if ($mpvHostSource -notmatch '--wid=') { throw 'mpv is not targeting the dedicated native video surface.' }
+          if ($mpvHostSource -notmatch "'--osc=no'") { throw 'Default mpv OSC is still enabled.' }
+          if ($mpvHostSource -notmatch 'offline-mpv.html') { throw 'Modern ZeroPlay offline control overlay is not wired.' }
+          if ($renderer -notmatch 'zero-title-sources') { throw 'Per-title source preference UI is missing.' }
+          if ($renderer -notmatch 'episodeReminder') { throw 'Episode watched/in-progress reminders are missing.' }
+          if ($renderer -notmatch "if\(!progress\)return ''") { throw 'Started episode fallback marker is missing.' }
+          if ($renderer -notmatch "\$\('#detail'\)\.open&&activeDetail") { throw 'Open detail episode refresh is missing.' }
+          if ($core -notmatch 'positions\[historyKey\]') { throw 'Per-episode history storage is missing.' }
+          if (!(Test-Path './MpvVideoHost.exe')) { throw 'Native video host helper is missing.' }
+          foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
+            if (!(Test-Path $file)) { throw "Missing embedded offline player file: $file" }
+          }
+          if ($pkg.build.win.artifactName -ne 'ZeroPlay-2.1-Windows-Offline-mpv-Test.${ext}') { throw 'Unexpected test artifact name.' }
+
+      - name: Build standalone ZeroPlayUpdater.exe
+        shell: pwsh
+        run: |
+          dotnet publish updater-helper/ZeroPlayUpdater.csproj -c Release -r win-x64 --self-contained true -o updater-helper/publish
+          Copy-Item updater-helper/publish/ZeroPlayUpdater.exe ./ZeroPlayUpdater.exe -Force
+          if (!(Test-Path './ZeroPlayUpdater.exe')) { throw 'ZeroPlayUpdater.exe was not created.' }
+
+      - name: Smoke test Windows app
+        shell: pwsh
+        run: |
+          $process = Start-Process -FilePath 'cmd.exe' -ArgumentList '/d','/s','/c','npx electron . --smoke-test' -PassThru -NoNewWindow
+          if ($process.WaitForExit(60000)) {
+            if ($process.ExitCode -ne 0) { throw "Electron smoke test failed with exit code $($process.ExitCode)." }
+            Write-Host 'Electron smoke test completed normally.'
+          } else {
+            Write-Warning 'Electron smoke test did not exit within 60 seconds; terminating the lingering process tree and continuing packaging.'
+            & taskkill.exe /PID $process.Id /T /F | Out-Host
+          }
+
+      - name: Build portable Windows test ZIP
+        run: npx electron-builder --win --x64 --publish never
+
+      - name: Verify packaged embedded mpv player and final polish
+        shell: pwsh
+        run: |
+          $zip = 'dist/ZeroPlay-2.1-Windows-Offline-mpv-Test.zip'
+          if (!(Test-Path $zip)) { throw 'Offline-player test ZIP was not created.' }
+          if (!(Test-Path 'dist/win-unpacked/resources/mpv/mpv.exe')) { throw 'Bundled mpv.exe is missing from packaged app.' }
+          if (!(Test-Path 'dist/win-unpacked/resources/mpv-host/MpvVideoHost.exe')) { throw 'Dedicated native video host is missing from packaged app.' }
+          if (!(Test-Path 'dist/win-unpacked/ZeroPlay.exe')) { throw 'ZeroPlay.exe is missing.' }
+          $verify = 'dist/verify-asar'
+          if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
+          npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
+          $main = Get-Content "$verify/main.cjs" -Raw
+          $mpvHostSource = Get-Content "$verify/mpv-offline.cjs" -Raw
+          $renderer = Get-Content "$verify/ui/app.js" -Raw
+          $core = Get-Content "$verify/core.cjs" -Raw
+          if ($main -notmatch 'MpvOfflinePlayer') { throw 'Packaged main process is not using mpv offline playback.' }
+          if ($main -notmatch 'sourceOverride') { throw 'Packaged per-title source override is missing.' }
+          if ($main -notmatch '__zeroEpisodeProbe') { throw 'Packaged Windows episode completion probe is missing.' }
+          if ($main -notmatch 'completed=position.percent>=95') { throw 'Packaged final provider progress bypass is missing.' }
+          if ($mpvHostSource -notmatch 'gpu-api=d3d11') { throw 'mpv offline host is incomplete.' }
+          if ($mpvHostSource -notmatch 'bundledVideoHost') { throw 'Packaged player does not use the dedicated native video surface.' }
+          if ($mpvHostSource -notmatch '--wid=') { throw 'Packaged mpv host is not embedded.' }
+          if ($mpvHostSource -notmatch "'--osc=no'") { throw 'Packaged mpv host still enables the default OSC.' }
+          if ($renderer -notmatch 'zero-title-sources') { throw 'Packaged per-title source UI is missing.' }
+          if ($renderer -notmatch 'episodeReminder') { throw 'Packaged episode history reminders are missing.' }
+          if ($renderer -notmatch "if\(!progress\)return ''") { throw 'Packaged started episode fallback marker is missing.' }
+          if ($renderer -notmatch "\$\('#detail'\)\.open&&activeDetail") { throw 'Packaged open detail episode refresh is missing.' }
+          if ($core -notmatch 'positions\[historyKey\]') { throw 'Packaged per-episode history storage is missing.' }
+          foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
+            if (!(Test-Path "$verify/$file")) { throw "Packaged player UI is missing: $file" }
+          }
+          Remove-Item $verify -Recurse -Force
+
+      - name: Scan packaged test build with Microsoft Defender
+        shell: pwsh
+        run: |
+          $scanner = (Get-ChildItem "$env:ProgramData\Microsoft\Windows Defender\Platform\*\MpCmdRun.exe" | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          if (-not $scanner) { throw 'Microsoft Defender scanner unavailable.' }
+          & $scanner -Scan -ScanType 3 -File "$pwd\dist\win-unpacked" -DisableRemediation
+          if ($LASTEXITCODE -ne 0) { throw "Microsoft Defender scan failed or detected a threat (exit $LASTEXITCODE)." }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZeroPlay-2.1-Windows-Offline-mpv-Test
+          path: windows/dist/ZeroPlay-2.1-Windows-Offline-mpv-Test.zip
+          if-no-files-found: error
+          compression-level: 0
