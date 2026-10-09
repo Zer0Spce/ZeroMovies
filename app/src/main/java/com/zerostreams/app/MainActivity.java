@@ -289,8 +289,8 @@ public class MainActivity extends Activity {
             }
         }
         LinkedHashMap<String,Catalog.Item> unique=new LinkedHashMap<>();
-        for(Catalog.Item item:source){if(item==null||item.type.equals("live")||item.type.equals("manga")||(item.backdrop.isEmpty()&&item.poster.isEmpty()))continue;unique.put(item.type+":"+item.id,item);if(unique.size()>=10)break;}
-        if(unique.isEmpty()&&!mode.equals("top"))for(Catalog.Item item:all){if(item!=null&&item.raw.optBoolean("trending")&&!item.raw.optBoolean("upcoming")&&!item.type.equals("live")&&!item.type.equals("manga")&&(!item.backdrop.isEmpty()||!item.poster.isEmpty())){unique.put(item.type+":"+item.id,item);if(unique.size()>=10)break;}}
+        for(Catalog.Item item:source){if(item==null||item.type.equals("live")||item.type.equals("manga")||(item.raw.optString("backdrop").isEmpty()&&item.poster.isEmpty()))continue;unique.put(item.type+":"+item.id,item);if(unique.size()>=10)break;}
+        if(unique.isEmpty()&&!mode.equals("top"))for(Catalog.Item item:all){if(item!=null&&item.raw.optBoolean("trending")&&!item.raw.optBoolean("upcoming")&&!item.type.equals("live")&&!item.type.equals("manga")&&(!item.raw.optString("backdrop").isEmpty()||!item.poster.isEmpty())){unique.put(item.type+":"+item.id,item);if(unique.size()>=10)break;}}
         return new ArrayList<>(unique.values());
     }
     void confirmResetApplication(){AlertDialog reset=new AlertDialog.Builder(this).setTitle("Reset application and settings?").setMessage("This restores ZeroPlay settings, watchlist, history, collections and API preferences to their defaults. Downloaded media files are kept.").setPositiveButton("Reset",(d,n)->{stopPreview();prefs.edit().clear().commit();message("ZeroPlay reset to defaults");recreate();}).setNegativeButton("No, Go Back",null).create();reset.setOnShowListener(d->{reset.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.rgb(255,95,95));reset.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ACCENT);});reset.show();}
