@@ -2,9 +2,6 @@ name: TEMP Windows Updater 9.9.14
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - temp/windows-updater-9.9.9.10
 
 permissions:
   contents: write
