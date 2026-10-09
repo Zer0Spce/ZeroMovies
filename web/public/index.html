@@ -6,10 +6,15 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self' https:; media-src https: blob:; frame-src https://vidstuck.xyz; form-action 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'none'; upgrade-insecure-requests">
   <meta name="description" content="ZeroPlay 2.1.2 Web — movies and TV series in the Native / Original interface.">
   <meta name="theme-color" content="#090a10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="icon" href="assets/icon.ico">
+  <link rel="apple-touch-icon" href="assets/icon.png">
+  <link rel="manifest" href="manifest.json">
   <title>ZeroPlay 2.1.2 — Discover your next great watch</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="layouts.css">
+  <link rel="stylesheet" href="enhancements.css">
 </head>
 <body>
   <aside>
@@ -34,7 +39,7 @@
     </header>
     <div id="status" role="status"></div>
     <section id="content"></section>
-    <footer>ZeroPlay 2.1.2 Web · TMDB powers movie and TV discovery.</footer>
+    <footer>ZeroPlay 2.1.2 Web · TMDB powers movie and TV discovery · Press / to search.</footer>
   </main>
   <dialog id="detail"><button class="close" data-action="close" aria-label="Close details">×</button><div id="detail-body"></div></dialog>
   <dialog id="settings"><button class="close" data-action="close-settings" aria-label="Close settings">×</button><div class="settings-body"><span class="eyebrow">MAKE IT YOURS</span><h2>Settings</h2><label>Playback source<select id="playback-source"><option value="vidstuck">VidStuck · Recommended</option></select></label><label>Interface<select id="ui-layout"><option value="classic">Native / Original</option></select></label><label>Appearance<select id="theme"><option value="dark">Night mode</option><option value="light">Light mode</option></select></label><label>Provider availability region<select id="region"><option>PH</option><option>US</option><option>GB</option><option>CA</option><option>AU</option><option>IN</option><option>JP</option></select></label><div class="actions"><button class="primary" data-action="save-settings">Save settings</button></div><p id="settings-status" role="status"></p><hr><img class="tmdb-logo" src="assets/tmdb-logo.svg" alt="TMDB"><p>This product uses the TMDB API but is not endorsed or certified by TMDB. Web movie and series playback uses VidStuck.</p><p>Your library and history stay in this browser.</p><p id="version"></p></div></dialog>
@@ -47,5 +52,6 @@
   <script src="app.js"></script>
   <script src="web-fixes.js"></script>
   <script src="infinite-scroll.js"></script>
+  <script src="web-enhancements.js"></script>
 </body>
 </html>
