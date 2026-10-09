@@ -75,6 +75,9 @@ jobs:
       - name: Apply real episode progress refresh
         run: node scripts/apply-episode-progress-fix.cjs
 
+      - name: Apply Windows episode completion tracking
+        run: node scripts/apply-windows-episode-completion-fix.cjs
+
       - name: Build dedicated native mpv video surface
         shell: pwsh
         run: |
@@ -93,6 +96,9 @@ jobs:
           if ($main -notmatch 'MpvOfflinePlayer') { throw 'Main process is not wired to mpv offline playback.' }
           if ($main -match "contents.loadFile\(path.join\(__dirname,'ui/offline-player.html'\)\)") { throw 'Legacy Chromium offline player is still the active openOffline path.' }
           if ($main -notmatch 'sourceOverride') { throw 'Per-title playback source override is not wired.' }
+          if ($main -notmatch '__zeroEpisodeProbe') { throw 'Direct Windows episode completion probe is missing.' }
+          if ($main -notmatch 'playbackCompleted') { throw 'Windows completion lock is missing.' }
+          if ($main -notmatch 'completed=position.percent>=95') { throw 'Final provider progress bypass is missing.' }
           if ($mpvHostSource -notmatch 'bundledVideoHost') { throw 'Dedicated native video host is not wired.' }
           if ($mpvHostSource -notmatch '--wid=') { throw 'mpv is not targeting the dedicated native video surface.' }
           if ($mpvHostSource -notmatch "'--osc=no'") { throw 'Default mpv OSC is still enabled.' }
@@ -147,6 +153,8 @@ jobs:
           $core = Get-Content "$verify/core.cjs" -Raw
           if ($main -notmatch 'MpvOfflinePlayer') { throw 'Packaged main process is not using mpv offline playback.' }
           if ($main -notmatch 'sourceOverride') { throw 'Packaged per-title source override is missing.' }
+          if ($main -notmatch '__zeroEpisodeProbe') { throw 'Packaged Windows episode completion probe is missing.' }
+          if ($main -notmatch 'completed=position.percent>=95') { throw 'Packaged final provider progress bypass is missing.' }
           if ($mpvHostSource -notmatch 'gpu-api=d3d11') { throw 'mpv offline host is incomplete.' }
           if ($mpvHostSource -notmatch 'bundledVideoHost') { throw 'Packaged player does not use the dedicated native video surface.' }
           if ($mpvHostSource -notmatch '--wid=') { throw 'Packaged mpv host is not embedded.' }
