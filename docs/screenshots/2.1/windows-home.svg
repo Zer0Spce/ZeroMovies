@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">ZeroPlay 2.1 Windows Home</title>
+  <desc id="desc">Fresh 2.1 showcase graphic for the Windows home experience.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#080b12"/><stop offset="1" stop-color="#121826"/></linearGradient>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#172033"/><stop offset="1" stop-color="#25151b"/></linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff3655"/><stop offset="1" stop-color="#ff7b31"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" rx="32" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1600" height="70" rx="32" fill="#0d111a"/>
+  <circle cx="35" cy="35" r="8" fill="#ff5f57"/><circle cx="61" cy="35" r="8" fill="#febc2e"/><circle cx="87" cy="35" r="8" fill="#28c840"/>
+  <text x="130" y="45" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700" fill="#f8fafc">ZeroPlay 2.1 — Windows</text>
+  <rect x="28" y="94" width="92" height="770" rx="28" fill="#0c1119" stroke="#222b39"/>
+  <g fill="#94a3b8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" text-anchor="middle">
+    <text x="74" y="164">⌂</text><text x="74" y="234">⌕</text><text x="74" y="304">▦</text><text x="74" y="374">♡</text><text x="74" y="444">◉</text><text x="74" y="514">⚙</text>
+  </g>
+  <rect x="148" y="96" width="1420" height="360" rx="34" fill="url(#hero)" stroke="#263246"/>
+  <text x="205" y="160" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="700" fill="#ff5d53">THIS WEEK TOP PICKS</text>
+  <text x="205" y="240" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="62" font-weight="800" fill="#f8fafc">Your next movie starts here.</text>
+  <text x="205" y="292" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" fill="#b8c2d2">Choose the carousel source you want. The trailer now always follows the title on screen.</text>
+  <rect x="205" y="330" width="176" height="62" rx="18" fill="url(#red)"/><text x="293" y="370" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="25" font-weight="800" fill="#fff">▶ Watch Now</text>
+  <rect x="397" y="330" width="192" height="62" rx="18" fill="#1a2230" stroke="#334155"/><text x="493" y="370" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="700" fill="#e2e8f0">Change Source</text>
+  <rect x="1185" y="128" width="322" height="250" rx="26" fill="#0c121c" stroke="#38465a"/>
+  <polygon points="1307,198 1307,308 1403,253" fill="#ff4d52"/><text x="1346" y="342" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" fill="#cbd5e1">Muted hero trailer</text>
+  <text x="155" y="510" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" font-weight="800" fill="#f8fafc">Continue Watching</text>
+  <g>
+    <rect x="155" y="540" width="238" height="250" rx="22" fill="#1b2534"/><rect x="415" y="540" width="238" height="250" rx="22" fill="#202738"/><rect x="675" y="540" width="238" height="250" rx="22" fill="#1a2230"/><rect x="935" y="540" width="238" height="250" rx="22" fill="#242130"/><rect x="1195" y="540" width="238" height="250" rx="22" fill="#1b2830"/>
+    <g font-family="Inter,Segoe UI,Arial,sans-serif" fill="#f8fafc" font-weight="700" font-size="22"><text x="180" y="720">Movie One</text><text x="440" y="720">Series Night</text><text x="700" y="720">New Release</text><text x="960" y="720">Anime Pick</text><text x="1220" y="720">Watchlist</text></g>
+    <g fill="#344256"><rect x="180" y="744" width="188" height="12" rx="6"/><rect x="440" y="744" width="188" height="12" rx="6"/><rect x="700" y="744" width="188" height="12" rx="6"/><rect x="960" y="744" width="188" height="12" rx="6"/><rect x="1220" y="744" width="188" height="12" rx="6"/></g>
+    <g fill="#ff4f4f"><rect x="180" y="744" width="124" height="12" rx="6"/><rect x="440" y="744" width="74" height="12" rx="6"/><rect x="700" y="744" width="151" height="12" rx="6"/><rect x="960" y="744" width="98" height="12" rx="6"/><rect x="1220" y="744" width="45" height="12" rx="6"/></g>
+  </g>
+  <rect x="1318" y="820" width="250" height="44" rx="22" fill="#111827" stroke="#334155"/><text x="1443" y="849" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="700" fill="#cbd5e1">Portable • No installer</text>
+</svg>
