@@ -1,6 +1,6 @@
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os');
-const RULESET_VERSION='2.0-known-good-2026-10-08';
-const AD_HOSTS=['doubleclick.net','googlesyndication.com','googleadservices.com','adsterra.com','adsterra.org','popads.net','popcash.net','propellerads.com','onclicka.com','onclicksuper.com','exoclick.com','exosrv.com','trafficjunky.net','juicyads.com','hilltopads.net','a-ads.com','adnxs.com','adskeeper.com','mgid.com','taboola.com','outbrain.com','gurlleviter.cyou'];
+const RULESET_VERSION='2.1.2-hotfix-2026-10-09';
+const AD_HOSTS=['doubleclick.net','googlesyndication.com','googleadservices.com','adsterra.com','adsterra.org','popads.net','popcash.net','propellerads.com','onclicka.com','onclicksuper.com','exoclick.com','exosrv.com','trafficjunky.net','juicyads.com','hilltopads.net','a-ads.com','adnxs.com','adskeeper.com','mgid.com','taboola.com','outbrain.com','histats.com','histats.net','gurlleviter.cyou'];
 const PROVIDER_ALLOWLIST=['vidstuck.xyz','vidsrc.sh','cloudflarestream.com','videodelivery.net','cloudfront.net','akamaized.net','akamaihd.net','fastly.net','b-cdn.net','cdn77.org','googlevideo.com','r2.dev','challenges.cloudflare.com'];
 const LEARNED_TTL=7*24*60*60*1000;
 const sessionAdHosts=new Set(),learnedAdHosts=new Map(),lastBlockLog=new Map();
