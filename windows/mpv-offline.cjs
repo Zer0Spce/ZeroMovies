@@ -11,10 +11,27 @@ function bundledMpv(app){
     ? path.join(process.resourcesPath,'mpv','mpv.exe')
     : path.join(__dirname,'vendor','mpv','mpv.exe');
 }
+function bundledVideoHost(app){
+  return app.isPackaged
+    ? path.join(process.resourcesPath,'mpv-host','MpvVideoHost.exe')
+    : path.join(__dirname,'MpvVideoHost.exe');
+}
 function cleanTitle(value){return String(value||'Downloaded video').replace(/[\r\n\t]+/g,' ').trim().slice(0,160)||'Downloaded video';}
 function nativeHandle(window){
   const buffer=window.getNativeWindowHandle();
   return process.arch==='x64'||process.arch==='arm64'?buffer.readBigUInt64LE(0).toString():String(buffer.readUInt32LE(0));
+}
+function waitForVideoHost(child,timeout=8000){
+  return new Promise((resolve,reject)=>{
+    let buffer='',settled=false;
+    const finish=(error,value)=>{if(settled)return;settled=true;clearTimeout(timer);child.stdout?.removeAllListeners('data');child.removeListener('error',onError);child.removeListener('exit',onExit);error?reject(error):resolve(value);};
+    const onError=error=>finish(error);
+    const onExit=code=>finish(Error('ZeroPlay video surface exited before startup'+(Number.isInteger(code)?` (${code})`:'' )+'.'));
+    child.once('error',onError);child.once('exit',onExit);
+    child.stdout?.setEncoding('utf8');
+    child.stdout?.on('data',chunk=>{buffer+=chunk;const line=buffer.split(/\r?\n/)[0]?.trim();if(!/^\d+$/.test(line||''))return;finish(null,line);});
+    const timer=setTimeout(()=>finish(Error('Timed out while creating the ZeroPlay video surface.')),timeout);timer.unref?.();
+  });
 }
 
 class MpvIpc{
@@ -52,14 +69,15 @@ function registerHandlers(){
 class MpvOfflinePlayer{
   constructor(app,mainWindow){
     registerHandlers();
-    this.app=app;this.mainWindow=mainWindow;this.process=null;this.file=null;this.surface=null;this.controls=null;this.ipc=null;this.pipe=null;this.pollTimer=null;this.trackTick=0;this.closed=false;this.boundSync=()=>this.syncBounds();this.wasFullscreen=mainWindow.isFullScreen();
+    this.app=app;this.mainWindow=mainWindow;this.process=null;this.videoHostProcess=null;this.videoHwnd=null;this.file=null;this.surface=null;this.controls=null;this.ipc=null;this.pipe=null;this.pollTimer=null;this.trackTick=0;this.closed=false;this.boundSync=()=>this.syncBounds();this.wasFullscreen=mainWindow.isFullScreen();
   }
-  available(){return fs.existsSync(bundledMpv(this.app));}
+  available(){return fs.existsSync(bundledMpv(this.app))&&fs.existsSync(bundledVideoHost(this.app));}
   trusted(event){return Boolean(this.controls&&!this.controls.isDestroyed()&&event.sender===this.controls.webContents);}
   syncBounds(){
     if(this.closed||this.mainWindow.isDestroyed())return;
     const bounds=this.mainWindow.getContentBounds();
     for(const window of [this.surface,this.controls])if(window&&!window.isDestroyed())try{window.setBounds(bounds,false);}catch{}
+    try{this.controls?.moveTop();}catch{}
   }
   createWindows(title){
     this.surface=new BrowserWindow({parent:this.mainWindow,frame:false,show:false,skipTaskbar:true,resizable:false,movable:false,minimizable:false,maximizable:false,backgroundColor:'#000000',webPreferences:{contextIsolation:true,nodeIntegration:false,sandbox:true}});
@@ -72,14 +90,27 @@ class MpvOfflinePlayer{
     for(const name of ['move','resize','maximize','unmaximize','enter-full-screen','leave-full-screen'])this.mainWindow.on(name,this.boundSync);
     this.syncBounds();
   }
+  async createVideoSurface(){
+    const host=bundledVideoHost(this.app);if(!fs.existsSync(host))throw Error('ZeroPlay native video surface is missing.');
+    const child=spawn(host,[nativeHandle(this.surface)],{windowsHide:true,stdio:['ignore','pipe','ignore']});
+    this.videoHostProcess=child;
+    const hwnd=await waitForVideoHost(child);
+    if(this.closed)throw Error('Offline playback was closed.');
+    this.videoHwnd=hwnd;
+    return hwnd;
+  }
   async open({file,title,subtitleRoot}){
     const resolved=path.resolve(file);if(!fs.existsSync(resolved))throw Error('Downloaded video is missing.');
     const exe=bundledMpv(this.app);if(!fs.existsSync(exe))throw Error('Bundled ZeroPlay offline playback engine is missing.');
     this.close();this.closed=false;active=this;
     const clean=cleanTitle(title||path.basename(resolved));this.file=resolved;this.subtitleRoot=subtitleRoot&&fs.existsSync(subtitleRoot)?path.resolve(subtitleRoot):path.dirname(resolved);this.createWindows(clean);
-    await new Promise(resolve=>this.surface.webContents.once('did-finish-load',resolve));
+    await Promise.all([
+      new Promise(resolve=>this.surface.webContents.once('did-finish-load',resolve)),
+      new Promise(resolve=>this.controls.webContents.once('did-finish-load',resolve))
+    ]);
+    const videoHwnd=await this.createVideoSurface();
     this.pipe='\\\\.\\pipe\\zeroplay-offline-'+process.pid+'-'+crypto.randomBytes(8).toString('hex');
-    const args=[resolved,'--force-window=yes','--keep-open=yes','--osc=no','--input-default-bindings=no','--input-cursor=no','--border=no','--hwdec=auto-safe','--vo=gpu-next','--gpu-api=d3d11','--video-sync=display-resample','--audio-client-name=ZeroPlay','--sub-auto=fuzzy','--slang=en,eng,fil,tl','--sub-file-paths='+this.subtitleRoot,'--osd-level=0','--no-terminal','--wid='+nativeHandle(this.surface),'--input-ipc-server='+this.pipe];
+    const args=[resolved,'--force-window=yes','--keep-open=yes','--osc=no','--input-default-bindings=no','--input-cursor=no','--border=no','--hwdec=auto-safe','--vo=gpu-next','--gpu-api=d3d11','--video-sync=display-resample','--audio-client-name=ZeroPlay','--sub-auto=fuzzy','--slang=en,eng,fil,tl','--sub-file-paths='+this.subtitleRoot,'--osd-level=0','--no-terminal','--wid='+videoHwnd,'--input-ipc-server='+this.pipe];
     const child=spawn(exe,args,{cwd:path.dirname(exe),windowsHide:true,stdio:'ignore'});this.process=child;
     child.once('error',error=>this.fail(error?.message||'Could not start offline playback engine.'));
     child.once('exit',()=>{if(!this.closed&&this.process===child)this.close();});
@@ -87,12 +118,12 @@ class MpvOfflinePlayer{
     try{await this.ipc.connect();}catch(error){this.close();throw error;}
     if(this.closed)return;
     await this.ipc.request(['set_property','pause',false]).catch(()=>{});
-    this.surface.show();this.controls.show();this.surface.focus();this.controls.focus();this.syncBounds();
+    this.surface.show();this.controls.show();this.syncBounds();this.controls.focus();
     this.mainWindow.setTitle(clean+' — ZeroPlay Offline');
     this.sendState({title:clean,status:'Ready',connected:true});
     this.pollTimer=setInterval(()=>this.poll(),250);this.pollTimer.unref?.();
     this.poll();
-    return {engine:'mpv-embedded',file:resolved};
+    return {engine:'mpv-native-surface',file:resolved};
   }
   sendState(state){if(this.controls&&!this.controls.isDestroyed())this.controls.webContents.send('offline-mpv-state',state);}
   async poll(){
@@ -138,9 +169,10 @@ class MpvOfflinePlayer{
     for(const name of ['move','resize','maximize','unmaximize','enter-full-screen','leave-full-screen'])try{this.mainWindow.removeListener(name,this.boundSync);}catch{}
     try{this.ipc?.request(['quit']);}catch{}try{this.ipc?.close();}catch{}this.ipc=null;
     const child=this.process;this.process=null;if(child&&!child.killed)try{child.kill();}catch{}
+    const videoHost=this.videoHostProcess;this.videoHostProcess=null;if(videoHost&&!videoHost.killed)try{videoHost.kill();}catch{}this.videoHwnd=null;
     for(const window of [this.controls,this.surface])if(window&&!window.isDestroyed())try{window.destroy();}catch{}
     this.controls=null;this.surface=null;this.file=null;
     if(!this.mainWindow.isDestroyed()){if(this.mainWindow.isFullScreen()!==this.wasFullscreen)this.mainWindow.setFullScreen(this.wasFullscreen);this.mainWindow.setTitle('ZeroPlay');this.mainWindow.show();this.mainWindow.focus();}
   }
 }
-module.exports={MpvOfflinePlayer,bundledMpv};
+module.exports={MpvOfflinePlayer,bundledMpv,bundledVideoHost};
