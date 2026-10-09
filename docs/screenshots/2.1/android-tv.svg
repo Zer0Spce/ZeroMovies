@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">ZeroPlay 2.1 Android TV</title>
+  <desc id="desc">Fresh 2.1 Android TV showcase with focus states, carousel and remote navigation.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07090e"/><stop offset="1" stop-color="#111827"/></linearGradient><linearGradient id="accent"><stop offset="0" stop-color="#ff3155"/><stop offset="1" stop-color="#ff8b31"/></linearGradient></defs>
+  <rect width="1600" height="900" rx="32" fill="url(#bg)"/>
+  <text x="70" y="82" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="44" font-weight="800" fill="#f8fafc">ZeroPlay</text>
+  <text x="70" y="125" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#94a3b8">ANDROID TV / GOOGLE TV • 2.1</text>
+  <g font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700" fill="#94a3b8"><text x="1140" y="86">Home</text><text x="1230" y="86">Discover</text><text x="1360" y="86">Live</text><text x="1430" y="86">Settings</text></g>
+  <rect x="68" y="160" width="1464" height="340" rx="34" fill="#151d2a" stroke="#2c394c"/>
+  <text x="118" y="223" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="700" fill="#ff6258">RECOMMENDED MOVIES</text>
+  <text x="118" y="305" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="58" font-weight="800" fill="#fff">Big-screen browsing, better focus.</text>
+  <text x="118" y="355" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" fill="#b8c2d2">Carousel source changes now affect the real TV hero, and trailers stay attached to the selected title.</text>
+  <rect x="118" y="405" width="188" height="60" rx="18" fill="url(#accent)"/><text x="212" y="443" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#fff">▶ Watch</text>
+  <rect x="326" y="405" width="200" height="60" rx="18" fill="#1b2432" stroke="#52627a"/><text x="426" y="443" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" font-weight="700" fill="#fff">Change Source</text>
+  <rect x="1180" y="205" width="285" height="210" rx="26" fill="#0d121a" stroke="#4c5f78"/><polygon points="1280,260 1280,360 1370,310" fill="#ff4e57"/>
+  <text x="68" y="565" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" font-weight="800" fill="#fff">Top picks for your screen</text>
+  <g>
+    <rect x="68" y="600" width="220" height="230" rx="20" fill="#172030" stroke="#ff4f52" stroke-width="5"/><rect x="312" y="600" width="220" height="230" rx="20" fill="#1b2637"/><rect x="556" y="600" width="220" height="230" rx="20" fill="#1c2333"/><rect x="800" y="600" width="220" height="230" rx="20" fill="#24202f"/><rect x="1044" y="600" width="220" height="230" rx="20" fill="#1a2730"/><rect x="1288" y="600" width="220" height="230" rx="20" fill="#202937"/>
+    <g font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#f8fafc"><text x="92" y="790">Focused title</text><text x="336" y="790">Popular</text><text x="580" y="790">Now Playing</text><text x="824" y="790">Watchlist</text><text x="1068" y="790">Continue</text><text x="1312" y="790">Anime</text></g>
+  </g>
+  <rect x="68" y="848" width="490" height="36" rx="18" fill="#0d131d" stroke="#293549"/><text x="313" y="873" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#cbd5e1">D-pad focus • Mouse mode • staged Back behavior</text>
+</svg>
