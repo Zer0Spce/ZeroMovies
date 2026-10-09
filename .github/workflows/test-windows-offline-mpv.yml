@@ -73,13 +73,13 @@ jobs:
         shell: pwsh
         run: |
           $main = Get-Content main.cjs -Raw
-          $host = Get-Content mpv-offline.cjs -Raw
+          $mpvHostSource = Get-Content mpv-offline.cjs -Raw
           $pkg = Get-Content package.json -Raw | ConvertFrom-Json
           if ($main -notmatch 'MpvOfflinePlayer') { throw 'Main process is not wired to mpv offline playback.' }
           if ($main -match "contents.loadFile\(path.join\(__dirname,'ui/offline-player.html'\)\)") { throw 'Legacy Chromium offline player is still the active openOffline path.' }
-          if ($host -notmatch '--wid=') { throw 'mpv is not embedded into a ZeroPlay-owned native window.' }
-          if ($host -notmatch "'--osc=no'") { throw 'Default mpv OSC is still enabled.' }
-          if ($host -notmatch 'offline-mpv.html') { throw 'Modern ZeroPlay offline control overlay is not wired.' }
+          if ($mpvHostSource -notmatch '--wid=') { throw 'mpv is not embedded into a ZeroPlay-owned native window.' }
+          if ($mpvHostSource -notmatch "'--osc=no'") { throw 'Default mpv OSC is still enabled.' }
+          if ($mpvHostSource -notmatch 'offline-mpv.html') { throw 'Modern ZeroPlay offline control overlay is not wired.' }
           foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
             if (!(Test-Path $file)) { throw "Missing embedded offline player file: $file" }
           }
@@ -109,11 +109,11 @@ jobs:
           if (Test-Path $verify) { Remove-Item $verify -Recurse -Force }
           npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
           $main = Get-Content "$verify/main.cjs" -Raw
-          $mpvHost = Get-Content "$verify/mpv-offline.cjs" -Raw
+          $mpvHostSource = Get-Content "$verify/mpv-offline.cjs" -Raw
           if ($main -notmatch 'MpvOfflinePlayer') { throw 'Packaged main process is not using mpv offline playback.' }
-          if ($mpvHost -notmatch 'gpu-api=d3d11') { throw 'mpv offline host is incomplete.' }
-          if ($mpvHost -notmatch '--wid=') { throw 'Packaged mpv host is not embedded.' }
-          if ($mpvHost -notmatch "'--osc=no'") { throw 'Packaged mpv host still enables the default OSC.' }
+          if ($mpvHostSource -notmatch 'gpu-api=d3d11') { throw 'mpv offline host is incomplete.' }
+          if ($mpvHostSource -notmatch '--wid=') { throw 'Packaged mpv host is not embedded.' }
+          if ($mpvHostSource -notmatch "'--osc=no'") { throw 'Packaged mpv host still enables the default OSC.' }
           foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
             if (!(Test-Path "$verify/$file")) { throw "Packaged player UI is missing: $file" }
           }
