@@ -2,7 +2,7 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
-const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
+const read=rel=>fs.readFileSync(path.join(root,rel),'utf8').replace(/\r\n/g,'\n');
 const write=(rel,value)=>fs.writeFileSync(path.join(root,rel),value);
 function replace(text,from,to,label){if(text.includes(to))return text;if(!text.includes(from))throw Error('Missing final polish marker: '+label);return text.replace(from,to);}
 
