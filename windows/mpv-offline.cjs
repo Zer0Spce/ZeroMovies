@@ -80,10 +80,11 @@ class MpvOfflinePlayer{
     try{this.controls?.moveTop();}catch{}
   }
   createWindows(title){
-    this.surface=new BrowserWindow({parent:this.mainWindow,frame:false,show:false,skipTaskbar:true,resizable:false,movable:false,minimizable:false,maximizable:false,backgroundColor:'#000000',webPreferences:{contextIsolation:true,nodeIntegration:false,sandbox:true}});
+    const nativeChrome={frame:false,hasShadow:false,thickFrame:false,show:false,skipTaskbar:true,resizable:false,movable:false,minimizable:false,maximizable:false};
+    this.surface=new BrowserWindow({...nativeChrome,parent:this.mainWindow,backgroundColor:'#000000',webPreferences:{contextIsolation:true,nodeIntegration:false,sandbox:true}});
     this.surface.setMenuBarVisibility(false);
     this.surface.loadURL('data:text/html,<html style="background:%23000"><body style="margin:0;background:%23000"></body></html>').catch(()=>{});
-    this.controls=new BrowserWindow({parent:this.surface,frame:false,show:false,skipTaskbar:true,resizable:false,movable:false,minimizable:false,maximizable:false,transparent:true,backgroundColor:'#00000000',webPreferences:{preload:path.join(__dirname,'offline-mpv-preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
+    this.controls=new BrowserWindow({...nativeChrome,parent:this.surface,transparent:true,backgroundColor:'#00000000',webPreferences:{preload:path.join(__dirname,'offline-mpv-preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
     this.controls.setMenuBarVisibility(false);
     this.controls.setTitle(title);
     this.controls.loadFile(path.join(__dirname,'ui','offline-mpv.html')).catch(()=>{});
