@@ -27,6 +27,8 @@ jobs:
           node-version: '22'
       - name: Apply episode progress fix
         run: node scripts/apply-episode-progress-fix.cjs
+      - name: Apply embedded completion fix
+        run: node scripts/apply-browser-completion-fix.cjs
       - name: Verify episode progress wiring
         shell: bash
         run: |
@@ -35,6 +37,10 @@ jobs:
           grep -q 'saveHistoryProgress' app/src/main/java/com/zerostreams/app/PlayerActivity.java
           grep -q 'duration:"+key' app/src/main/java/com/zerostreams/app/PlayerActivity.java
           grep -q 'episodeReminder' app/src/main/java/com/zerostreams/app/MainActivity.java
+          grep -q '__zeroProgressMeta' app/src/main/java/com/zerostreams/app/BrowserPlayerActivity.java
+          grep -q 'terminal=event.optBoolean("ended",false)' app/src/main/java/com/zerostreams/app/BrowserPlayerActivity.java
+          grep -q 'zerostreams-direct-progress' app/src/main/assets/player-guard.js
+          grep -q "video.addEventListener('ended'" app/src/main/assets/player-guard.js
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
