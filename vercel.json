@@ -3,6 +3,14 @@
   "framework": null,
   "buildCommand": "node web/scripts/build.cjs",
   "outputDirectory": "web/public",
+  "rewrites": [
+    {"source":"/movie/:id","destination":"/index.html"},
+    {"source":"/tv/:id","destination":"/index.html"},
+    {"source":"/movies","destination":"/index.html"},
+    {"source":"/series","destination":"/index.html"},
+    {"source":"/library","destination":"/index.html"},
+    {"source":"/search","destination":"/index.html"}
+  ],
   "headers": [
     {
       "source": "/(.*)",
