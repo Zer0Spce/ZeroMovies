@@ -34,13 +34,14 @@ const replacement=`async function openOffline(job,filePath){
  const title=job?.item?.title||job?.title||path.basename(resolved),root=job?.dir&&fs.existsSync(job.dir)?job.dir:path.dirname(resolved);
  offlineSelection={title,file:resolved,subtitles:offlineMedia.findTracks(resolved,root)};
  mpvOffline=new MpvOfflinePlayer(app,main);
- try{mpvOffline.open({file:resolved,title,subtitleRoot:root});main.setTitle(title+' — ZeroPlay Offline');}
- catch(error){mpvOffline=null;offlineSelection=null;main.setTitle('ZeroPlay');throw error;}
+ try{await mpvOffline.open({file:resolved,title,subtitleRoot:root});main.setTitle(title+' — ZeroPlay Offline');}
+ catch(error){try{mpvOffline?.close();}catch{}mpvOffline=null;offlineSelection=null;main.setTitle('ZeroPlay');throw error;}
 }
 `;
 source=source.slice(0,start)+replacement+source.slice(end);
 
 if(!source.includes("MpvOfflinePlayer(app,main)"))throw Error('mpv offline implementation was not applied.');
+if(!source.includes("await mpvOffline.open({file:resolved,title,subtitleRoot:root})"))throw Error('mpv offline startup must be awaited.');
 fs.writeFileSync(mainFile,source);
 
 const pkg=JSON.parse(fs.readFileSync(packageFile,'utf8'));
