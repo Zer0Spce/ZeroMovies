@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">ZeroPlay 2.1 Settings and Updater</title>
+  <desc id="desc">Fresh showcase of ZeroPlay 2.1 settings, carousel source controls and repaired Windows updater.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#080b11"/><stop offset="1" stop-color="#131927"/></linearGradient><linearGradient id="accent"><stop offset="0" stop-color="#ff3155"/><stop offset="1" stop-color="#ff8a31"/></linearGradient></defs>
+  <rect width="1600" height="900" rx="32" fill="url(#bg)"/>
+  <text x="72" y="84" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="44" font-weight="800" fill="#fff">Settings that actually stay out of your way.</text>
+  <text x="72" y="126" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23" fill="#9aa8ba">ZeroPlay 2.1 • clearer controls, safer reset and a rebuilt Windows updater</text>
+  <rect x="72" y="174" width="890" height="650" rx="30" fill="#0e141e" stroke="#273346"/>
+  <text x="108" y="230" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="29" font-weight="800" fill="#fff">Appearance & Experience</text>
+  <g font-family="Inter,Segoe UI,Arial,sans-serif">
+    <text x="108" y="300" font-size="22" fill="#cbd5e1">UI layout</text><rect x="520" y="263" width="390" height="58" rx="17" fill="#182130" stroke="#34445a"/><text x="548" y="300" font-size="21" font-weight="700" fill="#fff">Clean UI ▾</text>
+    <text x="108" y="376" font-size="22" fill="#cbd5e1">Homepage carousel source</text><rect x="520" y="339" width="390" height="58" rx="17" fill="#182130" stroke="#ff4f52" stroke-width="3"/><text x="548" y="376" font-size="21" font-weight="700" fill="#fff">Recommended Movies ▾</text>
+    <text x="108" y="452" font-size="22" fill="#cbd5e1">Trailer previews</text><rect x="816" y="417" width="94" height="42" rx="21" fill="url(#accent)"/><circle cx="884" cy="438" r="16" fill="#fff"/>
+    <text x="108" y="528" font-size="22" fill="#cbd5e1">UI animations</text><rect x="816" y="493" width="94" height="42" rx="21" fill="url(#accent)"/><circle cx="884" cy="514" r="16" fill="#fff"/>
+    <text x="108" y="604" font-size="22" fill="#cbd5e1">Reset application and settings</text><rect x="596" y="566" width="314" height="62" rx="18" fill="#24151a" stroke="#80343f"/><text x="753" y="605" text-anchor="middle" font-size="21" font-weight="800" fill="#ff8b91">Reset app/settings</text>
+    <text x="108" y="682" font-size="19" fill="#7f8da1">Keeps downloaded media files intact.</text>
+  </g>
+  <rect x="1002" y="174" width="526" height="650" rx="30" fill="#0c1119" stroke="#273346"/>
+  <text x="1042" y="236" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="29" font-weight="800" fill="#fff">Windows updater</text>
+  <text x="1042" y="284" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" fill="#9fb0c6">Standalone ZeroPlayUpdater.exe</text>
+  <g font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" fill="#dbe4ef">
+    <text x="1042" y="350">✓ SHA-256 package verification</text>
+    <text x="1042" y="402">✓ Versioned installs</text>
+    <text x="1042" y="454">✓ Atomic current.json switch</text>
+    <text x="1042" y="506">✓ Detached relaunch handoff</text>
+    <text x="1042" y="558">✓ Cleanup after success</text>
+    <text x="1042" y="610">✓ Error log on failure</text>
+  </g>
+  <rect x="1042" y="674" width="446" height="24" rx="12" fill="#263244"/><rect x="1042" y="674" width="446" height="24" rx="12" fill="url(#accent)"/>
+  <text x="1042" y="747" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="25" font-weight="800" fill="#fff">Update completed successfully.</text>
+  <text x="72" y="868" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" fill="#7f8da1">2.0–2.0.3 Windows users must manually install 2.1 once. Future updates can then use the repaired in-app updater.</text>
+</svg>
