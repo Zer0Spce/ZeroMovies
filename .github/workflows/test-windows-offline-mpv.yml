@@ -69,6 +69,9 @@ jobs:
       - name: Apply isolated offline-player test patch
         run: node scripts/apply-offline-mpv-test.cjs
 
+      - name: Apply final Windows title and history polish
+        run: node scripts/apply-final-windows-polish.cjs
+
       - name: Build dedicated native mpv video surface
         shell: pwsh
         run: |
@@ -76,18 +79,24 @@ jobs:
           Copy-Item mpv-host-helper/publish/MpvVideoHost.exe ./MpvVideoHost.exe -Force
           if (!(Test-Path './MpvVideoHost.exe')) { throw 'MpvVideoHost.exe was not created.' }
 
-      - name: Verify embedded player source wiring
+      - name: Verify embedded player and final polish source wiring
         shell: pwsh
         run: |
           $main = Get-Content main.cjs -Raw
           $mpvHostSource = Get-Content mpv-offline.cjs -Raw
+          $renderer = Get-Content ui/app.js -Raw
+          $core = Get-Content core.cjs -Raw
           $pkg = Get-Content package.json -Raw | ConvertFrom-Json
           if ($main -notmatch 'MpvOfflinePlayer') { throw 'Main process is not wired to mpv offline playback.' }
           if ($main -match "contents.loadFile\(path.join\(__dirname,'ui/offline-player.html'\)\)") { throw 'Legacy Chromium offline player is still the active openOffline path.' }
+          if ($main -notmatch 'sourceOverride') { throw 'Per-title playback source override is not wired.' }
           if ($mpvHostSource -notmatch 'bundledVideoHost') { throw 'Dedicated native video host is not wired.' }
           if ($mpvHostSource -notmatch '--wid=') { throw 'mpv is not targeting the dedicated native video surface.' }
           if ($mpvHostSource -notmatch "'--osc=no'") { throw 'Default mpv OSC is still enabled.' }
           if ($mpvHostSource -notmatch 'offline-mpv.html') { throw 'Modern ZeroPlay offline control overlay is not wired.' }
+          if ($renderer -notmatch 'zero-title-sources') { throw 'Per-title source preference UI is missing.' }
+          if ($renderer -notmatch 'episodeReminder') { throw 'Episode watched/in-progress reminders are missing.' }
+          if ($core -notmatch 'positions\[historyKey\]') { throw 'Per-episode history storage is missing.' }
           if (!(Test-Path './MpvVideoHost.exe')) { throw 'Native video host helper is missing.' }
           foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
             if (!(Test-Path $file)) { throw "Missing embedded offline player file: $file" }
@@ -116,7 +125,7 @@ jobs:
       - name: Build portable Windows test ZIP
         run: npx electron-builder --win --x64 --publish never
 
-      - name: Verify packaged embedded mpv player
+      - name: Verify packaged embedded mpv player and final polish
         shell: pwsh
         run: |
           $zip = 'dist/ZeroPlay-2.1-Windows-Offline-mpv-Test.zip'
@@ -129,11 +138,17 @@ jobs:
           npx --yes @electron/asar extract 'dist/win-unpacked/resources/app.asar' $verify
           $main = Get-Content "$verify/main.cjs" -Raw
           $mpvHostSource = Get-Content "$verify/mpv-offline.cjs" -Raw
+          $renderer = Get-Content "$verify/ui/app.js" -Raw
+          $core = Get-Content "$verify/core.cjs" -Raw
           if ($main -notmatch 'MpvOfflinePlayer') { throw 'Packaged main process is not using mpv offline playback.' }
+          if ($main -notmatch 'sourceOverride') { throw 'Packaged per-title source override is missing.' }
           if ($mpvHostSource -notmatch 'gpu-api=d3d11') { throw 'mpv offline host is incomplete.' }
           if ($mpvHostSource -notmatch 'bundledVideoHost') { throw 'Packaged player does not use the dedicated native video surface.' }
           if ($mpvHostSource -notmatch '--wid=') { throw 'Packaged mpv host is not embedded.' }
           if ($mpvHostSource -notmatch "'--osc=no'") { throw 'Packaged mpv host still enables the default OSC.' }
+          if ($renderer -notmatch 'zero-title-sources') { throw 'Packaged per-title source UI is missing.' }
+          if ($renderer -notmatch 'episodeReminder') { throw 'Packaged episode history reminders are missing.' }
+          if ($core -notmatch 'positions\[historyKey\]') { throw 'Packaged per-episode history storage is missing.' }
           foreach ($file in @('offline-mpv-preload.cjs','ui/offline-mpv.html','ui/offline-mpv.css','ui/offline-mpv.js')) {
             if (!(Test-Path "$verify/$file")) { throw "Packaged player UI is missing: $file" }
           }
